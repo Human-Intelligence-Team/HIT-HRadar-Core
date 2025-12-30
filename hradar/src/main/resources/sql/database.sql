@@ -1,0 +1,7 @@
+CREATE DATABASE hit
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'hit'@'%' IDENTIFIED BY 'hradar';
+GRANT ALL PRIVILEGES ON hit.* TO 'hit'@'%';
+FLUSH PRIVILEGES;
