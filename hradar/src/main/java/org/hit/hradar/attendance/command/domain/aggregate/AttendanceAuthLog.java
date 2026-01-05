@@ -35,9 +35,8 @@ public class AttendanceAuthLog {
   private LocalDateTime authAt;
 
   //근태 id
-  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "attendance_id", nullable = false)
-  private Attendance attendanceId;
+  private Long attendanceId;
 
   //접속ip주소
   @Column(name = "ip_address", nullable = false)

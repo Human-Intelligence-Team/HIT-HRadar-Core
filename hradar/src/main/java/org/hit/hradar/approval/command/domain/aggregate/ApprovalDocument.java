@@ -4,11 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -25,17 +23,13 @@ public class ApprovalDocument extends BaseTimeEntity {
   @Column(name = "approval_document_id")
   private Long approvalDocumentId;
 
-  /*부서 id
-  @ManyToOne(fetch = FetchType.LAZY)
+  //부서 id
   @Column(name = "dept_id", nullable = false)
   private Long deptId;
-  */
 
-  /*기안자 사원id
-  @ManyToOne(fetch = FetchType.LAZY)
+  //기안자 사원id
   @Column(name = "drafter_id", nullable = false)
-  private Integer drafterId;
-  */
+  private Long drafterId;
 
   //문서 유형
   @Enumerated(EnumType.STRING)

@@ -26,9 +26,8 @@ public class AttendanceCorrection {
   private Long attendanceCorrection;
 
   //근태id
-  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "attendance_id", nullable = false)
-  private Attendance attendanceId;
+  private Long attendanceId;
 
   //정정 유형
   @Enumerated(EnumType.ORDINAL)

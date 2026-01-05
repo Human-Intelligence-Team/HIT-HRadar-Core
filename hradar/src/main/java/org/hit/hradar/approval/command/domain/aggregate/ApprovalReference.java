@@ -1,18 +1,30 @@
 package org.hit.hradar.approval.command.domain.aggregate;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
-public class ApprovalReference {
+@Entity
+@Table(name = "APPROVAL_REFERENCE")
+@Getter
+public class ApprovalReference extends BaseTimeEntity {
 
   //참조id
-  private Integer referenceId;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "reference_id")
+  private Long referenceId;
 
   //결재 문서id
-  private Integer approvalDocumentId;
+  @Column(name = "approval_document_id", nullable = false)
+  private Long approvalDocumentId;
 
   //참조 사원id
-  private Integer refEmpId;
-
-  //참조인 지정
-  private LocalDateTime createdAt;
+  @Column(name = "ref_emp_id", nullable = false)
+  private Long refEmpId;
 }
