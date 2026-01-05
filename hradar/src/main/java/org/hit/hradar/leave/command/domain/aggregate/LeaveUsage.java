@@ -21,7 +21,7 @@ public class LeaveUsage {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "usage_id")
-  private Integer usageId;
+  private Long usageId;
 
   //연차 사용 기준일
   @Column(name = "use_date")
