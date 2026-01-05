@@ -37,7 +37,7 @@ public class Holiday {
 
   //급여 휴일
   @Column(name = "is_paid", nullable = false)
-  private boolean Paid;
+  private boolean paid;
 
   //비고
   @Column(name = "description")
