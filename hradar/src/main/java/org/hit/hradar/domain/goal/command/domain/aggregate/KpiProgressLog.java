@@ -23,9 +23,8 @@ public class KpiProgressLog extends BaseTimeEntity {
     private Long id;
 
     //kpi와 연결
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "kpi_id", nullable = false)
-    private KpiDetail kpiDetail;
+    @Column(name = "kpi_id", nullable = false)
+    private Long kpiId;
 
     //log일자
     @Column(name = "log_date", nullable = false)
@@ -36,10 +35,8 @@ public class KpiProgressLog extends BaseTimeEntity {
     private Integer logValue;
 
     //작성자
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "updated_by", nullable = false)
-    private Employee updatedBy;*/
+    @Column(name = "updated_by")
+    private Long updatedByEmpId;
 
     // created_at, updated_at
 }

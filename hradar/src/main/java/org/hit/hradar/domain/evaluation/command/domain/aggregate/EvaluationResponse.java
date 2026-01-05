@@ -24,19 +24,16 @@ public class EvaluationResponse extends BaseTimeEntity {
     private Long id;
 
     //평가 배정 id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "assignment_id", nullable = false)
-    private EvaluationAssignment assignment;
+    @Column(name = "assignment_id", nullable = false)
+    private Long assignmentId;
 
     //문항 id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id", nullable = false)
-    private EvaluationQuestion question;
+    @Column(name = "question_id", nullable = false)
+    private Long questionId;
 
     //객관식 선택지
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_id")
-    private ObjectiveOption selectedOption;
+    @Column(name = "option_id")
+    private Long selectedOptionId;
 
     //점수형 응답
     @Column(name = "response_score")

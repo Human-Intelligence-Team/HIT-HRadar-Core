@@ -34,9 +34,8 @@ public class EvaluationCycle extends BaseTimeEntity {
     private EvaluationCycleStatus cycleStatus = EvaluationCycleStatus.DRAFT;
 
     //회차 생성자
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "emp_id", nullable = false)
-    private Employee createdBy;*/
+    @Column(name = "created_by", nullable = false)
+    private Long createdBy;
 
     //created_at, updated_at
 }

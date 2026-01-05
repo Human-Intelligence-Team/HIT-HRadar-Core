@@ -15,9 +15,8 @@ public class EvaluationSection {
     private Long id;
 
     //평가 유형
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "eval_type_id", nullable = false)
-    private EvaluationType evaluationType;
+    @Column(name = "eval_type_id", nullable = false)
+    private Long evaluationTypeId;
 
     //섹션명
     @Column(name = "section_title", nullable = false, length = 200)

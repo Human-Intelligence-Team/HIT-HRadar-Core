@@ -13,10 +13,9 @@ public class GradeObjection extends BaseTimeEntity {
     @Column(name = "objection_id")
     private Long id;
 
-    // 대상 개인 등급
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "individual_grade_id", nullable = false)
-    private IndividualGrade individualGrade;
+    // 대상 개인 등급 ID
+    @Column(name = "individual_grade_id", nullable = false)
+    private Long individualGradeId;
 
     //이의 사유
     @Column(name = "objection_reason", nullable = false)
@@ -31,10 +30,9 @@ public class GradeObjection extends BaseTimeEntity {
     @Column(name = "objection_result")
     private String result;
 
-    //담당자
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resolved_by", nullable = false)
-    private Employee resolvedBy;*/
+    // 처리자 ID
+    @Column(name = "resolved_by")
+    private Long resolvedByEmpId;
 
     //created_at, updated_at
 }

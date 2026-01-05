@@ -17,9 +17,8 @@ public class Goal extends BaseTimeEntity {
     private Long id;
 
     //상위 목표
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_goal_id")
-    private Goal parentGoal;
+    @Column(name = "parent_goal_id")
+    private Long parentGoalId;
 
     //개인 or 팀
     @Enumerated(EnumType.STRING)
@@ -39,15 +38,13 @@ public class Goal extends BaseTimeEntity {
     @Column(name = "goal_description")
     private String description;
 
-    /*//부서 ID
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "goal_dept_id")
-    private Department department;*/
+    //부서 ID
+    @Column(name = "goal_dept_id")
+    private Long departmentId;
 
-    /*//작성자
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner_id", nullable = false)
-    private Employee owner;*/
+    //작성자
+    @Column(name = "owner_id", nullable = false)
+    private Long ownerId;
 
     //승인 상태
     @Enumerated(EnumType.STRING)
