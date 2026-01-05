@@ -33,7 +33,7 @@ public class ApprovalHistory {
   //히스토리 타입
   @Enumerated(EnumType.STRING)
   @Column(name = "action_type", nullable = false)
-  private Long actionType;
+  private ApprovalActionType actionType;
 
   //반려 사유
   @Column(name = "reason")
