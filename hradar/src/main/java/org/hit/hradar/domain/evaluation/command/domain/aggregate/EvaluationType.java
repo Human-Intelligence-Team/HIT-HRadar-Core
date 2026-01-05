@@ -17,9 +17,8 @@ public class EvaluationType extends BaseTimeEntity{
     private Long id;
 
     //평가 회차 연결
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cycle_id", nullable = false)
-    private EvaluationCycle cycle;
+    @Column(name = "cycle_id", nullable = false)
+    private Long cycleId;
 
     //평가 유형
     @Enumerated(EnumType.STRING)

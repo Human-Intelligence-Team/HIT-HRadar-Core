@@ -15,9 +15,8 @@ public class EvaluationQuestion {
     private Long id;
 
     //섹션 연결
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "section_id", nullable = false)
-    private EvaluationSection section;
+    @Column(name = "section_id", nullable = false)
+    private Long sectionId;
 
     //문항 유형(객관식, 주관식, 점수형)
     @Enumerated(EnumType.STRING)

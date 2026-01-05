@@ -22,15 +22,13 @@ public class IndividualGrade extends BaseTimeEntity {
     @Column(name = "individual_grade_id")
     private Long id;
 
-    // 사원
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "emp_id", nullable = false)
-    private Employee employee;*/
+    // 사원 ID
+    @Column(name = "emp_id", nullable = false)
+    private Long empId;
 
-    // 등급 회차
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grade_cycle_id", nullable = false)
-    private GradeCycle gradeCycle;
+    // 등급 회차 ID
+    @Column(name = "grade_cycle_id", nullable = false)
+    private Long gradeCycleId;
 
     //부여 등급
     @Enumerated(EnumType.STRING)

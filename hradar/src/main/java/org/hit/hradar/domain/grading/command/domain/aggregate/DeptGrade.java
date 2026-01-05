@@ -22,15 +22,13 @@ public class DeptGrade extends BaseTimeEntity {
     @Column(name = "dept_grade_id")
     private Long id;
 
-    // 부서
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dept_id", nullable = false)
-    private Department department;*/
+    // 부서 ID
+    @Column(name = "dept_id", nullable = false)
+    private Long deptId;
 
-    // 등급 회차
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "grade_cycle_id", nullable = false)
-    private GradeCycle gradeCycle;
+    // 등급 회차 ID
+    @Column(name = "grade_cycle_id", nullable = false)
+    private Long gradeCycleId;
 
     //부여 등급
     @Enumerated(EnumType.STRING)
@@ -41,8 +39,7 @@ public class DeptGrade extends BaseTimeEntity {
     @Column(name = "grade_reason", nullable = false)
     private String gradeReason;
 
-    // 승인자
-    /*@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approver_id", nullable = false)
-    private Employee approver;*/
+    // 승인자 ID
+    @Column(name = "approver_id")
+    private Long approverId;
 }
