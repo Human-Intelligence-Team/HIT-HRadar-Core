@@ -2,12 +2,9 @@ package org.hit.hradar.domain.leave.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Getter;
@@ -23,6 +20,10 @@ public class LeaveGrant {
   @Column(name = "grant_id")
   private Long grantId;
 
+  //사원id
+  @Column(name ="emp_id", nullable = false)
+  private String employee;
+
   //연차 적용년도
   @Column(name = "year", nullable = false)
   private Integer year;
@@ -35,13 +36,20 @@ public class LeaveGrant {
   @Column(name = "remaining_days")
   private double remainingDays;
 
-  //연차 부여된 시각
+  //연차 부여된 날짜
   @Column(name = "granted_at")
   private LocalDate grantedAt;
 
-  /*사원id
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name ="emp_id", nullable = false)
-  private Employee employee;
-  */
+  //연차 만료일
+  @Column(name = "expire_date")
+  private LocalDate expireDate;
+
+  //생성자
+
+  //수정자
+
+  //삭제여부
+  @Column(name = "is_deleted", nullable = false)
+  private String isDeleted;
+
 }

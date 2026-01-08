@@ -26,17 +26,24 @@ public class Attendance {
   @Column(name = "emp_id")
   private Long empId;
 
-  //근무일시
+  //근무일
   @Column(name = "work_date", nullable = false)
   private LocalDate workDate;
 
   //근무 유형
-  @Enumerated(EnumType.STRING)
-  @Column(name = "work_type", nullable = false)
-  private WorkType workType;
+  @Column(name = "work_type", nullable = false, length = 50)
+  private String workType;
 
   //근태 상태
-  @Column(name = "status", nullable = false)
+  @Column(name = "status", nullable = false, length = 50)
   private String status;
 
+
+  // 생성자
+
+  // 수정자
+
+  //삭제여부
+  @Column(name = "is_deleted", nullable = false)
+  private String isDeleted;
 }
