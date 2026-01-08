@@ -383,7 +383,6 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 <div align=center>
    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
   <img src="https://img.shields.io/badge/Git-181717?style=for-the-badge&logo=git&logoColor=white"/>
-  <img src="https://img.shields.io/badge/GitHub_Pull_Request-2088FF?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white"/>
   <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white"/>
   <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"/>
@@ -415,10 +414,10 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/9cbfeef7-e9e3-4aa9-bbd9-795f2c3ec938" />
 	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/c10134de-994d-4dcc-b84f-16cf2ff5d33c" />
 	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/60800d44-0db1-4ca2-86b9-711178feed5d" />
-	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/87e42c6d-e0f5-4a15-8482-bcde99ded7a8" />
-	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/d8fad6f2-fff7-497b-8e0a-ea92b63677de" />
-	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/c9de9837-dd3e-47a7-9a39-fb3a4847e64f" />
-	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/fce05e47-af75-4100-9d0a-6d38a31d496b" />
+	  <img width="2181" height="1541" alt="image" src="https://github.com/user-attachments/assets/9ffc37b6-9d16-4968-9eda-7163299cd0dc" />
+
+	<img width="2181" height="1541" alt="image" src="https://github.com/user-attachments/assets/351a993b-b163-4ccf-ae8f-789cb2a70ff1" />
+	<img width="2181" height="1541" alt="image" src="https://github.com/user-attachments/assets/e7f00720-f6de-496a-b476-448fa625d109" />
 
   </details>
 
