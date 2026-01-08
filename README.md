@@ -426,6 +426,7 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
   ERD를 자세히 보려면 [여기](https://www.erdcloud.com/d/MqC3NnbQPPk2KW7j5)를 클릭하세요 <br>
 
   <details> <summary> ERD </summary>
+	  <img width="6030" height="3612" alt="Image" src="https://github.com/user-attachments/assets/a094fc11-8186-4863-9f31-37cae464925d" />
 	  
   </details>
   
