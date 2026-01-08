@@ -11,7 +11,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "ATTENDANCE_WOKR_LOG")
+@Table(name = "attendance_work_log")
 @Getter
 public class AttendanceWorkLog extends BaseTimeEntity {
 
@@ -48,7 +48,7 @@ public class AttendanceWorkLog extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 
 
 

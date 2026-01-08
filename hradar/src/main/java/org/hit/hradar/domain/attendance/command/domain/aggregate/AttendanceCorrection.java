@@ -13,7 +13,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "ATTENDANCE_CORRECTION")
+@Table(name = "attendance_correction")
 @Getter
 public class AttendanceCorrection extends BaseTimeEntity {
 
@@ -42,7 +42,7 @@ public class AttendanceCorrection extends BaseTimeEntity {
   //정정 유형
   @Enumerated(EnumType.ORDINAL)
   @Column(name = "correction_type", nullable = false)
-  private CorrectionType correctionType;
+  private CorrectionType correctionType = CorrectionType.TIME_CHANGE;
 
   //정정 사유
   @Column(name = "reason", nullable = false, length = 255)
@@ -55,7 +55,7 @@ public class AttendanceCorrection extends BaseTimeEntity {
   //신청 상태
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private CorrectionStatus status;
+  private CorrectionStatus status = CorrectionStatus.REQUESTED;
 
   //요청 일자(같은 요청이 여러 개일 경우)
   @Column(name = "requested_at", nullable = false)
@@ -71,6 +71,6 @@ public class AttendanceCorrection extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 
 }

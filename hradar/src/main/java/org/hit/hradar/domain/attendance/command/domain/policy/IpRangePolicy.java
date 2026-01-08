@@ -10,7 +10,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "IP_RANGE_POLICY")
+@Table(name = "ip_range_policy")
 @Getter
 public class IpRangePolicy extends BaseTimeEntity {
 
@@ -46,5 +46,5 @@ public class IpRangePolicy extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 }

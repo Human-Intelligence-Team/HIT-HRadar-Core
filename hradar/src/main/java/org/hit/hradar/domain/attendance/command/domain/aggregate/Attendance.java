@@ -13,7 +13,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "Attendance")
+@Table(name = "attendance")
 @Getter
 public class Attendance extends BaseTimeEntity {
 
@@ -34,12 +34,12 @@ public class Attendance extends BaseTimeEntity {
   //근무 유형
   @Enumerated(EnumType.STRING)
   @Column(name = "work_type", nullable = false)
-  private WorkType workType;
+  private WorkType workType = WorkType.WORK;
 
   //근태 상태
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private AttendanceStatus status;
+  private AttendanceStatus status = AttendanceStatus.NORMAL;
 
 
   // 생성자
@@ -48,5 +48,5 @@ public class Attendance extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 }

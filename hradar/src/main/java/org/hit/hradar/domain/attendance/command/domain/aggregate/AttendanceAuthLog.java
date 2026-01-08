@@ -13,7 +13,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "ATTENDANCE_AUTH_LOG")
+@Table(name = "attendance_auth_log")
 @Getter
 public class AttendanceAuthLog extends BaseTimeEntity {
 
@@ -34,7 +34,7 @@ public class AttendanceAuthLog extends BaseTimeEntity {
   //인증 여부
   @Enumerated(EnumType.STRING)
   @Column(name = "auth_result", nullable = false)
-  private AuthResult authResult;
+  private AuthResult authResult = AuthResult.SUCCESS;
 
   //인증 시각
   @Column(name = "auth_at", nullable = false)
@@ -54,5 +54,5 @@ public class AttendanceAuthLog extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 }
