@@ -411,10 +411,11 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
   산출물계획을 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1Ka1EDLKefRIke4mxDdVm6wlhyBp4_J1skyuc-2MV8lc/edit?gid=0#gid=0)를 클릭하세요 <br>
 
   <details> <summary> WBS</summary>
-  
+  	<img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/032d4b6b-e0ec-4dd2-b42d-2cc05043e322" />
   </details>
   <details> <summary> 산출물 계획</summary>
-  
+	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/2e0548aa-e8a2-4ec3-b325-962f2c28e0b6" />
+
   </details>
 
 
@@ -422,7 +423,14 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
   요구사항명세서를 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1GQE0Toz1g8RbmHfPRaJDYopqU2pKnyIDpZCUOtF002w/edit?gid=0#gid=0)를 클릭하세요 <br>
 
   <details> <summary> 요구사항 명세서 </summary>
-	  
+	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/9cbfeef7-e9e3-4aa9-bbd9-795f2c3ec938" />
+	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/c10134de-994d-4dcc-b84f-16cf2ff5d33c" />
+	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/60800d44-0db1-4ca2-86b9-711178feed5d" />
+	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/87e42c6d-e0f5-4a15-8482-bcde99ded7a8" />
+	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/d8fad6f2-fff7-497b-8e0a-ea92b63677de" />
+	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/c9de9837-dd3e-47a7-9a39-fb3a4847e64f" />
+	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/fce05e47-af75-4100-9d0a-6d38a31d496b" />
+
   </details>
 
 - ### 🗺️ ERD **(Entity Relationship Diagram)**
@@ -435,14 +443,15 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 - ### 🖼️ 화면 설계서
 	화면설계서 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
 	
-	<details> <summary> 화면설계서 </summary>
-			  
-	</details>
-
+  
 ---
 
 ## 🔁 5. 배포 문서
 - ### 🦴시스템 아키텍처 구조도 
 	아키텍처 구조도 자세히 보려면 [여기](https://app.diagrams.net/#G1LPNRuxvUPA9K1NXrrZWdV01yKCUTH6RZ#%7B%22pageId%22%3A%22qR65Kjy7YShbSICQCzts%22%7D)를 클릭하세요 <br>
+
+	<details> <summary> 시스템 아키텍처 구조도 </summary>
+	  <img width="1165" height="1108" alt="image" src="https://github.com/user-attachments/assets/101786af-a9c3-4332-9168-f0653b66e677" />
+  </details>
 
 ---
