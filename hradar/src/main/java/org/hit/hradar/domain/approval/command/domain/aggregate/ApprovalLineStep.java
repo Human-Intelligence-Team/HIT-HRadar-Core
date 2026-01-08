@@ -2,6 +2,8 @@ package org.hit.hradar.domain.approval.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,7 +13,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "APPROVAL_LINE_STEP")
+@Table(name = "approval_line_step")
 @Getter
 public class ApprovalLineStep extends BaseTimeEntity {
 
@@ -38,8 +40,9 @@ public class ApprovalLineStep extends BaseTimeEntity {
   private Long stepOrder;
 
   //결재 상태
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private String status;
+  private ApprovalStatus status = ApprovalStatus.DRAFT;
 
   //처리 시각
   @Column(name = "acted_at")
@@ -55,6 +58,6 @@ public class ApprovalLineStep extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 
 }

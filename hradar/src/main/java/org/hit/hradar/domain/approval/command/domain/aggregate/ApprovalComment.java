@@ -10,7 +10,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "APPROVAL_COMMENT")
+@Table(name = "approval_comment")
 @Getter
 public class ApprovalComment extends BaseTimeEntity {
 
@@ -44,7 +44,7 @@ public class ApprovalComment extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 
 
 }

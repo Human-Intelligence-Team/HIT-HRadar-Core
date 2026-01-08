@@ -13,7 +13,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "APPROVAL_DOCUMENT")
+@Table(name = "approval_document")
 @Getter
 public class ApprovalDocument extends BaseTimeEntity {
 
@@ -32,8 +32,9 @@ public class ApprovalDocument extends BaseTimeEntity {
   private Long drafterId;
 
   //문서 유형
-  @Column(name = "doc_type", nullable = false, length = 50)
-  private String  docType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "doc_type", nullable = false)
+  private ApprovalDocumentType docType = ApprovalDocumentType.ATT_CORRECTION;
 
   //제목
   @Column(name = "title", nullable = false, length = 200)
@@ -44,8 +45,9 @@ public class ApprovalDocument extends BaseTimeEntity {
   private String content;
 
   //상태
-  @Column(name = "status", nullable = false, length = 50)
-  private String status;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  private ApprovalStatus status = ApprovalStatus.DRAFT;
 
   //제출일시
   @Column(name = "submitted_at")
@@ -57,6 +59,6 @@ public class ApprovalDocument extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 
 }
