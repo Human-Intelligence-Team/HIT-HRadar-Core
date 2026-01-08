@@ -405,66 +405,44 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 
 ## 🗂️ 4. 설계 문서
 
-- ### 🕖 WBS 및 Task tracker **(Work Breakdown Structure)**
+- ### 🕖 WBS 및 산출물계획 **(Work Breakdown Structure)**
 
   WBS를 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1G_kcsY1SGHMmwes_ZvCXGTIpSpR0uieFVmgOpYIf5EU/edit?gid=0#gid=0)를 클릭하세요 <br>
+  산출물계획을 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1Ka1EDLKefRIke4mxDdVm6wlhyBp4_J1skyuc-2MV8lc/edit?gid=0#gid=0)를 클릭하세요 <br>
 
   <details> <summary> WBS</summary>
-  <img width="1310" height="785" alt="Image" src="https://github.com/user-attachments/assets/7a6cab48-2684-47fb-9361-9e3089a57b5e" />
+  
+  </details>
+  <details> <summary> 산출물 계획</summary>
+  
   </details>
 
 
 - ### 📚 요구사항 명세서
+  요구사항명세서를 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1GQE0Toz1g8RbmHfPRaJDYopqU2pKnyIDpZCUOtF002w/edit?gid=0#gid=0)를 클릭하세요 <br>
 
-
-- ### 🗺️ ERD **(Entity Relationship Diagram)**
-  
-  
-- ### 🖼️ 화면 설계서
-
-- ### 📋 API 명세서 
-  
-- ### ▶️ 기능 수행 테스트 결과
-  <details> <summary>로그인, 회원가입 </summary>
-	  <strong> 회원가입 </strong>
-	  <p>
-	  <img
-	    src="https://github.com/user-attachments/assets/d4c05b8a-a137-4919-a99c-4187a27b7d1d"
-	    width="800"
-	  />
-	</p>
-	  <strong> 로그인 </strong>
-	  <p>
-	  <img
-	    src="https://github.com/user-attachments/assets/6913a652-f879-44fa-8b2d-56843c6297e6"
-	    width="800"
-	  />
-	</p>
+  <details> <summary> 요구사항 명세서 </summary>
 	  
   </details>
 
+- ### 🗺️ ERD **(Entity Relationship Diagram)**
+  ERD를 자세히 보려면 [여기](https://www.erdcloud.com/d/MqC3NnbQPPk2KW7j5)를 클릭하세요 <br>
+
+  <details> <summary> ERD </summary>
+	  
+  </details>
+  
+- ### 🖼️ 화면 설계서
+	화면설계서 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
+	
+	<details> <summary> 화면설계서 </summary>
+			  
+	</details>
 
 ---
 
 ## 🔁 5. 배포 문서
-<h2> 아키텍처 구조 </h2>
-<img width="2481" height="2338" alt="Image" src="https://github.com/user-attachments/assets/3e5a352b-f62b-45e9-a6d2-2e680d7555c6" />
-
-
----
-## 🎅🏻 6. 회고
-
-| 이름      | 회고                                                                                                                                                                                                                |
-| ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **유한세** |  |
-| **이민욱** |  |
-| **이상도** |  |
-| **성현제** |  |
-| **정혜인** |  |
-
-
----
-## ⚠️ 7. Trouble Shooting
-
+- ### 🦴시스템 아키텍처 구조도 
+	아키텍처 구조도 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
 
 ---
