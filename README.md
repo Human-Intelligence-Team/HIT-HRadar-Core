@@ -65,6 +65,38 @@
 </details>
 
 <details>
+<summary>2-2-2. 성과평가·인사자료 관리에 집중되는 과도한 HR 업무 부담(이즈파크 설문조사) </summary>
+
+> [이즈파크 설문조사](https://zdnet.co.kr/view/?no=20250609102851&utm_source=chatgpt.com)에 따르면, 국내 100인 이상 기업에 소속된 HR 담당자 291명 중
+81.9%가 성과평가 시즌을 가장 부담스러운 업무 시기로 인식하고 있는 것으로 나타났다.
+
+그 원인은 성과평가 운영 방식에 있다.
+
+조사 결과, <br>
+63.5%는 엑셀·구글시트 등 수작업 기반 평가 시스템을 사용하고 있었으며 <br>
+30.7%는 공용 폴더나 사내 문서함을 통해 평가 결과를 관리하고 있었다.
+
+이는 성과평가 과정이
+데이터 입력, 취합, 비교, 정리, 공유에 이르기까지
+자동화되지 않은 반복 작업에 크게 의존하고 있음을 의미한다.
+
+그 결과 HR 담당자는  
+평가 시즌마다 대량의 파일을 수작업으로 관리해야 하고
+
+사원·부서별 성과를 비교·분석하는 데 과도한 시간이 소요되며  
+단순 행정 업무에 매몰되어 정작 중요한  
+평가 기준 설계, 피드백 제공, 인재 육성 전략 수립에 집중하기 어려운 상황에 놓이게 된다.
+
+즉, 현재의 성과평가 시스템은  
+사원에게는 불투명한 평가 경험을 제공하는 동시에,  
+HR 담당자에게는 비효율적인 업무 구조를 강요하는 이중적 한계를 지니고 있다.
+<br>
+. 
+
+<br>
+</details>
+
+<details>
 <summary> 2-2-2. 성과 평가는 왜 성장으로 이어지지 않는가? (뉴스웨이 '성장' 없으면 3년 내 '퇴사') </summary>
 	
 > 지난해 KBS가 한국리서치에 의뢰해 최근 2년 이내 자발적 퇴사를 경험한 20~30대 남녀 200명을 대상으로 조사한 결과에서는 응답자의 22.5%가 ‘낮은 개인의 발전/성장 가능성’을 퇴사 사유로 꼽았다.
@@ -77,14 +109,14 @@
 > 이직을 고려하는 이유에 대해서도 '낮은 연봉 및 보상 수준'(28.4%)과 '개인 성장 가능성 부족'(26.6%)이 나란히 1·2위를 차지하고 '워라밸 불만족'이 7.2%로 가장 낮았다. 두 결과 모두 MZ세대가 워라밸보다 연봉과 성장 가능성을 더 중시하고 있음을 보여준다.
 > [뉴스웨이](https://www.newsway.co.kr/news/view?ud=2025102818371306166&utm_source=chatgpt.com)
 
-이는 <br>
-- 평가 결과가 역량 개발·경력 설계로 연결되지 않으며
-  
-- HRD는 단편적 교육 제공에 머무른다는 점을 시사한다
-  
-- 직장인은 연봉만큼 **성장 가능성**을 중시하지만, 제도는 이를 뒷받침하지 못한다
-    
-    → 따라서 성과 평가는 **성장의 출발점이 아닌 종료 지점**으로 인식되는 문제점이 있다
+<br>
+그럼에도 불구하고 현실의 성과 평가 제도는<br>
+평가 결과가 역량 분석이나 경력 설계로 연결되지 않고<br>
+HRD는 단편적인 교육 제공에 머무르며 <br>
+개인이 앞으로 무엇을 개발해야 하는지 제시하지 못하고 있다.
+
+그 결과 성과 평가는<br>
+개인의 성장을 위한 출발점이 아니라, 단절된 종료 지점으로 인식되고 있다.
 </details>
 
 ---
@@ -94,26 +126,47 @@
 <details>
 <summary> 2-3-1. 성과를 보이게 만든다 – 개인 성과 대시보드 </summary>
 
-### 🔹 개인성과 대시보드
+### 🔹 성과 대시보드
 
-> 사원이 자신의 성과 데이터를 명확히 이해할 수 있도록 하여 
-성과 평가의 **불투명성 문제를 해소**하고,
-> 
-> 
-> HR팀이 분석 기준을 유연하게 조정하고 시각적으로 성과를 명확하게 파악할 수 있도록 지원한다.
->
+
+> HRadar는
+> 성과를 점수로만 남기는 기존 방식에서 벗어나,  
+> 사원과 HR팀 모두가 성과를 이해하고 활용할 수 있도록 ‘보이게’ 만드는 구조를 설계한다.
 
 <br>
+<b>✔️ 사원 관점</b>
 
-- 근태, 기여도, 협업, 만족도, 역량 발휘도, 업무안정성 핵심 지표를 **시각화**
-- 기간별 비교를 통해 변화·개선·정체 영역을 명확히 인지
-- HR은 기준을 유연하게 조정하며 분석 가능
+- 근태율, 업무 기여도, 협업 지수, 직무 만족도, 역량 발휘도, 업무 안정성 등
+핵심 성과 지표를 차트·그래프 형태로 시각화
+
+- 기간별 비교를 통해 성과의 변화·개선·정체 영역을 직관적으로 확인
+
+- 평가 결과가 어떤 지표에 기반했는지 스스로 이해 가능
+
+👉 이를 통해 사원은
+
+- “나는 어떤 영역에서 성과를 냈는가?”
+
+- “어떤 지표가 나의 평가에 영향을 미쳤는가?”
+
+- “이전 기간 대비 무엇이 달라졌는가?”  
+  
+에 답할 수 있으며,
+성과 평가는 일방적인 결과 통보가 아닌 이해 가능한 과정으로 인식된다.
+
 <br>
+<b>✔️ 인사팀 관점</b>
 
-👉 사원은 다음과 같은 질문에 스스로 답할 수 있게 된다.
-- 나는 어떤 영역에서 성과를 냈는가?
-- 어떤 지표가 나의 평가에 영향을 미쳤는가?
-- 이전 기간과 비교했을 때 무엇이 개선되었고, 무엇이 정체되었는가?
+- 사원·팀·부서 단위 성과 지표를 한 화면에서 조회 및 비교
+
+- 기간별 성과 추이 분석을 통해 일시적 성과와 지속적 성과 구분
+
+- 정성적 판단에 의존하던 평가를 데이터 기반으로 보완
+
+👉 이를 통해 HR팀은  
+성과 비교·정리·엑셀 분석에 소요되던 시간을 줄이고,  
+보다 일관되고 객관적인 평가 기준을 적용할 수 있다
+
 <br>
 
 </details>
@@ -147,37 +200,114 @@
 
 </details>
 
+<details> <summary>2-3-3. 평가와 운영의 부담을 줄인다 – HR Util 중심 설계</summary> <br>
+
+> HRadar는 평가와 분석 기능뿐 아니라,  
+> 성과평가 시즌마다 반복되는 HR 실무 부담을 줄이기 위한 운영 중심 Util 기능을 함께 제공한다.
+
+<br>
+
+**🔹 HR 실무 효율을 높이는 핵심 Util**
+
+- 권한 기반 CSV / PDF 다운로드
+  - 성과·사원·급여·조직 데이터를 권한 범위 내에서 즉시 파일로 추출
+  - 보고·감사·자료 요청 대응 시간 최소화
+- CSV 기반 기존 인사 데이터 일괄 등록
+  - 기존 HR 시스템의 사원·급여·조직 데이터를 CSV로 업로드하여 즉시 이관
+  - 신규 시스템 도입 시 데이터 재입력 부담 해소
+- 코드 기반 인사 정책 관리
+  - 직급·직무·조직·평가 항목을 코드 단위로 관리
+  - 명칭 변경 시 코드 수정만으로 시스템 전반에 일괄 반영
+- 태그 기반 자동완성 검색
+  - 역량강화 콘텐츠 및 인사 데이터를 태그로 관리
+  - 입력 시 자동완성으로 빠르고 정확한 조회 지원
+
+<br>
+
+👉 이를 통해 HRadar는
+HR 담당자가 수작업·반복 업무에서 벗어나,  
+평가 기준 설계와 인재 육성이라는 본질적인 HR 역할에 집중할 수 있는 환경을 제공한다.
+
+</details>
+
 ---
 
 ##  2-4.🌱 기대 효과
 
 <details>
-<summary> 2-4-1. 기대효과 1 </summary>
-	
-<br>
-	
-- 사원은 개인 성과 대시보드를 통해 자신의 성과·근태·기여도·협업·만족도 등 핵심 지표를 명확하게 확인함으로써
-- “왜 이러한 평가를 받았는지”를 스스로 납득할 수 있게 하여 평가 과정의 불투명성으로 인한 불신과 불만을 완화한다.
-- 이는 평가 결과가 일방적으로 통보되는 구조가 아닌, 성과에 대한 인식과 수용을 높이는 방향으로 작동한다.
+<summary>2-4-1. 기대효과 1 | 사원 관점</summary>
 
-</details> 
+<br>
+
+- 사원은 개인 성과 대시보드를 통해  
+  근태, 기여도, 협업, 만족도, 역량 발휘도 등 **핵심 성과 지표를 시각적으로 확인**할 수 있다.
+- 이를 통해  
+  “왜 이러한 평가를 받았는지”,  
+  “어떤 요소가 평가에 영향을 미쳤는지”를 **스스로 이해하고 납득**할 수 있게 된다.
+- 성과 변화 추이를 기간별로 확인함으로써  
+  자신의 강점과 개선이 필요한 영역을 명확히 인지하게 된다.
+
+➡️ 그 결과 성과 평가는  
+일방적인 **‘결과 통보’가 아닌**,  
+사원이 평가를 이해하고 받아들이는 **‘과정 중심의 경험’**으로 전환된다.
+
+</details>
 
 <details>
-<summary> 2-4-2. 기대효과 2 </summary>
-	
+<summary>2-4-2. 기대효과 2 | 개인 성장 및 이직 완화</summary>
+
 <br>
-	
-- 성과 평가 이후의 공백을 줄이고
-- 개인이 앞으로 어떤 역량을 개발해야 성장할 수 있는지를 명확히 제시함으로써역량 개발 기회의 부족으로 이직을 고려하던 문제를 완화할 수 있다.
-- 사원은 자신의 성장 경로를 인지하고, 조직은 이를 체계적으로 지원함으로써 개인의 성장이 조직의 성과로 이어지는 구조를 형성하게 된다.
-- 이는 평가 결과가 일방적으로 통보되는 구조가 아닌, 성과에 대한 인식과 수용을 높이는 방향으로 작동한다.
 
-👉 따라서 <br>
-📈 체계적인 HRD 시스템을 갖춘 기업은 <br>
-**생산성 최대 25% 향상**, **이직률 40% 이상 감소** 효과를 볼 수 있다. <br>
- [뉴스웨이](https://www.newsway.co.kr/news/view?ud=2025102818371306166&utm_source=chatgpt.com)
-</details>      
+- 성과 대시보드와 연계된 **사전·사후 역량강화 리포트**를 통해  
+  평가 결과가 개인의 역량 개발과 학습 방향으로 연결된다.
+- 사원은  
+  “앞으로 어떤 역량을 개발해야 성장할 수 있는지”를  
+  **구체적인 행동 가이드와 함께 제시받게 된다.**
+- 이는 역량 개발 기회의 부족으로  
+  성장 정체를 느끼고 이직을 고민하던 문제를 완화하는 역할을 한다.
 
+➡️ 성과 평가는  
+연봉과 등급을 결정하는 **종료 지점이 아니라**,  
+개인의 **성장 전략을 설계하는 출발점**으로 인식된다.
+
+<br>
+
+👉 따라서  
+체계적인 HRD 시스템을 갖춘 기업은  
+**생산성이 최대 25% 향상**, **이직률은 40% 이상 감소**하는 효과를 기대할 수 있다.  
+[뉴스웨이](https://www.newsway.co.kr/news/view?ud=2025102818371306166&utm_source=chatgpt.com)
+
+</details>
+
+<details>
+<summary>2-4-3. 기대효과 3 | 인사팀(HR) 관점</summary>
+
+<br>
+
+- 인사팀은 성과 대시보드와 HR Util 기능을 통해  
+  엑셀·문서 기반의 **수작업 성과 관리 업무를 대폭 줄일 수 있다.**
+- 사원·팀·부서 단위 성과를 한 화면에서 비교·분석하고,  
+  CSV/PDF 다운로드를 통해 보고·자료 요청에 즉시 대응 가능하다.
+- 평가 기준을 데이터 기반으로 일관되게 운영함으로써  
+  평가 과정의 객관성과 신뢰도를 높일 수 있다.
+
+➡️ 그 결과 인사팀은  
+반복적인 행정 업무에서 벗어나,  
+**평가 기준 설계·피드백·인재 육성 전략 수립**이라는  
+본질적인 HR 역할에 집중할 수 있게 된다.
+
+</details>
+
+---
+
+##  2-5.🌼 핵심 차별점
+| 구분 | 기존 HRM | HIT – HRadar |
+| --- | --- | --- |
+| 성과 활용 | 평가·등급 산정 중심 | 성장 전략 도출 중심 |
+| 성과 가시성 | 점수/등급 | 지표·차트 기반 시각화 |
+| HRD 연계 | 별도 운영 | 평가 데이터 기반 자동 연결 |
+| HR 업무 | 수작업·엑셀 중심 | 대시보드·자동 리포트 |
+| 데이터 활용 | 사후 정리 | 사전·사후 성장 설계 |
 
 ---
 
@@ -199,32 +329,50 @@
 
 🔹 Backend
 <div align=center>
-	<img src="https://img.shields.io/badge/Java_17-007396?style=for-the-badge&logo=java&logoColor=white"/>
-<img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
-<img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/>
-<img src="https://img.shields.io/badge/JPA(Hibernate)-59666C?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/QueryDSL-4479A1?style=for-the-badge"/>
-<img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white"/>
-   <br>
+  <img src="https://img.shields.io/badge/Java_17-007396?style=for-the-badge&logo=java&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JPA(Hibernate)-59666C?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/QueryDSL-4479A1?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white"/>
+  <br>
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Tesseract_OCR-5A5A5A?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Vector_DB-FF6F00?style=for-the-badge"/>
 </div>
 
-🔹DataBase
+
+🔹 DataBase
 <div align=center>
   <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white"/>
   <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
- <br>
+  <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white"/>
 </div>
+
 <br>
-🔹Infra/DevOps
+🔹 Infra / DevOps
 <div align=center>
+  <img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon_EKS-FF9900?style=for-the-badge&logo=amazoneks&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon_ECR-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon_S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon_CloudFront-8C4FFF?style=for-the-badge&logo=amazoncloudfront&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon_Route_53-8C4FFF?style=for-the-badge&logo=amazonroute53&logoColor=white"/>
+  <br>
+  <img src="https://img.shields.io/badge/VPC-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Application_Load_Balancer-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/RDS-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/>
+  <img src="https://img.shields.io/badge/ElastiCache-FF4F8B?style=for-the-badge&logo=amazonelasticache&logoColor=white"/>
+  <br>
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
-<img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white"/>
-<img src="https://img.shields.io/badge/Argo_CD-FE4C1C?style=for-the-badge&logo=argo&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Argo_CD-FE4C1C?style=for-the-badge&logo=argo&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"/>
   <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white"/>
   <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"/>
   <img src="https://img.shields.io/badge/Linux(Ubuntu)-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/>
-<br>
 </div>
+
 <br>
 <br>
 
