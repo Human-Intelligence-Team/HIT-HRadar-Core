@@ -443,6 +443,6 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 
 ## 🔁 5. 배포 문서
 - ### 🦴시스템 아키텍처 구조도 
-	아키텍처 구조도 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
+	아키텍처 구조도 자세히 보려면 [여기](https://app.diagrams.net/#G1LPNRuxvUPA9K1NXrrZWdV01yKCUTH6RZ#%7B%22pageId%22%3A%22qR65Kjy7YShbSICQCzts%22%7D)를 클릭하세요 <br>
 
 ---
