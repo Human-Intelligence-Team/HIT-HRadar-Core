@@ -2,6 +2,8 @@ package org.hit.hradar.domain.attendance.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,8 +40,9 @@ public class AttendanceCorrection extends BaseTimeEntity {
   private Long requestedBy;
 
   //정정 유형
-  @Column(name = "correction_type", nullable = false,length = 50)
-  private String correctionType;
+  @Enumerated(EnumType.ORDINAL)
+  @Column(name = "correction_type", nullable = false)
+  private CorrectionType correctionType;
 
   //정정 사유
   @Column(name = "reason", nullable = false, length = 255)
@@ -50,8 +53,9 @@ public class AttendanceCorrection extends BaseTimeEntity {
   private String requestedValue;
 
   //신청 상태
-  @Column(name = "status", nullable = false, length = 50)
-  private String status;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  private CorrectionStatus status;
 
   //요청 일자(같은 요청이 여러 개일 경우)
   @Column(name = "requested_at", nullable = false)

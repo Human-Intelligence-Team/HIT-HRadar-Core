@@ -2,6 +2,8 @@ package org.hit.hradar.domain.attendance.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,12 +32,14 @@ public class Attendance extends BaseTimeEntity {
   private LocalDate workDate;
 
   //근무 유형
-  @Column(name = "work_type", nullable = false, length = 50)
-  private String workType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "work_type", nullable = false)
+  private WorkType workType;
 
   //근태 상태
-  @Column(name = "status", nullable = false, length = 50)
-  private String status;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false)
+  private AttendanceStatus status;
 
 
   // 생성자

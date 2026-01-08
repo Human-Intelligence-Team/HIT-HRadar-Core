@@ -2,6 +2,8 @@ package org.hit.hradar.domain.attendance.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,8 +32,9 @@ public class AttendanceAuthLog extends BaseTimeEntity {
   private String authType;
 
   //인증 여부
-  @Column(name = "auth_result", nullable = false, length = 50)
-  private String authResult;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "auth_result", nullable = false)
+  private AuthResult authResult;
 
   //인증 시각
   @Column(name = "auth_at", nullable = false)
