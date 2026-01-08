@@ -8,11 +8,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "ATTENDANCE_CORRECTION")
 @Getter
-public class AttendanceCorrection {
+public class AttendanceCorrection extends BaseTimeEntity {
 
   //근태 정정id
   @Id
@@ -26,7 +27,7 @@ public class AttendanceCorrection {
 
   //근무장소 로그id
   @Column(name ="wokr_log_id", nullable = false)
-  private Long wokrLogId;
+  private Long workLogId;
 
   //결정자 사원id
   @Column(name = "decided_by", nullable = false)
@@ -66,6 +67,6 @@ public class AttendanceCorrection {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private String isDeleted;
+  private Character isDeleted;
 
 }

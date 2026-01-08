@@ -13,7 +13,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 @Entity
 @Table(name = "ATTENDANCE_WOKR_LOG")
 @Getter
-public class AttendanceWokrLog extends BaseTimeEntity {
+public class AttendanceWorkLog extends BaseTimeEntity {
 
   //근무장소 로그ID
   @Id
@@ -34,7 +34,7 @@ public class AttendanceWokrLog extends BaseTimeEntity {
   private LocalDateTime endTime;
 
   //로그 근무 시각
-  @Column(name = "wokr_minutes", nullable = false, length = 100)
+  @Column(name = "work_minutes", nullable = false, length = 100)
   private String workMinutes;
 
   //근무 장소
@@ -48,7 +48,7 @@ public class AttendanceWokrLog extends BaseTimeEntity {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private String isDeleted;
+  private Character isDeleted;
 
 
 

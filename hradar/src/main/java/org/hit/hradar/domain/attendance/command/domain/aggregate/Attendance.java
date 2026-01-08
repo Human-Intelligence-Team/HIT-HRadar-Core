@@ -2,19 +2,18 @@ package org.hit.hradar.domain.attendance.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "Attendance")
 @Getter
-public class Attendance {
+public class Attendance extends BaseTimeEntity {
 
   //근태id
   @Id
@@ -45,5 +44,5 @@ public class Attendance {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private String isDeleted;
+  private Character isDeleted;
 }
