@@ -53,6 +53,6 @@ public class Holiday extends BaseTimeEntity  {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private String isDeleted;
+  private Character isDeleted;
 
 }

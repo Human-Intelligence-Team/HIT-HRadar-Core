@@ -50,6 +50,6 @@ public class LeaveGrant {
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private String isDeleted;
+  private Character isDeleted;
 
 }
