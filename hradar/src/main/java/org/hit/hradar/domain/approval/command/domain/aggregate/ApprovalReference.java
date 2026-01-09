@@ -25,12 +25,8 @@ public class ApprovalReference extends BaseTimeEntity {
   private Long refEmpId;
 
   //결재 문서id
-  @Column(name = "approval_document_id", nullable = false)
-  private Long approvalDocumentId;
-
-  //생성자
-
-  //수정자
+  @Column(name = "doc_id", nullable = false)
+  private Long docId;
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)

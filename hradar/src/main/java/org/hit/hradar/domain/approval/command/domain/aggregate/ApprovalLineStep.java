@@ -32,8 +32,8 @@ public class ApprovalLineStep extends BaseTimeEntity {
   private Long proxyApproverId;
 
   //결재선id
-  @Column(name = "approval_line_id", nullable = false)
-  private Long approvalLineId;
+  @Column(name = "line_id", nullable = false)
+  private Long lineId;
 
   //결재 순서
   @Column(name = "step_order", nullable = false)
@@ -51,10 +51,6 @@ public class ApprovalLineStep extends BaseTimeEntity {
   //처리 이유
   @Column(name = "reason", length = 255)
   private String reason;
-
-  //생성자
-
-  //수정자
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
