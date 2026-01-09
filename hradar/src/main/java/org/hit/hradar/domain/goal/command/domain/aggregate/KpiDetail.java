@@ -1,7 +1,10 @@
 package org.hit.hradar.domain.goal.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.math.BigDecimal;
@@ -9,6 +12,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "kpi_detail")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class KpiDetail extends BaseTimeEntity {
 
     @Id
@@ -34,23 +38,36 @@ public class KpiDetail extends BaseTimeEntity {
     @Column(name = "kpi_target_value", nullable = false, precision = 10, scale = 2)
     private BigDecimal kpiTargetValue;
 
-    //created_at, updated_at
-
-    /*@Column(name = "created_by", nullable = false, length = 50)
-    private String createdBy;
-
-    @Column(name = "updated_by", length = 50)
-    private String updatedBy;*/
+    //created_at, updated_at, created_by, updated_by
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
 
-    /*@OneToMany(
-            mappedBy = "kpi",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<KpiProgressLog> progressLogs = new ArrayList<>();*/
+    @Builder
+    private KpiDetail(
+            Goal goal,
+            String kpiMetricName,
+            BigDecimal kpiStartValue,
+            BigDecimal kpiTargetValue
+    ) {
+        this.goal = goal;
+        this.kpiMetricName = kpiMetricName;
+        this.kpiStartValue = kpiStartValue;
+        this.kpiTargetValue = kpiTargetValue;
+        this.isDeleted = 'N';
+    }
 
+    public static KpiDetail create(
+            Goal goal,
+            String metricName,
+            BigDecimal startValue,
+            BigDecimal targetValue
+    ) {
+        return KpiDetail.builder()
+                .goal(goal)
+                .kpiMetricName(metricName)
+                .kpiStartValue(startValue)
+                .kpiTargetValue(targetValue)
+                .build();
+    }
 }

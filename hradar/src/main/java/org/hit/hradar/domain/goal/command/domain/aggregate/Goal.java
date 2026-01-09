@@ -1,7 +1,10 @@
 package org.hit.hradar.domain.goal.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
@@ -14,10 +17,8 @@ import java.util.List;
 @Entity
 @Table(name = "goal")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Goal extends BaseTimeEntity {
-
-    // 최대 허용 깊이
-    private static final int MAX_DEPTH = 3;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +30,9 @@ public class Goal extends BaseTimeEntity {
     private Long parentGoalId;
 
     // 목표 깊이 (1:상위, 2:중위, 3:하위)
+    @Enumerated(EnumType.STRING)
     @Column(name = "goal_depth", nullable = false)
-    private int depth;
+    private GoalDepth depth;
 
     //개인 or 팀
     @Enumerated(EnumType.STRING)
@@ -59,7 +61,7 @@ public class Goal extends BaseTimeEntity {
     private LocalDate endDate;
 
     //부서 ID
-    @Column(name = "goal_dept_id")
+    @Column(name = "goal_dept_id", nullable = false)
     private Long departmentId;
 
     //작성자
@@ -80,23 +82,105 @@ public class Goal extends BaseTimeEntity {
     @Column(name = "reject_reason", length = 500)
     private String rejectReason;
 
-    //Created_at, Updated_at
-
-    /*@Column(name = "created_by", nullable = false, length = 50)
-    private String createdBy;
-
-    @Column(name = "updated_by", length = 50)
-    private String updatedBy;*/
+    //Created_at, Updated_at, Created_by, Updated_by
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
 
-    /*@OneToMany(
-            mappedBy = "goal",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,  //  Goal 저장 시 KPI 함께 저장
-            orphanRemoval = true        //  KPI 제거 시 DB에서도 삭제
-    )
-    private List<KpiDetail> kpis = new ArrayList<>();*/
+    //=======================================================
+
+    //기본 Goal만들기
+    @Builder
+    private Goal(
+            Long parentGoalId,
+            GoalDepth depth,
+            GoalScope scope,
+            GoalType type,
+            String title,
+            String description,
+            LocalDate startDate,
+            LocalDate endDate,
+            Long departmentId,
+            Long ownerId
+    ) {
+        this.parentGoalId = parentGoalId;
+        this.depth = depth;
+        this.scope = scope;
+        this.type = type;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.departmentId = departmentId;
+        this.ownerId = ownerId;
+
+        // 생성 시 기본 상태 세팅
+        this.progressStatus = GoalProgressStatus.WAIT;
+        this.approveStatus = GoalApproveStatus.DRAFT;
+        this.isDeleted = 'N';
+    }
+
+
+
+    /**
+     * LEVEL_1 목표 생성
+     *
+     * 무조건 TEAM 목표
+     * KPI 또는 OKR 가능
+     * 부모 목표 없음
+     */
+    public static Goal createRootGoal(
+            GoalType type,
+            String title,
+            String description,
+            LocalDate startDate,
+            LocalDate endDate,
+            Long departmentId,
+            Long ownerId
+    ){
+        return Goal.builder()
+                .depth(GoalDepth.LEVEL_1)
+                .scope(GoalScope.TEAM)
+                .type(type)
+                .title(title)
+                .description(description)
+                .startDate(startDate)
+                .endDate(endDate)
+                .departmentId(departmentId)
+                .ownerId(ownerId)
+                .build();
+    }
+
+    /**
+     * LEVEL_2 ~ LEVEL_3 하위 목표 생성
+     *
+     * 부모 목표 필요
+     * 부모와 동일한 KPI/OKR 타입
+     * 최대 LEVEL_3 까지만 허용
+     * 기간은 부모 목표 기간 내
+     */
+    public static Goal createChildGoal(
+            Goal parent,
+            GoalScope scope, // PERSONAL or TEAM
+            String title,
+            String description,
+            LocalDate startDate,
+            LocalDate endDate,
+            Long ownerId
+    ){
+
+        return Goal.builder()
+                .parentGoalId(parent.getGoalId())
+                .depth(GoalDepth.nextDepth(parent.getDepth()))
+                .scope(scope)
+                .type(parent.getType()) // 부모와 KPI/OKR 타입 동일
+                .title(title)
+                .description(description)
+                .startDate(startDate)
+                .endDate(endDate)
+                .departmentId(parent.getDepartmentId())
+                .ownerId(ownerId)
+                .build();
+    }
 
 }
