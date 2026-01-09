@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.competencyReport.command.domain;
+package org.hit.hradar.domain.competencyReport.command.domain.aggreage;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,5 +28,12 @@ public class ContentTag {
   @Column(name = "tag_id", nullable = false)
   private Long tagId;
 
+  public ContentTag(Long contentId, Long tagId) {
+    this.contentId = contentId;
+    this.tagId = tagId;
+  }
 
+  public static ContentTag create(Long contentId, Long tagId) {
+    return new ContentTag(contentId, tagId);
+  }
 }
