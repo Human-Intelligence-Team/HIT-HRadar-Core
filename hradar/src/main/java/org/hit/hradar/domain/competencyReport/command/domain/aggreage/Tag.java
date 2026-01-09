@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.competencyReport.command.domain;
+package org.hit.hradar.domain.competencyReport.command.domain.aggreage;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,22 +8,21 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Table(name = "tag")
 @Getter
-@Table(name="report_content")
+@Setter
 @NoArgsConstructor
-public class ReportContent {
+public class Tag {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "report_content_id")
-  private Long reportContentId;
+  @Column(name = "tag_id")
+  private Long tagId;
 
-  @Column(name = "competency_report_id", nullable = false)
-  private Long competencyReportId;
-
-  @Column(name = "content_id", nullable = false)
-  private Long contentId;
+  @Column(name = "tag_name", nullable = false, length = 50, unique = true)
+  private String tagName;
 
 }
