@@ -10,11 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "Attendance")
+@Table(name = "attendance")
 @Getter
-public class Attendance {
+public class Attendance extends BaseTimeEntity {
 
   //근태id
   @Id
@@ -26,17 +27,26 @@ public class Attendance {
   @Column(name = "emp_id")
   private Long empId;
 
-  //근무일시
+  //근무일
   @Column(name = "work_date", nullable = false)
   private LocalDate workDate;
 
   //근무 유형
   @Enumerated(EnumType.STRING)
   @Column(name = "work_type", nullable = false)
-  private WorkType workType;
+  private WorkType workType = WorkType.WORK;
 
   //근태 상태
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private String status;
+  private AttendanceStatus status = AttendanceStatus.NORMAL;
 
+
+  // 생성자
+
+  // 수정자
+
+  //삭제여부
+  @Column(name = "is_deleted", nullable = false)
+  private Character isDeleted = 'N';
 }
