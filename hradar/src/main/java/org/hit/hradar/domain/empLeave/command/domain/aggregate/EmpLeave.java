@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.leave.command.domain.aggregate;
+package org.hit.hradar.domain.empLeave.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,9 +14,9 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "leave")
+@Table(name = "emp_leave")
 @Getter
-public class Leave extends BaseTimeEntity {
+public class EmpLeave extends BaseTimeEntity {
 
   //휴가id
   @Id
