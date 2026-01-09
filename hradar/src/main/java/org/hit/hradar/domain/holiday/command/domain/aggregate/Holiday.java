@@ -13,7 +13,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "HOLIDAY")
+@Table(name = "holiday")
 @Getter
 public class Holiday extends BaseTimeEntity  {
 
@@ -36,8 +36,9 @@ public class Holiday extends BaseTimeEntity  {
   private String holidayName;
 
   //휴일타입
-  @Column(name = "holiday_type", nullable = false, length = 20)
-  private String holidayType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "holiday_type", nullable = false)
+  private HolidayType holidayType = HolidayType.LEGAL;
 
   //급여 휴일
   @Column(name = "is_paid", nullable = false)
@@ -47,12 +48,8 @@ public class Holiday extends BaseTimeEntity  {
   @Column(name = "description", length = 200)
   private String description;
 
-  //생성자
-
-  //수정자
-
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 
 }

@@ -11,7 +11,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "LEAVE_USAGE")
+@Table(name = "leave_usage")
 @Getter
 public class LeaveUsage extends BaseTimeEntity {
 
@@ -37,11 +37,7 @@ public class LeaveUsage extends BaseTimeEntity {
   @Column(name = "used_days")
   private double usedDays;
 
-  //생성자
-
-  //수정자
-
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 }

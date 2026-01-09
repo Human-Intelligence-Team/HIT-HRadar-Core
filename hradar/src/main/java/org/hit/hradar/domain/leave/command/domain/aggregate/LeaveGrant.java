@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import lombok.Getter;
 
 @Entity
-@Table(name = "LEAVE_GRANT")
+@Table(name = "leave_grant")
 @Getter
 public class LeaveGrant {
 
@@ -44,12 +44,8 @@ public class LeaveGrant {
   @Column(name = "expire_date")
   private LocalDate expireDate;
 
-  //생성자
-
-  //수정자
-
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 
 }

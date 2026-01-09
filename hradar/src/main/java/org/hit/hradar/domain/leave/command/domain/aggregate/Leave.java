@@ -2,6 +2,8 @@ package org.hit.hradar.domain.leave.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -12,7 +14,7 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "EMP_LEAVE")
+@Table(name = "leave")
 @Getter
 public class Leave extends BaseTimeEntity {
 
@@ -27,8 +29,9 @@ public class Leave extends BaseTimeEntity {
   private Long empId;
 
   //휴가 유형
-  @Column(name = "leave_type", nullable = false, length = 50)
-  private String leaveType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "leave_type", nullable = false)
+  private LeaveType leaveType = LeaveType.ANNUAL;
 
   //휴가 사유
   @Column(name = "reason", nullable = false, length = 255)
@@ -47,8 +50,14 @@ public class Leave extends BaseTimeEntity {
   private double leaveDays;
 
   //휴가 상태
+  @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private String status;
+  private LeaveStatus status = LeaveStatus.REQUESTED;
+
+  //연차 기간
+  @Enumerated(EnumType.STRING)
+  @Column(name = "leave_unit_type", nullable = false)
+  private LeaveUnitType leaveUnitType = LeaveUnitType.FULL_DAY;
 
   //휴가 신청
   @Column(name = "requested_at", nullable = false)
@@ -62,12 +71,8 @@ public class Leave extends BaseTimeEntity {
   @Column(name = "rejected_reason")
   private String rejectedReason;
 
-  //생성자
-
-  //수정자
-
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted;
+  private Character isDeleted = 'N';
 
 }
