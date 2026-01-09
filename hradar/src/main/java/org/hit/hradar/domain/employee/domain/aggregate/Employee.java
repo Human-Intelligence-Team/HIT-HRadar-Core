@@ -58,18 +58,6 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "note", length = 255)
   private String note;
 
-  @Column(name = "created_at")
-  private LocalDateTime createdAt;
-
-  @Column(name = "created_by", length = 50)
-  private String createdBy;
-
-  @Column(name = "updated_at")
-  private LocalDateTime updatedAt;
-
-  @Column(name = "updated_by", length = 50)
-  private String updatedBy;
-
   @Column(name = "is_deleted", nullable = false, length = 1)
   private Character isDeleted = 'N';
 }
