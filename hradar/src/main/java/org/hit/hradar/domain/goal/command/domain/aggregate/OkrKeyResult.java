@@ -12,7 +12,7 @@ public class OkrKeyResult extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "key_result_id")
-    private Long id;
+    private Long keyResultId;
 
     //목표 연결
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,4 +37,22 @@ public class OkrKeyResult extends BaseTimeEntity {
     private AchieveStatus isAchieved = AchieveStatus.N;
 
     //created_at, updated_at
+
+    /*@Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;*/
+
+    @Column(name = "is_deleted", nullable = false, length = 1)
+    private Character isDeleted = 'N';
+
+    /*@OneToMany(
+            mappedBy = "keyResult",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<OkrProgressLog> progressLogs = new ArrayList<>();*/
+
 }

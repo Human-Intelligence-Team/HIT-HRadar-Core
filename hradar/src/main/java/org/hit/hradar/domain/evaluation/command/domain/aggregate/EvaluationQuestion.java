@@ -2,21 +2,24 @@ package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "evalutation_question")
+@Table(name = "evaluation_question")
 @Getter
-public class EvaluationQuestion {
+public class EvaluationQuestion extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
-    private Long id;
+    private Long questionId;
 
     //섹션 연결
-    @Column(name = "section_id", nullable = false)
-    private Long sectionId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "section_id", nullable = false)
+    private EvaluationSection section;
 
     //문항 유형(객관식, 주관식, 점수형)
     @Enumerated(EnumType.STRING)
@@ -56,4 +59,6 @@ public class EvaluationQuestion {
     @Enumerated(EnumType.STRING)
     @Column(name = "is_required", nullable = false)
     private RequiredStatus requiredStatus = RequiredStatus.OPTIONAL;
+
+    //created_at, updated_at, created_by, updated_by
 }

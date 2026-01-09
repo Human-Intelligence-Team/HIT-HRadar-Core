@@ -14,7 +14,7 @@ public class EvaluationType extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "eval_type_id")
-    private Long id;
+    private Long evalTypeId;
 
     //평가 회차 연결
     @Column(name = "cycle_id", nullable = false)
@@ -25,6 +25,9 @@ public class EvaluationType extends BaseTimeEntity{
     @Column(name = "eval_type", nullable = false)
     private EvaluationTypeCode evalType;
 
-    //created_at, updated_at
+    //created_at, updated_at, created_by, updated_by
+
+    @Column(name = "is_deleted",  nullable = false)
+    private Character isDeleted = 'N';
 
 }

@@ -11,7 +11,7 @@ public class GradeObjection extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "objection_id")
-    private Long id;
+    private Long objectionId;
 
     // 대상 개인 등급 ID
     @Column(name = "individual_grade_id", nullable = false)
@@ -19,20 +19,23 @@ public class GradeObjection extends BaseTimeEntity {
 
     //이의 사유
     @Column(name = "objection_reason", nullable = false)
-    private String reason;
+    private String objectionReason;
 
     //상태
     @Enumerated(EnumType.STRING)
     @Column(name = "objection_status", nullable = false)
-    private ObjectionStatus status = ObjectionStatus.REVIEWING;
+    private ObjectionStatus objectionStatus  = ObjectionStatus.REVIEWING;
 
     //결과
     @Column(name = "objection_result")
-    private String result;
+    private String objectionResult;
 
     // 처리자 ID
     @Column(name = "resolved_by")
-    private Long resolvedByEmpId;
+    private Long resolvedBy;
 
-    //created_at, updated_at
+    //created_at, updated_at,created_by, updated_by
+
+    @Column(name = "is_deleted", nullable = false)
+    private Character isDeleted = 'N';
 }

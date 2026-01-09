@@ -14,10 +14,10 @@ public class KpiDetail extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "kpi_id")
-    private Long id;
+    private Long kpiId;
 
     //목표
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "goal_id", nullable = false)
     private Goal goal;
 
@@ -35,4 +35,22 @@ public class KpiDetail extends BaseTimeEntity {
     private BigDecimal kpiTargetValue;
 
     //created_at, updated_at
+
+    /*@Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;*/
+
+    @Column(name = "is_deleted", nullable = false, length = 1)
+    private Character isDeleted = 'N';
+
+    /*@OneToMany(
+            mappedBy = "kpi",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<KpiProgressLog> progressLogs = new ArrayList<>();*/
+
 }
