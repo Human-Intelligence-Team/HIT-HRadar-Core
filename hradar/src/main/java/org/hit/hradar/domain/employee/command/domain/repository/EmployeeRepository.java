@@ -1,6 +1,6 @@
-package org.hit.hradar.domain.employee.application.repository;
+package org.hit.hradar.domain.employee.command.domain.repository;
 
-import org.hit.hradar.domain.employee.domain.aggregate.Employee;
+import org.hit.hradar.domain.employee.command.domain.aggregate.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

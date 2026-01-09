@@ -1,20 +1,20 @@
-package org.hit.hradar.domain.employee.domain.aggregate;
+package org.hit.hradar.domain.employee.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
+import java.time.LocalDate;
+
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 @Entity
-@Table(name = "EMPLOYEE")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor @Builder
+@Table(name = "employee")
 public class Employee extends BaseTimeEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-
   @Column(name = "emp_id", nullable = false)
   private Long empId;
 
@@ -24,7 +24,7 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "dept_id", nullable = false)
   private Long deptId;
 
-  @Column(name = "position_id", nullable = false)
+  @Column(name = "position_id")
   private Long positionId;
 
   @Column(name = "employee_no", nullable = false, length = 30)
@@ -33,11 +33,14 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "name", nullable = false, length = 50)
   private String name;
 
-  @Column(name = "email")
+  @Column(name = "email", length = 255)
   private String email;
 
-  @Column(name = "gender", length = 1)
-  private String gender; // M/F
+  @Column(name = "gender")
+  private Gender gender;
+
+  @Column(name = "birth", length = 8)
+  private String birth;
 
   @Column(name = "hire_date")
   private LocalDate hireDate;
@@ -48,15 +51,18 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "image", length = 255)
   private String image;
 
-  @Column(name = "cellphone_no", length = 255)
+  @Column(name = "cellphone_no", length = 11)
   private String cellphoneNo;
 
-  @Column(name = "telephone_no", length = 255)
+  @Column(name = "telephone_no", length = 11)
   private String telephoneNo;
 
-  @Column(name = "note", length = 255)
+  @Column(name = "note", length = 1000)
   private String note;
 
+  @Column(name = "type", nullable = false)
+  private String EmploymentType;
+
   @Column(name = "is_deleted", nullable = false, length = 1)
-  private Character isDeleted = 'N';
+  private String isDeleted = "N";
 }
