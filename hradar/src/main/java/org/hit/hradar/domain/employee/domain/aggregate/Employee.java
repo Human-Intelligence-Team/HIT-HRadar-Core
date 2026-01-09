@@ -5,15 +5,17 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "EMPLOYEE")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
-public class Employee {
+public class Employee extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+
   @Column(name = "emp_id", nullable = false)
   private Long empId;
 
@@ -68,6 +70,6 @@ public class Employee {
   @Column(name = "updated_by", length = 50)
   private String updatedBy;
 
-  @Column(name = "is_deleted",  nullable = false, length = 1, columnDefinition = "CHAR(1) DEFAULT 'N'")
-    private String isDeleted;
+  @Column(name = "is_deleted", nullable = false, length = 1)
+  private Character isDeleted = 'N';
 }
