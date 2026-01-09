@@ -14,11 +14,12 @@ public class OkrProgressLog extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "okr_log_id")
-    private Long id;
+    private Long okrLogId;
 
     //kr 연결
-    @Column(name = "key_result_id", nullable = false)
-    private Long keyResultId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "key_result_id", nullable = false)
+    private OkrKeyResult keyResult;
 
     //진척도
     @Column(name = "current_progress", nullable = false)
@@ -29,8 +30,17 @@ public class OkrProgressLog extends BaseTimeEntity {
     private LocalDate logDate;
 
     //작성자
-    @Column(name = "updated_by")
-    private Long updatedByEmpId;
+    @Column(name = "log_owner_id")
+    private Long logOwnerId;
 
     //created_at, updated_at
+
+    /*@Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;*/
+
+    @Column(name = "is_deleted", nullable = false, length = 1)
+    private Character isDeleted = 'N';
 }
