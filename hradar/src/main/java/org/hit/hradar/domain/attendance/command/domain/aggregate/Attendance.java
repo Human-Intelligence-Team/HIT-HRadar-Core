@@ -41,11 +41,6 @@ public class Attendance extends BaseTimeEntity {
   @Column(name = "status", nullable = false)
   private AttendanceStatus status = AttendanceStatus.NORMAL;
 
-
-  // 생성자
-
-  // 수정자
-
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';

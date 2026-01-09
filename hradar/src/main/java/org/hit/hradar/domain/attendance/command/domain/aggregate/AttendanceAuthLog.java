@@ -34,23 +34,19 @@ public class AttendanceAuthLog extends BaseTimeEntity {
   //인증 여부
   @Enumerated(EnumType.STRING)
   @Column(name = "auth_result", nullable = false)
-  private AuthResult authResult = AuthResult.SUCCESS;
+  private Result result = Result.SUCCESS;
 
   //인증 시각
-  @Column(name = "auth_at", nullable = false)
-  private LocalDateTime authAt;
+  @Column(name = "acted_at", nullable = false)
+  private LocalDateTime actedAt;
 
   //접속ip주소
   @Column(name = "ip_address", nullable = false, length = 45)
-  private String ipAddress;
+  private String ip;
 
   //MAC주소
   @Column(name = "mac_address", length = 50)
-  private String macAddress;
-
-  //생성자
-
-  //수정자
+  private String mac;
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
