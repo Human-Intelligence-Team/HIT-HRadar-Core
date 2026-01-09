@@ -2,6 +2,7 @@ package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
@@ -21,20 +22,17 @@ import java.time.LocalDateTime;
         }
 )
 @Getter
-public class EvaluationAssignment {
+public class EvaluationAssignment extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "assignment_id")
-    private Long id;
-
-    // 평가 회차 ID
-    @Column(name = "cycle_id", nullable = false)
-    private Long cycleId;
+    private Long assignmentId;
 
     // 평가 유형 ID
-    @Column(name = "eval_type_id", nullable = false)
-    private Long evaluationTypeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "eval_type_id", nullable = false)
+    private EvaluationType evaluationType;
 
     // 평가자 ID
     @Column(name = "evaluator_id", nullable = false)
@@ -52,4 +50,10 @@ public class EvaluationAssignment {
     // 제출 시각
     @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
+
+    //created_at, updated_at, created_by, updated_by
+
+    //삭제여부
+    @Column(name= "is_deleted", nullable = false)
+    private Character isDeleted = 'N';
 }

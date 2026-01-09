@@ -14,7 +14,7 @@ public class OkrProgressLog extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "okr_log_id")
-    private Long id;
+    private Long okrLogId;
 
     //kr 연결
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,8 +30,8 @@ public class OkrProgressLog extends BaseTimeEntity {
     private LocalDate logDate;
 
     //작성자
-    @Column(name = "updated_by")
-    private Long updatedByEmpId;
+    @Column(name = "log_owner_id")
+    private Long logOwnerId;
 
     //created_at, updated_at
 
