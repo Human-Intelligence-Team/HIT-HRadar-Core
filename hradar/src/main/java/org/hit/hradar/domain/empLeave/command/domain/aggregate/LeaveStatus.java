@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.leave.command.domain.aggregate;
+package org.hit.hradar.domain.empLeave.command.domain.aggregate;
 
 public enum LeaveStatus {
 
