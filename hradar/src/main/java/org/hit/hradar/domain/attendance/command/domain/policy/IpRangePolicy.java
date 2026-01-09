@@ -33,16 +33,12 @@ public class IpRangePolicy extends BaseTimeEntity {
   private String locationName;
 
   //IP 사용유형
-  @Column(name = "is_type")
-  private String isType;
+  @Column(name = "ip_type")
+  private String ipType;
 
   //활성 여부
   @Column(name = "is_active", nullable = false)
   private boolean isActive;
-
-  //생성자
-
-  //수정자
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)

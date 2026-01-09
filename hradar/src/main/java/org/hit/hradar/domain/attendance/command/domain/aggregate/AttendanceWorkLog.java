@@ -26,25 +26,20 @@ public class AttendanceWorkLog extends BaseTimeEntity {
   private Long attendanceId;
 
   //근무 시작 시각
-  @Column(name = "start_time", nullable = false)
-  private LocalDateTime startTime;
+  @Column(name = "start_at", nullable = false)
+  private LocalDateTime startAt;
 
   //근무 종료 시각
-  @Column(name = "end_time", nullable = false)
-  private LocalDateTime endTime;
+  @Column(name = "end_at", nullable = false)
+  private LocalDateTime endAt;
 
   //로그 근무 시각
-  @Column(name = "work_minutes", nullable = false, length = 100)
-  private String workMinutes;
+  @Column(name = "worked_minutes", nullable = false, length = 100)
+  private String workedMinutes;
 
   //근무 장소
   @Column(name = "location", nullable = false, length = 100)
   private String location;
-
-  //생성자
-
-
-  //수정자
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
