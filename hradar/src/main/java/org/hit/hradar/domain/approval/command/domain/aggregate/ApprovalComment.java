@@ -36,12 +36,6 @@ public class ApprovalComment extends BaseTimeEntity {
   @Column(name = "content", nullable = false)
   private String content;
 
-  //생성자
-
-
-  //수정자
-
-
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';

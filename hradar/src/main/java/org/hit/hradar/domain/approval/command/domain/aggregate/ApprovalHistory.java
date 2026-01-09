@@ -24,8 +24,8 @@ public class ApprovalHistory extends BaseTimeEntity  {
   private Long historyId;
 
   //결재 문서id
-  @Column(name = "approval_document_id", nullable = false)
-  private Long approvalDocumentId;
+  @Column(name = "doc_id", nullable = false)
+  private Long docId;
 
   //결재자id(행위자)
   @Column(name = "actor_id", nullable = false)
@@ -38,7 +38,7 @@ public class ApprovalHistory extends BaseTimeEntity  {
   //결재 타입
   @Enumerated(EnumType.STRING)
   @Column(name = "action_type", nullable = false)
-  private ApprovalActionType actionType = ApprovalActionType.SUBMIT;
+  private ApprovalActionType actionType = ApprovalActionType.SUBMITTED;
 
   //반려 사유
   @Column(name = "reason", length = 255)
@@ -47,10 +47,6 @@ public class ApprovalHistory extends BaseTimeEntity  {
   //처리 시각
   @Column(name = "acted_at")
   private LocalDateTime actedAt;
-
-  //생성자
-
-  //수정자
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)

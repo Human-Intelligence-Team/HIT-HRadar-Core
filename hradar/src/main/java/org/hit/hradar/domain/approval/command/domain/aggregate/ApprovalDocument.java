@@ -20,8 +20,8 @@ public class ApprovalDocument extends BaseTimeEntity {
   //결재 문서id
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "approval_document_id")
-  private Long approvalDocumentId;
+  @Column(name = "doc_id")
+  private Long docId;
 
   //부서 id
   @Column(name = "dept_id", nullable = false)
@@ -52,10 +52,6 @@ public class ApprovalDocument extends BaseTimeEntity {
   //제출일시
   @Column(name = "submitted_at")
   private LocalDateTime submittedAt;
-
-  //생성자
-
-  //수정자
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)

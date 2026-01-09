@@ -32,17 +32,17 @@ public class AttendanceCorrection extends BaseTimeEntity {
   private Long workLogId;
 
   //결정자 사원id
-  @Column(name = "decided_by", nullable = false)
-  private Long decidedBy;
+  @Column(name = "decider_id", nullable = false)
+  private Long deciderId;
 
   //요청자 사원id
-  @Column(name = "requested_by", nullable = false)
-  private Long requestedBy;
+  @Column(name = "requester_id", nullable = false)
+  private Long requesterId;
 
   //정정 유형
   @Enumerated(EnumType.ORDINAL)
-  @Column(name = "correction_type", nullable = false)
-  private CorrectionType correctionType = CorrectionType.TIME_CHANGE;
+  @Column(name = "type", nullable = false)
+  private CorrectionType Type = CorrectionType.TIME_CHANGE;
 
   //정정 사유
   @Column(name = "reason", nullable = false, length = 255)
@@ -64,10 +64,6 @@ public class AttendanceCorrection extends BaseTimeEntity {
   //결정 일자
   @Column(name = "decided_at")
   private LocalDateTime decidedAt;
-
-  //생성자
-
-  //수정자
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)

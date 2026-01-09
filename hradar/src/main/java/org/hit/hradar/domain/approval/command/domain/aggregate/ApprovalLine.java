@@ -17,20 +17,16 @@ public class ApprovalLine extends BaseTimeEntity {
   //결재선id
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "approval_line_id")
-  private Long approvalLineId;
+  @Column(name = "line_id")
+  private Long lineId;
 
   //결재문서id
-  @Column(name = "approval_document_id", nullable = false)
-  private Long approvalDocumentId;
+  @Column(name = "doc_id", nullable = false)
+  private Long docId;
 
   //결재선 이름
   @Column(name = "line_name", nullable = false, length = 100)
   private String lineName;
-
-  //생성자
-
-  //수정자
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
