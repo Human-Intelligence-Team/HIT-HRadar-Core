@@ -2,20 +2,18 @@ package org.hit.hradar.domain.leave.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "LEAVE_USAGE")
+@Table(name = "leave_usage")
 @Getter
-public class LeaveUsage {
+public class LeaveUsage extends BaseTimeEntity {
 
   //연차 이력id
   @Id
@@ -23,16 +21,23 @@ public class LeaveUsage {
   @Column(name = "usage_id")
   private Long usageId;
 
-  //연차 사용 기준일
-  @Column(name = "use_date")
+  //휴가id
+  @Column(name ="leave_id", nullable = false)
+  private Long leaveId;
+
+  //연차id
+  @Column(name = "grant_id", nullable = false)
+  private Long grantId;
+
+  //차감 기준일
+  @Column(name = "use_date", nullable = false)
   private LocalDate useDate;
 
   //차감 연차
   @Column(name = "used_days")
   private double usedDays;
 
-  //휴가 id
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name ="leave_id", nullable = false)
-  private Leave leaveId;
+  //삭제여부
+  @Column(name = "is_deleted", nullable = false)
+  private Character isDeleted = 'N';
 }

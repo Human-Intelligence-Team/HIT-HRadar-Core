@@ -4,5 +4,6 @@ public enum HolidayType {
 
   LEGAL,        // 법정공휴일
   COMPANY,      // 회사 지정 휴일
-  SUBSTITUTE    // 대체휴일
+  TEMPORARY,    // 임시 휴일
+  SUBSTITUTE    // 대체 휴일
 }

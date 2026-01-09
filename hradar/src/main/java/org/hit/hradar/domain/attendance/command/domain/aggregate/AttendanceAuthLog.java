@@ -7,15 +7,15 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "ATTENDANCE_AUTH_LOG")
+@Table(name = "attendance_auth_log")
 @Getter
-public class AttendanceAuthLog {
+public class AttendanceAuthLog extends BaseTimeEntity {
 
   //인증로그 id
   @Id
@@ -23,21 +23,36 @@ public class AttendanceAuthLog {
   @Column(name = "auth_log_id")
   private Integer authLogId;
 
+  //근태
+  @Column(name ="attendance_id", nullable = false)
+  private Long attendanceId;
+
+  //인증수단
+  @Column(name = "auth_type", nullable = false, length = 50)
+  private String authType;
+
   //인증 여부
-  @Enumerated(EnumType.ORDINAL)
+  @Enumerated(EnumType.STRING)
   @Column(name = "auth_result", nullable = false)
-  private AuthResult authResult;
+  private AuthResult authResult = AuthResult.SUCCESS;
 
   //인증 시각
   @Column(name = "auth_at", nullable = false)
   private LocalDateTime authAt;
 
-  //근태 id
-  @JoinColumn(name = "attendance_id", nullable = false)
-  private Long attendanceId;
-
   //접속ip주소
-  @Column(name = "ip_address", nullable = false)
+  @Column(name = "ip_address", nullable = false, length = 45)
   private String ipAddress;
 
+  //MAC주소
+  @Column(name = "mac_address", length = 50)
+  private String macAddress;
+
+  //생성자
+
+  //수정자
+
+  //삭제여부
+  @Column(name = "is_deleted", nullable = false)
+  private Character isDeleted = 'N';
 }

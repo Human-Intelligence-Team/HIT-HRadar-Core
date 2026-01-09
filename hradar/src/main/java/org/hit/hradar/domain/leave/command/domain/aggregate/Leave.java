@@ -11,11 +11,12 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "EMP_LEAVE")
+@Table(name = "leave")
 @Getter
-public class Leave {
+public class Leave extends BaseTimeEntity {
 
   //휴가id
   @Id
@@ -23,13 +24,17 @@ public class Leave {
   @Column(name = "leave_id")
   private Long leaveId;
 
+  //사원id
+  @Column(name = "emp_id", nullable = false)
+  private Long empId;
+
   //휴가 유형
   @Enumerated(EnumType.STRING)
   @Column(name = "leave_type", nullable = false)
-  private LeaveType leaveType;
+  private LeaveType leaveType = LeaveType.ANNUAL;
 
   //휴가 사유
-  @Column(name = "reason", nullable = false)
+  @Column(name = "reason", nullable = false, length = 255)
   private String reason;
 
   //시작일
@@ -47,7 +52,12 @@ public class Leave {
   //휴가 상태
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private LeaveStatus status;
+  private LeaveStatus status = LeaveStatus.REQUESTED;
+
+  //연차 기간
+  @Enumerated(EnumType.STRING)
+  @Column(name = "leave_unit_type", nullable = false)
+  private LeaveUnitType leaveUnitType = LeaveUnitType.FULL_DAY;
 
   //휴가 신청
   @Column(name = "requested_at", nullable = false)
@@ -61,9 +71,8 @@ public class Leave {
   @Column(name = "rejected_reason")
   private String rejectedReason;
 
-  /*사원id
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "emp_id", nullable = false)
-  private EmpId empId;
-  */
+  //삭제여부
+  @Column(name = "is_deleted", nullable = false)
+  private Character isDeleted = 'N';
+
 }

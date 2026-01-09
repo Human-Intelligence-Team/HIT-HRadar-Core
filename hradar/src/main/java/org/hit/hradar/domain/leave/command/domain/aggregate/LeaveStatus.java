@@ -2,8 +2,9 @@ package org.hit.hradar.domain.leave.command.domain.aggregate;
 
 public enum LeaveStatus {
 
-  REQUESTED,    // 신청
-  APPROVED,     // 승인
-  REJECTED,     // 반려
-  CANCELLED     // 취소
+  REQUESTED,   // 신청
+  APPROVED,    // 승인
+  REJECTED,    // 반려
+  CANCELED     // 취소
+
 }

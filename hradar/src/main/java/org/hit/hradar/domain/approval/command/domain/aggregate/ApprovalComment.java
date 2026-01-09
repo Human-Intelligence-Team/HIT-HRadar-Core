@@ -10,29 +10,41 @@ import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "approval_reference")
+@Table(name = "approval_comment")
 @Getter
-public class ApprovalReference extends BaseTimeEntity {
+public class ApprovalComment extends BaseTimeEntity {
 
-  //참조id
+  //댓글id
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "reference_id")
-  private Long referenceId;
+  @Column(name = "comment_id", nullable = false)
+  private Long commentId;
 
-  //참조자 사원id
-  @Column(name = "ref_emp_id", nullable = false)
-  private Long refEmpId;
+  //부모댓글id
+  @Column(name ="parent_comment_id")
+  private Long parentCommentId;
 
   //결재 문서id
-  @Column(name = "approval_document_id", nullable = false)
+  @Column(name = "aprroval_document_id", nullable = false)
   private Long approvalDocumentId;
+
+  //작성자 사원id
+  @Column(name = "writer_id", nullable = false)
+  private Long writerId;
+
+  //댓글 내용
+  @Column(name = "content", nullable = false)
+  private String content;
 
   //생성자
 
+
   //수정자
+
 
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
+
+
 }

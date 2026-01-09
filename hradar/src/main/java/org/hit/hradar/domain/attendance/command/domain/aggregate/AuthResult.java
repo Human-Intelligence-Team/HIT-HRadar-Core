@@ -2,7 +2,6 @@ package org.hit.hradar.domain.attendance.command.domain.aggregate;
 
 public enum AuthResult {
 
-  ALLOWED,    //허용 IP
-  DENIED      //허용하지 않는 IP
-
+  SUCCESS,    //성공
+  FAIL        //실패
 }
