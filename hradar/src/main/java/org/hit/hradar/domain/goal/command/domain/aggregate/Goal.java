@@ -10,9 +10,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+
 
 @Entity
 @Table(name = "goal")
@@ -182,5 +180,36 @@ public class Goal extends BaseTimeEntity {
                 .ownerId(ownerId)
                 .build();
     }
+    //========================검증=============================
+    public void validateCreatableKpi() {
+
+        // 삭제된 목표
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        // KPI 타입 Goal에서만 KPI 생성 가능
+        if (this.type != GoalType.KPI) {
+            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
+        }
+
+        //TODO: KPI 생성 가능 개수 제한
+    }
+
+    public void validateCreatableOkr() {
+
+        // 삭제된 목표
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        // OKR 타입 Goal에서만 KR 생성 가능
+        if (this.type != GoalType.OKR) {
+            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
+        }
+
+        // TODO: KR 최대 개수 제한
+    }
+
 
 }
