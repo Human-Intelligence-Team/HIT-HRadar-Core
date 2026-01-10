@@ -21,10 +21,10 @@ public class KpiCommandService {
     * GOAL 존재여부 확인
     * GOAL_TYPE == KPI
     * */
-    public Long createKpi(CreateKpiRequest request) {
+    public Long createKpi(Long goalId, CreateKpiRequest request) {
 
         //Goal 조회
-        Goal goal = goalRepository.findById(request.getGoalId())
+        Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
         //KPI 생성 가능 여부 검증

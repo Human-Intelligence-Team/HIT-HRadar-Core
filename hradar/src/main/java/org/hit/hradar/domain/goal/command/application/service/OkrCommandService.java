@@ -17,11 +17,13 @@ public class OkrCommandService {
     private final GoalRepository goalRepository;
     private final OkrKeyResultRepository okrKeyResultRepository;
 
-    //OKR Key RESULT 생성
-    public Long createKeyResult(CreateOkrKeyResultRequest request){
+    /**
+     * OKR Key Result 생성
+     */
+    public Long createKeyResult(Long goalId, CreateOkrKeyResultRequest request) {
 
         //Goal 조회
-        Goal goal = goalRepository.findById(request.getGoalId())
+        Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
         //OKR 생성 가능 여부 검증
