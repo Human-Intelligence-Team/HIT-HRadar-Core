@@ -12,9 +12,10 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                bat '.\\gradlew.bat clean build'
+    stage('Build') {
+        steps {
+            dir('hradar') {
+                bat 'gradlew.bat clean build'
             }
         }
     }
