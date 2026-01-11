@@ -40,6 +40,8 @@ public class KpiCommandService {
                 request.getTargetValue()
         );
 
+        goal.addKpi(kpi);
+
         return kpiDetailRepository.save(kpi).getKpiId();
 
     }

@@ -129,11 +129,22 @@ public enum GoalErrorCode implements ErrorCode {
                 "목표와 KPI가 연관되어있지 않습니다." ,
             HttpStatus.BAD_REQUEST
         ),
+    KPI_REQUIRED(
+            "KPI_003",
+                "KPI가 1개 이상 입력되어야 합니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+
     INVALID_GOAL_OKR_RELATION(
             "OKR_002",
                 "목표와 KR이 연관되어있지 않습니다." ,
             HttpStatus.BAD_REQUEST
-    ),;
+    ),
+
+    OKR_REQUIRED(
+            "OKR_003",
+            "OKR이 1개 이상 입력되어야 합니다.",
+            HttpStatus.BAD_REQUEST),;
 
 
 

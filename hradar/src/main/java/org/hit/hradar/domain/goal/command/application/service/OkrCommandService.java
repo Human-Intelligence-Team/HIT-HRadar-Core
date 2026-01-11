@@ -39,6 +39,8 @@ public class OkrCommandService {
                 request.getTargetValue()
         );
 
+        goal.addOkrKeyResult(kr);
+
         return okrKeyResultRepository.save(kr).getKeyResultId();
     }
 

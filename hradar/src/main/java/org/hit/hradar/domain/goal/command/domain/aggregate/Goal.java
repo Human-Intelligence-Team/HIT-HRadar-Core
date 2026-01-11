@@ -85,6 +85,28 @@ public class Goal extends BaseTimeEntity {
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
 
+    //Goal이 자기 KPI/OKR를 알고, 제출 시 규칙을 스스로 검증,통제하기 위해”
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
+    private java.util.List<KpiDetail> kpis = new java.util.ArrayList<>();
+
+    public void addKpi(KpiDetail kpi) {
+        if (this.type != GoalType.KPI) {
+            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
+        }
+        this.kpis.add(kpi);
+    }
+
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
+    private java.util.List<OkrKeyResult> okrKeyResults = new java.util.ArrayList<>();
+
+    public void addOkrKeyResult(OkrKeyResult kr) {
+        if (this.type != GoalType.OKR) {
+            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
+        }
+        this.okrKeyResults.add(kr);
+    }
+
+
     //=======================================================
 
     //기본 Goal만들기
@@ -268,7 +290,23 @@ public class Goal extends BaseTimeEntity {
             throw new BusinessException(GoalErrorCode.GOAL_NOT_SUBMITTABLE);
         }
 
+        // 필수값 검증
         validateRequiredFields();
+
+        //KPI/OKR 1개 이상 있는지 검증
+        if (this.type == GoalType.KPI) {
+
+            if (this.kpis.isEmpty()) {
+                throw new BusinessException(GoalErrorCode.KPI_REQUIRED);
+            }
+
+
+        } else if (this.type == GoalType.OKR) {
+
+            if (this.okrKeyResults.isEmpty()) {
+                throw new BusinessException(GoalErrorCode.OKR_REQUIRED);
+            }
+        }
 
         this.approveStatus = GoalApproveStatus.SUBMITTED;
     }
