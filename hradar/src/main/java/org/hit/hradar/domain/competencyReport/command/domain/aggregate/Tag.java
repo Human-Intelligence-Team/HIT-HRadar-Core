@@ -1,4 +1,7 @@
-package org.hit.hradar.domain.competencyReport.command.domain.aggreage;
+package org.hit.hradar.domain.competencyReport.command.domain.aggregate;
+
+
+import static org.hit.hradar.domain.competencyReport.competencyReportErrorCode.CompetencyReportErrorCode.TAG_NAME_REQUIRED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,13 +12,13 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hit.hradar.domain.competencyReport.competencyReportErrorCode.CompetencyReportErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
+import org.hit.hradar.global.exception.BusinessException;
 
 @Entity
 @Table(name = "tag")
 @Getter
-@Setter
 @NoArgsConstructor
 public class Tag extends BaseTimeEntity {
 
@@ -37,8 +40,24 @@ public class Tag extends BaseTimeEntity {
     }
   }
 
+ private Tag(String tagName) {
+    this.tagName = tagName;
+ }
 
+ // 등록
+ public static Tag create(String tagName) {
 
+   if (tagName == null) {
+     throw new BusinessException(TAG_NAME_REQUIRED);
+   }
+
+   String normalizedTagName = tagName.trim();
+   if (normalizedTagName.isEmpty()) {
+     throw new BusinessException(TAG_NAME_REQUIRED);
+   }
+
+    return new Tag(normalizedTagName);
+ }
 
 
 }

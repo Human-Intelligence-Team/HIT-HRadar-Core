@@ -3,16 +3,13 @@ package org.hit.hradar.domain.competencyReport.command.application.service;
 
 
 
-import org.hit.hradar.domain.competencyReport.command.domain.aggreage.Tag;
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentsRequest;
-import org.hit.hradar.domain.competencyReport.command.domain.aggreage.ContentTag;
-import org.hit.hradar.domain.competencyReport.command.domain.aggreage.Contents;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Contents;
 import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.ContentsRepository;
 import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.ContentsTagRepository;
 import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.TagRepository;
-import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
