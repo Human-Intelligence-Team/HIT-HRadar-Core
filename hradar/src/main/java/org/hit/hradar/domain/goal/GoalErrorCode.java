@@ -96,6 +96,22 @@ public enum GoalErrorCode implements ErrorCode {
         HttpStatus.FORBIDDEN
         ),
 
+    GOAL_NOT_SUBMITTABLE(
+            "GOAL_015",
+                "이미 제출된 목표입니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+    GOAL_TITLE_REQUIRED(
+            "GOAL_016",
+                "제목값 입력이 누락되었습니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+    INVALID_GOAL_TYPE(
+            "GOAL_017",
+                "유효하지 않은 목표 유형입니다.",
+            HttpStatus.BAD_REQUEST),
+
+
     /* ===== KPI / OKR (수정에서 필요) ===== */
     KPI_NOT_FOUND(
         "KPI_001",
@@ -117,7 +133,7 @@ public enum GoalErrorCode implements ErrorCode {
             "OKR_002",
                 "목표와 KR이 연관되어있지 않습니다." ,
             HttpStatus.BAD_REQUEST
-    );
+    ),;
 
 
 
