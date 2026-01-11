@@ -12,10 +12,9 @@ pipeline {
             }
         }
 
-    stage('Build') {
-        steps {
-            dir('hradar') {
-                bat 'gradlew.bat clean build'
+        stage('Build') {
+            steps {
+                bat '.\\gradlew.bat clean build'
             }
         }
     }
@@ -26,23 +25,17 @@ pipeline {
         }
 
         success {
-            withCredentials([string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')]) {
+            withCredentials([...]) {
                 bat """
-                curl -X POST ^
-                  -H "Content-Type: application/json" ^
-                  -d "{\\"content\\":\\"✅ Jenkins CI SUCCESS: %JOB_NAME% #%BUILD_NUMBER%\\"}" ^
-                  %DISCORD_WEBHOOK%
+                curl ...
                 """
             }
         }
 
         failure {
-            withCredentials([string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')]) {
+            withCredentials([...]) {
                 bat """
-                curl -X POST ^
-                  -H "Content-Type: application/json" ^
-                  -d "{\\"content\\":\\"❌ Jenkins CI FAILED: %JOB_NAME% #%BUILD_NUMBER%\\n%BUILD_URL%\\"}" ^
-                  %DISCORD_WEBHOOK%
+                curl ...
                 """
             }
         }
