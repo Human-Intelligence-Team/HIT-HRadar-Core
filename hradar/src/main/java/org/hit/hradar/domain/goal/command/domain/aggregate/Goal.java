@@ -180,6 +180,48 @@ public class Goal extends BaseTimeEntity {
                 .ownerId(ownerId)
                 .build();
     }
+
+    //수정 기능 메서드
+    public void updateAll(
+            String title,
+            String description,
+            LocalDate startDate,
+            LocalDate endDate,
+            GoalScope scope
+    ) {
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.scope = scope;
+    }
+
+    //반려시 재등록 메서드
+    public static Goal resubmitFromRejected(
+            Goal rejected,
+            String title,
+            String description,
+            LocalDate startDate,
+            LocalDate endDate,
+            GoalScope scope,
+            Long ownerId
+    ) {
+        rejected.validateResubmittable();
+
+        return Goal.builder()
+                .parentGoalId(rejected.getParentGoalId())
+                .depth(rejected.getDepth())
+                .type(rejected.getType())
+                .scope(scope != null ? scope : rejected.getScope())
+                .title(title != null ? title : rejected.getTitle())
+                .description(description != null ? description : rejected.getDescription())
+                .startDate(startDate != null ? startDate : rejected.getStartDate())
+                .endDate(endDate != null ? endDate : rejected.getEndDate())
+                .departmentId(rejected.getDepartmentId())
+                .ownerId(ownerId)
+                .build(); // approveStatus = DRAFT
+    }
+
     //========================검증=============================
     public void validateCreatableKpi() {
 
@@ -211,5 +253,26 @@ public class Goal extends BaseTimeEntity {
         // TODO: KR 최대 개수 제한
     }
 
+    //수정 가능 상태 검증
+    public void validateEditable() {
+        //APPROVED / REJECTED는 수정 불가
+        if (this.approveStatus == GoalApproveStatus.APPROVED
+                || this.approveStatus == GoalApproveStatus.REJECTED) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_EDITABLE);
+        }
+    }
+    public void validateEditableForKpiOkr() {
+        validateEditable();
+    }
+
+    //REJECTED 반려시에만 재등록 가능
+    public void validateResubmittable() {
+        if (this.approveStatus != GoalApproveStatus.REJECTED) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_RESUBMITTABLE);
+        }
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+    }
 
 }
