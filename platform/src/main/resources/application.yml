@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: notification-platform
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: notification-group
+      auto-offset-reset: earliest
