@@ -21,22 +21,35 @@ pipeline {
 
     post {
         success {
-            withCredentials([string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')]) {
+            withCredentials([
+                string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')
+            ]) {
                 sh """
-                curl -H "Content-Type: application/json" \
-                     -d '{"content": "✅ HRadar Backend CI 성공"}' \
-                     $DISCORD_WEBHOOK
+                curl -X POST -H "Content-Type: application/json" \
+                     -d '{
+                       "content": "✅ HRadar CI 성공\\n브랜치: ${env.BRANCH_NAME}\\n빌드 번호: #${env.BUILD_NUMBER}"
+                     }' \
+                     "$DISCORD_WEBHOOK"
                 """
             }
         }
+
         failure {
-            withCredentials([string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')]) {
+            withCredentials([
+                string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')
+            ]) {
                 sh """
-                curl -H "Content-Type: application/json" \
-                     -d '{"content": "❌ HRadar Backend CI 실패"}' \
-                     $DISCORD_WEBHOOK
+                curl -X POST -H "Content-Type: application/json" \
+                     -d '{
+                       "content": "❌ HRadar CI 실패\\n브랜치: ${env.BRANCH_NAME}\\n빌드 번호: #${env.BUILD_NUMBER}"
+                     }' \
+                     "$DISCORD_WEBHOOK"
                 """
             }
+        }
+
+        always {
+            echo "CI finished (success or failure)"
         }
     }
 }
