@@ -51,7 +51,7 @@ jwt:
   refresh-expiration: 1209600000 # 2주
 
 server:
-  port: 8080
+  port: 8888
 
 file:
   root-dir: ./uploads
