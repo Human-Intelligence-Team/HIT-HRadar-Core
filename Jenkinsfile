@@ -14,42 +14,36 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh './gradlew clean build'
+                bat '.\\gradlew.bat clean build'
             }
         }
     }
 
     post {
+        always {
+            echo 'CI finished (success or failure)'
+        }
+
         success {
-            withCredentials([
-                string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')
-            ]) {
-                sh """
-                curl -X POST -H "Content-Type: application/json" \
-                     -d '{
-                       "content": "✅ HRadar CI 성공\\n브랜치: ${env.BRANCH_NAME}\\n빌드 번호: #${env.BUILD_NUMBER}"
-                     }' \
-                     "$DISCORD_WEBHOOK"
+            withCredentials([string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')]) {
+                bat """
+                curl -X POST ^
+                  -H "Content-Type: application/json" ^
+                  -d "{\\"content\\":\\"✅ Jenkins CI SUCCESS: %JOB_NAME% #%BUILD_NUMBER%\\"}" ^
+                  %DISCORD_WEBHOOK%
                 """
             }
         }
 
         failure {
-            withCredentials([
-                string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')
-            ]) {
-                sh """
-                curl -X POST -H "Content-Type: application/json" \
-                     -d '{
-                       "content": "❌ HRadar CI 실패\\n브랜치: ${env.BRANCH_NAME}\\n빌드 번호: #${env.BUILD_NUMBER}"
-                     }' \
-                     "$DISCORD_WEBHOOK"
+            withCredentials([string(credentialsId: 'discord-webhook-backend', variable: 'DISCORD_WEBHOOK')]) {
+                bat """
+                curl -X POST ^
+                  -H "Content-Type: application/json" ^
+                  -d "{\\"content\\":\\"❌ Jenkins CI FAILED: %JOB_NAME% #%BUILD_NUMBER%\\n%BUILD_URL%\\"}" ^
+                  %DISCORD_WEBHOOK%
                 """
             }
-        }
-
-        always {
-            echo "CI finished (success or failure)"
         }
     }
 }
