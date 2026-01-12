@@ -15,7 +15,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
         }
 )
 @Getter
-public class IndividualGrade extends BaseTimeEntity {
+public class  IndividualGrade extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
