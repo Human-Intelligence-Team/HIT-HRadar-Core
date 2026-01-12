@@ -3,6 +3,8 @@ package org.hit.hradar.domain.goal.command.application.service;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.domain.goal.command.application.dto.request.CreateOkrKeyResultRequest;
+import org.hit.hradar.domain.goal.command.application.dto.request.ResubmitKeyResultRequest;
+import org.hit.hradar.domain.goal.command.application.dto.request.UpdateKeyResultRequest;
 import org.hit.hradar.domain.goal.command.domain.aggregate.Goal;
 import org.hit.hradar.domain.goal.command.domain.aggregate.OkrKeyResult;
 import org.hit.hradar.domain.goal.command.domain.repository.GoalRepository;
@@ -37,6 +39,64 @@ public class OkrCommandService {
                 request.getTargetValue()
         );
 
+        goal.addOkrKeyResult(kr);
+
         return okrKeyResultRepository.save(kr).getKeyResultId();
+    }
+
+    //수정
+    public void updateKeyResult(
+            Long goalId,
+            Long keyResultId,
+            UpdateKeyResultRequest request
+    ) {
+        OkrKeyResult kr = okrKeyResultRepository.findById(keyResultId)
+                .orElseThrow(() -> new BusinessException(GoalErrorCode.KR_NOT_FOUND));
+
+        Goal goal = kr.getGoal();
+
+        validateGoalKrRelation(goalId, goal);
+
+        goal.validateEditableForKpiOkr();
+
+        kr.update(
+                request.getContent(),
+                request.getMetricName(),
+                request.getTargetValue()
+        );
+    }
+
+    //재등록
+    public Long resubmitKeyResult(
+            Long goalId,
+            Long keyResultId,
+            ResubmitKeyResultRequest request
+    ) {
+        OkrKeyResult oldKr = okrKeyResultRepository.findById(keyResultId)
+                .orElseThrow(() -> new BusinessException(GoalErrorCode.KR_NOT_FOUND));
+
+        Goal goal = oldKr.getGoal();
+
+        validateGoalKrRelation(goalId, goal);
+
+        goal.validateResubmittable();
+
+        OkrKeyResult newKr = OkrKeyResult.create(
+                goal,
+                request.getContent() != null ? request.getContent() : oldKr.getContent(),
+                request.getMetricName() != null ? request.getMetricName() : oldKr.getOkrMetricName(),
+                request.getTargetValue() != null ? request.getTargetValue() : oldKr.getTargetValue()
+        );
+
+        return okrKeyResultRepository.save(newKr).getKeyResultId();
+    }
+
+
+    //검증
+    //GOAL OKR 연관 검증
+    private void validateGoalKrRelation(Long goalId, Goal goal) {
+        if (!goal.getGoalId().equals(goalId)) {
+            throw new BusinessException(GoalErrorCode.INVALID_GOAL_OKR_RELATION);
+        }
     }
 }
