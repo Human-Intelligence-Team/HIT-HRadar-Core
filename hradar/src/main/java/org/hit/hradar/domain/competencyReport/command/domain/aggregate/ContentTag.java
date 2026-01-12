@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.competencyReport.command.domain.aggreage;
+package org.hit.hradar.domain.competencyReport.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
