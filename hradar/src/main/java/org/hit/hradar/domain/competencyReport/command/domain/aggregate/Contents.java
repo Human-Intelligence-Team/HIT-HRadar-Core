@@ -7,17 +7,20 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentsRequest;
+import org.hit.hradar.domain.competencyReport.competencyReportErrorCode.CompetencyReportErrorCode;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
 @Entity
 @Getter
 @Table(name="contents")
 @NoArgsConstructor
-public class Contents {
+public class Contents extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,40 +47,50 @@ public class Contents {
   @Column(name = "notes", length = 2000)
   private String notes;
 
-  @Column(name = "use_yn", length = 1)
-  private UseYn useYn;
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
 
-  public Contents(String title, ContentType type, Level level, Integer learningTime, String resourcePath, String notes, UseYn useYn) {
+  @PrePersist
+  public void prePersist() {
+    if (this.isDeleted == null) {
+      this.isDeleted = 'N';
+    }
+  }
+
+  public Contents(String title, ContentType type, Level level, Integer learningTime, String resourcePath, String notes) {
     this.title = title;
     this.type = type;
     this.level = level;
     this.learningTime = learningTime;
     this.resourcePath = resourcePath;
     this.notes = notes;
-    this.useYn = useYn;
   }
 
   // 등록
   public static Contents create(ContentsRequest request) {
 
     if (request.getTitle() == null) {
-      throw new BusinessException(null);
+      throw new BusinessException(CompetencyReportErrorCode.CONTENT_TITLE_REQUIRED);
     }
 
     if(request.getType() == null) {
-      throw new BusinessException(null);
+      throw new BusinessException(CompetencyReportErrorCode.CONTENT_TYPE_REQUIRED);
     }
 
     if(request.getLevel() == null) {
-      throw new BusinessException(null);
+      throw new BusinessException(CompetencyReportErrorCode.CONTENT_LEVEL_REQUIRED);
     }
 
-    UseYn useYn = request.getUseYn() != null
-        ? request.getUseYn()
-        : UseYn.Y;
+    String normalizedTitle = request.getTitle().trim();
+    String normalizedResourcePath = request.getResourcePath().trim();
+    String normalizedNotes = request.getNotes().trim();
 
-    return new Contents(request.getTitle(), request.getType(), request.getLevel(), request.getLearningTime(), request.getResourcePath(), request.getNotes(), useYn);
-
+    return new Contents(normalizedTitle
+                    , request.getType()
+                    , request.getLevel()
+                    , request.getLearningTime()
+                    , normalizedResourcePath
+                    , normalizedNotes);
 
   }
 

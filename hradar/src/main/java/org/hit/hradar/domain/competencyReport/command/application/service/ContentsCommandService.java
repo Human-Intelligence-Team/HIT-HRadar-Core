@@ -34,15 +34,6 @@ public class ContentsCommandService {
 
     // 학습 컨텐츠 ID로 학습 컨텐츠로 tag 연결
     Long contentId = contents.getId();
-    Long[] tagArr = request.getTagArr();
 
-    // tagArr가 있을 경우에만 넣어주기
-    if (tagArr != null && tagArr.length > 0) {
-      // TODO : tagId가 없을 경우 어떻게 해야할지??
-      Arrays.stream(tagArr).forEach(tagId -> {
-        // tag 테이블에 tagId가 있는지 확인
-
-      });
-    }
   }
 }

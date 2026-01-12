@@ -10,12 +10,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Getter
 @Table(name="competency_report")
 @NoArgsConstructor
-public class CompetencyReport {
+public class CompetencyReport extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
