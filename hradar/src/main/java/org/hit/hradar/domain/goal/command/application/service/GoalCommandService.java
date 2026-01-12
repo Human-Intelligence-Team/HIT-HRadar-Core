@@ -1,8 +1,13 @@
 package org.hit.hradar.domain.goal.command.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.department.DepartmentErrorCode;
+import org.hit.hradar.domain.department.command.domain.aggregate.Department;
+import org.hit.hradar.domain.department.command.domain.repository.DepartmentRepository;
 import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.domain.goal.command.application.dto.request.CreateGoalRequest;
+import org.hit.hradar.domain.goal.command.application.dto.request.ResubmitGoalRequest;
+import org.hit.hradar.domain.goal.command.application.dto.request.UpdateGoalRequest;
 import org.hit.hradar.domain.goal.command.domain.aggregate.Goal;
 import org.hit.hradar.domain.goal.command.domain.aggregate.GoalDepth;
 import org.hit.hradar.domain.goal.command.domain.aggregate.GoalScope;
@@ -35,6 +40,7 @@ public class GoalCommandService {
     /*팀 KPI 목표 생성 LEVEL_1*/
 
     private final GoalRepository goalRepository;
+    private final DepartmentRepository departmentRepository;
 
     //팀 목표 생성
     public Long createRootGoal(CreateGoalRequest request) {
@@ -93,6 +99,110 @@ public class GoalCommandService {
         return goalRepository.save(childGoal).getGoalId();
     }
 
+    /**
+     * Goal 수정
+     *
+     * 조건:
+     * - DRAFT, SUBMITTED 상태만 가능
+     * - APPROVED, REJECTED 수정 불가
+     * - 개인 목표: 작성자만
+     * - 팀 목표: 작성자 or 팀장
+     */
+    public void updateGoal(Long goalId, UpdateGoalRequest request) {
+
+        //Goal 조회
+        Goal goal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
+
+        //권한 검증
+        Long actorId = request.getActorId();
+        validateEditPermission(goal, actorId);
+
+        //상태 검증
+        goal.validateEditable();
+
+        //기간 검증
+        LocalDate newStart = request.getStartDate();
+        LocalDate newEnd = request.getEndDate();
+
+        validatePeriod(newStart, newEnd);
+        //자식 goal인 경우 시작,종료일이 부모 목표에 포함되어 있는지 검증
+        if (goal.getParentGoalId() != null) {
+
+            Goal parentGoal = goalRepository.findById(goal.getParentGoalId())
+                    .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
+
+            validateChildPeriod(parentGoal, newStart, newEnd);
+        }
+
+        //Goal전체 수정
+        goal.updateAll(
+                request.getTitle(),
+                request.getDescription(),
+                newStart,
+                newEnd,
+                request.getScope()
+        );
+    }
+
+    /**
+     * REJECTED Goal 재등록
+     *
+     * - REJECTED 상태만 가능
+     * - 기존 Goal은 수정하지 않음
+     * - 새 Goal 생성 (DRAFT 상태)
+     * - 자식 Goal인 경우 부모 기간 내 검증 필수
+     */
+    public Long resubmitGoal(Long goalId, ResubmitGoalRequest request) {
+
+        // 기존(반려된) Goal 조회
+        Goal rejectedGoal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
+
+        // 권한 검증 (수정 권한과 동일)
+        Long actorId = request.getActorId();
+        validateEditPermission(rejectedGoal, actorId);
+
+        // 상태 검증 (REJECTED만 가능)
+        rejectedGoal.validateResubmittable();
+
+        // 새 기간 결정 (요청값 없으면 기존 값 유지)
+        LocalDate newStart = request.getStartDate() != null
+                ? request.getStartDate()
+                : rejectedGoal.getStartDate();
+
+        LocalDate newEnd = request.getEndDate() != null
+                ? request.getEndDate()
+                : rejectedGoal.getEndDate();
+
+        // 자기 자신 기간 검증
+        validatePeriod(newStart, newEnd);
+
+        // 자식 Goal인 경우 → 부모 기간 검증
+        if (rejectedGoal.getParentGoalId() != null) {
+
+            Goal parentGoal = goalRepository.findById(rejectedGoal.getParentGoalId())
+                    .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
+
+            validateChildPeriod(parentGoal, newStart, newEnd);
+        }
+
+        // 새 Goal 생성 (복제 + override)
+        Goal newGoal = Goal.resubmitFromRejected(
+                rejectedGoal,
+                request.getTitle(),
+                request.getDescription(),
+                newStart,
+                newEnd,
+                request.getScope(),
+                actorId
+        );
+
+        // 저장 후 새 ID 반환
+        return goalRepository.save(newGoal).getGoalId();
+    }
+
+
     //검증
     private void validatePeriod(LocalDate start, LocalDate end) {
         if (end.isBefore(start)) {
@@ -112,6 +222,31 @@ public class GoalCommandService {
             throw new BusinessException(
                     GoalErrorCode.INVALID_GOAL_PERIOD
             );
+        }
+    }
+
+    //수정 권한 검증
+    private void validateEditPermission(Goal goal, Long actorId) {
+
+        // 작성자면 수정 가능
+        if (goal.getOwnerId().equals(actorId)) {
+            return;
+        }
+
+        //개인 목표 -> 작성자 아니면 수정 불가
+        if(goal.getScope() == GoalScope.PERSONAL) {
+            throw new BusinessException(GoalErrorCode.GOAL_EDIT_FORBIDDEN);
+        }
+
+        // 팀 목표인 경우 -> 팀장인지 확인
+        if(goal.getScope() == GoalScope.TEAM) {
+            Department department = departmentRepository.findById(goal.getDepartmentId())
+                    .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
+
+            //부서의 managerEmployeeId == actorId -> 팀장
+            if(!actorId.equals(department.getManagerEmployeeId())) {
+                throw new BusinessException(GoalErrorCode.GOAL_EDIT_FORBIDDEN);
+            }
         }
     }
 }

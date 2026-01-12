@@ -70,4 +70,14 @@ public class KpiDetail extends BaseTimeEntity {
                 .kpiTargetValue(targetValue)
                 .build();
     }
+
+    public void update(
+            String metricName,
+            BigDecimal startValue,
+            BigDecimal targetValue
+    ) {
+        this.kpiMetricName = metricName;
+        this.kpiStartValue = startValue;
+        this.kpiTargetValue = targetValue;
+    }
 }
