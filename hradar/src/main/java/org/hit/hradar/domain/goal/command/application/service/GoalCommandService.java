@@ -232,6 +232,18 @@ public class GoalCommandService {
         goal.submit();
     }
 
+    //삭제
+    public void deleteGoal(Long goalId, Long actorId) {
+
+        Goal goal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
+
+        boolean isManager = isTeamManager(goal.getDepartmentId(), actorId);
+
+        goal.delete(isManager);
+
+    }
+
 
 
     //검증
@@ -280,4 +292,13 @@ public class GoalCommandService {
             }
         }
     }
+
+    //팀장 판별
+    private boolean isTeamManager(Long departmentId, Long actorId) {
+        Department department = departmentRepository.findById(departmentId)
+                .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
+
+        return actorId.equals(department.getManagerEmployeeId());
+    }
+
 }

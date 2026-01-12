@@ -111,6 +111,11 @@ public enum GoalErrorCode implements ErrorCode {
                 "유효하지 않은 목표 유형입니다.",
             HttpStatus.BAD_REQUEST),
 
+    GOAL_NOT_DELETABLE(
+            "GOAL_018",
+                "삭제 할 권한이 없습니다." ,
+            HttpStatus.FORBIDDEN ),
+
 
     /* ===== KPI / OKR (수정에서 필요) ===== */
     KPI_NOT_FOUND(

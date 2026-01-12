@@ -311,6 +311,33 @@ public class Goal extends BaseTimeEntity {
         this.approveStatus = GoalApproveStatus.SUBMITTED;
     }
 
+    /* 삭제
+     * DRAFT : 일반사용자 0 팀장 0
+     * SUBMITTED: 일반사용자 x 팀장 0
+     * APPROVED: 일반사용자 x 팀장 0
+     * REJECTED: 일반사용자 x 팀장 0*/
+    public void delete(boolean isManager) {
+
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        //TODO: 인사팀의 경우 삭제 권한 추가
+
+        //팀장이면 상태 상관 없이 삭제 가능
+        if(isManager) {
+            this.isDeleted = 'Y';
+            return;
+        }
+
+        //일반 사용자는 DRAFT만 삭제 가능
+        if (this.approveStatus != GoalApproveStatus.DRAFT) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_DELETABLE);
+        }
+
+        this.isDeleted = 'Y';
+    }
+
     //========================검증=============================
     public void validateCreatableKpi() {
 
