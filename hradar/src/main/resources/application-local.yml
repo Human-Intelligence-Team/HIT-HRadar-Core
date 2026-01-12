@@ -13,7 +13,6 @@ spring:
       idle-timeout: 30000
       max-lifetime: 1800000
       connection-timeout: 30000
-
   jpa:
     hibernate:
       ddl-auto: update    # create, create-drop, update, validate, none
