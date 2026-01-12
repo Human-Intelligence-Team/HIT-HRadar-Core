@@ -340,6 +340,42 @@ public class Goal extends BaseTimeEntity {
         this.isDeleted = 'Y';
     }
 
+    //승인 APPROVE
+    public void approve() {
+        // 삭제된 목표
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        // 제출된 건만 승인 가능
+        if (this.approveStatus != GoalApproveStatus.SUBMITTED) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_APPROVABLE);
+        }
+
+        this.approveStatus = GoalApproveStatus.APPROVED;
+        this.rejectReason = null; // 혹시 남아있으면 제거
+    }
+
+    public void reject(String rejectReason) {
+        // 삭제된 목표
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        // 제출된 건만 반려 가능
+        if (this.approveStatus != GoalApproveStatus.SUBMITTED) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_APPROVABLE);
+        }
+
+        // 반려 사유 필수
+        if (rejectReason == null || rejectReason.isBlank()) {
+            throw new BusinessException(GoalErrorCode.GOAL_REJECT_REASON_REQUIRED);
+        }
+
+        this.approveStatus = GoalApproveStatus.REJECTED;
+        this.rejectReason = rejectReason;
+    }
+
     //========================검증=============================
     public void validateCreatableKpi() {
 

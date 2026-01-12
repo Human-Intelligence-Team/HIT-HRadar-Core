@@ -116,6 +116,22 @@ public enum GoalErrorCode implements ErrorCode {
                 "삭제 할 권한이 없습니다." ,
             HttpStatus.FORBIDDEN ),
 
+    GOAL_APPROVE_FORBIDDEN(
+            "GOAL_019",
+            "팀장만 목표를 승인/반려할 수 있습니다.",
+            HttpStatus.FORBIDDEN
+    ),
+    GOAL_REJECT_REASON_REQUIRED(
+            "GOAL_020",
+            "반려 사유는 필수입니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+    GOAL_NOT_APPROVABLE(
+            "GOAL_021",
+            "제출(SUBMITTED)된 목표만 승인/반려할 수 있습니다.",
+            HttpStatus.CONFLICT
+    ),
+
 
     /* ===== KPI / OKR (수정에서 필요) ===== */
     KPI_NOT_FOUND(
