@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
+import org.hit.hradar.global.exception.BusinessException;
 
 import java.math.BigDecimal;
 
@@ -79,5 +81,12 @@ public class KpiDetail extends BaseTimeEntity {
         this.kpiMetricName = metricName;
         this.kpiStartValue = startValue;
         this.kpiTargetValue = targetValue;
+    }
+
+    public void delete() {
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+        this.isDeleted = 'Y';
     }
 }

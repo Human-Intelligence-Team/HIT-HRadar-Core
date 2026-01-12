@@ -324,15 +324,17 @@ public class Goal extends BaseTimeEntity {
 
         //TODO: 인사팀의 경우 삭제 권한 추가
 
-        //팀장이면 상태 상관 없이 삭제 가능
-        if(isManager) {
-            this.isDeleted = 'Y';
-            return;
+        //팀장이 아니고 초안이 아니라면 == 일반사용자가 초안상태가 아닐때 삭제 한다면
+        if (!isManager && this.approveStatus != GoalApproveStatus.DRAFT) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_DELETABLE);
         }
 
-        //일반 사용자는 DRAFT만 삭제 가능
-        if (this.approveStatus != GoalApproveStatus.DRAFT) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_DELETABLE);
+        if (this.type == GoalType.KPI) {
+            this.kpis.forEach(KpiDetail::delete);
+        }
+
+        if (this.type == GoalType.OKR) {
+            this.okrKeyResults.forEach(OkrKeyResult::delete);
         }
 
         this.isDeleted = 'Y';
