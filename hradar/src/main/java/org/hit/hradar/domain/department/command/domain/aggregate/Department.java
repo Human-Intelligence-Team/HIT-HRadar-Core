@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.department.command.domain;
+package org.hit.hradar.domain.department.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;

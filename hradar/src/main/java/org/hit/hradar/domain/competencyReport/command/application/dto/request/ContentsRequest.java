@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import org.hit.hradar.domain.competencyReport.command.domain.aggreage.ContentType;
-import org.hit.hradar.domain.competencyReport.command.domain.aggreage.Level;
-import org.hit.hradar.domain.competencyReport.command.domain.aggreage.UseYn;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentType;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Level;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.UseYn;
 
 @Getter
 public class ContentsRequest {

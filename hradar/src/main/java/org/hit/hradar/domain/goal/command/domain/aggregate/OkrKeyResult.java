@@ -72,4 +72,14 @@ public class OkrKeyResult extends BaseTimeEntity {
                 .build();
     }
 
+    public void update(
+            String content,
+            String metricName,
+            Integer targetValue
+    ) {
+        this.content = content;
+        this.okrMetricName = metricName;
+        this.targetValue = targetValue;
+    }
+
 }
