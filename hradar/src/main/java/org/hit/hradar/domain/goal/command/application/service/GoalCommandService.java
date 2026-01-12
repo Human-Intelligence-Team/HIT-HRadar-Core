@@ -6,6 +6,7 @@ import org.hit.hradar.domain.department.command.domain.aggregate.Department;
 import org.hit.hradar.domain.department.command.domain.repository.DepartmentRepository;
 import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.domain.goal.command.application.dto.request.CreateGoalRequest;
+import org.hit.hradar.domain.goal.command.application.dto.request.RejectGoalRequest;
 import org.hit.hradar.domain.goal.command.application.dto.request.ResubmitGoalRequest;
 import org.hit.hradar.domain.goal.command.application.dto.request.UpdateGoalRequest;
 import org.hit.hradar.domain.goal.command.domain.aggregate.Goal;
@@ -244,6 +245,37 @@ public class GoalCommandService {
 
     }
 
+    //승인
+    public void approveGoal(Long goalId, Long actorId) {
+        Goal goal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
+
+        //팀장만 가능
+        if(!isTeamManager(goal.getDepartmentId(), actorId)) {
+            throw new BusinessException(GoalErrorCode.GOAL_APPROVE_FORBIDDEN);
+        }
+
+        goal.approve();
+    }
+
+    //반려
+    public void rejectGoal(Long goalId, RejectGoalRequest request) {
+        Goal goal = goalRepository.findById(goalId)
+                .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
+
+        //팀장만 가능
+        if(!isTeamManager(goal.getDepartmentId(), request.getActorId())) {
+            throw new BusinessException(GoalErrorCode.GOAL_APPROVE_FORBIDDEN);
+        }
+
+        //반려 사유 없는 경우 차단
+        if(request.getRejectReason() == null || request.getRejectReason().isBlank()) {
+            throw new BusinessException(GoalErrorCode.GOAL_REJECT_REASON_REQUIRED);
+        }
+
+        goal.reject(request.getRejectReason());
+    }
+
 
 
     //검증
@@ -282,14 +314,9 @@ public class GoalCommandService {
         }
 
         // 팀 목표인 경우 -> 팀장인지 확인
-        if(goal.getScope() == GoalScope.TEAM) {
-            Department department = departmentRepository.findById(goal.getDepartmentId())
-                    .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-
-            //부서의 managerEmployeeId == actorId -> 팀장
-            if(!actorId.equals(department.getManagerEmployeeId())) {
-                throw new BusinessException(GoalErrorCode.GOAL_EDIT_FORBIDDEN);
-            }
+        if (goal.getScope() == GoalScope.TEAM
+                && !isTeamManager(goal.getDepartmentId(), actorId)) {
+            throw new BusinessException(GoalErrorCode.GOAL_EDIT_FORBIDDEN);
         }
     }
 

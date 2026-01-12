@@ -10,6 +10,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -87,7 +88,7 @@ public class Goal extends BaseTimeEntity {
 
     //Goal이 자기 KPI/OKR를 알고, 제출 시 규칙을 스스로 검증,통제하기 위해”
     @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
-    private java.util.List<KpiDetail> kpis = new java.util.ArrayList<>();
+    private List<KpiDetail> kpis = new java.util.ArrayList<>();
 
     public void addKpi(KpiDetail kpi) {
         if (this.type != GoalType.KPI) {
@@ -97,7 +98,7 @@ public class Goal extends BaseTimeEntity {
     }
 
     @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
-    private java.util.List<OkrKeyResult> okrKeyResults = new java.util.ArrayList<>();
+    private List<OkrKeyResult> okrKeyResults = new java.util.ArrayList<>();
 
     public void addOkrKeyResult(OkrKeyResult kr) {
         if (this.type != GoalType.OKR) {
@@ -338,6 +339,42 @@ public class Goal extends BaseTimeEntity {
         }
 
         this.isDeleted = 'Y';
+    }
+
+    //승인 APPROVE
+    public void approve() {
+        // 삭제된 목표
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        // 제출된 건만 승인 가능
+        if (this.approveStatus != GoalApproveStatus.SUBMITTED) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_APPROVABLE);
+        }
+
+        this.approveStatus = GoalApproveStatus.APPROVED;
+        this.rejectReason = null; // 혹시 남아있으면 제거
+    }
+
+    public void reject(String rejectReason) {
+        // 삭제된 목표
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        // 제출된 건만 반려 가능
+        if (this.approveStatus != GoalApproveStatus.SUBMITTED) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_APPROVABLE);
+        }
+
+        // 반려 사유 필수
+        if (rejectReason == null || rejectReason.isBlank()) {
+            throw new BusinessException(GoalErrorCode.GOAL_REJECT_REASON_REQUIRED);
+        }
+
+        this.approveStatus = GoalApproveStatus.REJECTED;
+        this.rejectReason = rejectReason;
     }
 
     //========================검증=============================
