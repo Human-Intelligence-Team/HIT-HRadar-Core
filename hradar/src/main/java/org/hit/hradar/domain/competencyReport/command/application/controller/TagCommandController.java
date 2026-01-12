@@ -1,17 +1,20 @@
 package org.hit.hradar.domain.competencyReport.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagDeleteRequest;
 import org.hit.hradar.domain.competencyReport.command.application.service.TagCommandService;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/tag")
+@RequestMapping("/api/v1/tags")
 public class TagCommandController {
 
   private final TagCommandService tagCommandService;
@@ -29,4 +32,19 @@ public class TagCommandController {
     tagCommandService.createTag(tagName);
     return ResponseEntity.ok(ApiResponse.success(null));
   }
+
+  /**
+   * 태그 삭제 (단건/다건)
+   * @param tagDeleteRequest
+   * @return
+   */
+  @DeleteMapping
+  public ResponseEntity<ApiResponse<Void>> deleteTag(
+      @RequestBody TagDeleteRequest tagDeleteRequest
+  ) {
+
+    tagCommandService.deleteTag(tagDeleteRequest);
+    return ResponseEntity.ok(ApiResponse.success(null));
+  }
+
 }

@@ -1,15 +1,13 @@
 package org.hit.hradar.domain.competencyReport.command.application.service;
 
 
-
-
 import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentsRequest;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Contents;
-import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.ContentsRepository;
-import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.ContentsTagRepository;
-import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.TagRepository;
+import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentsRepository;
+import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentsTagRepository;
+import org.hit.hradar.domain.competencyReport.command.domain.repository.TagRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,13 +41,6 @@ public class ContentsCommandService {
       // TODO : tagId가 없을 경우 어떻게 해야할지??
       Arrays.stream(tagArr).forEach(tagId -> {
         // tag 테이블에 tagId가 있는지 확인
-
-//        Tag tag = (Tag) tagRepository.findById(tagId)
-//            .orElseThrow(() -> new BusinessException(null));
-//
-//        // contents, tag 연결
-//        ContentTag contentTag = ContentTag.create(contentId, tag.getTagId());
-//        contentsTagRepository.save(contentTag);
 
       });
     }
