@@ -1,0 +1,85 @@
+version: "3.9"
+
+services:
+  mariadb:
+    image: mariadb:10.7
+    container_name: hradar-mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: hradar
+      MARIADB_DATABASE: hit
+      MARIADB_USER: hit
+      MARIADB_PASSWORD: hradar
+      TZ: Asia/Seoul
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    expose:
+      - "3306"
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-u", "hit", "-phradar"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [hradar-net]
+
+  redis:
+    image: redis:7
+    container_name: hradar-redis
+    restart: always
+    expose:
+      - "6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: [hradar-net]
+
+  backend:
+    image: hradar-backend:latest
+    container_name: hradar-backend
+    restart: always
+    ports:
+      - "8888:8888"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+      # DB
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USERNAME: hit
+      DB_PASSWORD: hradar
+
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      # 필수 시크릿
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      GMAIL_USERNAME: ${GMAIL_USERNAME}
+      GMAIL_APP_PASSWORD: ${GMAIL_APP_PASSWORD}
+
+      # Toss 미사용
+      # TOSS-SECRET-KEY:
+      # TOSS-CLIENT-KEY:
+      # TOSS-BASE-URL:
+      # TOSS-SUCCESS-KEY-DEV:
+      # TOSS-FAIL-KEY-DEV:
+    volumes:
+      - uploads:/app/uploads
+      - logs:/app/logs
+    networks: [hradar-net]
+
+volumes:
+  mariadb_data:
+  uploads:
+  logs:
+
+networks:
+  hradar-net:
+    driver: bridge
