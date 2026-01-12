@@ -10,6 +10,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -87,7 +88,7 @@ public class Goal extends BaseTimeEntity {
 
     //Goal이 자기 KPI/OKR를 알고, 제출 시 규칙을 스스로 검증,통제하기 위해”
     @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
-    private java.util.List<KpiDetail> kpis = new java.util.ArrayList<>();
+    private List<KpiDetail> kpis = new java.util.ArrayList<>();
 
     public void addKpi(KpiDetail kpi) {
         if (this.type != GoalType.KPI) {
@@ -97,7 +98,7 @@ public class Goal extends BaseTimeEntity {
     }
 
     @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
-    private java.util.List<OkrKeyResult> okrKeyResults = new java.util.ArrayList<>();
+    private List<OkrKeyResult> okrKeyResults = new java.util.ArrayList<>();
 
     public void addOkrKeyResult(OkrKeyResult kr) {
         if (this.type != GoalType.OKR) {

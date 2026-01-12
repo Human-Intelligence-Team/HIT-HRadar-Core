@@ -314,14 +314,9 @@ public class GoalCommandService {
         }
 
         // 팀 목표인 경우 -> 팀장인지 확인
-        if(goal.getScope() == GoalScope.TEAM) {
-            Department department = departmentRepository.findById(goal.getDepartmentId())
-                    .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-
-            //부서의 managerEmployeeId == actorId -> 팀장
-            if(!actorId.equals(department.getManagerEmployeeId())) {
-                throw new BusinessException(GoalErrorCode.GOAL_EDIT_FORBIDDEN);
-            }
+        if (goal.getScope() == GoalScope.TEAM
+                && !isTeamManager(goal.getDepartmentId(), actorId)) {
+            throw new BusinessException(GoalErrorCode.GOAL_EDIT_FORBIDDEN);
         }
     }
 
