@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
+import org.hit.hradar.global.exception.BusinessException;
 
 @Entity
 @Table(name = "okr_key_result")
@@ -80,6 +82,13 @@ public class OkrKeyResult extends BaseTimeEntity {
         this.content = content;
         this.okrMetricName = metricName;
         this.targetValue = targetValue;
+    }
+
+    public void delete() {
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+        this.isDeleted = 'Y';
     }
 
 }

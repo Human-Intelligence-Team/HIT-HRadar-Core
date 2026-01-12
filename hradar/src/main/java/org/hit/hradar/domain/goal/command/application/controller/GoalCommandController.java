@@ -52,4 +52,24 @@ public class GoalCommandController {
         Long newGoalId = goalCommandService.resubmitGoal(goalId, request);
         return ResponseEntity.ok(ApiResponse.success(newGoalId.toString()));
     }
+
+    //제출
+    @PostMapping("/{goalId}/submit")
+    public ResponseEntity<ApiResponse<String>> submitGoal(
+            @PathVariable Long goalId,
+            @RequestBody Long actorId
+    ) {
+        goalCommandService.submitGoal(goalId, actorId);
+        return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
+    }
+
+    //삭제
+    @DeleteMapping("/{goalId}")
+    public ResponseEntity<ApiResponse<String>> deleteGoal(
+            @PathVariable Long goalId,
+            @RequestParam Long actorId
+    ) {
+        goalCommandService.deleteGoal(goalId, actorId);
+        return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
+    }
 }

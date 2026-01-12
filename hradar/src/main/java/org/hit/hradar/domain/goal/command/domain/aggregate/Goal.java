@@ -43,7 +43,7 @@ public class Goal extends BaseTimeEntity {
     private GoalType type; //KPI, OKR
 
     //목표명
-    @Column(name = "goal_title", nullable = false, length = 200)
+    @Column(name = "goal_title",  length = 200) //임시저장을 위해 null 허용
     private String title;
 
     //목표 설명
@@ -51,11 +51,11 @@ public class Goal extends BaseTimeEntity {
     private String description;
 
     //시작일
-    @Column(name = "goal_start_date", nullable = false)
+    @Column(name = "goal_start_date")//임시저장을 위해 null 허용
     private LocalDate startDate;
 
     //종료일
-    @Column(name = "goal_end_date", nullable = false)
+    @Column(name = "goal_end_date")//임시저장을 위해 null 허용
     private LocalDate endDate;
 
     //부서 ID
@@ -84,6 +84,28 @@ public class Goal extends BaseTimeEntity {
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
+
+    //Goal이 자기 KPI/OKR를 알고, 제출 시 규칙을 스스로 검증,통제하기 위해”
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
+    private java.util.List<KpiDetail> kpis = new java.util.ArrayList<>();
+
+    public void addKpi(KpiDetail kpi) {
+        if (this.type != GoalType.KPI) {
+            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
+        }
+        this.kpis.add(kpi);
+    }
+
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
+    private java.util.List<OkrKeyResult> okrKeyResults = new java.util.ArrayList<>();
+
+    public void addOkrKeyResult(OkrKeyResult kr) {
+        if (this.type != GoalType.OKR) {
+            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
+        }
+        this.okrKeyResults.add(kr);
+    }
+
 
     //=======================================================
 
@@ -181,20 +203,53 @@ public class Goal extends BaseTimeEntity {
                 .build();
     }
 
-    //수정 기능 메서드
-    public void updateAll(
+    //제출 전 수정
+    public void updateDraft(
             String title,
             String description,
             LocalDate startDate,
             LocalDate endDate,
             GoalScope scope
     ) {
+        // 날짜가 둘 다 들어온 경우에만 검증
+        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
+            throw new BusinessException(GoalErrorCode.INVALID_GOAL_PERIOD);
+        }
+
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+
+        if (scope != null) {
+            this.scope = scope;
+        }
+    }
+
+    //제출 후 수정
+    public void updateAfterSubmit(
+            String title,
+            String description,
+            LocalDate startDate,
+            LocalDate endDate,
+            GoalScope scope
+    ) {
+        validateEditable(); // SUBMITTED까지만 허용
+
+        if (title == null || title.isBlank()) {
+            throw new BusinessException(GoalErrorCode.GOAL_TITLE_REQUIRED);
+        }
+        if (startDate == null || endDate == null) {
+            throw new BusinessException(GoalErrorCode.INVALID_GOAL_PERIOD);
+        }
+
         this.title = title;
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
         this.scope = scope;
     }
+
 
     //반려시 재등록 메서드
     public static Goal resubmitFromRejected(
@@ -220,6 +275,69 @@ public class Goal extends BaseTimeEntity {
                 .departmentId(rejected.getDepartmentId())
                 .ownerId(ownerId)
                 .build(); // approveStatus = DRAFT
+    }
+
+    //제출 메서드
+    public void submit() {
+
+        // 이미 삭제된 목표
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        // 이미 제출된 경우
+        if (this.approveStatus != GoalApproveStatus.DRAFT) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_SUBMITTABLE);
+        }
+
+        // 필수값 검증
+        validateRequiredFields();
+
+        //KPI/OKR 1개 이상 있는지 검증
+        if (this.type == GoalType.KPI) {
+
+            if (this.kpis.isEmpty()) {
+                throw new BusinessException(GoalErrorCode.KPI_REQUIRED);
+            }
+
+
+        } else if (this.type == GoalType.OKR) {
+
+            if (this.okrKeyResults.isEmpty()) {
+                throw new BusinessException(GoalErrorCode.OKR_REQUIRED);
+            }
+        }
+
+        this.approveStatus = GoalApproveStatus.SUBMITTED;
+    }
+
+    /* 삭제
+     * DRAFT : 일반사용자 0 팀장 0
+     * SUBMITTED: 일반사용자 x 팀장 0
+     * APPROVED: 일반사용자 x 팀장 0
+     * REJECTED: 일반사용자 x 팀장 0*/
+    public void delete(boolean isManager) {
+
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+
+        //TODO: 인사팀의 경우 삭제 권한 추가
+
+        //팀장이 아니고 초안이 아니라면 == 일반사용자가 초안상태가 아닐때 삭제 한다면
+        if (!isManager && this.approveStatus != GoalApproveStatus.DRAFT) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_DELETABLE);
+        }
+
+        if (this.type == GoalType.KPI) {
+            this.kpis.forEach(KpiDetail::delete);
+        }
+
+        if (this.type == GoalType.OKR) {
+            this.okrKeyResults.forEach(OkrKeyResult::delete);
+        }
+
+        this.isDeleted = 'Y';
     }
 
     //========================검증=============================
@@ -274,5 +392,27 @@ public class Goal extends BaseTimeEntity {
             throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
         }
     }
+
+    //제출 검증(모든 필드 값이 채워져 있는지 여부)
+    private void validateRequiredFields() {
+
+        if (this.title == null || this.title.isBlank()) {
+            throw new BusinessException(GoalErrorCode.GOAL_TITLE_REQUIRED);
+        }
+
+        if (this.startDate == null || this.endDate == null) {
+            throw new BusinessException(GoalErrorCode.INVALID_GOAL_PERIOD);
+        }
+
+        if (this.scope == null || this.type == null) {
+            throw new BusinessException(GoalErrorCode.INVALID_GOAL_TYPE);
+        }
+
+        if (this.depth == GoalDepth.LEVEL_1
+                && this.scope != GoalScope.TEAM) {
+            throw new BusinessException(GoalErrorCode.INVALID_GOAL_SCOPE);
+        }
+    }
+
 
 }
