@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.competencyReport.query.mapper.TagMapper">
+
+  <select id="findAllTags"
+    parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.TagSearchRequest"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
+
+    SELECT t.tag_id
+         , t.tag_name
+      FROM tag t
+     WHERE t.is_deleted =  'N'
+    <if test="tagName != null and tagName != ''">
+       AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
+    </if>
+  </select>
+
+<!--  <select id="countExam"
+    parameterType="org.hit.hradar.domain.exam.query.dto.request.ExamSearchRequest"
+    resultType="long">
+    SELECT COUNT(*)
+    FROM exam
+    <where>
+      <if test="id != null">
+        id = #{id}
+      </if>
+    </where>
+  </select>
+
+  <update id="incrementExam" parameterType="long">
+    UPDATE exam
+    SET exam_count = COALESCE(exam_count, 0) + 1
+    WHERE id = #{id}
+  </update>-->
+
+</mapper>
