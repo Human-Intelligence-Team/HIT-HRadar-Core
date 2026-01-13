@@ -17,22 +17,24 @@
     </if>
   </select>
 
-<!--  <select id="countExam"
-    parameterType="org.hit.hradar.domain.exam.query.dto.request.ExamSearchRequest"
-    resultType="long">
-    SELECT COUNT(*)
-    FROM exam
-    <where>
-      <if test="id != null">
-        id = #{id}
-      </if>
-    </where>
+  <select id="findAllTagsByContentId"
+    parameterType="java.util.List"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
+    SELECT ctt.TAG_ID
+         , tg.TAG_NAME
+      FROM CONTENT_TAG  ctt
+      JOIN TAG tg USING(TAG_ID)
+     WHERE tg.IS_DELETED = 'N'
+    <if test="contentId != null and contentId != ''">
+       AND ctt.CONTENT_ID = #{contentId}
+    </if>
+    <if test="contentIds != null and contentIds.size() > 0">
+      AND t.tag_id IN
+      <foreach item="id" index="index" collection="contentIds"
+        open="(" separator="," close=")">
+        #{id}
+      </foreach>
+    </if>
   </select>
-
-  <update id="incrementExam" parameterType="long">
-    UPDATE exam
-    SET exam_count = COALESCE(exam_count, 0) + 1
-    WHERE id = #{id}
-  </update>-->
 
 </mapper>

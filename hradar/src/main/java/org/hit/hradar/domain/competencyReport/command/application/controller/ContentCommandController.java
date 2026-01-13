@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/learning-content")
-public class ContentsCommandController {
+@RequestMapping("/api/v1/learning-contents")
+public class ContentCommandController {
 
   private final ContentsCommandService contentsCommandService;
 
@@ -25,7 +25,7 @@ public class ContentsCommandController {
    * @return
    */
   @PostMapping
-  public ResponseEntity<ApiResponse<Void>> createContents(
+  public ResponseEntity<ApiResponse<Void>> createContent(
       @RequestBody @Valid ContentsRequest request
   ) throws BadRequestException {
 
