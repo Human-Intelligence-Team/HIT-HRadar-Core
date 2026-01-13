@@ -32,6 +32,6 @@ public class ContentsRequest {
   @Size(max = 2000, message = "비고는 2000자 이내로 입력해주세요.")
   private String notes;
 
-  private List<Long> tags; // 태그 id 리스트
+   private List<Long> tags; // 태그 id 리스트
 
 }
