@@ -2,7 +2,7 @@ package org.hit.hradar.domain.attendance.command.application.service;
 
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.attendance.IpPolicyErrorCode;
-import org.hit.hradar.domain.attendance.command.domain.aggregate.IpPolicyType;
+import org.hit.hradar.domain.attendance.command.application.dto.RegisterIpRangePolicyRequest;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.IpRangePolicy;
 import org.hit.hradar.domain.attendance.command.domain.repository.IpRangePolicyRepository;
 import org.hit.hradar.global.exception.BusinessException;
@@ -17,14 +17,14 @@ public class IpRangePolicyCommandService {
   private final IpRangePolicyRepository ipRangePolicyRepository;
 
   //관리자 ip 정책 등록, 신규 정책은 insert(기존 정책 덮어쓰지 않음)
-  public void register(Long comId,
-      String cidr,
-      String locationName,
-      IpPolicyType type
-  ){
+  public void registerIpPolicy(RegisterIpRangePolicyRequest request) {
     //IP 정책 엔티티 생성 (기본값 활성)
-    IpRangePolicy policy =
-        new IpRangePolicy(comId, cidr, locationName, type);
+    IpRangePolicy policy = new IpRangePolicy(
+      request.getComId(),
+      request.getCidr(),
+      request.getLocationName(),
+      request.getType()
+  );
 
     //insert
     ipRangePolicyRepository.register(policy);
@@ -32,7 +32,7 @@ public class IpRangePolicyCommandService {
 
   //관리자 ip 정책 일시적 비활성화, softDelete(출퇴근 판단에서 제외)
   @Transactional
-  public void deactivate(Long ipId) {
+  public void deactivateIpPolicy(Long ipId) {
     IpRangePolicy policy = ipRangePolicyRepository.findById(ipId)
         .orElseThrow(() ->
             new BusinessException(IpPolicyErrorCode.IpRange_NOT_FOUND));
@@ -43,7 +43,7 @@ public class IpRangePolicyCommandService {
 
   //IP 정책 소프트 삭제, DB유지(관리자 화면에서 삭제)
   @Transactional
-  public void softDelete(Long ipId) {
+  public void softDeleteIpPolicy(Long ipId) {
     IpRangePolicy policy = ipRangePolicyRepository.findById(ipId)
         .orElseThrow(() ->
             new BusinessException(IpPolicyErrorCode.IpRange_NOT_FOUND));

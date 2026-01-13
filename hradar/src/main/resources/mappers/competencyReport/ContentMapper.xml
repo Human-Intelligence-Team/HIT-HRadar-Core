@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.competencyReport.query.mapper.ContentMapper">
+
+  <select id="findAllContents"
+    parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentDTO">
+
+    SELECT ct.CONTENT_ID
+         , ct.LEARNING_TIME
+         , ct.LEVEL
+         , ct.RESOURCE_PATH
+         , ct.TITLE
+         , ct.TYPE
+         , ctt.TAG_ID
+         , tg.TAG_NAME
+      FROM CONTENT ct
+    JOIN CONTENT_TAG ctt USING (CONTENT_ID)
+    JOIN TAG tg USING(TAG_ID)
+     WHERE tg.IS_DELETED = 'N'
+    <if test="level != null and level != ''">
+       AND ct.LEVEL = #{level}
+    </if>
+    <if test="title != null and title != ''">
+       AND ct.TITLE LIKE CONCAT('%', #{title}, '%')
+    </if>
+    <if test="type != null and type != ''">
+       AND ct.TYPE = #{type}
+    </if>
+    <if test="isDeleted != null and isDeleted != ''">
+       AND ct.IS_DELETED = #{isDeleted}
+    </if>
+    <if test="learningTime != null and learningTime != ''">
+       AND ct.LEARNING_TIME &lt; #{learningTime}
+    </if>
+  </select>
+
+</mapper>
