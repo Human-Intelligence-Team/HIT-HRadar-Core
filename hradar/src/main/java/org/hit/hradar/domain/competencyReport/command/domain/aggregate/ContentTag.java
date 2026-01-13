@@ -9,13 +9,14 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "content_tag")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ContentTag {
+public class ContentTag extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
