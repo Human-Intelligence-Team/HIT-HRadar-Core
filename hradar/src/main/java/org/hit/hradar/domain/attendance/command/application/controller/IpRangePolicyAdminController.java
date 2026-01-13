@@ -3,7 +3,6 @@ package org.hit.hradar.domain.attendance.command.application.controller;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.attendance.command.application.service.IpRangePolicyCommandService;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.IpPolicyType;
-import org.hit.hradar.domain.attendance.command.domain.repository.IpRangePolicyRepository;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class IpRangePolicyAdminController {
 
   private final IpRangePolicyCommandService ipRangePolicyCommandService;
-  private final IpRangePolicyRepository ipRangePolicyRepository;
 
   //관리자 IP 정책 등록(기본 상태는 활성), 신규 IP 대역을 정책으로 추가
   @PostMapping

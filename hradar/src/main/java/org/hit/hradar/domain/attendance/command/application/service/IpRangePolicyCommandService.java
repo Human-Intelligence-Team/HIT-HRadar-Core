@@ -1,10 +1,13 @@
 package org.hit.hradar.domain.attendance.command.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.attendance.IpPolicyErrorCode;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.IpPolicyType;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.IpRangePolicy;
 import org.hit.hradar.domain.attendance.command.domain.repository.IpRangePolicyRepository;
+import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,20 +31,22 @@ public class IpRangePolicyCommandService {
   }
 
   //관리자 ip 정책 일시적 비활성화, softDelete(출퇴근 판단에서 제외)
+  @Transactional
   public void deactivate(Long ipId) {
     IpRangePolicy policy = ipRangePolicyRepository.findById(ipId)
         .orElseThrow(() ->
-            new IllegalArgumentException("IP 정책 없음"));
+            new BusinessException(IpPolicyErrorCode.IpRange_NOT_FOUND));
 
     //상태 변경(update)
     policy.deactivate();
   }
 
   //IP 정책 소프트 삭제, DB유지(관리자 화면에서 삭제)
+  @Transactional
   public void softDelete(Long ipId) {
     IpRangePolicy policy = ipRangePolicyRepository.findById(ipId)
         .orElseThrow(() ->
-            new IllegalArgumentException("IP 정책 없음"));
+            new BusinessException(IpPolicyErrorCode.IpRange_NOT_FOUND));
 
     policy.softDelete();
   }
