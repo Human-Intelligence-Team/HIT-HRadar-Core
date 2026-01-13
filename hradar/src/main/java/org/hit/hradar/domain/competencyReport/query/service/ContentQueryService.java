@@ -27,6 +27,7 @@ public class ContentQueryService {
    */
   public ContentSearchResponse contents(ContentSearchRequest request) {
 
+    //
     List<ContentRowDTO> contents = contentMapper.findAllContents(request);
 
     List<ContentDTO> result = contents.stream()
