@@ -1,11 +1,10 @@
 package org.hit.hradar.global.exception;
 
-import static org.hibernate.internal.util.ExceptionHelper.getRootCause;
-
 import lombok.extern.slf4j.Slf4j;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
