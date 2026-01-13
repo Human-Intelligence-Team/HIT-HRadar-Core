@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ContentsCommandService {
 
   private final ContentsRepository contentsRepository;
-  private final TagRepository tagRepository;
   private final ContentTagRepository contentTagRepository;
 
   /**
@@ -40,7 +39,8 @@ public class ContentsCommandService {
           .map(tagId -> ContentTag.create(contentId, tagId))
           .toList();
 
-     //  contentTagRepository.saveAll(contentTags);
+      // contentTagRepository.saveAll(contentTags);
+      contentTagRepository.saveAllWithPolicy(contentTags);
 
     }
   }

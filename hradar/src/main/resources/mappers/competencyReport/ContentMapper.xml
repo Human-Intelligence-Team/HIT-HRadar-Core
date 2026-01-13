@@ -6,34 +6,35 @@
 
   <select id="findAllContents"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest"
-    resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentDTO">
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO">
 
-    SELECT ct.CONTENT_ID
-         , ct.LEARNING_TIME
-         , ct.LEVEL
-         , ct.RESOURCE_PATH
-         , ct.TITLE
-         , ct.TYPE
-         , ctt.TAG_ID
-         , tg.TAG_NAME
-      FROM CONTENT ct
+    SELECT ct.CONTENT_ID      AS contentId
+    , ct.LEARNING_TIME   AS learningTime
+    , ct.LEVEL           AS level
+    , ct.RESOURCE_PATH   AS resourcePath
+    , ct.TITLE           AS title
+    , ct.TYPE            AS type
+    , ctt.TAG_ID         AS tagId
+    , tg.TAG_NAME        AS tagName
+    FROM CONTENT ct
     JOIN CONTENT_TAG ctt USING (CONTENT_ID)
-    JOIN TAG tg USING(TAG_ID)
-     WHERE tg.IS_DELETED = 'N'
-    <if test="level != null and level != ''">
-       AND ct.LEVEL = #{level}
+    JOIN TAG tg USING (TAG_ID)
+    WHERE tg.IS_DELETED = 'N'
+
+    <if test="level != null">
+      AND ct.LEVEL = #{level}
     </if>
     <if test="title != null and title != ''">
-       AND ct.TITLE LIKE CONCAT('%', #{title}, '%')
+      AND ct.TITLE LIKE CONCAT('%', #{title}, '%')
     </if>
-    <if test="type != null and type != ''">
-       AND ct.TYPE = #{type}
+    <if test="type != null">
+      AND ct.TYPE = #{type}
     </if>
-    <if test="isDeleted != null and isDeleted != ''">
-       AND ct.IS_DELETED = #{isDeleted}
+    <if test="isDeleted != null">
+      AND ct.IS_DELETED = #{isDeleted}
     </if>
-    <if test="learningTime != null and learningTime != ''">
-       AND ct.LEARNING_TIME &lt; #{learningTime}
+    <if test="learningTime != null">
+      AND ct.LEARNING_TIME &lt; #{learningTime}
     </if>
   </select>
 

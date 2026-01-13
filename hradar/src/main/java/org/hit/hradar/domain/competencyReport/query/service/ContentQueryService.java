@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.query.dto.ContentDTO;
+import org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.TagDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest;
 import org.hit.hradar.domain.competencyReport.query.dto.response.ContentSearchResponse;
@@ -26,10 +27,10 @@ public class ContentQueryService {
    */
   public ContentSearchResponse contents(ContentSearchRequest request) {
 
-    List<ContentDTO> contents = contentMapper.findAllContents(request);
+    List<ContentRowDTO> contents = contentMapper.findAllContents(request);
 
     List<ContentDTO> result = contents.stream()
-        .collect(Collectors.groupingBy(ContentDTO::getContentId))
+        .collect(Collectors.groupingBy(ContentRowDTO::getContentId))
         .entrySet().stream()
         .map(entry -> {
 
@@ -38,7 +39,7 @@ public class ContentQueryService {
               .map(f -> new TagDTO(f.getTagId(), f.getTagName()))
               .collect(Collectors.toList());
 
-          ContentDTO first = entry.getValue().get(0);
+          ContentRowDTO first = entry.getValue().get(0);
           ContentDTO dto = new ContentDTO(
                 first.getContentId()
               , first.getTitle()
@@ -50,7 +51,7 @@ public class ContentQueryService {
               ,  tags
           );
           return dto;
-        }).collect(Collectors.toList());
+        }).toList();
 
     return new ContentSearchResponse(result);
 

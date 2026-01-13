@@ -5,6 +5,5 @@ import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentTa
 
 public interface ContentTagRepository {
 
-  // void saveAll(List<ContentTag> contentTags);
-  //void saveAllByContent(Long contentId, List<ContentTag> contentTags);
+  void saveAllWithPolicy(List<ContentTag> contentTags);
 }
