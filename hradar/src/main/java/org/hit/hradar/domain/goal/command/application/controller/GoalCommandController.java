@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/goals")
+@RequestMapping("/goals")
 public class GoalCommandController {
 
     private final GoalCommandService goalCommandService;
