@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.goal.GoalErrorCode;
+import org.hit.hradar.domain.goal.command.domain.policy.GoalValidationPolicy;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
@@ -212,11 +213,6 @@ public class Goal extends BaseTimeEntity {
             LocalDate endDate,
             GoalScope scope
     ) {
-        // 날짜가 둘 다 들어온 경우에만 검증
-        if (startDate != null && endDate != null && endDate.isBefore(startDate)) {
-            throw new BusinessException(GoalErrorCode.INVALID_GOAL_PERIOD);
-        }
-
         this.title = title;
         this.description = description;
         this.startDate = startDate;
@@ -235,14 +231,6 @@ public class Goal extends BaseTimeEntity {
             LocalDate endDate,
             GoalScope scope
     ) {
-        validateEditable(); // SUBMITTED까지만 허용
-
-        if (title == null || title.isBlank()) {
-            throw new BusinessException(GoalErrorCode.GOAL_TITLE_REQUIRED);
-        }
-        if (startDate == null || endDate == null) {
-            throw new BusinessException(GoalErrorCode.INVALID_GOAL_PERIOD);
-        }
 
         this.title = title;
         this.description = description;
@@ -262,7 +250,6 @@ public class Goal extends BaseTimeEntity {
             GoalScope scope,
             Long ownerId
     ) {
-        rejected.validateResubmittable();
 
         return Goal.builder()
                 .parentGoalId(rejected.getParentGoalId())
@@ -281,34 +268,6 @@ public class Goal extends BaseTimeEntity {
     //제출 메서드
     public void submit() {
 
-        // 이미 삭제된 목표
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-
-        // 이미 제출된 경우
-        if (this.approveStatus != GoalApproveStatus.DRAFT) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_SUBMITTABLE);
-        }
-
-        // 필수값 검증
-        validateRequiredFields();
-
-        //KPI/OKR 1개 이상 있는지 검증
-        if (this.type == GoalType.KPI) {
-
-            if (this.kpis.isEmpty()) {
-                throw new BusinessException(GoalErrorCode.KPI_REQUIRED);
-            }
-
-
-        } else if (this.type == GoalType.OKR) {
-
-            if (this.okrKeyResults.isEmpty()) {
-                throw new BusinessException(GoalErrorCode.OKR_REQUIRED);
-            }
-        }
-
         this.approveStatus = GoalApproveStatus.SUBMITTED;
     }
 
@@ -317,139 +276,19 @@ public class Goal extends BaseTimeEntity {
      * SUBMITTED: 일반사용자 x 팀장 0
      * APPROVED: 일반사용자 x 팀장 0
      * REJECTED: 일반사용자 x 팀장 0*/
-    public void delete(boolean isManager) {
-
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-
-        //TODO: 인사팀의 경우 삭제 권한 추가
-
-        //팀장이 아니고 초안이 아니라면 == 일반사용자가 초안상태가 아닐때 삭제 한다면
-        if (!isManager && this.approveStatus != GoalApproveStatus.DRAFT) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_DELETABLE);
-        }
-
-        if (this.type == GoalType.KPI) {
-            this.kpis.forEach(KpiDetail::delete);
-        }
-
-        if (this.type == GoalType.OKR) {
-            this.okrKeyResults.forEach(OkrKeyResult::delete);
-        }
-
+    public void delete() {
         this.isDeleted = 'Y';
     }
 
-    //승인 APPROVE
+    //승인
     public void approve() {
-        // 삭제된 목표
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-
-        // 제출된 건만 승인 가능
-        if (this.approveStatus != GoalApproveStatus.SUBMITTED) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_APPROVABLE);
-        }
-
         this.approveStatus = GoalApproveStatus.APPROVED;
-        this.rejectReason = null; // 혹시 남아있으면 제거
     }
 
+    //반려
     public void reject(String rejectReason) {
-        // 삭제된 목표
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-
-        // 제출된 건만 반려 가능
-        if (this.approveStatus != GoalApproveStatus.SUBMITTED) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_APPROVABLE);
-        }
-
-        // 반려 사유 필수
-        if (rejectReason == null || rejectReason.isBlank()) {
-            throw new BusinessException(GoalErrorCode.GOAL_REJECT_REASON_REQUIRED);
-        }
-
         this.approveStatus = GoalApproveStatus.REJECTED;
         this.rejectReason = rejectReason;
     }
-
-    //========================검증=============================
-    public void validateCreatableKpi() {
-
-        // 삭제된 목표
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-
-        // KPI 타입 Goal에서만 KPI 생성 가능
-        if (this.type != GoalType.KPI) {
-            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
-        }
-
-        //TODO: KPI 생성 가능 개수 제한
-    }
-
-    public void validateCreatableOkr() {
-
-        // 삭제된 목표
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-
-        // OKR 타입 Goal에서만 KR 생성 가능
-        if (this.type != GoalType.OKR) {
-            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
-        }
-
-        // TODO: KR 최대 개수 제한
-    }
-
-    //수정 가능 상태 검증
-    public void validateEditable() {
-        //APPROVED / REJECTED는 수정 불가
-        if (this.approveStatus == GoalApproveStatus.APPROVED
-                || this.approveStatus == GoalApproveStatus.REJECTED) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_EDITABLE);
-        }
-    }
-    public void validateEditableForKpiOkr() {
-        validateEditable();
-    }
-
-    //REJECTED 반려시에만 재등록 가능
-    public void validateResubmittable() {
-        if (this.approveStatus != GoalApproveStatus.REJECTED) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_RESUBMITTABLE);
-        }
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-    }
-
-    //제출 검증(모든 필드 값이 채워져 있는지 여부)
-    private void validateRequiredFields() {
-
-        if (this.title == null || this.title.isBlank()) {
-            throw new BusinessException(GoalErrorCode.GOAL_TITLE_REQUIRED);
-        }
-
-        if (this.startDate == null || this.endDate == null) {
-            throw new BusinessException(GoalErrorCode.INVALID_GOAL_PERIOD);
-        }
-
-        if (this.scope == null || this.type == null) {
-            throw new BusinessException(GoalErrorCode.INVALID_GOAL_TYPE);
-        }
-
-        if (this.depth == GoalDepth.LEVEL_1
-                && this.scope != GoalScope.TEAM) {
-            throw new BusinessException(GoalErrorCode.INVALID_GOAL_SCOPE);
-        }
-    }
-
 
 }
