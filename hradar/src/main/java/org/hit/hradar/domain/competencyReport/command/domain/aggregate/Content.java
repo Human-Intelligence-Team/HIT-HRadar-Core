@@ -18,9 +18,9 @@ import org.hit.hradar.global.exception.BusinessException;
 
 @Entity
 @Getter
-@Table(name="contents")
+@Table(name="content")
 @NoArgsConstructor
-public class Contents extends BaseTimeEntity {
+public class Content extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +57,7 @@ public class Contents extends BaseTimeEntity {
     }
   }
 
-  public Contents(String title, ContentType type, Level level, Integer learningTime, String resourcePath, String notes) {
+  public Content(String title, ContentType type, Level level, Integer learningTime, String resourcePath, String notes) {
     this.title = title;
     this.type = type;
     this.level = level;
@@ -67,7 +67,7 @@ public class Contents extends BaseTimeEntity {
   }
 
   // 등록
-  public static Contents create(ContentsRequest request) {
+  public static Content create(ContentsRequest request) {
 
     if (request.getTitle() == null) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_TITLE_REQUIRED);
@@ -85,7 +85,7 @@ public class Contents extends BaseTimeEntity {
     String normalizedResourcePath = request.getResourcePath().trim();
     String normalizedNotes = request.getNotes().trim();
 
-    return new Contents(normalizedTitle
+    return new Content(normalizedTitle
                     , request.getType()
                     , request.getLevel()
                     , request.getLearningTime()
