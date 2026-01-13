@@ -16,6 +16,8 @@ public enum CompetencyReportErrorCode implements ErrorCode {
   CONTENT_LEVEL_REQUIRED("CR-003", "컨텐츠 난이도는 필수 입력 값입니다.", HttpStatus.BAD_REQUEST),
   // Contents Tag 관련 ErrorCode
 
+
+
   // Tag 관련 ErrorCode
   TAG_NAME_REQUIRED("TAG-001" , "태그명은 필수 입력 값입니다.", HttpStatus.BAD_REQUEST),
   TAG_NAME_ALREADY_EXISTS("TAG-002", "이미 존재하는 태그명입니다.", HttpStatus.BAD_REQUEST),

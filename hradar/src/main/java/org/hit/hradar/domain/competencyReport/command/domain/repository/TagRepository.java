@@ -8,7 +8,6 @@ public interface TagRepository{
 
   Boolean existsByTagName(String tagName);
   Tag save(Tag tag);
-  List<Tag> findAllByTagIdIn(List<Long> tagIds);
 
   void deleteByTagIdIn(List<Long> tagIds);
 }
