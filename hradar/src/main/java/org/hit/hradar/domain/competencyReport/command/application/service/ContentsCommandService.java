@@ -1,10 +1,9 @@
 package org.hit.hradar.domain.competencyReport.command.application.service;
 
 
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentsRequest;
-import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Contents;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Content;
 import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentsRepository;
 import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentsTagRepository;
 import org.hit.hradar.domain.competencyReport.command.domain.repository.TagRepository;
@@ -29,11 +28,11 @@ public class ContentsCommandService {
     // userId 확인
 
     // 학습 컨텐츠 등록
-    Contents contents = Contents.create(request);
+    Content content = Content.create(request);
     //contentsRepository.save(contents);
 
     // 학습 컨텐츠 ID로 학습 컨텐츠로 tag 연결
-    Long contentId = contents.getId();
+    Long contentId = content.getId();
 
   }
 }
