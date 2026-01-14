@@ -9,32 +9,22 @@
     resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
 
     SELECT t.tag_id
-         , t.tag_name
-      FROM tag t
-     WHERE t.is_deleted =  'N'
+    , t.tag_name
+    FROM tag t
+    WHERE t.is_deleted = 'N'
     <if test="tagName != null and tagName != ''">
-       AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
+      AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
     </if>
   </select>
 
   <select id="findAllTagsByContentId"
-    parameterType="java.util.List"
+    parameterType="Long"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
     SELECT ctt.TAG_ID
-         , tg.TAG_NAME
-      FROM CONTENT_TAG  ctt
-      JOIN TAG tg USING(TAG_ID)
-     WHERE tg.IS_DELETED = 'N'
-    <if test="contentId != null and contentId != ''">
-       AND ctt.CONTENT_ID = #{contentId}
-    </if>
-    <if test="contentIds != null and contentIds.size() > 0">
-      AND t.tag_id IN
-      <foreach item="id" index="index" collection="contentIds"
-        open="(" separator="," close=")">
-        #{id}
-      </foreach>
-    </if>
+    , tg.TAG_NAME
+    FROM CONTENT_TAG  ctt
+    JOIN TAG tg USING(TAG_ID)
+    WHERE tg.IS_DELETED = 'N'
+    AND ctt.CONTENT_ID = #{contentId}
   </select>
-
 </mapper>

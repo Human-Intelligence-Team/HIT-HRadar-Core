@@ -14,6 +14,7 @@ public enum CompetencyReportErrorCode implements ErrorCode {
   CONTENT_TITLE_REQUIRED("CR-001", "컨텐츠 제목은 필수 입력 값입니다.", HttpStatus.BAD_REQUEST),
   CONTENT_TYPE_REQUIRED("CR-002", "컨텐츠 타입은 필수 입력 값입니다.", HttpStatus.BAD_REQUEST),
   CONTENT_LEVEL_REQUIRED("CR-003", "컨텐츠 난이도는 필수 입력 값입니다.", HttpStatus.BAD_REQUEST),
+  CONTENT_NOT_FOUND("CR-004", "존재하지 않는 컨텐츠입니다.",  HttpStatus.NOT_FOUND),
   // Contents Tag 관련 ErrorCode
 
 

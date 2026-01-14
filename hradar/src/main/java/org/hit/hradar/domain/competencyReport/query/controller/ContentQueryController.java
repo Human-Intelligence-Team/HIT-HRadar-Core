@@ -2,6 +2,7 @@ package org.hit.hradar.domain.competencyReport.query.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest;
+import org.hit.hradar.domain.competencyReport.query.dto.response.ContentDetailResponse;
 import org.hit.hradar.domain.competencyReport.query.dto.response.ContentSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.dto.response.TagSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.service.ContentQueryService;
@@ -9,6 +10,7 @@ import org.hit.hradar.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,4 +35,17 @@ public class ContentQueryController {
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
+  /**
+   * 학습 콘텐츠 상세
+   * @param id
+   * @return
+   */
+  @GetMapping("{id}")
+  public ResponseEntity<ApiResponse<ContentDetailResponse>> contentDetail(
+      @PathVariable Long id
+  )  {
+
+    ContentDetailResponse response = contentQueryService.contentDetail(id);
+    return ResponseEntity.ok(ApiResponse.success(response));
+  }
 }

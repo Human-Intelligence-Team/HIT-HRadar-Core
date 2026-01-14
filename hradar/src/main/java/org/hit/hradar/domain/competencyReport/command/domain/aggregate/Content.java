@@ -11,7 +11,8 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentsRequest;
+import org.hit.hradar.domain.competencyReport.command.application.controller.ContentUpdateRequest;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentCreateRequest;
 import org.hit.hradar.domain.competencyReport.competencyReportErrorCode.CompetencyReportErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
@@ -66,20 +67,26 @@ public class Content extends BaseTimeEntity {
     this.notes = notes;
   }
 
-  // 등록
-  public static Content create(ContentsRequest request) {
-
-    if (request.getTitle() == null) {
+  // 유효성
+  private static void validate(String title, ContentType type, Level level) {
+    if (title == null) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_TITLE_REQUIRED);
     }
 
-    if(request.getType() == null) {
+    if(type == null) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_TYPE_REQUIRED);
     }
 
-    if(request.getLevel() == null) {
+    if(level == null) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_LEVEL_REQUIRED);
     }
+  }
+
+  // 등록
+  public static Content create(ContentCreateRequest request) {
+
+    // validation
+    validate(request.getTitle(), request.getType(), request.getLevel());
 
     String normalizedTitle = request.getTitle().trim();
     String normalizedResourcePath = request.getResourcePath().trim();
@@ -94,5 +101,25 @@ public class Content extends BaseTimeEntity {
 
   }
 
+  // 수정
+  public void update(ContentUpdateRequest request) {
+
+    // validation
+    validate(request.getTitle(), request.getType(), request.getLevel());
+
+    // trim
+    String normalizedTitle = request.getTitle().trim();
+    String normalizedResourcePath = request.getResourcePath().trim();
+    String normalizedNotes = request.getNotes().trim();
+
+    // update
+    this.title = normalizedTitle;
+    this.type = request.getType();
+    this.level = request.getLevel();
+    this.learningTime = request.getLearningTime();
+    this.resourcePath = normalizedResourcePath;
+    this.notes = normalizedNotes;
+    this.isDeleted = request.getIsDeleted();
+  }
 
 }
