@@ -2,7 +2,7 @@ package org.hit.hradar.domain.goal.query.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.goal.query.dto.response.GoalNodeResponseDto;
-import org.hit.hradar.domain.goal.query.service.GoalQueryService;
+import org.hit.hradar.domain.goal.query.service.GoalListQueryService;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +16,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/goals")
-public class GoalQueryController {
+public class GoalListQueryController {
 
-    private final GoalQueryService goalQueryService;
+    private final GoalListQueryService goalQueryService;
 
     //팀 Goal 트리 조회
     @GetMapping()

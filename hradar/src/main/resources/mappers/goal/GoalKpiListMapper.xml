@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.goal.query.mapper.GoalKpiListMapper">
+
+    <select id="findKpisByGoalId"
+            parameterType="long"
+            resultType="org.hit.hradar.domain.goal.query.dto.response.GoalKpiListResponseDto">
+
+        SELECT
+           /*KPI 기본 정보*/
+            kd.kpi_id           AS kpiId,
+            kd.kpi_metric_name  AS metricName,
+            kd.kpi_start_value  AS startValue,
+            kd.kpi_target_value AS targetValue,
+
+
+               /* 누적 값: start + SUM(log_value)
+                  SUM(log_value) = 10000 + 20000 + 30000 = 60000*/
+            (
+                kd.kpi_start_value
+                    + IFNULL(SUM(kpl.log_value), 0)
+                ) AS currentValue,
+
+            /*KPI 진행 률*/
+            CASE
+                /* target - start == 0 이면 0 처리 */
+                WHEN (kd.kpi_target_value - kd.kpi_start_value) = 0 THEN 0
+                ELSE
+                    LEAST(
+                            100,
+                            GREATEST(
+                                    0,
+                                    (
+                                        (
+                                            /*progress =(60000 - 0) / (100000 - 0) * 100 = 0.6 * 100 = 60%*/
+                                            (kd.kpi_start_value + IFNULL(SUM(kpl.log_value), 0))
+                                                - kd.kpi_start_value
+                                            )
+                                            / (kd.kpi_target_value - kd.kpi_start_value)
+                                        ) * 100
+                            )
+                    )
+                END AS progressRate
+
+        FROM kpi_detail kd
+                 LEFT JOIN kpi_progress_log kpl
+                           ON kpl.kpi_id = kd.kpi_id
+                               AND kpl.is_deleted = 'N'
+
+        WHERE kd.goal_id = #{goalId}
+          AND kd.is_deleted = 'N'
+
+        /*
+         KPI별로 SUM(log_value)를 계산해야 하므로
+         kpi_id 기준 GROUP BY
+          log_value = [10000, 20000, 30000]
+         */
+        GROUP BY
+            kd.kpi_id,
+            kd.kpi_metric_name,
+            kd.kpi_start_value,
+            kd.kpi_target_value
+
+        /* KPI 목록 정렬 기준 (원하면 바꿔도 됨)
+           - 여기서는 생성순(id 기준)
+         */
+        ORDER BY kd.kpi_id ASC
+
+    </select>
+
+</mapper>
