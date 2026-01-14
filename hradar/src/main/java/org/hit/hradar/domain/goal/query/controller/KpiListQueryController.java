@@ -1,7 +1,7 @@
 package org.hit.hradar.domain.goal.query.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.goal.query.dto.response.GoalKpiListResponseDto;
+import org.hit.hradar.domain.goal.query.dto.response.KpiListResponseDto;
 import org.hit.hradar.domain.goal.query.service.KpiListQueryService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +18,7 @@ public class KpiListQueryController {
     private final KpiListQueryService goalKpiListQueryService;
 
     @GetMapping("/{goalId}/kpis")
-    public List<GoalKpiListResponseDto> getGoalKpis(
+    public List<KpiListResponseDto> getGoalKpis(
             @PathVariable Long goalId
     ) {
         return goalKpiListQueryService.getKpis(goalId);

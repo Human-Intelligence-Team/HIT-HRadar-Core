@@ -23,7 +23,7 @@ public class GoalNodeResponseDto {
     private Long parentGoalId;
 
     private GoalDepth depth;
-    private GoalType goalType;
+    private GoalType type;
     private String title;
 
     private GoalApproveStatus approveStatus;
@@ -32,8 +32,8 @@ public class GoalNodeResponseDto {
     private BigDecimal progressRate;
 
     // KPI / OKR 목록 (둘 중 하나만 채워짐)
-    private List<KpiProgressResponseDto> kpis = new ArrayList<>();
-    private List<OkrProgressResponseDto> okrs = new ArrayList<>();
+    private List<KpiListResponseDto> kpis = new ArrayList<>();
+    private List<OkrListResponseDto> okrs = new ArrayList<>();
 
     // 트리
     private List<GoalNodeResponseDto> children = new ArrayList<>();

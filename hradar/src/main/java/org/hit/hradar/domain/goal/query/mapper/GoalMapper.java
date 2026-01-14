@@ -13,28 +13,19 @@ import java.util.List;
 @Mapper
 public interface GoalMapper {
 
-    /** 1. 팀에 속한 모든 Goal */
+    /* 1. Goal 기본 목록 (트리용) */
     List<GoalNodeResponseDto> selectGoals(
             @Param("departmentId") Long departmentId
     );
 
-    /** 2. Goal 하위 KPI 목록 */
-    List<KpiProgressResponseDto> selectKpis(
+    /* 2. Goal 하위 KPI 목록 (STEP2 DTO) */
+    List<KpiListResponseDto> selectKpisByGoalIds(
             @Param("goalIds") List<Long> goalIds
     );
 
-    /** 3. KPI 누적값 (SUM) */
-    List<KpiCurrentSumRow> selectKpiCurrentSums(
-            @Param("kpiIds") List<Long> kpiIds
-    );
-
-    /** 4. Goal 하위 KR 목록 */
-    List<KrProgressResponseDto> selectKrs(
+    /* 3. Goal 하위 OKR 목록 (STEP4 DTO) */
+    List<OkrListResponseDto> selectOkrsByGoalIds(
             @Param("goalIds") List<Long> goalIds
-    );
-
-    /** 5. KR 최신 진척률 */
-    List<KrLatestProgressRow> selectKrLatestProgress(
-            @Param("krIds") List<Long> krIds
     );
 }
+

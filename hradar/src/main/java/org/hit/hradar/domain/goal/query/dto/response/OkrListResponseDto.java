@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class OkrListResponseDto {
 
+    private Long goalId;
+
     private Long keyResultId;
 
     private String content;

@@ -16,7 +16,7 @@ public class KpiDetailQueryController {
     KpiDetailQueryService kpiDetailQueryService;
 
     /*KPI 상세 및 로그 조회*/
-    @GetMapping("{/{kpiId}/detail")
+    @GetMapping("/{kpiId}/detail")
     public KpiDetailResponseDto getKpiDetail(
             @PathVariable Long kpiId
     ){
