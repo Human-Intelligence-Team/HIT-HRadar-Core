@@ -12,7 +12,7 @@ import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Level;
 @Setter
 @Getter
 @NoArgsConstructor
-public class ContentsRequest {
+public class ContentCreateRequest {
 
 
   @NotBlank(message = "제목은 필수입니다.")

@@ -38,8 +38,9 @@ public class ContentDTO {
     this.tags = tags;
   }
 
-  public ContentDTO(String title, ContentType type, Level level,
+  public ContentDTO(Long contentId, String title, ContentType type, Level level,
       Integer learningTime, String resourcePath, String notes, Character isDeleted, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    this.contentId = contentId;
     this.title = title;
     this.type = type;
     this.level = level;

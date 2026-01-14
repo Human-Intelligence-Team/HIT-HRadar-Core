@@ -7,6 +7,6 @@ import org.hit.hradar.domain.competencyReport.query.dto.TagDTO;
 public interface ContentTagRepository {
 
   void saveAllWithPolicy(List<ContentTag> contentTags);
+  void deleteAllByContentId(Long contentId);
 
-  List<TagDTO> findAllByContentId(Long contentId);
 }

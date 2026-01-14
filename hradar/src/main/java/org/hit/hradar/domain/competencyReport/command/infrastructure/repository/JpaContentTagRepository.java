@@ -16,10 +16,4 @@ public interface JpaContentTagRepository extends ContentTagRepository, JpaReposi
     saveAll(contentTags);
   }
 
-  default List<TagDTO> findAllByContentId(Long contentId) {
-    if (contentId == null) {
-      return null;
-    }
-    return findAllByContentId(contentId);
-  }
 }

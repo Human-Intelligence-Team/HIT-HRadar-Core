@@ -48,7 +48,8 @@
     parameterType="Long"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentDTO">
 
-    SELECT ct.TITLE           AS title
+    SELECT ct.CONTENT_ID      AS contentId
+         , ct.TITLE           AS title
          , ct.TYPE            AS type
          , ct.LEVEL           AS level
          , ct.LEARNING_TIME   AS learningTime
