@@ -47,7 +47,7 @@ spring:
 
 jwt:
   secret-key: Q8b83bmIq4KI2lvE+bViXYvo9SyODg1g0Q0dPyG9VNutj0GgBG8SxhWwL3oexDlWtq5uxFZs+k+NWXHYXKLjYg==
-  expiration: 3600000  # 1시간
+  expiration: 600000  # 10분
   refresh-expiration: 1209600000 # 2주
 
 server:

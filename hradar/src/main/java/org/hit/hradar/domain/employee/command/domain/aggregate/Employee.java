@@ -15,10 +15,10 @@ import java.time.LocalDate;
 public class Employee extends BaseTimeEntity {
 
   @Id
-  @Column(name = "emp_id", nullable = false)
+  @Column(name = "emp_id", nullable = false, unique = true)
   private Long empId;
 
-  @Column(name = "com_id", nullable = false)
+  @Column(name = "com_id", nullable = false, unique = true)
   private Long comId;
 
   @Column(name = "dept_id", nullable = false)
@@ -27,15 +27,16 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "position_id")
   private Long positionId;
 
-  @Column(name = "employee_no", nullable = false, length = 30)
-  private String employeeNo;
+  @Column(name = "account_id", nullable = false, unique = true)
+  private Long accId;
 
-  @Column(name = "name", nullable = false, length = 50)
-  private String name;
+  @Column(name = "employee_no", nullable = false, length = 30, unique = true)
+  private String employeeNo;
 
   @Column(name = "email", length = 255)
   private String email;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "gender")
   private Gender gender;
 
@@ -51,17 +52,18 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "image", length = 255)
   private String image;
 
-  @Column(name = "cellphone_no", length = 11)
-  private String cellphoneNo;
+  @Column(name = "extension_number", length = 11)
+  private String extNo;
 
-  @Column(name = "telephone_no", length = 11)
-  private String telephoneNo;
+  @Column(name = "phone_number", length = 11)
+  private String phoneNo;
 
   @Column(name = "note", length = 1000)
   private String note;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false)
-  private String EmploymentType;
+  private EmploymentType employmentType;
 
   @Column(name = "is_deleted", nullable = false, length = 1)
   private String isDeleted = "N";

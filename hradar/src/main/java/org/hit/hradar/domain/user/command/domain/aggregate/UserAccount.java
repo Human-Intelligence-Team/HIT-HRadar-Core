@@ -2,34 +2,77 @@ package org.hit.hradar.domain.user.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
+@Entity
+@Table(name = "account")
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-@Entity
-@Table(name = "USER_ACCOUNT")
 public class UserAccount extends BaseTimeEntity {
 
   @Id
-  @Column(name = "user_id", nullable = false)
-  private Long id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "Account_id")
+  private Long accId;
 
-  @Column(name = "email", nullable = false, length = 255)
+  @Column(name = "company_code", nullable = false, length = 30, unique = true)
+  private String comCode;
+
+  @Column(name = "employee_id")
+  private Long empId;
+
+  @Column(name = "login_id", nullable = false, length = 50, unique = true)
+  private String loginId;
+
+  @Column(length = 50, unique = true, nullable = false)
   private String email;
 
-  @Column(name = "password_hash", nullable = false, length = 255)
-  private String passwordHash;
+  @Column(name = "password", nullable = false, length = 255)
+  private String password;
 
-  @Column(name = "role", nullable = false)
-  private UserRole userRole;
-
-  @Column(name = "is_deleted", nullable = false, length = 1)
-  private Character isDeleted = 'N';
+  @Column(name = "name", nullable = false, length = 100)
+  private String name;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "onboarding_status", nullable = false)
-  private OnboardingStatus onboardingStatus;
+  @Column(name = "user_role", nullable = false, length = 10)
+  private UserRole userRole;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false, length = 15)
+  private AccountStatus status;
+
+  /*@Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;*/
+
+
+  public static UserAccount createUserAccount(
+      String loginId,
+      String password,
+      String name,
+      String email) {
+
+    return UserAccount.builder()
+        .userRole(UserRole.user)
+        .loginId(loginId)
+        .password(password)
+        .name(name)
+        .email(email)
+        .status(AccountStatus.ACTIVE)
+        .build();
+  }
+
+  public void updatePassword(String encode) {
+    this.password = encode;
+  }
+
+  public void linkEmployee(Long empId) {
+    this.empId = empId;
+  }
 }

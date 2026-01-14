@@ -16,20 +16,20 @@ public class Department extends BaseTimeEntity {
   @Column(name = "dept_id", nullable = false)
   private Long deptId;
 
-  @Column(name = "com_id", nullable = false)
+  @Column(name = "com_id", nullable = false, unique = true)
   private Long comId;
 
   @Column(name = "parent_dept_id")
   private Long parentDeptId;
 
   @Column(name = "manager_employee_id")
-  private Long managerEmployeeId;
+  private Long managerEmpId;
 
-  @Column(name = "dept_name", nullable = false)
+  @Column(name = "dept_name", nullable = false, unique = true)
   private String deptName;
 
-  @Column(name = "dept_phone", nullable = false)
-  private String deptPhone;
+  @Column(name = "dept_phone_number", nullable = false)
+  private String deptPhoneNo;
 
   @Column(name = "is_deleted", nullable = false)
   private String isDeleted = "N";

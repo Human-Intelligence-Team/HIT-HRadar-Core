@@ -39,6 +39,7 @@ public class EmployeeMovementHistory extends BaseTimeEntity {
   @Column(name = "emp_acc_role_id2", nullable = false)
   private Long toEmpAccRoleId;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "movement_type", nullable = false, length = 100)
   private MovementType movementType;
 
