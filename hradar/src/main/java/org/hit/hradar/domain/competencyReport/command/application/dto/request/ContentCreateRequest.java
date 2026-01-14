@@ -3,13 +3,16 @@ package org.hit.hradar.domain.competencyReport.command.application.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentType;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Level;
-import org.hit.hradar.domain.competencyReport.command.domain.aggregate.UseYn;
-
+@Setter
 @Getter
-public class ContentsRequest {
+@NoArgsConstructor
+public class ContentCreateRequest {
 
 
   @NotBlank(message = "제목은 필수입니다.")
@@ -29,8 +32,6 @@ public class ContentsRequest {
   @Size(max = 2000, message = "비고는 2000자 이내로 입력해주세요.")
   private String notes;
 
-  private UseYn useYn;
-
-  private Long[] tagArr; // 태그 id 배열
+   private List<Long> tags; // 태그 id 리스트
 
 }

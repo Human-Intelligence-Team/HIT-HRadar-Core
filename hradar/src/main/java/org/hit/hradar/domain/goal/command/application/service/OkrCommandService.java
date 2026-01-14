@@ -7,6 +7,7 @@ import org.hit.hradar.domain.goal.command.application.dto.request.ResubmitKeyRes
 import org.hit.hradar.domain.goal.command.application.dto.request.UpdateKeyResultRequest;
 import org.hit.hradar.domain.goal.command.domain.aggregate.Goal;
 import org.hit.hradar.domain.goal.command.domain.aggregate.OkrKeyResult;
+import org.hit.hradar.domain.goal.command.domain.policy.GoalValidationPolicy;
 import org.hit.hradar.domain.goal.command.domain.repository.GoalRepository;
 import org.hit.hradar.domain.goal.command.domain.repository.OkrKeyResultRepository;
 import org.hit.hradar.global.exception.BusinessException;
@@ -29,7 +30,7 @@ public class OkrCommandService {
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
         //OKR 생성 가능 여부 검증
-        goal.validateCreatableOkr();
+        GoalValidationPolicy.validateCreatableOkr(goal);
 
         //KR 생성
         OkrKeyResult kr = OkrKeyResult.create(
@@ -38,6 +39,8 @@ public class OkrCommandService {
                 request.getMetricName(),
                 request.getTargetValue()
         );
+
+        goal.addOkrKeyResult(kr);
 
         return okrKeyResultRepository.save(kr).getKeyResultId();
     }
@@ -55,7 +58,7 @@ public class OkrCommandService {
 
         validateGoalKrRelation(goalId, goal);
 
-        goal.validateEditableForKpiOkr();
+        GoalValidationPolicy.validateCreatableOkr(goal);
 
         kr.update(
                 request.getContent(),
@@ -77,7 +80,7 @@ public class OkrCommandService {
 
         validateGoalKrRelation(goalId, goal);
 
-        goal.validateResubmittable();
+        GoalValidationPolicy.validateResubmittable(goal);
 
         OkrKeyResult newKr = OkrKeyResult.create(
                 goal,

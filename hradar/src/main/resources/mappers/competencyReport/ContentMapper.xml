@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.competencyReport.query.mapper.ContentMapper">
+
+  <select id="findAllContents"
+    parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO">
+
+    SELECT ct.CONTENT_ID      AS contentId
+         , ct.LEARNING_TIME   AS learningTime
+         , ct.LEVEL           AS level
+         , ct.RESOURCE_PATH   AS resourcePath
+         , ct.TITLE           AS title
+         , ct.TYPE            AS type
+         , ctt.TAG_ID         AS tagId
+         , tg.TAG_NAME        AS tagName
+         , ct.IS_DELETED      AS isDeleted
+      FROM CONTENT ct
+      JOIN CONTENT_TAG ctt USING (CONTENT_ID)
+      JOIN TAG tg USING (TAG_ID)
+     WHERE tg.IS_DELETED = 'N'
+    <if test="level != null">
+       AND ct.LEVEL = #{level}
+    </if>
+    <if test="title != null and title != ''">
+       AND ct.TITLE LIKE CONCAT('%', #{title}, '%')
+    </if>
+    <if test="type != null">
+       AND ct.TYPE = #{type}
+    </if>
+    <if test="isDeleted != null">
+       AND ct.IS_DELETED = #{isDeleted}
+    </if>
+    <if test="learningTime != null">
+      AND ct.LEARNING_TIME &lt;= #{learningTime}
+    </if>
+    <if test="tags != null and tags.size() > 0">
+        AND tg.TAG_ID IN
+      <foreach collection="tags" item="id" open="(" separator="," close=")">
+        #{id}
+      </foreach>
+    </if>
+
+  </select>
+  <select id="findContentByContentId"
+    parameterType="Long"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentDTO">
+
+    SELECT ct.CONTENT_ID      AS contentId
+         , ct.TITLE           AS title
+         , ct.TYPE            AS type
+         , ct.LEVEL           AS level
+         , ct.LEARNING_TIME   AS learningTime
+         , ct.RESOURCE_PATH   AS resourcePath
+         , ct.NOTES		        AS notes
+         , ct.IS_DELETED      AS isDeleted
+         , ct.CREATED_AT 	    AS createdAt
+         , ct.UPDATED_AT 	    AS updatedAt
+      FROM CONTENT ct
+     WHERE ct.CONTENT_ID = #{contentId}
+  </select>
+</mapper>

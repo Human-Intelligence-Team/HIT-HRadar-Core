@@ -96,6 +96,43 @@ public enum GoalErrorCode implements ErrorCode {
         HttpStatus.FORBIDDEN
         ),
 
+    GOAL_NOT_SUBMITTABLE(
+            "GOAL_015",
+                "이미 제출된 목표입니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+    GOAL_TITLE_REQUIRED(
+            "GOAL_016",
+                "제목값 입력이 누락되었습니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+    INVALID_GOAL_TYPE(
+            "GOAL_017",
+                "유효하지 않은 목표 유형입니다.",
+            HttpStatus.BAD_REQUEST),
+
+    GOAL_NOT_DELETABLE(
+            "GOAL_018",
+                "삭제 할 권한이 없습니다." ,
+            HttpStatus.FORBIDDEN ),
+
+    GOAL_APPROVE_FORBIDDEN(
+            "GOAL_019",
+            "팀장만 목표를 승인/반려할 수 있습니다.",
+            HttpStatus.FORBIDDEN
+    ),
+    GOAL_REJECT_REASON_REQUIRED(
+            "GOAL_020",
+            "반려 사유는 필수입니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+    GOAL_NOT_APPROVABLE(
+            "GOAL_021",
+            "제출(SUBMITTED)된 목표만 승인/반려할 수 있습니다.",
+            HttpStatus.CONFLICT
+    ),
+
+
     /* ===== KPI / OKR (수정에서 필요) ===== */
     KPI_NOT_FOUND(
         "KPI_001",
@@ -113,11 +150,22 @@ public enum GoalErrorCode implements ErrorCode {
                 "목표와 KPI가 연관되어있지 않습니다." ,
             HttpStatus.BAD_REQUEST
         ),
+    KPI_REQUIRED(
+            "KPI_003",
+                "KPI가 1개 이상 입력되어야 합니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+
     INVALID_GOAL_OKR_RELATION(
             "OKR_002",
                 "목표와 KR이 연관되어있지 않습니다." ,
             HttpStatus.BAD_REQUEST
-    );
+    ),
+
+    OKR_REQUIRED(
+            "OKR_003",
+            "OKR이 1개 이상 입력되어야 합니다.",
+            HttpStatus.BAD_REQUEST),;
 
 
 

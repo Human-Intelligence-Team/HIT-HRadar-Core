@@ -6,10 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.goal.GoalErrorCode;
+import org.hit.hradar.domain.goal.command.domain.policy.GoalValidationPolicy;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Entity
@@ -43,7 +45,7 @@ public class Goal extends BaseTimeEntity {
     private GoalType type; //KPI, OKR
 
     //목표명
-    @Column(name = "goal_title", nullable = false, length = 200)
+    @Column(name = "goal_title",  length = 200) //임시저장을 위해 null 허용
     private String title;
 
     //목표 설명
@@ -51,11 +53,11 @@ public class Goal extends BaseTimeEntity {
     private String description;
 
     //시작일
-    @Column(name = "goal_start_date", nullable = false)
+    @Column(name = "goal_start_date")//임시저장을 위해 null 허용
     private LocalDate startDate;
 
     //종료일
-    @Column(name = "goal_end_date", nullable = false)
+    @Column(name = "goal_end_date")//임시저장을 위해 null 허용
     private LocalDate endDate;
 
     //부서 ID
@@ -84,6 +86,28 @@ public class Goal extends BaseTimeEntity {
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
+
+    //Goal이 자기 KPI/OKR를 알고, 제출 시 규칙을 스스로 검증,통제하기 위해”
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
+    private List<KpiDetail> kpis = new java.util.ArrayList<>();
+
+    public void addKpi(KpiDetail kpi) {
+        if (this.type != GoalType.KPI) {
+            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
+        }
+        this.kpis.add(kpi);
+    }
+
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.ALL)
+    private List<OkrKeyResult> okrKeyResults = new java.util.ArrayList<>();
+
+    public void addOkrKeyResult(OkrKeyResult kr) {
+        if (this.type != GoalType.OKR) {
+            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
+        }
+        this.okrKeyResults.add(kr);
+    }
+
 
     //=======================================================
 
@@ -181,8 +205,8 @@ public class Goal extends BaseTimeEntity {
                 .build();
     }
 
-    //수정 기능 메서드
-    public void updateAll(
+    //제출 전 수정
+    public void updateDraft(
             String title,
             String description,
             LocalDate startDate,
@@ -193,8 +217,28 @@ public class Goal extends BaseTimeEntity {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
+
+        if (scope != null) {
+            this.scope = scope;
+        }
+    }
+
+    //제출 후 수정
+    public void updateAfterSubmit(
+            String title,
+            String description,
+            LocalDate startDate,
+            LocalDate endDate,
+            GoalScope scope
+    ) {
+
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.scope = scope;
     }
+
 
     //반려시 재등록 메서드
     public static Goal resubmitFromRejected(
@@ -206,7 +250,6 @@ public class Goal extends BaseTimeEntity {
             GoalScope scope,
             Long ownerId
     ) {
-        rejected.validateResubmittable();
 
         return Goal.builder()
                 .parentGoalId(rejected.getParentGoalId())
@@ -222,57 +265,30 @@ public class Goal extends BaseTimeEntity {
                 .build(); // approveStatus = DRAFT
     }
 
-    //========================검증=============================
-    public void validateCreatableKpi() {
+    //제출 메서드
+    public void submit() {
 
-        // 삭제된 목표
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-
-        // KPI 타입 Goal에서만 KPI 생성 가능
-        if (this.type != GoalType.KPI) {
-            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
-        }
-
-        //TODO: KPI 생성 가능 개수 제한
+        this.approveStatus = GoalApproveStatus.SUBMITTED;
     }
 
-    public void validateCreatableOkr() {
-
-        // 삭제된 목표
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
-
-        // OKR 타입 Goal에서만 KR 생성 가능
-        if (this.type != GoalType.OKR) {
-            throw new BusinessException(GoalErrorCode.INVALID_PARENT_GOAL_TYPE);
-        }
-
-        // TODO: KR 최대 개수 제한
+    /* 삭제
+     * DRAFT : 일반사용자 0 팀장 0
+     * SUBMITTED: 일반사용자 x 팀장 0
+     * APPROVED: 일반사용자 x 팀장 0
+     * REJECTED: 일반사용자 x 팀장 0*/
+    public void delete() {
+        this.isDeleted = 'Y';
     }
 
-    //수정 가능 상태 검증
-    public void validateEditable() {
-        //APPROVED / REJECTED는 수정 불가
-        if (this.approveStatus == GoalApproveStatus.APPROVED
-                || this.approveStatus == GoalApproveStatus.REJECTED) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_EDITABLE);
-        }
-    }
-    public void validateEditableForKpiOkr() {
-        validateEditable();
+    //승인
+    public void approve() {
+        this.approveStatus = GoalApproveStatus.APPROVED;
     }
 
-    //REJECTED 반려시에만 재등록 가능
-    public void validateResubmittable() {
-        if (this.approveStatus != GoalApproveStatus.REJECTED) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_RESUBMITTABLE);
-        }
-        if (this.isDeleted == 'Y') {
-            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
-        }
+    //반려
+    public void reject(String rejectReason) {
+        this.approveStatus = GoalApproveStatus.REJECTED;
+        this.rejectReason = rejectReason;
     }
 
 }

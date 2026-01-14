@@ -7,6 +7,7 @@ import org.hit.hradar.domain.goal.command.application.dto.request.ResubmitKpiReq
 import org.hit.hradar.domain.goal.command.application.dto.request.UpdateKpiRequest;
 import org.hit.hradar.domain.goal.command.domain.aggregate.Goal;
 import org.hit.hradar.domain.goal.command.domain.aggregate.KpiDetail;
+import org.hit.hradar.domain.goal.command.domain.policy.GoalValidationPolicy;
 import org.hit.hradar.domain.goal.command.domain.repository.GoalRepository;
 import org.hit.hradar.domain.goal.command.domain.repository.KpiDetailRepository;
 import org.hit.hradar.global.exception.BusinessException;
@@ -30,7 +31,7 @@ public class KpiCommandService {
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
         //KPI 생성 가능 여부 검증
-        goal.validateCreatableKpi();
+        GoalValidationPolicy.validateCreatableKpi(goal);
 
         //KPI 생성
         KpiDetail kpi = KpiDetail.create(
@@ -39,6 +40,8 @@ public class KpiCommandService {
                 request.getStartValue(),
                 request.getTargetValue()
         );
+
+        goal.addKpi(kpi);
 
         return kpiDetailRepository.save(kpi).getKpiId();
 
@@ -54,7 +57,7 @@ public class KpiCommandService {
 
         validateGoalKpiRelation(goalId, goal);
 
-        goal.validateEditableForKpiOkr();
+        GoalValidationPolicy.validateCreatableKpi(goal);
 
         kpi.update(
                 request.getMetricName(),
@@ -73,7 +76,7 @@ public class KpiCommandService {
 
         validateGoalKpiRelation(goalId, goal);
 
-        goal.validateResubmittable();
+        GoalValidationPolicy.validateResubmittable(goal);
 
         KpiDetail newKpi = KpiDetail.create(
                 goal,

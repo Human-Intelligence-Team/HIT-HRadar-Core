@@ -1,15 +1,18 @@
 package org.hit.hradar.domain.competencyReport.command.application.service;
 
 
-
-
-import java.util.Arrays;
+import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentsRequest;
-import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Contents;
-import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.ContentsRepository;
-import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.ContentsTagRepository;
-import org.hit.hradar.domain.competencyReport.command.domain.infrastructure.repository.TagRepository;
+import org.hit.hradar.domain.competencyReport.command.application.controller.ContentUpdateRequest;
+import org.hit.hradar.domain.competencyReport.command.application.controller.ContentUpdateResponse;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentCreateRequest;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Content;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentTag;
+import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentRepository;
+import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentTagRepository;
+import org.hit.hradar.domain.competencyReport.competencyReportErrorCode.CompetencyReportErrorCode;
+import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,41 +20,62 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ContentsCommandService {
 
-  private final ContentsRepository contentsRepository;
-  private final TagRepository tagRepository;
-  private final ContentsTagRepository contentsTagRepository;
+  private final ContentRepository contentRepository;
+  private final ContentTagRepository contentTagRepository;
 
   /**
    * 학습 컨텐츠 등록
    * @param request
    */
   @Transactional
-  public void createContents(ContentsRequest request){
-
-    // userId 확인
+  public void createContents(ContentCreateRequest request){
 
     // 학습 컨텐츠 등록
-    Contents contents = Contents.create(request);
-    //contentsRepository.save(contents);
+    Content content = Content.create(request);
+    contentRepository.save(content);
 
     // 학습 컨텐츠 ID로 학습 컨텐츠로 tag 연결
-    Long contentId = contents.getId();
-    Long[] tagArr = request.getTagArr();
+    Long contentId = content.getId();
+    List<Long> tagIds = request.getTags();
 
-    // tagArr가 있을 경우에만 넣어주기
-    if (tagArr != null && tagArr.length > 0) {
-      // TODO : tagId가 없을 경우 어떻게 해야할지??
-      Arrays.stream(tagArr).forEach(tagId -> {
-        // tag 테이블에 tagId가 있는지 확인
+    // content-tag create
+    createContentTags(contentId, tagIds);
+  }
 
-//        Tag tag = (Tag) tagRepository.findById(tagId)
-//            .orElseThrow(() -> new BusinessException(null));
-//
-//        // contents, tag 연결
-//        ContentTag contentTag = ContentTag.create(contentId, tag.getTagId());
-//        contentsTagRepository.save(contentTag);
+  @Transactional
+  public ContentUpdateResponse updateContent(ContentUpdateRequest request) {
 
-      });
+    // exist
+    Long contentId = request.getContentId();
+    Content content = contentRepository.findById(contentId)
+        .orElseThrow(() -> new BusinessException(CompetencyReportErrorCode.CONTENT_NOT_FOUND));
+
+    // update - content
+    content.update(request);
+
+    // update - tag
+    List<Long> tagIds = request.getTags();
+    contentTagRepository.deleteAllByContentId(contentId); // delete
+    createContentTags(contentId, tagIds); // content-tag create
+
+    return new ContentUpdateResponse(contentId);
+
+  }
+
+  /**
+   * 학습컨텐츠 태그 추가
+   * @param contentId
+   * @param tagIds
+   */
+  private void createContentTags(Long contentId, List<Long> tagIds){
+
+    if (tagIds != null && !tagIds.isEmpty()) {
+      List<ContentTag> contentTags = tagIds.stream()
+          .map(tagId -> ContentTag.create(contentId, tagId))
+          .toList();
+
+      contentTagRepository.saveAllWithPolicy(contentTags);
     }
   }
+
 }

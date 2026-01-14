@@ -59,5 +59,4 @@ public class Tag extends BaseTimeEntity {
     return new Tag(normalizedTagName);
  }
 
-
 }
