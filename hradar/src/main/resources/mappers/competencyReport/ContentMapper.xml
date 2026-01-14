@@ -44,5 +44,20 @@
     </if>
 
   </select>
+  <select id="findContentByContentId"
+    parameterType="Long"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentDTO">
 
+    SELECT ct.TITLE           AS title
+         , ct.TYPE            AS type
+         , ct.LEVEL           AS level
+         , ct.LEARNING_TIME   AS learningTime
+         , ct.RESOURCE_PATH   AS resourcePath
+         , ct.NOTES		        AS notes
+         , ct.IS_DELETED      AS isDeleted
+         , ct.CREATED_AT 	    AS createdAt
+         , ct.UPDATED_AT 	    AS updatedAt
+      FROM CONTENT ct
+     WHERE ct.CONTENT_ID = #{contentId}
+  </select>
 </mapper>

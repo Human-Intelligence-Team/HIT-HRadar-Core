@@ -10,4 +10,6 @@ import org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchReq
 public interface ContentMapper {
 
   List<ContentRowDTO> findAllContents(ContentSearchRequest request);
+
+  ContentDTO findContentByContentId(Long contentId);
 }

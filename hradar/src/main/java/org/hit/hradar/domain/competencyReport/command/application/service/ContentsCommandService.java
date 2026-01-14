@@ -6,9 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentsRequest;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Content;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentTag;
-import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentsRepository;
+import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentRepository;
 import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentTagRepository;
-import org.hit.hradar.domain.competencyReport.command.domain.repository.TagRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ContentsCommandService {
 
-  private final ContentsRepository contentsRepository;
+  private final ContentRepository contentsRepository;
   private final ContentTagRepository contentTagRepository;
 
   /**
