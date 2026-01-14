@@ -7,7 +7,7 @@ import org.hit.hradar.domain.goal.query.dto.response.GoalKpiListResponseDto;
 import java.util.List;
 
 @Mapper
-public interface GoalKpiListMapper {
+public interface KpiListMapper {
 
     List<GoalKpiListResponseDto> findKpisByGoalId(
             @Param("goalId") Long goalId
