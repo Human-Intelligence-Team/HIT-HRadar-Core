@@ -44,4 +44,19 @@ public class Attendance extends BaseTimeEntity {
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
+
+  public static Attendance create(Long empId, LocalDate workDate) {
+    Attendance attendance = new Attendance();
+    attendance.empId = empId;
+    attendance.workDate = workDate;
+    attendance.status = AttendanceStatus.NORMAL;
+    attendance.workType = WorkType.WORK;
+    attendance.isDeleted = 'N';
+    return attendance;
+  }
+
+  public void applyWorkType(WorkType workType) {
+    this.workType = workType;
+  }
+
 }

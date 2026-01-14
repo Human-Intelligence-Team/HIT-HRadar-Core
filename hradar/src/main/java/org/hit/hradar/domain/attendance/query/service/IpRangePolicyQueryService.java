@@ -32,7 +32,7 @@ public class IpRangePolicyQueryService {
   //관리자 출퇴근용 IP 정책 목록
   public List<IpRangePolicyResponse> getAttendanceIps(Long comId) {
     return ipRangePolicyRepository
-        .findByComIdAndIpPolicyTypeAndIsActiveTrue(comId, IpPolicyType.ATTENDANCE)
+        .findByIpPolicyTypeAndIsActiveTrue(IpPolicyType.ATTENDANCE)
         .stream()
         .map(IpRangePolicyResponse::from)
         .toList();

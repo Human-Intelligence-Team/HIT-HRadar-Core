@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.domain.attendance.command.domain.policy.IpCidrMatcher;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
@@ -66,4 +67,9 @@ public class IpRangePolicy extends BaseTimeEntity {
     this.ipPolicyType = ipPolicyType;
     this.isActive = true;
   }
+  // clientIp가 이 정책 CIDR 범위에 포함되는지 판단
+  public boolean contains(String clientIp) {
+    return IpCidrMatcher.isInRange(this.cidr, clientIp);
+  }
+
 }

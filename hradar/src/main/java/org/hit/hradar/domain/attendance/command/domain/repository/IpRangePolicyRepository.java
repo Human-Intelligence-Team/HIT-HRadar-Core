@@ -15,7 +15,7 @@ public interface IpRangePolicyRepository extends JpaRepository<IpRangePolicy, Lo
   List<IpRangePolicy> findByComIdAndIsActiveTrue(Long comId);
 
   // 출퇴근용 목록(ATTENDANCE)
-  List<IpRangePolicy> findByComIdAndIpPolicyTypeAndIsActiveTrue(Long comId, IpPolicyType ipPolicyType);
+  List<IpRangePolicy> findByIpPolicyTypeAndIsActiveTrue(IpPolicyType ipPolicyType);
 
   // 관리자: IP 정책 등록
   default void register(IpRangePolicy policy) {

@@ -30,7 +30,7 @@ public class AttendanceWorkLog extends BaseTimeEntity {
   //초과근무(정규/초과)
   @Enumerated(EnumType.STRING)
   @Column(name = "work_log_type", nullable = false)
-  private WorkLogType logType = WorkLogType.REGULAR;
+  private WorkLogType workLogType = WorkLogType.REGULAR;
 
   //근무 시작 시각
   @Column(name = "start_at", nullable = false)
@@ -56,6 +56,7 @@ public class AttendanceWorkLog extends BaseTimeEntity {
   public static AttendanceWorkLog createCheckIn(
       Long attendanceId,
       LocalDateTime startAt,
+      WorkType workType,
       String location
   ) {
     AttendanceWorkLog log = new AttendanceWorkLog();
@@ -63,7 +64,7 @@ public class AttendanceWorkLog extends BaseTimeEntity {
     log.startAt = startAt;
     log.endAt = null;
     log.location = location;
-    log.logType = WorkLogType.REGULAR;
+    log.workLogType = WorkLogType.REGULAR;
     log.isDeleted = 'N';
     return log;
   }
