@@ -168,9 +168,9 @@ public class GoalValidationPolicy {
 
         validateNotDeleted(goal);
 
-        if (goal.getApproveStatus() != GoalApproveStatus.APPROVED) {
+        /*if (goal.getApproveStatus() != GoalApproveStatus.APPROVED) {
             throw new BusinessException(GoalErrorCode.GOAL_NOT_APPROVED);
-        }
+        }*/
     }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/goals/{goalId}/key-results")
+@RequestMapping("/api/v1/goals/{goalId}/key-results")
 public class OkrCommandController {
 
     private final OkrCommandService okrCommandService;

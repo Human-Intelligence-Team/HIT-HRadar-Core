@@ -10,5 +10,4 @@ public interface TagMapper {
 
   List<TagDTO> findAllTags(TagSearchRequest request);
 
-  List<TagDTO> findAllTagsByContentId(Long id);
 }

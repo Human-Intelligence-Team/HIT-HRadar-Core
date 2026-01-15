@@ -1,10 +1,7 @@
 package org.hit.hradar.domain.goal.command.domain.aggregate;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDate;
@@ -12,8 +9,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "okr_progress_log")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-
 public class OkrProgressLog extends BaseTimeEntity {
 
     @Id
@@ -38,22 +33,14 @@ public class OkrProgressLog extends BaseTimeEntity {
     @Column(name = "log_owner_id")
     private Long logOwnerId;
 
-    //created_at, updated_at, created_by, updated_by
+    //created_at, updated_at
+
+    /*@Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;*/
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
-
-    @Builder
-    public OkrProgressLog(
-            OkrKeyResult keyResult,
-            Integer currentProgress,
-            LocalDate logDate,
-            Long logOwnerId
-    ) {
-        this.keyResult = keyResult;
-        this.currentProgress = currentProgress;
-        this.logDate = logDate;
-        this.logOwnerId = logOwnerId;
-
-    }
 }
