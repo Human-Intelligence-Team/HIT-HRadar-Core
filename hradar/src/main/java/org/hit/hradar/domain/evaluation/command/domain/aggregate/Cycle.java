@@ -1,7 +1,10 @@
 package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDate;
@@ -10,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "cycle")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Cycle extends BaseTimeEntity {
 
     @Id
@@ -46,4 +50,42 @@ public class Cycle extends BaseTimeEntity {
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
+
+    @Column(name = "is_comp_report_generated", nullable = false, length = 1)
+    private Character isReportGenerated = 'N';
+
+    @Builder
+    private Cycle(
+            String cycleName,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long empId
+    ){
+        this.cycleName = cycleName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.empId = empId;
+        this.status = CycleStatus.DRAFT;
+        this.isDeleted = 'N';
+        this.isReportGenerated = 'N';
+    }
+
+    public void updateCycle(String cycleName,LocalDateTime startDate, LocalDateTime endDate){
+        this.cycleName = cycleName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public void closeCycle() {
+        this.status = CycleStatus.CLOSED;
+    }
+
+    public void deleteCycle() {
+        this.isDeleted = 'Y';
+    }
+
+    //도메인 확인용
+    public boolean isClosed() {
+        return this.status == CycleStatus.CLOSED;
+    }
 }
