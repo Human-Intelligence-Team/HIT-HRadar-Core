@@ -32,9 +32,11 @@ public class AuthService {
         .orElseThrow(
             () -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
-    AccountStatus status = account.getStatus();
+    if (!account.getComCode().equals(request.getCompanyCode())) {
+        throw new BusinessException(AccountErrorCode.COMPANY_INVALID);
+    }
 
-    if (status == AccountStatus.RETIRED) {
+    if (account.getStatus() == AccountStatus.RETIRED) {
       throw new BusinessException(AccountErrorCode.ACCOUNT_CANCELED);
     }
 
