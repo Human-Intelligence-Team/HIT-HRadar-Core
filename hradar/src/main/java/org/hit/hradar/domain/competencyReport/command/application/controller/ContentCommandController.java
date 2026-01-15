@@ -2,12 +2,12 @@ package org.hit.hradar.domain.competencyReport.command.application.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentCreateRequest;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentUpdateRequest;
+import org.hit.hradar.domain.competencyReport.command.application.dto.response.ContentUpdateResponse;
 import org.hit.hradar.domain.competencyReport.command.application.service.ContentsCommandService;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
