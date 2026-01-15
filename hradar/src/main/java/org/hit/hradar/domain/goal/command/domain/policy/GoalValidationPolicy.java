@@ -1,11 +1,8 @@
 package org.hit.hradar.domain.goal.command.domain.policy;
 
-import org.hit.hradar.domain.department.DepartmentErrorCode;
 import org.hit.hradar.domain.department.command.domain.aggregate.Department;
-import org.hit.hradar.domain.department.command.domain.repository.DepartmentRepository;
 import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.domain.goal.command.domain.aggregate.*;
-import org.hit.hradar.domain.goal.command.infrastructure.GoalJpaRepository;
 import org.hit.hradar.global.exception.BusinessException;
 
 import java.time.LocalDate;
@@ -29,7 +26,7 @@ public class GoalValidationPolicy {
 
     //기간 검증
     public static void validatePeriod(LocalDate start, LocalDate end) {
-        if (end.isBefore(start)) {
+        if (end.isBefore(start) || start.isAfter(end)) {
             throw new BusinessException(GoalErrorCode.INVALID_GOAL_PERIOD);
         }
     }
@@ -165,4 +162,15 @@ public class GoalValidationPolicy {
             throw new BusinessException(GoalErrorCode.GOAL_EDIT_FORBIDDEN);
         }
     }
+
+    //승인된 목표만 kpi 성과 입력 가능
+    public static void validateProgressCreatable(Goal goal) {
+
+        validateNotDeleted(goal);
+
+        if (goal.getApproveStatus() != GoalApproveStatus.APPROVED) {
+            throw new BusinessException(GoalErrorCode.GOAL_NOT_APPROVED);
+        }
+    }
+
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.goal.query.mapper.OkrDetailMapper">
+    <select id="findKrSummary"
+            parameterType="long"
+            resultType="org.hit.hradar.domain.goal.query.dto.response.OkrDetailResponseDto">
+
+        SELECT
+            kr.key_result_id      AS keyResultId,
+            kr.key_result_content AS content,
+            kr.okr_metric_name    AS metricName,
+            kr.key_target_value   AS targetValue,
+
+            /* =========================
+               현재값: 최신 progress log
+               ========================= */
+            COALESCE(latest.current_progress, 0) AS currentValue,
+
+            /* =========================
+               진행률 계산
+               ========================= */
+            CASE
+                WHEN kr.key_target_value = 0 THEN 0
+                ELSE
+                    LEAST(
+                            100,
+                            GREATEST(
+                                    0,
+                                    (COALESCE(latest.current_progress, 0)
+                                        / kr.key_target_value) * 100
+                            )
+                    )
+                END AS progressRate
+
+        FROM okr_key_result kr
+
+                 /* 최신 progress log 1건 */
+                 LEFT JOIN (
+            SELECT
+                p.key_result_id,
+                p.current_progress
+            FROM okr_progress_log p
+                     INNER JOIN (
+                SELECT
+                    key_result_id,
+                    MAX(log_date) AS maxLogDate
+                FROM okr_progress_log
+                WHERE is_deleted = 'N'
+                GROUP BY key_result_id
+            ) lastLog
+                                ON p.key_result_id = lastLog.key_result_id
+                                    AND p.log_date = lastLog.maxLogDate
+            WHERE p.is_deleted = 'N'
+        ) latest
+                           ON latest.key_result_id = kr.key_result_id
+
+        WHERE kr.key_result_id = #{keyResultId}
+          AND kr.is_deleted = 'N'
+
+    </select>
+    <select id="findKrLogs"
+            parameterType="long"
+            resultType="org.hit.hradar.domain.goal.query.dto.response.OkrProgressLogResponseDto">
+
+        SELECT
+            p.log_date AS logDate,
+            p.current_progress AS currentProgress,
+
+            /* 진행률 */
+            CASE
+                WHEN kr.key_target_value = 0 THEN 0
+                ELSE
+                    LEAST(
+                            100,
+                            GREATEST(
+                                    0,
+                                    (p.current_progress / kr.key_target_value) * 100
+                            )
+                    )
+                END AS progressRate
+
+        FROM okr_progress_log p
+                 JOIN okr_key_result kr
+                      ON kr.key_result_id = p.key_result_id
+
+        WHERE p.key_result_id = #{keyResultId}
+          AND p.is_deleted = 'N'
+          AND kr.is_deleted = 'N'
+
+        ORDER BY p.log_date ASC
+
+    </select>
+</mapper>

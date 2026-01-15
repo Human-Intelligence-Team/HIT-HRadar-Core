@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/goals/{goalId}/kpis")
+@RequestMapping("/goals/{goalId}/kpis")
 public class KpiCommandController {
 
     private final KpiCommandService kpiCommandService;
