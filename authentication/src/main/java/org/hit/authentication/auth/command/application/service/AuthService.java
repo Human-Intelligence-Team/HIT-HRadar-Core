@@ -1,0 +1,106 @@
+package org.hit.authentication.auth.command.application.service;
+
+import lombok.RequiredArgsConstructor;
+import org.hit.authentication.auth.AccountErrorCode;
+import org.hit.authentication.auth.AuthErrorCode;
+import org.hit.authentication.auth.command.application.dto.AccessTokenResponse;
+import org.hit.authentication.auth.command.application.dto.LoginRequest;
+import org.hit.authentication.auth.command.application.dto.TokenResponse;
+import org.hit.authentication.auth.command.domain.aggregate.Account;
+import org.hit.authentication.auth.command.domain.aggregate.AccountStatus;
+import org.hit.authentication.auth.command.domain.repository.AccountRepository;
+import org.hit.authentication.common.exception.BusinessException;
+import org.hit.authentication.common.jwt.JwtTokenProvider;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@RequiredArgsConstructor
+@Service
+@Transactional(readOnly = true)
+public class AuthService {
+
+  private final AccountRepository accountRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtTokenProvider jwtTokenProvider;
+  private final AuthRedisService authRedisService;
+
+  @Transactional
+  public TokenResponse login(LoginRequest request) {
+
+    Account account = accountRepository.findByLoginId(request.getLoginId())
+        .orElseThrow(
+            () -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+
+    AccountStatus status = account.getStatus();
+
+    if (status == AccountStatus.RETIRED) {
+      throw new BusinessException(AccountErrorCode.ACCOUNT_CANCELED);
+    }
+
+    if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+      throw new BusinessException(AccountErrorCode.ACCOUNT_INVALID_PASSWORD);
+    }
+
+    String accessToken = jwtTokenProvider.createAccessToken(account.getAccId(),
+        account.getRole());
+    String refreshToken = jwtTokenProvider.createRefreshToken(account.getAccId(),
+        account.getRole());
+
+    authRedisService.saveRefreshToken(account.getAccId(), refreshToken);
+
+    return TokenResponse.builder()
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
+        .build();
+
+
+  }
+
+  @Transactional
+  public void logout(String authorizationHeader) {
+
+    String accessToken = jwtTokenProvider.resolveToken(authorizationHeader);
+
+    Long userId = jwtTokenProvider.getUserIdFromJWT(accessToken);
+
+    Boolean exist = authRedisService.existRefreshTokenByUserId(userId);
+    if (Boolean.FALSE.equals(exist)) {
+      throw new BusinessException(AuthErrorCode.INVALID_VERIFICATION_TOKEN);
+    }
+
+    authRedisService.deleteRefreshTokenByUserId(userId);
+  }
+
+  @Transactional
+  public AccessTokenResponse tokenReissue(String refreshToken) {
+
+    if (refreshToken == null) {
+      throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
+    }
+
+    // RefreshToken 검증
+    jwtTokenProvider.validateToken(refreshToken);
+
+    // RefreshToken이 Redis에 존재하는지 확인
+    Long userId = jwtTokenProvider.getUserIdFromJWT(refreshToken);
+
+    Boolean exists = authRedisService.existRefreshTokenByUserId(userId);
+    if (Boolean.FALSE.equals(exists)) {
+      throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
+    }
+
+    // 새 AccessToken 생성 (RefreshToken은 재사용)
+    String newAccessToken =
+        jwtTokenProvider.createAccessToken(
+            userId,
+            jwtTokenProvider.getRoleFromJWT(refreshToken)
+        );
+
+    // Body에는 AccessToken만 내려줌
+    return AccessTokenResponse.builder()
+        .accessToken(newAccessToken)
+        .build();
+
+  }
+}
