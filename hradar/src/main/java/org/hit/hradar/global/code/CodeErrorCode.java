@@ -16,7 +16,17 @@ public enum CodeErrorCode implements ErrorCode {
             "CODE_ERROR_002",
             "존재하지 않는 코드 그룹입니다.",
             HttpStatus.NOT_FOUND
+    ),CODE_EXIST(
+            "CODE_ERROR_003",
+            "이미 존재하는 공통 코드입니다.",
+            HttpStatus.BAD_REQUEST
     ),
+    CODE_NOT_FOUND(
+            "CODE_ERROR_004",
+            "존재하지 않는 공통 코드입니다.",
+            HttpStatus.NOT_FOUND
+    );
+
     ;
 
     private final String errorCode;

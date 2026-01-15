@@ -16,7 +16,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CodeGroup extends BaseTimeEntity {
     @Id
-    @Column(name = "group_code", length = 50)
+    @Column(name = "group_code", length = 50, nullable = false)
     private String groupCode;
 
     @Column(name = "group_name", nullable = false, length = 100)

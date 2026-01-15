@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CodeGroupCommandService {
 
     private final CodeGroupRepository codeGroupRepository;
 
     //코드 등록
+    @Transactional
     public void createCodeGroup(CreateCodeGroupRequestDto request) {
         if(codeGroupRepository.existsByGroupCode(request.getGroupCode())) {
             throw new BusinessException(CodeErrorCode.GROUP_EXIST);
@@ -33,6 +33,7 @@ public class CodeGroupCommandService {
     }
 
     //코드 수정
+    @Transactional
     public void updateCodeGroup(
             String groupCode,
             UpdateCodeGroupRequestDto request
@@ -47,6 +48,7 @@ public class CodeGroupCommandService {
     }
 
     //코드 그룹 삭제 (soft-delete)
+    @Transactional
     public void deleteCodeGroup(String groupCode) {
         CodeGroup codeGroup = codeGroupRepository.findByGroupCode(groupCode)
                 .orElseThrow(() ->

@@ -37,10 +37,11 @@ public class CodeGroupCommandController {
 
     //코드 그룹 삭제
     @DeleteMapping("/{groupCode}")
-    public void deleteCodeGroup(
+    public ResponseEntity<ApiResponse<String>> deleteCodeGroup(
             @PathVariable String groupCode
     ) {
         codeGroupCommandService.deleteCodeGroup(groupCode);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
 }

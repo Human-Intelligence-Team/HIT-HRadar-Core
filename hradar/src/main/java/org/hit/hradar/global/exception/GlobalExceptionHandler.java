@@ -19,12 +19,12 @@ public class GlobalExceptionHandler {
                          .body(ApiResponse.failure(ex.getErrorCode().getErrorCode(), ex.getMessage()));
   }
 
-  @ExceptionHandler(AuthorizationDeniedException.class)
+  /*@ExceptionHandler(AuthorizationDeniedException.class)
   public ResponseEntity<ApiResponse<?>> handleAuthorizationDenied(AuthorizationDeniedException ex) {
     log.error("[ACCESS DENIED ERROR] message={}", ex.getMessage());
     return ResponseEntity.status(HttpStatus.FORBIDDEN)  // 403 Forbidden
                          .body(ApiResponse.failure("ACCESS_DENIED", "접근 권한이 없습니다."));
-  }
+  }*/
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiResponse<?>> handleException(Exception ex) {
