@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CommonCodeCommandService {
 
     private final CodeGroupRepository codeGroupRepository;
     private final CommonCodeRepository commonCodeRepository;
 
     //코드 등록
+    @Transactional
     public void createCommonCode(CreateCommonCodeRequestDto request) {
 
         // 그룹 존재 검증
@@ -48,6 +48,7 @@ public class CommonCodeCommandService {
     }
 
     //공통코드 수정
+    @Transactional
     public void updateCommonCode(
             String groupCode,
             String code,
@@ -66,6 +67,7 @@ public class CommonCodeCommandService {
     }
 
     //공통코드 삭제
+    @Transactional
     public void deleteCommonCode(String groupCode, String code) {
         CommonCode commonCode = commonCodeRepository
                 .findActiveCode(groupCode, code)

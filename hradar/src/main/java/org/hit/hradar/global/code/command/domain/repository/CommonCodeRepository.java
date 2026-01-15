@@ -3,6 +3,7 @@ package org.hit.hradar.global.code.command.domain.repository;
 import org.hit.hradar.global.code.command.domain.aggregate.CodeGroup;
 import org.hit.hradar.global.code.command.domain.aggregate.CommonCode;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface CommonCodeRepository {
@@ -14,4 +15,7 @@ public interface CommonCodeRepository {
     Optional<CommonCode> findActiveCode(String groupCode, String code);
 
     CommonCode save(CommonCode commonCode);
+
+    List<CommonCode> findActiveCodesByGroupCode(String groupCode);
+
 }
