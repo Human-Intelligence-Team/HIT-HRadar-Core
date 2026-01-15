@@ -131,6 +131,10 @@ public enum GoalErrorCode implements ErrorCode {
             "제출(SUBMITTED)된 목표만 승인/반려할 수 있습니다.",
             HttpStatus.CONFLICT
     ),
+    GOAL_NOT_APPROVED(
+            "GOAL_022",
+                "승인되지 않은 목표입니다.",
+            HttpStatus.FORBIDDEN),
 
 
     /* ===== KPI / OKR (수정에서 필요) ===== */

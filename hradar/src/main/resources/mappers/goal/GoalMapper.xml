@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.goal.query.mapper.GoalMapper">
+    <select id="selectGoals"
+            parameterType="long"
+            resultType="org.hit.hradar.domain.goal.query.dto.response.GoalNodeResponseDto">
+
+        SELECT
+            g.goal_id             AS goalId,
+            g.parent_goal_id      AS parentGoalId,
+            g.goal_depth          AS depth,
+            g.goal_type           AS type,
+            g.goal_title          AS title,
+            g.goal_approve_status AS approveStatus
+        FROM goal g
+        WHERE g.goal_dept_id = #{departmentId}
+          AND g.is_deleted = 'N'
+        ORDER BY g.goal_depth, g.goal_id
+    </select>
+
+    <select id="selectKpisByGoalIds"
+            resultType="org.hit.hradar.domain.goal.query.dto.response.KpiListResponseDto">
+
+        SELECT
+        kd.goal_id            AS goalId,
+        kd.kpi_id             AS kpiId,
+        kd.kpi_metric_name    AS metricName,
+        kd.kpi_start_value    AS startValue,
+        kd.kpi_target_value   AS targetValue,
+
+        /* currentValue = start + SUM(log_value) */
+        (
+        kd.kpi_start_value + IFNULL(SUM(kpl.log_value), 0)
+        ) AS currentValue,
+
+        /* progressRate */
+        CASE
+        WHEN (kd.kpi_target_value - kd.kpi_start_value) = 0 THEN 0
+        ELSE
+        LEAST(
+        100,
+        GREATEST(
+        0,
+        (
+        (
+        (kd.kpi_start_value + IFNULL(SUM(kpl.log_value), 0))
+        - kd.kpi_start_value
+        )
+        / (kd.kpi_target_value - kd.kpi_start_value)
+        ) * 100
+        )
+        )
+        END AS progressRate
+
+        FROM kpi_detail kd
+        LEFT JOIN kpi_progress_log kpl
+        ON kpl.kpi_id = kd.kpi_id
+        AND kpl.is_deleted = 'N'
+
+        WHERE kd.is_deleted = 'N'
+        AND kd.goal_id IN
+        <foreach collection="goalIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
+        GROUP BY
+        kd.goal_id,
+        kd.kpi_id,
+        kd.kpi_metric_name,
+        kd.kpi_start_value,
+        kd.kpi_target_value
+
+        ORDER BY kd.kpi_id ASC
+    </select>
+    <select id="selectOkrsByGoalIds"
+            resultType="org.hit.hradar.domain.goal.query.dto.response.OkrListResponseDto">
+
+        SELECT
+        kr.goal_id              AS goalId,
+        kr.key_result_id        AS keyResultId,
+        kr.key_result_content   AS content,
+        kr.okr_metric_name      AS metricName,
+        kr.key_target_value     AS targetValue,
+
+        /* 최신 current_progress */
+        COALESCE(latest.current_progress, 0) AS currentValue,
+
+        /* progressRate */
+        CASE
+        WHEN kr.key_target_value = 0 THEN 0
+        ELSE
+        LEAST(
+        100,
+        GREATEST(
+        0,
+        (COALESCE(latest.current_progress, 0)
+        / kr.key_target_value) * 100
+        )
+        )
+        END AS progressRate
+
+        FROM okr_key_result kr
+
+        LEFT JOIN (
+        SELECT
+        p.key_result_id,
+        p.current_progress
+        FROM okr_progress_log p
+        INNER JOIN (
+        SELECT
+        key_result_id,
+        MAX(log_date) AS maxLogDate
+        FROM okr_progress_log
+        WHERE is_deleted = 'N'
+        GROUP BY key_result_id
+        ) lastLog
+        ON p.key_result_id = lastLog.key_result_id
+        AND p.log_date = lastLog.maxLogDate
+        WHERE p.is_deleted = 'N'
+        ) latest
+        ON latest.key_result_id = kr.key_result_id
+
+        WHERE kr.is_deleted = 'N'
+        AND kr.goal_id IN
+        <foreach collection="goalIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+
+        ORDER BY kr.key_result_id ASC
+    </select>
+
+</mapper>
