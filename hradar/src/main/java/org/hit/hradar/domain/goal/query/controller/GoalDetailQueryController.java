@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/goals")
+@RequestMapping("/goals")
 public class GoalDetailQueryController {
 
     private final GoalDetailQueryService goalDetailQueryService;

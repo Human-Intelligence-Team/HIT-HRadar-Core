@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/goals")
+@RequestMapping("/goals")
 public class KpiListQueryController {
 
     private final KpiListQueryService goalKpiListQueryService;

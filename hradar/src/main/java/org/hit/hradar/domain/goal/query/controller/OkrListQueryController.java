@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/goals")
+@RequestMapping("/goals")
 public class OkrListQueryController {
 
     private final OkrListQueryService okrListQueryService;

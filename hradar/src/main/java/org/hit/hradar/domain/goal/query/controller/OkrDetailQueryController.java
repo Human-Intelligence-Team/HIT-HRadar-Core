@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/key-results")
+@RequestMapping("/key-results")
 public class OkrDetailQueryController {
 
     private final OkrDetailQueryService okrDetailQueryService;
