@@ -1,12 +1,18 @@
 package org.hit.hradar.domain.goal.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
+import org.hit.hradar.global.exception.BusinessException;
 
 @Entity
 @Table(name = "okr_key_result")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OkrKeyResult extends BaseTimeEntity {
 
     @Id
@@ -36,23 +42,53 @@ public class OkrKeyResult extends BaseTimeEntity {
     @Column(name = "is_achieved", nullable = false)
     private AchieveStatus isAchieved = AchieveStatus.N;
 
-    //created_at, updated_at
-
-    /*@Column(name = "created_by", nullable = false, length = 50)
-    private String createdBy;
-
-    @Column(name = "updated_by", length = 50)
-    private String updatedBy;*/
+    //created_at, updated_at, created_by, updated_by
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
 
-    /*@OneToMany(
-            mappedBy = "keyResult",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<OkrProgressLog> progressLogs = new ArrayList<>();*/
+    @Builder
+    private OkrKeyResult(
+            Goal goal,
+            String content,
+            String okrMetricName,
+            Integer targetValue
+    ) {
+        this.goal = goal;
+        this.content = content;
+        this.okrMetricName = okrMetricName;
+        this.targetValue = targetValue;
+    }
+
+    public static OkrKeyResult create(
+            Goal goal,
+            String content,
+            String metricName,
+            Integer targetValue
+    ) {
+        return OkrKeyResult.builder()
+                .goal(goal)
+                .content(content)
+                .okrMetricName(metricName)
+                .targetValue(targetValue)
+                .build();
+    }
+
+    public void update(
+            String content,
+            String metricName,
+            Integer targetValue
+    ) {
+        this.content = content;
+        this.okrMetricName = metricName;
+        this.targetValue = targetValue;
+    }
+
+    public void delete() {
+        if (this.isDeleted == 'Y') {
+            throw new BusinessException(GoalErrorCode.GOAL_ALREADY_DELETED);
+        }
+        this.isDeleted = 'Y';
+    }
 
 }

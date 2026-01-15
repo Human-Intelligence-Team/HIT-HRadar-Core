@@ -1,10 +1,7 @@
 package org.hit.hradar.global.exception;
 
-import static org.hibernate.internal.util.ExceptionHelper.getRootCause;
-
 import lombok.extern.slf4j.Slf4j;
 import org.hit.hradar.global.dto.ApiResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;

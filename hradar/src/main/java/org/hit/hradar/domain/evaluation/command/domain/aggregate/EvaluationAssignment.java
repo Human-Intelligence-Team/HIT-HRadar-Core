@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(
                         name = "uk_assignment_unique",
                         columnNames = {
-                                "cycle_id",
                                 "eval_type_id",
                                 "evaluator_id",
                                 "evaluatee_id"
