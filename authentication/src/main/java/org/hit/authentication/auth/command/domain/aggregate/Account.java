@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "account")
@@ -27,13 +26,16 @@ public class Account {
   @Column(name = "account_id")
   private Long accId;
 
+  @Column(name = "company_id", nullable = false)
+  private Long comId;
+
   @Column(name = "company_code", nullable = false, length = 30, unique = true)
   private String comCode;
 
   @Column(name = "employee_id")
   private Long empId;
 
-  @Column(name = "login_id", nullable = false, length = 50, unique = true)
+  @Column(name = "login_id", nullable = false, length = 50)
   private String loginId;
 
   @Column(length = 50, unique = true, nullable = false)

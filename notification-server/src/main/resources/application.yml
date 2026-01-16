@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+  config:
+    import:
+      - classpath:config/kafka.yml
+app:
+  name: notification-platform
