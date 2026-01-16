@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/learning-contents")
+@RequestMapping("/learning-contents")
 public class ContentQueryController {
 
   private final ContentQueryService contentQueryService;
@@ -28,7 +28,7 @@ public class ContentQueryController {
    */
   @GetMapping
   public ResponseEntity<ApiResponse<ContentSearchResponse>> contents(
-      @ModelAttribute ContentSearchRequest request
+      ContentSearchRequest request
   )  {
 
     ContentSearchResponse response = contentQueryService.contents(request);

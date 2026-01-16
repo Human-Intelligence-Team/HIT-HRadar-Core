@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,18 +27,25 @@ public class CompetencyReport extends BaseTimeEntity {
   @Column(name = "emp_id", nullable = false)
   private Long empId;
 
-  @Column(name = "year", nullable = false)
-  private Integer year;
-
-  @Enumerated(EnumType.STRING)
-  @Column(name = "quarter")
-  private Quarter  quarter;
+  @Column(name = "cycle_id", nullable = false)
+  private Long cycleId;
 
   @Column(name = "kpi_okr_result_summary", nullable = false)
   private String kpiOkrResultSummary;
 
   @Column(name = "goal_failure_analysis", nullable = false)
   private String goalFailureAnalysis;
+
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
+
+  @PrePersist
+  public void prePersist() {
+    if (this.isDeleted == null) {
+      this.isDeleted = 'N';
+    }
+  }
+
 
 
 
