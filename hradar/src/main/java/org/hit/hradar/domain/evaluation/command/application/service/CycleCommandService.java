@@ -38,6 +38,8 @@ public class CycleCommandService {
     public void updatePeriod(Long cycleId, CycleUpdateRequestDto request) {
         Cycle cycle = getCycle(cycleId);
 
+        validateDeleted(cycle);
+
         if (cycle.isClosed()) {
             throw new BusinessException(EvaluationErrorCode.CYCLE_ALREADY_CLOSED);
         }
@@ -50,6 +52,8 @@ public class CycleCommandService {
     public void forceClose(Long cycleId) {
         Cycle cycle = getCycle(cycleId);
 
+        validateDeleted(cycle);
+
         if (cycle.isClosed()) {
             throw new BusinessException(EvaluationErrorCode.CYCLE_ALREADY_CLOSED);
         }
@@ -61,7 +65,19 @@ public class CycleCommandService {
     public void deleteCycle(Long cycleId) {
         Cycle cycle = getCycle(cycleId);
 
+        validateDeleted(cycle);
+
         cycle.deleteCycle();
+    }
+
+    /*회차 승인*/
+    public void approveCycle(Long cycleId) {
+        Cycle cycle = getCycle(cycleId);
+
+        validateDeleted(cycle);
+
+        cycle.approveCycle();
+
     }
 
 
@@ -73,6 +89,12 @@ public class CycleCommandService {
     private void validatePeriod(LocalDateTime startDate, LocalDateTime endDate) {
         if (startDate == null || endDate == null || !endDate.isAfter(startDate)) {
             throw new BusinessException(EvaluationErrorCode.CYCLE_INVALID_PERIOD);
+        }
+    }
+
+    private void validateDeleted (Cycle cycle) {
+        if (cycle.getIsDeleted() == 'Y') {
+            throw new BusinessException(EvaluationErrorCode.CYCLE_DELETED);
         }
     }
 

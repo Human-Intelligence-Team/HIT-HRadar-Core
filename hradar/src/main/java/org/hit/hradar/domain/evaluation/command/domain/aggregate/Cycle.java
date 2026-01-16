@@ -33,20 +33,14 @@ public class Cycle extends BaseTimeEntity {
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, length = 10)
     private CycleStatus status = CycleStatus.DRAFT;
 
     // 담당 사원 ID
     @Column(name = "emp_id", nullable = false)
     private Long empId;
 
-    //created_at, updated_at
-
-    /*@Column(name = "created_by", nullable = false, length = 50)
-    private String createdBy;
-
-    @Column(name = "updated_by", length = 50)
-    private String updatedBy;*/
+    //created_at, updated_at, created_by, updated_by
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
@@ -82,6 +76,10 @@ public class Cycle extends BaseTimeEntity {
 
     public void deleteCycle() {
         this.isDeleted = 'Y';
+    }
+
+    public void approveCycle() {
+        this.status = CycleStatus.APPROVED;
     }
 
     //도메인 확인용
