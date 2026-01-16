@@ -28,7 +28,7 @@ public class ContentQueryController {
    */
   @GetMapping
   public ResponseEntity<ApiResponse<ContentSearchResponse>> contents(
-      @ModelAttribute ContentSearchRequest request
+      ContentSearchRequest request
   )  {
 
     ContentSearchResponse response = contentQueryService.contents(request);

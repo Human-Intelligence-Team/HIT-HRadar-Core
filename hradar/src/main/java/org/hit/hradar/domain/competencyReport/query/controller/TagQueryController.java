@@ -25,13 +25,11 @@ public class TagQueryController {
    */
   @GetMapping
   public ResponseEntity<ApiResponse<TagSearchResponse>> tags(
-      @ModelAttribute TagSearchRequest request
+      TagSearchRequest request
   )  {
 
     TagSearchResponse response = tagQueryService.tags(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
-
-
 
 }

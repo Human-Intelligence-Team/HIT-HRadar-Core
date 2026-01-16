@@ -4,6 +4,29 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.hit.hradar.domain.competencyReport.query.mapper.CompetencyReportMapper">
 
+  <select id="findByCompetencyReportId"
+    parameterType="Long"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
+    <!-- 역량 강화 리포트 상세 (인사팀/개인) -->
+    SELECT cc.CYCLE_NAME -- 회차명
+         , cc.YEAR  -- 년도
+         , cc.QUARTER  -- 회차
+         , DATE_FORMAT(cr.CREATED_AT, '%Y-%m-%d') AS createdAt -- 생성일
+         , cr.COMPETENCY_REPORT_ID -- 역량 강화 리포트
+         , emp.NAME  AS  employeeName-- 이름
+         , emp.EMPLOYEE_NO AS employeeNo-- 사번
+         , dep.DEPT_NAME  AS deptName-- 부서
+         , cp.NAME AS positionName -- 직위
+         , cr.KPI_OKR_RESULT_SUMMARY  -- kpi okr
+         , cr.GOAL_FAILURE_ANALYSIS  -- 등급 평가
+      FROM COMPETENCY_REPORT cr
+      JOIN EMPLOYEE emp ON cr.EMP_ID = emp.EMP_ID
+      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
+      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.COM_POSITION_ID
+      JOIN CYCLE cc ON cr.CYCLE_ID = cc.CYCLE_ID
+     WHERE cr.COMPETENCY_REPORT_ID = #{competencyReportId};
+  </select>
+
   <select id="findAllByCycleId"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompetencyReportSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
