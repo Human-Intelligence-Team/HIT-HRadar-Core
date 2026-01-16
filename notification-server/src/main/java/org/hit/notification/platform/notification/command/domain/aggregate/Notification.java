@@ -22,10 +22,6 @@ public class Notification {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    /** 관련 도메인 id */
-    @Column(name = "ref_id")
-    private Long refId;
-
     /** Kafka eventId (멱등 처리용) */
     @Column(name = "event_id", nullable = false, length = 100)
     private String eventId;
@@ -61,28 +57,6 @@ public class Notification {
         Notification n = new Notification();
         n.eventId = eventId;
         n.userId = userId;
-        n.type = type;
-        n.title = title;
-        n.message = message;
-        n.linkUrl = linkUrl;
-        n.read = false;
-        n.createdAt = LocalDateTime.now();
-        return n;
-    }
-
-    public static Notification create(
-            String eventId,
-            Long userId,
-            Long refId,
-            String type,
-            String title,
-            String message,
-            String linkUrl
-    ) {
-        Notification n = new Notification();
-        n.eventId = eventId;
-        n.userId = userId;
-        n.refId = refId;
         n.type = type;
         n.title = title;
         n.message = message;

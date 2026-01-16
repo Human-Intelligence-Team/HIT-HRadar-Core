@@ -53,8 +53,6 @@ public class JwtAuthenticationFilter
                     .header("X-Company-Id", claims.get("companyId", String.class))
                     .build();
 
-            System.out.println("user ID " + claims.getSubject());
-            System.out.println("company ID " + claims.get("companyId", String.class));
             return chain.filter(
                     exchange.mutate()
                             .request(mutatedRequest)

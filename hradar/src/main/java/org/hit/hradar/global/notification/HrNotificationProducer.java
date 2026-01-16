@@ -15,18 +15,20 @@ public class HrNotificationProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendNotification(Long userId, String message) {
+    public void sendNotification(NotificationDTO notificationDTO) {
 
         HrNotificationEvent event = new HrNotificationEvent(
-                UUID.randomUUID().toString(),     // eventId
-                "REPORT_CREATED",                 // eventType
-                userId,                           // targetUserId
-                message                           // message
+                UUID.randomUUID().toString(),
+                notificationDTO.getType().name(),
+                notificationDTO.getUserId(),
+                notificationDTO.getTitle(),
+                notificationDTO.getMessage(),
+                notificationDTO.getLinkUrl()
         );
 
         kafkaTemplate.send(
                 "hr.notification",
-                String.valueOf(userId),
+                String.valueOf(notificationDTO.getUserId()),
                 event
         );
     }

@@ -24,11 +24,11 @@ public class NotificationCommandService {
 
         Notification notification = Notification.create(
                 event.eventId(),
-                event.targetUserId(),
-                event.eventType(),
-                "새 알림",
+                event.userId(),
+                event.type(),
+                event.title(),
                 event.message(),
-                null
+                event.linkUrl()
         );
 
         repository.save(notification);
