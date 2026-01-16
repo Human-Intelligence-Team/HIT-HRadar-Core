@@ -2,6 +2,7 @@ package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Quarter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDate;
@@ -19,6 +20,15 @@ public class Cycle extends BaseTimeEntity {
     //회차명
     @Column(name = "cycle_name", nullable = false, length=100)
     private String cycleName;
+
+    // 년도
+    @Column(name = "year", nullable = false, length=4)
+    private String year;
+
+    // 분기
+    @Enumerated(EnumType.STRING)
+    @Column(name = "quarter" , nullable = false)
+    private Quarter quarter;
 
     // 시작일
     @Column(name = "start_date", nullable = false)
@@ -46,4 +56,8 @@ public class Cycle extends BaseTimeEntity {
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
+
+    @Column(name = "is_comp_report_generated", nullable = false, length = 1)
+    private Character isReportGenerated = 'N';
+
 }

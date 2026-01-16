@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/tags")
+@RequestMapping("/tags")
 public class TagQueryController {
 
   private final TagQueryService tagQueryService;
@@ -25,13 +25,11 @@ public class TagQueryController {
    */
   @GetMapping
   public ResponseEntity<ApiResponse<TagSearchResponse>> tags(
-      @ModelAttribute TagSearchRequest request
+      TagSearchRequest request
   )  {
 
     TagSearchResponse response = tagQueryService.tags(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
-
-
 
 }

@@ -12,4 +12,6 @@ public interface ContentMapper {
   List<ContentRowDTO> findAllContents(ContentSearchRequest request);
 
   ContentDTO findContentByContentId(Long contentId);
+
+  List<ContentRowDTO> findContentByCompetencyReportId(Long competencyReportId);
 }

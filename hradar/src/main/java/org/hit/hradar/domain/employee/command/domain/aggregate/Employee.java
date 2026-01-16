@@ -36,6 +36,7 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "email", length = 255)
   private String email;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "gender")
   private Gender gender;
 

@@ -11,7 +11,7 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hit.hradar.domain.competencyReport.command.application.controller.ContentUpdateRequest;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentUpdateRequest;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentCreateRequest;
 import org.hit.hradar.domain.competencyReport.competencyReportErrorCode.CompetencyReportErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
@@ -36,7 +36,7 @@ public class Content extends BaseTimeEntity {
   private ContentType type;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "level")
+  @Column(name = "level", nullable = false )
   private Level level;
 
   @Column(name = "learning_time")
