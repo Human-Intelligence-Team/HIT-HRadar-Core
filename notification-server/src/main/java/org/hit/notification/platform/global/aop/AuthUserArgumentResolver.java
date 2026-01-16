@@ -1,7 +1,7 @@
-package org.hit.notification.platform.common.aop;
+package org.hit.notification.platform.global.aop;
 
-import org.hit.notification.platform.common.dto.AuthUser;
-import org.hit.notification.platform.common.exception.UnauthorizedException;
+import org.hit.notification.platform.global.dto.AuthUser;
+import org.hit.notification.platform.global.exception.UnauthorizedException;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

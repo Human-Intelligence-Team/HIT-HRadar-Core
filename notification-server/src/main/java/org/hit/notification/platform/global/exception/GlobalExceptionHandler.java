@@ -1,7 +1,7 @@
-package org.hit.notification.platform.common.exception;
+package org.hit.notification.platform.global.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hit.notification.platform.common.dto.ApiResponse;
+import org.hit.notification.platform.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

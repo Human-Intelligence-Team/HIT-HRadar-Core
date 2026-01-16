@@ -1,4 +1,4 @@
-package org.hit.notification.platform.common.aop;
+package org.hit.hradar.global.aop;
 
 import java.lang.annotation.*;
 

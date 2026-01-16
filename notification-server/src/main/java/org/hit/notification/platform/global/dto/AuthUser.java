@@ -1,4 +1,4 @@
-package org.hit.notification.platform.common.dto;
+package org.hit.notification.platform.global.dto;
 
 public record AuthUser(
         Long userId,

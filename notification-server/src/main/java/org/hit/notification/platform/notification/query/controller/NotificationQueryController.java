@@ -1,8 +1,8 @@
 package org.hit.notification.platform.notification.query.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.notification.platform.common.aop.CurrentUser;
-import org.hit.notification.platform.common.dto.AuthUser;
+import org.hit.notification.platform.global.aop.CurrentUser;
+import org.hit.notification.platform.global.dto.AuthUser;
 import org.hit.notification.platform.notification.command.application.dto.NotificationResponse;
 import org.hit.notification.platform.notification.query.service.NotificationQueryService;
 import org.springframework.web.bind.annotation.GetMapping;

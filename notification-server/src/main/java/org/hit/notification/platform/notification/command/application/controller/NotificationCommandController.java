@@ -1,12 +1,10 @@
 package org.hit.notification.platform.notification.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.notification.platform.common.aop.CurrentUser;
-import org.hit.notification.platform.common.dto.ApiResponse;
-import org.hit.notification.platform.common.dto.AuthUser;
+import org.hit.notification.platform.global.aop.CurrentUser;
+import org.hit.notification.platform.global.dto.ApiResponse;
+import org.hit.notification.platform.global.dto.AuthUser;
 import org.hit.notification.platform.notification.command.application.service.NotificationCommandService;
-import org.hit.notification.platform.notification.query.service.NotificationQueryService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,8 +2,8 @@ package org.hit.notification.platform.notification.sse;
 
 import lombok.RequiredArgsConstructor;
 
-import org.hit.notification.platform.common.aop.CurrentUser;
-import org.hit.notification.platform.common.dto.AuthUser;
+import org.hit.notification.platform.global.aop.CurrentUser;
+import org.hit.notification.platform.global.dto.AuthUser;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

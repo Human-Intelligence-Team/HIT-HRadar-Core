@@ -1,7 +1,7 @@
-package org.hit.notification.platform.common.config;
+package org.hit.notification.platform.global.config;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.notification.platform.common.aop.AuthUserArgumentResolver;
+import org.hit.notification.platform.global.aop.AuthUserArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

@@ -1,4 +1,4 @@
-package org.hit.notification.platform.common.exception;
+package org.hit.notification.platform.global.exception;
 
 import lombok.Getter;
 
