@@ -1,3 +1,5 @@
 app:
   name: gateway
 
+cors:
+  allowed-origins: ""

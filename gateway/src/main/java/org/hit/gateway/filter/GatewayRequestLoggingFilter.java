@@ -25,7 +25,6 @@ public class GatewayRequestLoggingFilter implements GlobalFilter, Ordered {
         String path = request.getURI().getPath();
         String method = request.getMethod().name();
         String requestId = exchange.getRequest().getId();
-        String userId = request.getHeaders().getFirst("X-User-Id");
 
         return chain.filter(exchange).doFinally(signalType -> {
             long duration = System.currentTimeMillis() - start;
@@ -38,9 +37,12 @@ public class GatewayRequestLoggingFilter implements GlobalFilter, Ordered {
                     path,
                     status != null ? status.value() : "UNKNOWN",
                     duration,
-                    userId,
                     requestId
             );
+
+            log.info("METHOD={}", request.getMethod());
+            log.info("AUTH={}", request.getHeaders().getFirst("Authorization"));
+            log.info("ALL_HEADERS={}", request.getHeaders());
         });
     }
 

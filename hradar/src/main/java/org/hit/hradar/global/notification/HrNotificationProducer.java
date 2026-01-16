@@ -1,10 +1,9 @@
-package org.hit.hradar.global.producer;
+package org.hit.hradar.global.notification;
 
 import org.hit.common.event.HrNotificationEvent;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Component

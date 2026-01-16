@@ -7,6 +7,8 @@ import org.hit.notification.platform.notification.command.domain.infrastructure.
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -38,6 +40,10 @@ public class NotificationCommandService {
         Notification n = repository.findById(id)
                 .orElseThrow();
         n.markAsRead();
+    }
+
+    public void markAsReadAll(Long userId) {
+        repository.markAllRead(userId);
     }
 
     public void delete(Long id) {

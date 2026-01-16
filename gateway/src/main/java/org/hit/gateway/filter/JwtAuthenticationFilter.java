@@ -29,11 +29,17 @@ public class JwtAuthenticationFilter
             ServerHttpRequest request = exchange.getRequest();
             String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            String token;
+            if (authHeader == null) {
                 return unauthorized(exchange);
             }
 
-            String token = authHeader.substring(7);
+            if (authHeader.startsWith("Bearer ")) {
+                token = authHeader.substring(7);
+            } else {
+                // polyfill / SSE 보정
+                token = authHeader;
+            }
 
             if (!jwtTokenProvider.validateToken(token)) {
                 return unauthorized(exchange);
@@ -44,8 +50,11 @@ public class JwtAuthenticationFilter
             ServerHttpRequest mutatedRequest = request.mutate()
                     .header("X-User-Id", claims.getSubject())
                     .header("X-User-Role", claims.get("role", String.class))
+                    .header("X-Company-Id", claims.get("companyId", String.class))
                     .build();
 
+            System.out.println("user ID " + claims.getSubject());
+            System.out.println("company ID " + claims.get("companyId", String.class));
             return chain.filter(
                     exchange.mutate()
                             .request(mutatedRequest)

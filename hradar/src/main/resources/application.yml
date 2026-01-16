@@ -5,4 +5,11 @@ spring:
     import:
       - classpath:config/kafka.yml
 app:
-  name: hradar
+  application:
+    name: hr-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

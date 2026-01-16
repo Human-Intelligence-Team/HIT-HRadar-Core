@@ -6,6 +6,9 @@ spring:
       server:
         webflux:
           routes:
+            # =========================
+            # Auth (JWT 발급 서버)
+            # =========================
             - id: auth
               uri: http://localhost:8081
               predicates:
@@ -13,21 +16,28 @@ spring:
               filters:
                 - StripPrefix=1
 
+
+            # =========================
+            # HR API (JWT 필요)
+            # =========================
             - id: hr
               uri: http://localhost:8082
               predicates:
                 - Path=/api/v1/**
               filters:
                 - StripPrefix=2
-#                - name: JwtAuthentication
+                # - JwtAuthenticationFilter  (나중에 필요하면)
 
-            - id: notification
+            # =========================
+            # Notification REST API (JWT 필요)
+            # =========================
+            - id: notification-api
               uri: http://localhost:8083
               predicates:
                 - Path=/api/notifications/**
               filters:
                 - StripPrefix=1
-#                - name: JwtAuthentication
+                - JwtAuthenticationFilter
 
 management:
   endpoints:
@@ -49,3 +59,6 @@ logging:
     org.springframework.cloud.gateway: DEBUG
     root: INFO
     org.hit.gateway: INFO
+
+cors:
+  allowed-origins: http://localhost:5173
