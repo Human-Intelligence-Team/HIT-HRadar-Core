@@ -1,11 +1,10 @@
 package org.hit.hradar.domain.competencyReport.command.application.service;
 
 
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.competencyReport.command.application.controller.ContentUpdateRequest;
-import org.hit.hradar.domain.competencyReport.command.application.controller.ContentUpdateResponse;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentUpdateRequest;
+import org.hit.hradar.domain.competencyReport.command.application.dto.response.ContentUpdateResponse;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentCreateRequest;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Content;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentTag;

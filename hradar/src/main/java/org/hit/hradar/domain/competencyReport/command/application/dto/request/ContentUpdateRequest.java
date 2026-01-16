@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.competencyReport.command.application.controller;
+package org.hit.hradar.domain.competencyReport.command.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
