@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/competency-report")
+@RequestMapping("/competency-report")
 public class CompetencyReportQueryController {
 
   private final CompetencyReportQueryService competencyReportQueryService;

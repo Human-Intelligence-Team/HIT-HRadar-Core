@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/learning-contents")
+@RequestMapping("/learning-contents")
 public class ContentQueryController {
 
   private final ContentQueryService contentQueryService;
