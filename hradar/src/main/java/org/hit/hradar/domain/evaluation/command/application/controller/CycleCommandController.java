@@ -55,4 +55,13 @@ public class CycleCommandController {
         return ResponseEntity.ok(ApiResponse.success("null"));
     }
 
+    /*회차 승인*/
+    @PutMapping("/{cycleId}/approve")
+    public ResponseEntity<ApiResponse<String>> approveCycle(
+            @PathVariable Long cycleId
+    ){
+        cycleCommandService.approveCycle(cycleId);
+        return ResponseEntity.ok(ApiResponse.success("null"));
+    }
+
 }

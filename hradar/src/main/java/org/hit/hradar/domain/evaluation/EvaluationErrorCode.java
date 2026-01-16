@@ -20,6 +20,11 @@ public enum EvaluationErrorCode implements ErrorCode {
             "CYCLE_003",
             "이미 마감된 평가 회차입니다.",
             HttpStatus.CONFLICT
+    ),
+    CYCLE_DELETED(
+            "CYCLE_004",
+            "삭제된 회차입니다.",
+            HttpStatus.BAD_REQUEST
     );
 
     private final String errorCode;
