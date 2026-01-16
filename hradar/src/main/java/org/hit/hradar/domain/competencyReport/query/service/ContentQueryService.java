@@ -43,7 +43,7 @@ public class ContentQueryService {
           // tag List
           List<TagDTO> tags = entry.getValue().stream()
               .map(f -> new TagDTO(f.getTagId(), f.getTagName()))
-              .collect(Collectors.toList());
+              .toList();
 
           ContentRowDTO first = entry.getValue().get(0);
           ContentDTO dto = new ContentDTO(
