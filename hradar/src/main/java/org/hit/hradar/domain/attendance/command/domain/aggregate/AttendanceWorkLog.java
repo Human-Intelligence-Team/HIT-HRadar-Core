@@ -2,6 +2,8 @@ package org.hit.hradar.domain.attendance.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,6 +23,11 @@ public class AttendanceWorkLog extends BaseTimeEntity {
   @Column(name = "work_log_id")
   private Long workLogId;
 
+  //근무 로그 유형(출근/퇴근)
+  @Enumerated(EnumType.STRING)
+  @Column(name = "work_log_type", nullable = false)
+  private WorkLogType workLogType = WorkLogType.CHECK_IN;
+
   //근태ID
   @Column(name = "attendance_id", nullable = false)
   private Long attendanceId;
@@ -33,10 +40,6 @@ public class AttendanceWorkLog extends BaseTimeEntity {
   @Column(name = "end_at", nullable = false)
   private LocalDateTime endAt;
 
-  //로그 근무 시각
-  @Column(name = "worked_minutes", nullable = false, length = 100)
-  private String workedMinutes;
-
   //근무 장소
   @Column(name = "location", nullable = false, length = 100)
   private String location;
@@ -44,7 +47,5 @@ public class AttendanceWorkLog extends BaseTimeEntity {
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
-
-
 
 }
