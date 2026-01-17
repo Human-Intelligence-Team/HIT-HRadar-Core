@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.attendance.command.domain.infrastructure;
+package org.hit.hradar.domain.attendance.command.infrastructure;
 
 import org.hit.hradar.domain.attendance.command.domain.aggregate.Attendance;
 import org.hit.hradar.domain.attendance.command.domain.repository.AttendanceRepository;
