@@ -1,7 +1,6 @@
 package org.hit.hradar.domain.attendance.command.domain.repository;
 
 import org.hit.hradar.domain.attendance.command.domain.aggregate.AttendanceWorkLog;
-import org.hit.hradar.domain.attendance.command.domain.aggregate.WorkType;
 
 public interface AttendanceWorkLogRepository {
 
@@ -10,13 +9,9 @@ public interface AttendanceWorkLogRepository {
   //츨퇴근 로그 도메인 레포
   //출/퇴근 판단의 기준 WorkLog
 
-  //열린 WorkLog 존재 여부(end_at Is NULL)
-  boolean existsOpenedLog(Long attendanceId);
+  // 근무 로그 시간 변경 (정정 승인용)
+  void updateWorkLogTime(Long workLogId, String requestedValue);
 
-  //출근처리(CHECK_IN 로그 생성)
-  void createCheckIn(Long attendanceId, WorkType workType);
-
-  //퇴근처리
-  void closeLastCheckOut(Long attendanceId);
-
+  // 근무 장소/유형 변경 (정정 승인용)
+  void updateWorkLogLocation(Long workLogId, String requestedValue);
 }

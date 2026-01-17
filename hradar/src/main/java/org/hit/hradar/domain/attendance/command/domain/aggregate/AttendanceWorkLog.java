@@ -76,4 +76,15 @@ public class AttendanceWorkLog extends BaseTimeEntity {
     this.workedMinutes =
         (int) Duration.between(this.startAt, endAt).toMinutes();
   }
+
+  // 시간 정정
+  public void changeTime(LocalDateTime newStartAt, LocalDateTime newEndAt) {
+    this.startAt = newStartAt;
+    this.endAt = newEndAt;
+  }
+
+  // 장소 정정
+  public void changeLocation(String newLocation) {
+    this.location = newLocation;
+  }
 }
