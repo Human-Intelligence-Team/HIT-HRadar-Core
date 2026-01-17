@@ -93,7 +93,7 @@ public class Cycle extends BaseTimeEntity {
         if (this.status != CycleStatus.APPROVED) {
             throw new BusinessException(EvaluationErrorCode.NOT_CONFIRMED);
         }
-        this.status = CycleStatus.OPEN;
+        this.status = CycleStatus.IN_PROGRESS;
     }
 
     public void close() {
