@@ -1,11 +1,12 @@
 package org.hit.hradar.domain.evaluation.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.competencyReport.command.application.controller.ContentUpdateRequest;
 import org.hit.hradar.domain.evaluation.command.application.dto.request.CycleCreateRequestDto;
 import org.hit.hradar.domain.evaluation.command.application.dto.request.CycleUpdateRequestDto;
 import org.hit.hradar.domain.evaluation.command.application.service.CycleCommandService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,11 +20,10 @@ public class CycleCommandController {
     /* 회차 생성 */
     @PostMapping
     public ResponseEntity<ApiResponse<String>> createCycle(
-            //TODO: 나중에 수정
-            @RequestHeader Long empId,
+            @CurrentUser AuthUser authUser,
             @RequestBody CycleCreateRequestDto request
     ) {
-        cycleCommandService.createCycle(request, empId);
+        cycleCommandService.createCycle(request,  authUser.userId());
         return ResponseEntity.ok(ApiResponse.success("null"));
     }
 

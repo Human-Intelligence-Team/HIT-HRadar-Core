@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CycleCreateRequestDto {
 
+    //TODO: 연도, 분기
+
     private String cycleName;
 
     private LocalDateTime startDate;

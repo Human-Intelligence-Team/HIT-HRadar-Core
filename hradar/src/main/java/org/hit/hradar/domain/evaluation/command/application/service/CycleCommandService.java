@@ -26,8 +26,8 @@ public class CycleCommandService {
 
         Cycle cycle = Cycle.builder()
                 .cycleName(request.getCycleName())
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now())
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
                 .empId(empId)
                 .build();
 
