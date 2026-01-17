@@ -7,7 +7,7 @@
   <select id="findAllContents"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO">
-
+    <!-- 학습 컨텐츠 목록 조회 -->
     SELECT ct.CONTENT_ID      AS contentId
          , ct.LEARNING_TIME   AS learningTime
          , ct.LEVEL           AS level
@@ -47,7 +47,7 @@
   <select id="findContentByContentId"
     parameterType="Long"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentDTO">
-
+    <!-- 학습컨텐츠 상세 조회 -->
     SELECT ct.CONTENT_ID      AS contentId
          , ct.TITLE           AS title
          , ct.TYPE            AS type
@@ -60,5 +60,27 @@
          , ct.UPDATED_AT 	    AS updatedAt
       FROM CONTENT ct
      WHERE ct.CONTENT_ID = #{contentId}
+  </select>
+
+  <select id="findContentByCompetencyReportId"
+    parameterType="Long"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO">
+    <!-- 학습 컨텐츠 목록, 태그 목록 조회 -->
+    SELECT rc.COMPETENCY_REPORT_ID
+         , ct.CONTENT_ID
+         , ct.TITLE
+         , ct.TYPE            AS type
+         , ct.LEVEL           AS level
+         , ct.LEARNING_TIME
+         , ct.RESOURCE_PATH   AS resourcePath
+         , tg.TAG_ID
+         , tg.TAG_NAME
+      FROM report_content rc
+      JOIN CONTENT ct ON rc.CONTENT_ID = ct.CONTENT_ID
+      JOIN CONTENT_TAG ctt ON rc.CONTENT_ID = ct.CONTENT_ID
+      JOIN TAG tg ON ctt.TAG_ID = tg.TAG_ID
+     WHERE COMPETENCY_REPORT_ID = #{competencyReportId}
+       AND ct.IS_DELETED = "N"
+     ORDER BY ct.CONTENT_ID asc
   </select>
 </mapper>

@@ -66,4 +66,10 @@ public class IpRangePolicy extends BaseTimeEntity {
     this.ipPolicyType = ipPolicyType;
     this.isActive = true;
   }
+
+  public void update(String cidr, String locationName, IpPolicyType ipPolicyType) {
+    this.cidr = cidr;
+    this.locationName = locationName;
+    this.ipPolicyType = ipPolicyType;
+  }
 }

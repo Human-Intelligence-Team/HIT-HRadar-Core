@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            # =========================
+            # Auth (JWT 발급 서버)
+            # =========================
+            - id: auth
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - StripPrefix=1
+
+
+            # =========================
+            # HR API (JWT 필요)
+            # =========================
+            - id: hr
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/v1/**
+              filters:
+                - StripPrefix=2
+                # - JwtAuthenticationFilter  (나중에 필요하면)
+
+            # =========================
+            # Notification REST API (JWT 필요)
+            # =========================
+            - id: notification-api
+              uri: http://localhost:8083
+              predicates:
+                - Path=/api/notifications/**
+              filters:
+                - StripPrefix=1
+                - JwtAuthenticationFilter
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+jwt:
+  secret-key: Q8b83bmIq4KI2lvE+bViXYvo9SyODg1g0Q0dPyG9VNutj0GgBG8SxhWwL3oexDlWtq5uxFZs+k+NWXHYXKLjYg==
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    root: INFO
+    org.hit.gateway: INFO
+
+cors:
+  allowed-origins: http://localhost:5173

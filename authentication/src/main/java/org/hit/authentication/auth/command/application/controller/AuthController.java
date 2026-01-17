@@ -22,84 +22,83 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
-  private final AuthService authService;
-  private final JwtTokenProvider jwtTokenProvider;
-  private static final String COOKIE_NAME = "refreshToken";
+    private final AuthService authService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private static final String COOKIE_NAME = "refreshToken";
 
-  @PostMapping("/login")
-  public ResponseEntity<ApiResponse<AccessTokenResponse>> login(
-      @RequestBody LoginRequest request
-  ) {
-    TokenResponse response = authService.login(request);
-    log.info("TEST LOGBACK");
-    ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, response.getRefreshToken())
-        .httpOnly(true)
-        .secure(false)   // 개발 환경에서는 false, 운영에서는 true
-        .path("/")
-        .maxAge(
-            jwtTokenProvider.getRefreshExpiration() / 1000)
-        .sameSite("Lax")
-        .build();
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> login(
+            @RequestBody LoginRequest request
+    ) {
+        TokenResponse response = authService.login(request);
 
-    AccessTokenResponse accessTokenResponse = AccessTokenResponse.builder()
-        .accessToken(
-            response.getAccessToken())
-        .build();
-    return ResponseEntity.ok()
-        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-        .body(ApiResponse.success(accessTokenResponse));
+        ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, response.getRefreshToken())
+                .httpOnly(true)
+                .secure(false)   // 개발 환경에서는 false, 운영에서는 true
+                .path("/")
+                .maxAge(
+                        jwtTokenProvider.getRefreshExpiration() / 1000)
+                .sameSite("Lax")
+                .build();
 
-
-  }
-
-  @PostMapping("/logout")
-  public ResponseEntity<ApiResponse<Void>> logout(
-      @RequestHeader("Authorization") String authorizationHeader
-  ) {
-    authService.logout(authorizationHeader);
-
-    ResponseCookie deleteCookie = ResponseCookie.from(COOKIE_NAME, "")
-        .httpOnly(true)
-        .secure(false)
-        .path("/")
-        .maxAge(0)     // 즉시 만료
-        .sameSite("Lax")
-        .build();
-
-    return ResponseEntity.ok()
-        .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
-        .body(ApiResponse.success(null));
+        AccessTokenResponse accessTokenResponse = AccessTokenResponse.builder()
+                .accessToken(
+                        response.getAccessToken())
+                .build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(ApiResponse.success(accessTokenResponse));
 
 
-  }
+    }
 
-  @PostMapping("/token-reissue")
-  public ResponseEntity<ApiResponse<AccessTokenResponse>> tokenReissue(
-      @CookieValue(name = COOKIE_NAME, required = false) String refreshToken
-  ) {
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(
+            @RequestHeader("Authorization") String authorizationHeader
+    ) {
+        authService.logout(authorizationHeader);
 
+        ResponseCookie deleteCookie = ResponseCookie.from(COOKIE_NAME, "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)     // 즉시 만료
+                .sameSite("Lax")
+                .build();
 
-    AccessTokenResponse newAccessToken = authService.tokenReissue(
-        refreshToken
-    );
-
-    ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, refreshToken)
-        .httpOnly(true)
-        .secure(false)
-        .path("/")
-        .maxAge(
-            jwtTokenProvider.getRefreshExpiration() / 1000)
-        .sameSite("Lax")
-        .build();
-
-    return ResponseEntity.ok()
-        .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-        .body(ApiResponse.success(newAccessToken));
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
+                .body(ApiResponse.success(null));
 
 
-  }
+    }
+
+    @PostMapping("/token-reissue")
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> tokenReissue(
+            @CookieValue(name = COOKIE_NAME, required = false) String refreshToken
+    ) {
+
+
+        AccessTokenResponse newAccessToken = authService.tokenReissue(
+                refreshToken
+        );
+
+        ResponseCookie refreshCookie = ResponseCookie.from(COOKIE_NAME, refreshToken)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(jwtTokenProvider.getRefreshExpiration() / 1000)
+                .sameSite("Lax")
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                .body(ApiResponse.success(newAccessToken));
+
+
+    }
 
 }

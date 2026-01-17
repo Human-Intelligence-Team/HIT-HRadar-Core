@@ -1,10 +1,7 @@
 package org.hit.authentication.auth.command.application.service;
 
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
-import org.hit.authentication.auth.AuthErrorCode;
-import org.hit.authentication.common.exception.BusinessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class AuthRedisService {
 
   private final long REFRESH_TOKEN_EXPIRY = 14; // 2주
-  private final long RESET_TOKEN_VALIDITY_MINUTES = 15; // 비밀번호 재설정 토큰 유효시간
 
   private final RedisTemplate<String, Object> redisTemplate;
 

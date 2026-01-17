@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Quarter;
 import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
@@ -26,6 +27,15 @@ public class Cycle extends BaseTimeEntity {
     @Column(name = "cycle_name", nullable = false, length=100)
     private String cycleName;
 
+    // 년도
+    @Column(name = "year", nullable = false, length=4)
+    private String year;
+
+    // 분기
+    @Enumerated(EnumType.STRING)
+    @Column(name = "quarter" , nullable = false)
+    private Quarter quarter;
+
     // 시작일
     @Column(name = "start_date", nullable = false)
     private LocalDateTime startDate;
@@ -35,14 +45,20 @@ public class Cycle extends BaseTimeEntity {
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 10)
+    @Column(name = "status", nullable = false)
     private CycleStatus status = CycleStatus.DRAFT;
 
     // 담당 사원 ID
     @Column(name = "emp_id", nullable = false)
     private Long empId;
 
-    //created_at, updated_at, created_by, updated_by
+    //created_at, updated_at
+
+    /*@Column(name = "created_by", nullable = false, length = 50)
+    private String createdBy;
+
+    @Column(name = "updated_by", length = 50)
+    private String updatedBy;*/
 
     @Column(name = "is_deleted", nullable = false, length = 1)
     private Character isDeleted = 'N';
