@@ -25,7 +25,16 @@ public enum EvaluationErrorCode implements ErrorCode {
             "CYCLE_004",
             "삭제된 회차입니다.",
             HttpStatus.BAD_REQUEST
-    );
+    ), NOT_CONFIRMED(
+            "CYCLE_005",
+            "승인되지 않았습니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+    CYCLE_NOT_OPEN(
+            "CYCLE_006",
+            "평가 기간이 아닙니다.",
+            HttpStatus.FORBIDDEN
+    ),;
 
     private final String errorCode;
     private final String message;

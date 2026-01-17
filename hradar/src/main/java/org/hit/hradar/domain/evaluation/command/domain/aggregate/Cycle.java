@@ -5,7 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
+import org.hit.hradar.global.exception.BusinessException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -85,5 +87,16 @@ public class Cycle extends BaseTimeEntity {
     //도메인 확인용
     public boolean isClosed() {
         return this.status == CycleStatus.CLOSED;
+    }
+
+    public void open() {
+        if (this.status != CycleStatus.APPROVED) {
+            throw new BusinessException(EvaluationErrorCode.NOT_CONFIRMED);
+        }
+        this.status = CycleStatus.OPEN;
+    }
+
+    public void close() {
+        this.status = CycleStatus.CLOSED;
     }
 }
