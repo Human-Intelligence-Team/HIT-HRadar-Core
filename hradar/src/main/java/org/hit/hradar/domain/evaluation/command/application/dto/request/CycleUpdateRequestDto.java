@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CycleUpdateRequestDto {
 
+    //TODO: 연도, 분기
+
     private String cycleName;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
