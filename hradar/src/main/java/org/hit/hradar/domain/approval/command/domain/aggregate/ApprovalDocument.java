@@ -38,6 +38,10 @@ public class ApprovalDocument extends BaseTimeEntity {
   @Column(name = "doc_type", nullable = false)
   private ApprovalDocumentType docType = ApprovalDocumentType.ATT_CORRECTION;
 
+  // 업무 데이터 PK (vacationId, kpiId ...)
+  @Column(name = "payload_id", nullable = false)
+  private Long payloadId;
+
   //제목
   @Column(name = "title", nullable = false, length = 200)
   private String title;
@@ -46,7 +50,7 @@ public class ApprovalDocument extends BaseTimeEntity {
   @Column(name = "content", nullable = false)
   private String content;
 
-  //상태
+  //상태(DRAFT / IN_PROGRESS / APPROVED / REJECTED)
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
   private ApprovalStatus status = ApprovalStatus.DRAFT;
@@ -80,17 +84,23 @@ public class ApprovalDocument extends BaseTimeEntity {
 
    //결재 문서를 회수한다.(DRAFT(임시저장) 상태)
    //IN_PROGRESS(상신) 상태이면서, 아직 결재선에서 승인/반려가 한 건도 발생하지 않은 경우
-  public void withdraw(boolean hasApprovalHistory) {
-    if (this.status == ApprovalStatus.APPROVED
-      || this.status == ApprovalStatus.REJECTED) {
-      throw new BusinessException(
-          ApprovalErrorCode.CANNOT_SUBMIT_NOT_DRAFT
-      );
-    }
-    //DRAFT 또는 승인 시작전 회수 가능
-    this.status = ApprovalStatus.WITHDRAWN;
-    this.isDeleted = 'Y';
-  }
+   // 결재 문서 회수
+   public void withdraw(Long actorId) {
+     if (!this.writerId.equals(actorId)) {
+       throw new BusinessException(
+           ApprovalErrorCode.NOT_ALLOWED_APPROVER
+       );
+     }
+
+     if (this.status == ApprovalStatus.APPROVED
+         || this.status == ApprovalStatus.REJECTED) {
+       throw new BusinessException(
+           ApprovalErrorCode.CANNOT_WITHDRAW_AFTER_APPROVAL_STARTED
+       );
+     }
+
+     this.status = ApprovalStatus.WITHDRAWN;
+   }
 
   //결재 승인
   public void approve() {
@@ -103,7 +113,37 @@ public class ApprovalDocument extends BaseTimeEntity {
     this.status = ApprovalStatus.REJECTED;
   }
 
+  protected ApprovalDocument() {}
 
+  private ApprovalDocument(
+      Long writerId,
+      ApprovalDocumentType docType,
+      Long payloadId,
+      String title,
+      String content
+  ) {
+    this.writerId = writerId;
+    this.docType = docType;
+    this.payloadId = payloadId;
+    this.title = title;
+    this.content = content;
+    this.status = ApprovalStatus.DRAFT;
+  }
 
+  public static ApprovalDocument createDraft(
+      Long writerId,
+      ApprovalDocumentType docType,
+      Long payloadId,
+      String title,
+      String content
+  ) {
+    return new ApprovalDocument(
+        writerId,
+        docType,
+        payloadId,
+        title,
+        content
+    );
+  }
 
 }

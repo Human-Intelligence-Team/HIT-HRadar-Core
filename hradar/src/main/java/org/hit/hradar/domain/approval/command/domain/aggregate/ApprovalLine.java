@@ -36,4 +36,11 @@ public class ApprovalLine extends BaseTimeEntity {
   public void increaseStep() {
     this.currentStep++;
   }
+
+  public static ApprovalLine create(Long docId) {
+    ApprovalLine line = new ApprovalLine();
+    line.docId = docId;
+    line.currentStep = 1;
+    return line;
+  }
 }

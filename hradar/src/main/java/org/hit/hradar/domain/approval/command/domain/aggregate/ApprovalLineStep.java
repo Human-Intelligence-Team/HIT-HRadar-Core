@@ -108,6 +108,20 @@ public class ApprovalLineStep extends BaseTimeEntity {
     this.approvalStepStatus = ApprovalStepStatus.PENDING;
   }
 
-
+  public static ApprovalLineStep create(
+      Long lineId,
+      int order,
+      Long approverId,
+      boolean isFirst
+  ) {
+    ApprovalLineStep step = new ApprovalLineStep();
+    step.lineId = lineId;
+    step.stepOrder = order;
+    step.approverId = approverId;
+    step.approvalStepStatus =
+        isFirst ? ApprovalStepStatus.PENDING
+            : ApprovalStepStatus.WAITING;
+    return step;
+  }
 
 }
