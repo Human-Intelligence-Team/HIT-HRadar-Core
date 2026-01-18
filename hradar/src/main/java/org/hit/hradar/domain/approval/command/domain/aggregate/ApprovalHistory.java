@@ -38,7 +38,7 @@ public class ApprovalHistory extends BaseTimeEntity  {
   //결재 타입
   @Enumerated(EnumType.STRING)
   @Column(name = "action_type", nullable = false)
-  private ApprovalActionType actionType = ApprovalActionType.SUBMITTED;
+  private ApprovalActionType approvalActionType = ApprovalActionType.SUBMITTED;
 
   //반려 사유
   @Column(name = "reason", length = 255)
@@ -51,5 +51,55 @@ public class ApprovalHistory extends BaseTimeEntity  {
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
+
+  //JPA 기본 생성자
+  protected ApprovalHistory() {}
+
+  //내부 생성자
+  private ApprovalHistory(
+      Long docId,
+      Long actorId,
+      Long stepId,
+      ApprovalActionType actionType,
+      String reason
+  ) {
+    this.docId = docId;
+    this.actorId = actorId;
+    this.stepId = stepId;
+    this.approvalActionType = actionType;
+    this.reason = reason;
+    this.actedAt = LocalDateTime.now();
+  }
+
+  // 승인 이력 생성
+  public static ApprovalHistory approved(
+      Long docId,
+      Long actorId,
+      ApprovalLineStep step
+  ) {
+    return new ApprovalHistory(
+        docId,
+        actorId,
+        step.getStepId(),
+        ApprovalActionType.APPROVED,
+        null
+    );
+  }
+
+  // 반려 이력 생성
+  public static ApprovalHistory rejected(
+      Long docId,
+      Long actorId,
+      ApprovalLineStep step,
+      String reason
+  ) {
+    return new ApprovalHistory(
+        docId,
+        actorId,
+        step.getStepId(),
+        ApprovalActionType.REJECTED,
+        reason
+    );
+  }
 
 }
