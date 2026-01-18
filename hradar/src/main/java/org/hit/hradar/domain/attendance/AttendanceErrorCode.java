@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatusCode;
 public enum AttendanceErrorCode implements ErrorCode {
   ATTENDANCE_NOT_FOUND("ATT_001", "근태 정보를 찾을 수 없습니다." , HttpStatus.NOT_FOUND),
   ATTENDANCE_ALREADY_FOUND("ATT_002", "이미 출근 처리되었습니다." , HttpStatus.NOT_FOUND),
-  ATTENDANCE_CHECK_IN_FOUND("ATT_003", "출근 기록이 없습니다." , HttpStatus.NOT_FOUND);
+  ATTENDANCE_CHECK_IN_FOUND("ATT_003", "출근 기록이 없습니다." , HttpStatus.NOT_FOUND),
+  INVALID_ATTENDANCE_STATE("ATT_004", "이미 자동 근무가 적용 중입니다.", HttpStatus.NOT_FOUND);
 
   private final String errorCode;
   private final String message;

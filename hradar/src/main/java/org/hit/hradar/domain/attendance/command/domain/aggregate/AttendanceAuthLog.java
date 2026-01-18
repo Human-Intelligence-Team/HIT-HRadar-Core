@@ -34,7 +34,7 @@ public class AttendanceAuthLog extends BaseTimeEntity {
   //인증 여부
   @Enumerated(EnumType.STRING)
   @Column(name = "auth_result", nullable = false)
-  private Result result = Result.SUCCESS;
+  private AuthResult authResult = AuthResult.SUCCESS;
 
   //인증 시각
   @Column(name = "acted_at", nullable = false)
@@ -51,4 +51,16 @@ public class AttendanceAuthLog extends BaseTimeEntity {
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
+
+  //JPA 기본 생성자
+  protected AttendanceAuthLog() {}
+
+  //성공 로그 생성자
+  public AttendanceAuthLog(Long attendanceId, String ip) {
+    this.attendanceId = attendanceId;
+    this.ip = ip;
+    this.authType = "IP";
+    this.authResult = AuthResult.SUCCESS;
+    this.actedAt = LocalDateTime.now();
+  }
 }
