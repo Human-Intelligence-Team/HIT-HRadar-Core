@@ -14,5 +14,4 @@ public class UpdateGoalRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private GoalScope scope;
-    private Long actorId; //TODO: 인증 연동 후 제거
 }
