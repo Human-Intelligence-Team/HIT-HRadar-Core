@@ -17,6 +17,5 @@ public class CreateGoalRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private Long departmentId;     // ROOT에서만 사용
-    private Long ownerId;
 }
 

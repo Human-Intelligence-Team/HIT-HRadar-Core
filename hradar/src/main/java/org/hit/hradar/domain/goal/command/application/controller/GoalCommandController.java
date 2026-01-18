@@ -7,7 +7,9 @@ import org.hit.hradar.domain.goal.command.application.dto.request.ResubmitGoalRe
 import org.hit.hradar.domain.goal.command.application.dto.request.UpdateGoalRequest;
 import org.hit.hradar.domain.goal.command.application.service.GoalCommandService;
 import org.hit.hradar.domain.goal.command.domain.aggregate.Goal;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,76 +23,80 @@ public class GoalCommandController {
     //GOAL 등록
     @PostMapping()
     public ResponseEntity<ApiResponse<String>> createGoal(
+            @CurrentUser AuthUser authUser,
             @RequestBody CreateGoalRequest request
     ) {
         Long goalId;
 
         //상위목표가 없으면 root, 상위목표가 있으면 child
         if (request.getParentGoalId() == null) {
-            goalId = goalCommandService.createRootGoal(request);
+            goalId = goalCommandService.createRootGoal(request, authUser.userId());
         }else {
-            goalId = goalCommandService.createChildGoal(request);
+            goalId = goalCommandService.createChildGoal(request, authUser.userId());
         }
-        return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     //GOAL 수정
     @PatchMapping("/{goalId}")
     public ResponseEntity<ApiResponse<String>> updateGoal(
+            @CurrentUser AuthUser authUser,
             @PathVariable Long goalId,
             @RequestBody UpdateGoalRequest request
     ){
-        goalCommandService.updateGoal(goalId, request);
+        goalCommandService.updateGoal(goalId, request, authUser.userId());
         return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
     }
 
     //GOAL 재등록(반려시)
     @PostMapping("/{goalId}/resubmit")
     public ResponseEntity<ApiResponse<String>> resubmitGoal(
+            @CurrentUser AuthUser authUser,
             @PathVariable Long goalId,
             @RequestBody ResubmitGoalRequest request
     ) {
-        Long newGoalId = goalCommandService.resubmitGoal(goalId, request);
+        Long newGoalId = goalCommandService.resubmitGoal(goalId, request,  authUser.userId());
         return ResponseEntity.ok(ApiResponse.success(newGoalId.toString()));
     }
 
     //제출
     @PostMapping("/{goalId}/submit")
     public ResponseEntity<ApiResponse<String>> submitGoal(
-            @PathVariable Long goalId,
-            @RequestBody Long actorId
+            @CurrentUser AuthUser authUser,
+            @PathVariable Long goalId
     ) {
-        goalCommandService.submitGoal(goalId, actorId);
+        goalCommandService.submitGoal(goalId,  authUser.userId());
         return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
     }
 
     //삭제
     @DeleteMapping("/{goalId}")
     public ResponseEntity<ApiResponse<String>> deleteGoal(
-            @PathVariable Long goalId,
-            @RequestParam Long actorId
+            @CurrentUser AuthUser authUser,
+            @PathVariable Long goalId
     ) {
-        goalCommandService.deleteGoal(goalId, actorId);
+        goalCommandService.deleteGoal(goalId,  authUser.userId());
         return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
     }
 
     //승인
     @PostMapping("/{goalId}/approve")
     public ResponseEntity<ApiResponse<String>> approveGoal(
-            @PathVariable Long goalId,
-            @RequestParam Long actorId
+            @CurrentUser AuthUser authUser,
+            @PathVariable Long goalId
     ) {
-        goalCommandService.approveGoal(goalId, actorId);
+        goalCommandService.approveGoal(goalId,  authUser.userId());
         return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
     }
 
     //반려
     @PostMapping("/{goalId}/reject")
     public ResponseEntity<ApiResponse<String>> rejectGoal(
+            @CurrentUser AuthUser authUser,
             @PathVariable Long goalId,
             @RequestBody RejectGoalRequest request
     ) {
-        goalCommandService.rejectGoal(goalId, request);
+        goalCommandService.rejectGoal(goalId, request, authUser.userId());
         return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
     }
 }
