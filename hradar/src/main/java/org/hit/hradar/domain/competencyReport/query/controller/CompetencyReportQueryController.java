@@ -27,37 +27,37 @@ public class CompetencyReportQueryController {
  * @param request
  * @return
  */
-  @GetMapping("/member")
-  public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> competencyReport_member(
+  @GetMapping("/me")
+  public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getMyCompetencyReport(
       CompetencyReportSearchRequest request
   )  {
 
-    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportsByEmployee(request);
+    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   /**
-   * 역량 강화 목록(팀장)
+   * 역량 강화 목록(부서)
    * @param request
    * @return
    */
-  @GetMapping("/leader")
-  public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> competencyReport_leader(
+  @GetMapping("/dept")
+  public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getCompetencyReportByDeptId(
       CompetencyReportSearchRequest request
   )  {
 
-    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportsByLeader(request);
+    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportByDeptId(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
 
   /**
-   * 역량 강화 회차 목록(인사팀)
+   * 역량 강화 회차 목록(회차)
    * @param request
    * @return
    */
   @GetMapping("/cycle")
-  public ResponseEntity<ApiResponse<CycleSearchResponse>> competencyReport_cycle(
+  public ResponseEntity<ApiResponse<CycleSearchResponse>> getCycles(
       CompReportCycleSearchRequest request
   )  {
 
@@ -66,26 +66,26 @@ public class CompetencyReportQueryController {
   }
 
   /**
-   * 역량 강화 회차 목록(인사팀)
+   * 역량 강화 회차 목록(전체)
    * @param request
    * @return
    */
-  @GetMapping("/hr")
-  public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> competencyReport_hr(
+  @GetMapping("/all")
+  public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getCompetencyReportsByAll(
       CompReportCycleSearchRequest request
   )  {
 
-    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportsByHr(request);
+    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportsByAll(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   /**
-   * 역량 강화 회차 목록(인사팀)
+   * 역량 강화 회차 목록(상세)
    * @param id
    * @return
    */
   @GetMapping("/{id}")
-  public ResponseEntity<ApiResponse<CompetencyReportDetailResponse>> competencyReport(
+  public ResponseEntity<ApiResponse<CompetencyReportDetailResponse>> getCompetencyReportsById(
       @PathVariable Long id
   )  {
 

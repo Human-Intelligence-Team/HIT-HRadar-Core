@@ -27,11 +27,11 @@ public class CompetencyReportQueryService {
   private final ContentMapper contentMapper;
   private final EmployeeProviderService employeeProviderService;
   /**
-   * 역량 강화 리포트 목록 조회 (사원)
+   * 역량 강화 리포트 목록 조회 (본인)
    * @param request
    * @return
    */
-  public CompetencyReportSearchResponse getCompetencyReportsByEmployee(CompetencyReportSearchRequest request) {
+  public CompetencyReportSearchResponse getMyCompetencyReport(CompetencyReportSearchRequest request) {
 
     // 나중에 userId 가져오기
     Long userId = 1L;
@@ -41,11 +41,11 @@ public class CompetencyReportQueryService {
   }
 
   /**
-   * 역량 강화 리포트 목록 조회 (팀장)
+   * 역량 강화 리포트 목록 조회 (부서)
    * @param request
    * @return
    */
-  public CompetencyReportSearchResponse getCompetencyReportsByLeader(CompetencyReportSearchRequest request) {
+  public CompetencyReportSearchResponse getCompetencyReportByDeptId(CompetencyReportSearchRequest request) {
 
     // 나중에 userId 가져오기
     Long userId = 1L;
@@ -60,7 +60,7 @@ public class CompetencyReportQueryService {
   }
 
   /**
-   * 역량 강화 회차 목록(인사팀)
+   * 역량 강화 회차 목록(회차)
    * @param request
    * @return
    */
@@ -71,11 +71,11 @@ public class CompetencyReportQueryService {
   }
 
   /**
-   * 역량 강화 리포트 목록 (인사팀)
+   * 역량 강화 리포트 목록 (전체)
    * @param request
    * @return
    */
-  public CompetencyReportSearchResponse getCompetencyReportsByHr(CompReportCycleSearchRequest request) {
+  public CompetencyReportSearchResponse getCompetencyReportsByAll(CompReportCycleSearchRequest request) {
 
     List<CompetencyReportDTO> reports = competencyReportMapper.findAllByCycleId(request);
     return new CompetencyReportSearchResponse(reports);
