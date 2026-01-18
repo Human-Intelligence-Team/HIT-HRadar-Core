@@ -14,7 +14,7 @@ public interface AttendanceRepository {
   *
   * [핵심 원칙]
   * attendance는 사원 + 근무일 기준으로 하루 1건만 존재한다.
-  * 논리삭제(is_deleted='n')조건을 항상 고려한다.*/
+.*/
 
   Attendance save(Attendance attendance);
 

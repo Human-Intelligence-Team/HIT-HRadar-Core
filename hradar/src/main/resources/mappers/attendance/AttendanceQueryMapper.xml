@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.attendance.query.mapper.AttendanceQueryMapper">
+
+  <!-- ========================= -->
+  <!-- 근태 목록 조회 (기간) -->
+  <!-- ========================= -->
+  <select id="findAttendanceList"
+    parameterType="org.hit.hradar.domain.attendance.query.dto.request.AttendanceListQueryRequest"
+    resultType="org.hit.hradar.domain.attendance.query.dto.response.AttendanceListResponseDto">
+
+    SELECT
+    a.work_date AS workDate,
+    a.emp_id AS empId,
+    e.name AS empName,
+    d.dept_name AS departmentName,
+    a.work_type AS workType,
+    a.status AS status,
+    MIN(w.start_at) AS checkInTime,
+    MAX(w.end_at) AS checkOutTime,
+    COALESCE(
+    SUM(TIMESTAMPDIFF(MINUTE, w.start_at, w.end_at)), 0
+    ) AS totalWorkMinutes
+    FROM attendance a
+    JOIN employee e ON a.emp_id = e.emp_id
+    LEFT JOIN department d ON e.dept_id = d.dept_id
+    LEFT JOIN attendance_work_log w
+    ON w.attendance_id = a.attendance_id
+    AND w.is_deleted = 'N'
+    WHERE a.emp_id = #{targetEmpId}
+    AND a.work_date BETWEEN #{fromDate} AND #{toDate}
+    GROUP BY
+    a.work_date,
+    a.emp_id,
+    e.name,
+    d.dept_name,
+    a.work_type,
+    a.status
+    ORDER BY a.work_date ASC
+  </select>
+
+
+  <!-- ========================= -->
+  <!-- WorkLog 타임라인 resultMap -->
+  <!-- ========================= -->
+  <resultMap id="WorkLogTimelineResultMap"
+    type="org.hit.hradar.domain.attendance.query.dto.response.WorkLogTimelineItemDto">
+    <result property="workLogType" column="work_log_type"/>
+    <result property="startAt" column="start_at"/>
+    <result property="location" column="location"/>
+  </resultMap>
+
+  <!-- 근태 상세 resultMap -->
+  <resultMap id="AttendanceDetailResultMap"
+    type="org.hit.hradar.domain.attendance.query.dto.response.AttendanceDetailResponseDto">
+
+    <id property="attendanceId" column="attendance_id"/>
+    <result property="empId" column="emp_id"/>
+    <result property="empName" column="emp_name"/>
+    <result property="deptId" column="dept_id"/>
+    <result property="workDate" column="work_date"/>
+    <result property="status" column="status"/>
+    <result property="checkInTime" column="check_in_time"/>
+    <result property="checkOutTime" column="check_out_time"/>
+    <result property="totalWorkMinutes" column="total_work_minutes"/>
+
+    <collection property="timeline"
+      resultMap="WorkLogTimelineResultMap"/>
+  </resultMap>
+
+
+  <!-- 근태 상세 조회 (하루) -->
+  <select id="findAttendanceDetail"
+    parameterType="org.hit.hradar.domain.attendance.query.dto.request.AttendanceDetailQueryRequest"
+    resultMap="AttendanceDetailResultMap">
+
+    SELECT
+    a.attendance_id
+    , a.work_date
+    , a.status
+    , e.emp_id
+    , e.name AS emp_name
+    , e.dept_id
+    , w.work_log_type
+    , w.start_at
+    , w.location
+    , MIN(w.start_at) OVER () AS check_in_time
+    , MAX(w.end_at) OVER () AS check_out_time
+    , COALESCE(
+    SUM(TIMESTAMPDIFF(MINUTE, w.start_at, w.end_at)) OVER (), 0
+    ) AS total_work_minutes
+    FROM attendance a
+    JOIN employee e ON a.emp_id = e.emp_id
+    LEFT JOIN attendance_work_log w
+    ON w.attendance_id = a.attendance_id
+    AND w.is_deleted = 'N'
+    WHERE a.emp_id = #{targetEmpId}
+    AND a.work_date = #{workDate}
+    ORDER BY w.start_at ASC
+
+  </select>
+
+</mapper>
