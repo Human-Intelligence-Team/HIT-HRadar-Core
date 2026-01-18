@@ -21,28 +21,28 @@ public class AttendanceCorrection extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "attendance_correction")
-  private Long attendanceCorrection;
+  private Long attendanceCorrectionId;
 
   //근태id
   @Column(name = "attendance_id", nullable = false)
   private Long attendanceId;
 
   //근무장소 로그id
-  @Column(name ="wokr_log_id", nullable = false)
+  @Column(name ="work_log_id", nullable = false)
   private Long workLogId;
 
   //결정자 사원id
-  @Column(name = "decider_id", nullable = false)
-  private Long deciderId;
+  @Column(name = "decider_emp_id", nullable = false)
+  private Long deciderEmpId;
 
   //요청자 사원id
-  @Column(name = "requester_id", nullable = false)
-  private Long requesterId;
+  @Column(name = "requester_emp_id", nullable = false)
+  private Long requesterEmpId;
 
   //정정 유형
-  @Enumerated(EnumType.ORDINAL)
+  @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false)
-  private CorrectionType Type = CorrectionType.TIME_CHANGE;
+  private CorrectionType correctionType = CorrectionType.TIME_CHANGE;
 
   //정정 사유
   @Column(name = "reason", nullable = false, length = 255)
@@ -69,4 +69,45 @@ public class AttendanceCorrection extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
+
+  //반려 사유
+  @Column(name = "reject_reason", nullable = false)
+  private String rejectReason;
+
+  //정정 생성
+  public static AttendanceCorrection create(
+      Long attendanceId,
+      Long workLogId,
+      Long requesterEmpId,
+      CorrectionType correctionType,
+      String reason,
+      String requestedValue
+  ) {
+    AttendanceCorrection correction = new AttendanceCorrection();
+    correction.attendanceId = attendanceId;
+    correction.workLogId = workLogId;
+    correction.requesterEmpId = requesterEmpId;
+    correction.correctionType = correctionType;
+    correction.reason = reason;
+    correction.requestedValue = requestedValue;
+    correction.status = CorrectionStatus.REQUESTED;
+    correction.requestedAt = LocalDateTime.now();
+    return correction;
+  }
+
+    //승인
+    public void approve(Long deciderEmpId) {
+      this.status = CorrectionStatus.APPROVED;
+      this.deciderEmpId = deciderEmpId;
+      this.decidedAt = LocalDateTime.now();
+    }
+
+
+  //반려
+  public void reject(Long deciderEmpId, String rejectReason) {
+    this.status = CorrectionStatus.REJECTED;
+    this.deciderEmpId = deciderEmpId;
+    this.rejectReason = rejectReason;
+    this.decidedAt = LocalDateTime.now();
+  }
 }

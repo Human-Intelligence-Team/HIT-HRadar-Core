@@ -4,13 +4,16 @@ import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.WorkLogType;
 
 //근태 상세 조회용 타임라인 아이템DTO
 //하루 근태 상세화면에서 "시간 흐름"을 표현하기 위한 최소 단위
 @Getter
-@AllArgsConstructor
-public class WorkLogTimelineItem {
+@Setter
+@NoArgsConstructor
+public class WorkLogTimelineItemDto {
 
   //로그 유형 CHECK_IN / CHECK_OUT / ETC
   private WorkLogType workLogType;

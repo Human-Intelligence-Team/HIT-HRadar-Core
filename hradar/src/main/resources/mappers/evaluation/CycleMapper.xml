@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.CycleMapper">
+    <select id="selectCycleList"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.CycleListResponseDto">
+
+        SELECT
+            c.cycle_id   AS cycleId,
+            c.cycle_name AS cycleName,
+            c.start_date AS startDate,
+            c.end_date   AS endDate,
+            c.status     AS status,
+            c.emp_id     AS empId
+        FROM cycle c
+        WHERE c.is_deleted = 'N'
+        ORDER BY c.start_date DESC
+
+    </select>
+
+</mapper>

@@ -27,7 +27,7 @@ public enum CodeErrorCode implements ErrorCode {
             HttpStatus.NOT_FOUND
     );
 
-    ;
+
 
     private final String errorCode;
     private final String message;
