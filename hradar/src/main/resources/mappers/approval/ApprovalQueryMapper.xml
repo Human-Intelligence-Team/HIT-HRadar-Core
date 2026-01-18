@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.approval.query.mapper.ApprovalQueryMapper">
+
+  <!--  내 문서함 조회 -->
+  <!--기안자 = userId, 삭제되지 않은 문서, 임시저장 / 진행중 / 승인 / 반려 전부 포함 -->
+  <select id="selectMyDocuments"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalMyDocumentResponse">
+    SELECT
+      d.doc_id        AS docId,
+      d.title         AS title,
+      d.doc_type      AS docType,
+      d.status        AS status,
+      d.submitted_at  AS submittedAt
+    FROM approval_document d
+    WHERE d.writer_id = #{userId}
+      AND d.is_deleted = 'N'
+    ORDER BY d.created_at DESC
+  </select>
+
+  <!-- 결재 문서함 (결재할 문서) -->
+  <!--현재 결재 단계가 PENDING, 결재자 또는 대리결재자가 userId -->
+  <select id="selectApprovalTasks"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalTaskResponse">
+    SELECT
+      d.doc_id        AS docId,
+      d.title         AS title,
+      d.doc_type      AS docType,
+      d.submitted_at  AS submittedAt,
+      l.current_step  AS currentStep,
+      s.step_order    AS stepOrder
+    FROM approval_line_step s
+           JOIN approval_line l
+                ON s.line_id = l.line_id
+                  AND l.is_deleted = 'N'
+           JOIN approval_document d
+                ON l.doc_id = d.doc_id
+                  AND d.is_deleted = 'N'
+    WHERE s.approval_step_status = 'PENDING'
+      AND (
+      s.approver_id = #{userId}
+        OR s.proxy_approver_id = #{userId}
+      )
+    ORDER BY d.submitted_at ASC
+  </select>
+
+  <!--반려 문서함 -->
+  <!--조회 대상: 기안자 = userId, 문서 상태 = REJECTED -->
+  <select id="selectRejectedDocuments"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalRejectedDocumentResponse">
+    SELECT
+      d.doc_id        AS docId,
+      d.title         AS title,
+      h.reason        AS rejectReason,
+      h.acted_at      AS rejectedAt
+    FROM approval_document d
+           JOIN approval_history h
+                ON d.doc_id = h.doc_id
+                  AND h.approval_action_type = 'REJECTED'
+                  AND h.is_deleted = 'N'
+    WHERE d.writer_id = #{userId}
+      AND d.status = 'REJECTED'
+      AND d.is_deleted = 'N'
+    ORDER BY h.acted_at DESC
+  </select>
+
+  <!-- 참조 문서함 조회 -->
+  <select id="selectReferenceDocuments"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalReferenceDocumentResponse">
+
+    SELECT
+      d.doc_id       AS docId,
+      d.title        AS title,
+      d.doc_type     AS docType,
+      d.status       AS status,
+      d.submitted_at AS submittedAt
+    FROM approval_reference r
+           JOIN approval_document d
+                ON r.doc_id = d.doc_id
+                  AND d.is_deleted = 'N'
+    WHERE r.reference_id = #{userId}
+      AND r.is_deleted = 'N'
+    ORDER BY d.submitted_at DESC
+
+  </select>
+
+
+</mapper>

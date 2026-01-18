@@ -1,0 +1,32 @@
+<select id="existsAccessibleUser"
+  parameterType="map"
+  resultType="boolean">
+  SELECT EXISTS (
+  -- 1. 기안자
+  SELECT 1
+  FROM approval_document d
+  WHERE d.doc_id = #{docId}
+  AND d.writer_id = #{userId}
+  AND d.is_deleted = 'N'
+
+  UNION
+
+  -- 2. 결재자 / 대리결재자
+  SELECT 1
+  FROM approval_line l
+  JOIN approval_line_step s ON l.line_id = s.line_id
+  WHERE l.doc_id = #{docId}
+  AND s.is_deleted = 'N'
+  AND (s.approver_id = #{userId}
+  OR s.proxy_approver_id = #{userId})
+
+  UNION
+
+  -- 3. 참조자
+  SELECT 1
+  FROM approval_reference r
+  WHERE r.doc_id = #{docId}
+  AND r.reference_id = #{userId}
+  AND r.is_deleted = 'N'
+  )
+</select>

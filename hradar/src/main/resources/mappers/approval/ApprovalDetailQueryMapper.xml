@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.approval.query.mapper.ApprovalDetailQueryMapper">
+
+  <!-- 결재 문서 기본 정보 -->
+  <select id="selectApprovalDetail"
+    parameterType="map"
+    resultMap="approvalDetailResultMap">
+
+    SELECT
+      d.doc_id,
+      d.title,
+      d.content,
+      d.doc_type,
+      d.status,
+      d.submitted_at
+    FROM approval_document d
+    WHERE d.doc_id = #{docId}
+      AND d.is_deleted = 'N'
+  </select>
+
+  <!-- ================================================= -->
+  <!-- ResultMap -->
+  <!-- ================================================= -->
+  <resultMap id="approvalDetailResultMap"
+    type="org.hit.hradar.domain.approval.query.dto.response.ApprovalDetailResponse">
+
+    <!-- 문서 기본 -->
+    <id property="docId" column="doc_id"/>
+    <result property="title" column="title"/>
+    <result property="content" column="content"/>
+    <result property="docType" column="doc_type"/>
+    <result property="status" column="status"/>
+    <result property="submittedAt" column="submitted_at"/>
+
+    <!-- 결재선 -->
+    <collection property="approvalSteps"
+      ofType="org.hit.hradar.domain.approval.query.dto.response.ApprovalLineStepResponse"
+      select="selectApprovalSteps"
+      column="doc_id"/>
+
+    <!-- 히스토리 -->
+    <collection property="histories"
+      ofType="org.hit.hradar.domain.approval.query.dto.response.ApprovalHistoryResponse"
+      select="selectApprovalHistories"
+      column="doc_id"/>
+
+    <!-- 댓글 -->
+    <collection property="comments"
+      ofType="org.hit.hradar.domain.approval.query.dto.response.ApprovalCommentResponse"
+      select="selectApprovalComments"
+      column="doc_id"/>
+  </resultMap>
+
+  <!-- ================================================= -->
+  <!-- 2. 결재선 단계 조회 -->
+  <!-- ================================================= -->
+  <select id="selectApprovalSteps"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalLineStepResponse">
+
+    SELECT
+      s.step_order,
+      s.approver_id,
+      s.approval_step_status,
+      s.acted_at
+    FROM approval_line_step s
+           JOIN approval_line l
+                ON s.line_id = l.line_id
+    WHERE l.doc_id = #{docId}
+      AND s.is_deleted = 'N'
+    ORDER BY s.step_order ASC
+  </select>
+
+  <!-- 결재 히스토리 -->
+  <select id="selectApprovalHistories"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalHistoryResponse">
+
+    SELECT
+      h.approval_action_type,
+      h.actor_id,
+      h.reason,
+      h.acted_at
+    FROM approval_history h
+    WHERE h.doc_id = #{docId}
+      AND h.is_deleted = 'N'
+    ORDER BY h.acted_at ASC
+  </select>
+
+  <!-- 댓글 조회 -->
+  <select id="selectApprovalComments"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalCommentResponse">
+
+    SELECT
+      c.comment_id,
+      c.writer_id,
+      c.content,
+      c.created_at
+    FROM approval_comment c
+    WHERE c.approval_document_id = #{docId}
+      AND c.is_deleted = 'N'
+    ORDER BY c.created_at ASC
+  </select>
+
+</mapper>
