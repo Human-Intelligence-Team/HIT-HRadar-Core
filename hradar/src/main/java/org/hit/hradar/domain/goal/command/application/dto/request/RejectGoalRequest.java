@@ -4,6 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class RejectGoalRequest {
-    private Long actorId;
     private String rejectReason;
 }
