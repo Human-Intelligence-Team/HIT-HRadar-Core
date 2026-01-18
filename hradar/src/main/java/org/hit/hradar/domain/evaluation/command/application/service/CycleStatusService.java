@@ -1,9 +1,11 @@
 package org.hit.hradar.domain.evaluation.command.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.Cycle;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.CycleStatus;
 import org.hit.hradar.domain.evaluation.command.domain.repository.CycleRepository;
+import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -69,5 +71,15 @@ public class CycleStatusService {
 
         //승인되지 않으면 무조건 DRAFT
         return CycleStatus.DRAFT;
+    }
+
+    //회사 구성 가능 여부
+    public void validateCanConfigureCycle(Cycle cycle) {
+
+        if (cycle.getStatus() != CycleStatus.DRAFT) {
+            throw new BusinessException(
+                    EvaluationErrorCode.CYCLE_CONFIGURATION_NOT_ALLOWED
+            );
+        }
     }
 }

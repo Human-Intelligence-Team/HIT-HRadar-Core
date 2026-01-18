@@ -34,7 +34,13 @@ public enum EvaluationErrorCode implements ErrorCode {
             "CYCLE_006",
             "평가 기간이 아닙니다.",
             HttpStatus.FORBIDDEN
-    ),;
+    ),
+    CYCLE_CONFIGURATION_NOT_ALLOWED(
+            "CYCLE_007",
+            "이미 승인 완료되어 구성 추가가 불가능 합니다.",
+            HttpStatus.BAD_REQUEST
+    ), EVALUATION_TYPE_ALREADY_EXISTS("EVAL_TYPE_001", "이미 포함된 유형입니다.", HttpStatus.BAD_REQUEST),
+    EVALUATION_TYPE_NOT_FOUND("EVAL_TYPE_002", "해당 유형을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String errorCode;
     private final String message;
