@@ -68,11 +68,15 @@ public class Cycle extends BaseTimeEntity {
 
     @Builder
     private Cycle(
+            String year,
+            Quarter quarter,
             String cycleName,
             LocalDateTime startDate,
             LocalDateTime endDate,
             Long empId
     ){
+        this.year = year;
+        this.quarter = quarter;
         this.cycleName = cycleName;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -82,7 +86,9 @@ public class Cycle extends BaseTimeEntity {
         this.isReportGenerated = 'N';
     }
 
-    public void updateCycle(String cycleName,LocalDateTime startDate, LocalDateTime endDate){
+    public void updateCycle(String year, Quarter quarter, String cycleName,LocalDateTime startDate, LocalDateTime endDate){
+        this.year = year;
+        this.quarter = quarter;
         this.cycleName = cycleName;
         this.startDate = startDate;
         this.endDate = endDate;

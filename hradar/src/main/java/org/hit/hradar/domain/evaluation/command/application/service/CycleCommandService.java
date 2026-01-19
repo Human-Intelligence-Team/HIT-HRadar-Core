@@ -25,6 +25,8 @@ public class CycleCommandService {
         validatePeriod(request.getStartDate(), request.getEndDate());
 
         Cycle cycle = Cycle.builder()
+                .year(request.getYear())
+                .quarter(request.getQuarter())
                 .cycleName(request.getCycleName())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
@@ -45,7 +47,7 @@ public class CycleCommandService {
         }
 
         validatePeriod(request.getStartDate(), request.getEndDate());
-        cycle.updateCycle(request.getCycleName(), request.getStartDate(), request.getEndDate());
+        cycle.updateCycle(request.getYear(), request.getQuarter(),request.getCycleName(), request.getStartDate(), request.getEndDate());
     }
 
     /* 평가 회차 강제 마감*/
