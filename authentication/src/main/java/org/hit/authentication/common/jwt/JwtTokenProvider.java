@@ -41,6 +41,7 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(String.valueOf(tokenDTO.getUserId()))
                 .claim("companyId", String.valueOf(tokenDTO.getCompanyId()))
+                .claim("employeeId", String.valueOf(tokenDTO.getEmployeeId()))
                 .claim("role", tokenDTO.getRole().name())
                 .issuedAt(now)
                 .expiration(expiration)
