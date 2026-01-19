@@ -50,7 +50,7 @@ public class Cycle extends BaseTimeEntity {
 
     // 담당 사원 ID
     @Column(name = "emp_id", nullable = false)
-    private String empId;
+    private Long empId;
 
     //created_at, updated_at
 
