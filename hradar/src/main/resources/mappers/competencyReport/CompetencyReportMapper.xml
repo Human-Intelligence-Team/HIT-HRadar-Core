@@ -129,7 +129,7 @@
     ORDER BY cc.YEAR DESC, cc.QUARTER DESC, cr.CREATED_AT DESC
   </select>
 
-  <select id="findAllByUserId"
+  <select id="findAllByEmpId"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
     <!-- 역량 강화 리포트 목록 (사원) -->
     SELECT cc.CYCLE_NAME
@@ -139,7 +139,7 @@
          , cr.COMPETENCY_REPORT_ID
       FROM CYCLE cc
       JOIN COMPETENCY_REPORT cr USING (CYCLE_ID)
-     WHERE cr.EMP_ID = #{userId}
+     WHERE cr.EMP_ID = #{empId}
     <if test="request.year != null">
        AND cc.YEAR = #{request.year}
     </if>

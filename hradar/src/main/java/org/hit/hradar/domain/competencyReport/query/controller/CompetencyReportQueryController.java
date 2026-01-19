@@ -7,7 +7,9 @@ import org.hit.hradar.domain.competencyReport.query.dto.response.CompetencyRepor
 import org.hit.hradar.domain.competencyReport.query.dto.response.CompetencyReportSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.dto.response.CycleSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.service.CompetencyReportQueryService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -29,10 +31,11 @@ public class CompetencyReportQueryController {
  */
   @GetMapping("/me")
   public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getMyCompetencyReport(
+      @CurrentUser AuthUser authUser,
       CompetencyReportSearchRequest request
   )  {
 
-    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(request);
+    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(authUser,request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
