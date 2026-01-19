@@ -57,4 +57,8 @@ public class ApprovalDocument extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
+  // 최종승인일
+  @Column(name = "approved_at")
+  private LocalDateTime approvedAt;
+
 }
