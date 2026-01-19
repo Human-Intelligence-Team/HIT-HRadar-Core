@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/evaluation-cycles")
+@RequestMapping("/types")
 public class EvaluationSectionCommandController {
 
     private final EvaluationSectionCommandService sectionCommandService;
 
     //섹션 생성
-    @PostMapping("/{cycleId}/sections")
+    @PostMapping("/{typeId}/sections")
     public ResponseEntity<ApiResponse<String>> createSection(
-            @PathVariable Long cycleId,
+            @PathVariable Long typeId,
             @RequestBody EvaluationSectionCreateRequest request
     ){
-        sectionCommandService.createSection(cycleId, request);
+        sectionCommandService.createSection(typeId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 

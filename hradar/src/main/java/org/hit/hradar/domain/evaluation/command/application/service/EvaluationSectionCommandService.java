@@ -12,6 +12,7 @@ import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationSect
 import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationTypeRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +24,12 @@ public class EvaluationSectionCommandService {
     private final CycleStatusService cycleStatusService;
 
     /*섹션 생성*/
-    public void createSection(Long cycleId, EvaluationSectionCreateRequest request) {
+    @Transactional
+    public void createSection(Long typeId, EvaluationSectionCreateRequest request) {
 
         // 회차 조회
+        Long cycleId = evaluationTypeRepository.findById(typeId).get().getCycleId();
+
         Cycle cycle = cycleRepository.findById(cycleId)
                 .orElseThrow(() -> new BusinessException(EvaluationErrorCode.CYCLE_NOT_FOUND));
 
@@ -49,6 +53,7 @@ public class EvaluationSectionCommandService {
     }
 
     /*섹션 수정*/
+    @Transactional
     public void updateSection(Long sectionId, EvaluationSectionUpdateRequest request) {
 
         EvaluationSection section = sectionRepository.findById(sectionId)
@@ -68,6 +73,7 @@ public class EvaluationSectionCommandService {
         );
     }
 
+    @Transactional
     public void deleteSection(Long sectionId) {
 
         EvaluationSection section = sectionRepository.findById(sectionId)
