@@ -102,4 +102,15 @@ public class ApprovalHistory extends BaseTimeEntity  {
     );
   }
 
+  public static ApprovalHistory withdraw(Long docId, Long actorId) {
+    ApprovalHistory history = new ApprovalHistory();
+    history.docId = docId;
+    history.actorId = actorId;
+    history.approvalActionType = ApprovalActionType.WITHDRAW;
+    history.actedAt = LocalDateTime.now();
+    return history;
+  }
+
+
+
 }

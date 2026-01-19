@@ -25,14 +25,34 @@ public class ApprovalDetailQueryService {
   //결재 히스토리
   //댓글 목록
   //접근 가능자:기안자/결재자/대리결재자/참조자
-
   public ApprovalDetailResponse findDetail(Long docId, Long userId) {
-    //접근 권한 체크
-    if (!approvalAccessQueryMapper.existsAccessibleUser(docId, userId)) {
-      throw new BusinessException(ApprovalErrorCode.NOT_ALLOWED_APPROVER);
+
+    // 1. 문서 기본 정보 + 접근 권한 확인
+    ApprovalDetailResponse detail =
+        approvalDetailQueryMapper.selectDocument(docId, userId);
+
+    if (detail == null) {
+      throw new BusinessException(
+          ApprovalErrorCode.NOT_ALLOWED_APPROVER
+      );
     }
-    //상세 조회
-    return approvalDetailQueryMapper.selectApprovalDetail(docId, userId);
+
+    // 2. 결재선 조회
+    detail.getApprovalSteps().addAll(
+        approvalDetailQueryMapper.selectApprovalSteps(docId)
+    );
+
+    // 3. 히스토리 조회 (회수 포함)
+    detail.getHistories().addAll(
+        approvalDetailQueryMapper.selectHistories(docId)
+    );
+
+    // 4. 댓글 조회
+    detail.getComments().addAll(
+        approvalDetailQueryMapper.selectComments(docId)
+    );
+
+    return detail;
   }
 
 }

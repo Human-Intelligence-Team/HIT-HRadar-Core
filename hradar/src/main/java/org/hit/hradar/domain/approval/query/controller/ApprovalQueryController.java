@@ -55,6 +55,7 @@ public class ApprovalQueryController {
         );
   }
 
+  //참조 문서함
   @GetMapping("/references")
   public ApiResponse<List<ApprovalReferenceDocumentResponse>> reference(
       @CurrentUser AuthUser authUser

@@ -91,5 +91,18 @@
 
   </select>
 
+  <!-- 회수 히스토리 조회 -->
+  <select id="selectWithdrawHistory"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalWithdrawHistoryResponse">
+
+    SELECT
+      h.doc_id    AS docId,
+      h.acted_at  AS withdrawnAt
+    FROM approval_history h
+    WHERE h.doc_id = #{docId}
+      AND h.approval_action_type = 'WITHDRAW'
+      AND h.is_deleted = 'N'
+  </select>
 
 </mapper>

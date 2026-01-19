@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalApproveRequest;
 import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalRejectRequest;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalCommandService;
+import org.hit.hradar.domain.approval.command.application.service.ApprovalWithdrawCommandService;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApprovalCommandController {
 
   private final ApprovalCommandService approvalCommandService;
+  private final ApprovalWithdrawCommandService approvalWithdrawCommandService;
 
   //결재 승인 처리
   @PostMapping("/approve")
@@ -52,5 +55,18 @@ public class ApprovalCommandController {
     return ResponseEntity.ok(
         ApiResponse.success("rejected")
     );
+  }
+
+  // 결재 문서 회수 (기안자)
+  @PostMapping("/{docId}/withdraw")
+  public ResponseEntity<ApiResponse<String>> withdraw(
+      @PathVariable Long docId,
+      @CurrentUser AuthUser user
+  ) {
+    approvalWithdrawCommandService.withdraw(
+        docId,
+        user.userId()
+    );
+    return ResponseEntity.ok(ApiResponse.success("withdrawn"));
   }
 }

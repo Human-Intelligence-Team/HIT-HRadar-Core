@@ -5,9 +5,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.ApprovalErrorCode;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocument;
+import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalHistory;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalLine;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalStepStatus;
 import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalDocumentJpaRepository;
+import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalHistoryJpaRepository;
 import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalLineJpaRepository;
 import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalLineStepJpaRepository;
 import org.hit.hradar.global.exception.BusinessException;
@@ -21,6 +23,7 @@ public class ApprovalWithdrawCommandService {
   private final ApprovalDocumentJpaRepository approvalDocumentJpaRepository;
   private final ApprovalLineStepJpaRepository approvalLineStepJpaRepository;
   private final ApprovalLineJpaRepository approvalLineJpaRepository;
+  private final ApprovalHistoryJpaRepository approvalHistoryJpaRepository;
 
   //결재 문서 회수DRAFT 상태, 상신되었지만 아직 승인/반려 이력이 없는 경우
   public void withdraw(Long docId, Long actorId) {
@@ -55,7 +58,15 @@ public class ApprovalWithdrawCommandService {
       );
     }
 
-    // 도메인 규칙에 따라 회수
+    //문서 회수
     doc.withdraw(actorId);
+
+    //회수 히스토리 저장
+    ApprovalHistory history =
+        ApprovalHistory.withdraw(docId, actorId);
+
+    approvalHistoryJpaRepository.save(history);
+
+
   }
 }
