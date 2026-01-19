@@ -10,5 +10,6 @@ public class TokenDTO {
 
     private Long userId;
     private Long companyId;
+    private Long employeeId;
     private Role role;
 }
