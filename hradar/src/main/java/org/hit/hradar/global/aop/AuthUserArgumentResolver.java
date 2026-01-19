@@ -28,15 +28,17 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
         String userId = webRequest.getHeader("X-User-Id");
         String role = webRequest.getHeader("X-User-Role");
         String companyId = webRequest.getHeader("X-Company-Id");
+        String employeeId = webRequest.getHeader("X-Employee-Id");
 
-        if (userId == null || role == null || companyId == null) {
+        if (userId == null || role == null || companyId == null || employeeId == null) {
             throw new UnauthorizedException("인증 헤더 누락");
         }
 
         return new AuthUser(
                 Long.valueOf(userId),
                 role,
-                Long.valueOf(companyId)
+                Long.valueOf(companyId),
+                Long.valueOf(employeeId)
         );
     }
 }

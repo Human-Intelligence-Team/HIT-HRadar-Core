@@ -51,6 +51,7 @@ public class JwtAuthenticationFilter
                     .header("X-User-Id", claims.getSubject())
                     .header("X-User-Role", claims.get("role", String.class))
                     .header("X-Company-Id", claims.get("companyId", String.class))
+                    .header("X-Employee-Id", claims.get("employeeId", String.class))
                     .build();
 
             return chain.filter(
