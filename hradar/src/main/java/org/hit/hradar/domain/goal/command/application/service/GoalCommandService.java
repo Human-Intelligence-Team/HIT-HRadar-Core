@@ -38,7 +38,7 @@ public class GoalCommandService {
     private final DepartmentRepository departmentRepository;
 
     //팀 목표 생성
-    public Long createRootGoal(CreateGoalRequest request) {
+    public Long createRootGoal(CreateGoalRequest request, Long actorId) {
 
         //root 목표는 무조건 팀
         if (request.getGoalScope() != GoalScope.TEAM) {
@@ -62,14 +62,14 @@ public class GoalCommandService {
                 request.getStartDate(), // null 가능
                 request.getEndDate(),  // null 가능
                 request.getDepartmentId(),
-                request.getOwnerId()
+                actorId
         );
 
         return goalRepository.save(goal).getGoalId();
     }
 
     /*하위 목표 생성 LEVEL_2 ~ LEVEL_3*/
-    public Long createChildGoal(CreateGoalRequest request) {
+    public Long createChildGoal(CreateGoalRequest request, Long actorId) {
 
         Goal parentGoal = goalRepository.findById(request.getParentGoalId())
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
@@ -90,7 +90,7 @@ public class GoalCommandService {
                 request.getDescription(),
                 request.getStartDate(),
                 request.getEndDate(),
-                request.getOwnerId()
+                actorId
         );
 
         return goalRepository.save(childGoal).getGoalId();
@@ -107,19 +107,17 @@ public class GoalCommandService {
      * - 임시저장 수정: 검증은 논리적인 오류 정도만
      * - 제출 후 수정: 모든 검증 수행
      */
-    public void updateGoal(Long goalId, UpdateGoalRequest request) {
+    public void updateGoal(Long goalId, UpdateGoalRequest request, Long actorId) {
 
         //Goal 조회
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
-        //권한 검증
-        Long actorId = request.getActorId();
 
         Department department = departmentRepository.findById(goal.getDepartmentId())
                         .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
-        validateEditPermission(goal, department,actorId);
+        validateEditPermission(goal, department, actorId);
 
         //상태 검증 //SUBMITTED 이하
         validateEditable(goal);
@@ -178,7 +176,7 @@ public class GoalCommandService {
      * - 새 Goal 생성 (DRAFT 상태)
      * - 자식 Goal인 경우 부모 기간 내 검증 필수
      */
-    public Long resubmitGoal(Long goalId, ResubmitGoalRequest request) {
+    public Long resubmitGoal(Long goalId, ResubmitGoalRequest request, Long actorId) {
 
         // 기존(반려된) Goal 조회
         Goal rejectedGoal = goalRepository.findById(goalId)
@@ -188,8 +186,6 @@ public class GoalCommandService {
                 .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
         // 권한 검증
-        Long actorId = request.getActorId();
-
         validateEditPermission(rejectedGoal, department, actorId);
 
         // 상태 검증
@@ -313,7 +309,7 @@ public class GoalCommandService {
     }
 
     //반려
-    public void rejectGoal(Long goalId, RejectGoalRequest request) {
+    public void rejectGoal(Long goalId, RejectGoalRequest request, Long actorId) {
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
@@ -327,7 +323,7 @@ public class GoalCommandService {
         validateSubmitted(goal);
 
         //팀장만 가능
-        if(!isTeamManager(department, request.getActorId())) {
+        if(!isTeamManager(department, actorId)) {
             throw new BusinessException(GoalErrorCode.GOAL_APPROVE_FORBIDDEN);
         }
 

@@ -10,11 +10,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "attendance")
 @Getter
+@NoArgsConstructor
 public class Attendance extends BaseTimeEntity {
 
   //근태id
@@ -44,4 +46,10 @@ public class Attendance extends BaseTimeEntity {
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
+
+  public Attendance(Long empId, LocalDate workDate) {
+    this.empId = empId;
+    this.workDate = workDate;
+    this.workType = workType.WORK;
+  }
 }
