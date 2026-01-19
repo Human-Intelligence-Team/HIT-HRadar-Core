@@ -48,6 +48,7 @@ public class AuthService {
         TokenDTO tokenDTO = TokenDTO.builder()
                 .userId(account.getAccId())
                 .companyId(account.getComId())
+                .employeeId(account.getEmpId())
                 .role(account.getRole())
                 .build();
 
@@ -103,6 +104,7 @@ public class AuthService {
         TokenDTO tokenDTO = TokenDTO.builder()
                 .userId(account.getAccId())
                 .companyId(account.getComId())
+                .employeeId(account.getEmpId())
                 .role(account.getRole())
                 .build();
 
