@@ -37,10 +37,15 @@ public class CompetencyReportQueryService {
   public CompetencyReportSearchResponse getMyCompetencyReport(
       AuthUser authUser, CompetencyReportSearchRequest request) {
 
-    // 나중에 userId 가져오기
-   // Long userId = 1L;
+    Long empId = authUser.employeeId();
+    Long userId = authUser.userId();
+    Long companyId = authUser.companyId();
+    String role = authUser.role();
 
-    Long empId = authUser.empId();
+    System.out.println("empId: " + empId);
+    System.out.println("userId: " + userId);
+    System.out.println("companyId: " + companyId);
+    System.out.println("role: " + role);
 
     List<CompetencyReportDTO> reports = competencyReportMapper.findAllByEmpId(empId, request);
     return new  CompetencyReportSearchResponse(reports);
