@@ -1,6 +1,6 @@
 package org.hit.hradar.domain.user.command.domain.aggregate;
 
-public enum UserRole {
+public enum PlatformRole {
   admin,
   user
 }

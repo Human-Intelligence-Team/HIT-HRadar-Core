@@ -1,7 +1,6 @@
 package org.hit.hradar.domain.employee.command.domain.aggregate;
 
-public enum
-EmploymentType {
+public enum EmploymentType {
   WORKING,   // 재직중
   RESIGNED,  // 퇴사
   LEAVE      // 휴직

@@ -22,6 +22,9 @@ public class RoleEmployee extends BaseTimeEntity {
   @Column(name = "role_emp_id", nullable = false)
   private Long roleEmpId;
 
+  @Column(name = "com_id",nullable = false)
+  private long comId;
+
   @Column(name = "role_id", nullable = false)
   private Long roleId;
 

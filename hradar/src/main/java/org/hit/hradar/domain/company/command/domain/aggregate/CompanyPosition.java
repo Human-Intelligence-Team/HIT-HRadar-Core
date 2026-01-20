@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.companyPosition.command.domain.aggregate;
+package org.hit.hradar.domain.company.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,6 +25,6 @@ public class CompanyPosition extends BaseTimeEntity {
   @Column(name = "rank", nullable = false)
   private Integer rank;
 
-  @Column(name = "is_deleted", nullable = false, length = 1)
-  private String isDeleted = "N";
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
 }

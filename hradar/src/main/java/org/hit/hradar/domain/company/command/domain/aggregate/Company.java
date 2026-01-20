@@ -9,26 +9,29 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "company")
-@Getter @Setter
+@Getter
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class Company extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "com_id", nullable = false)
-  private Long comId;
+  @Column(name = "company_id", nullable = false)
+  private Long companyId;
 
-  @Column(name = "owner_acc_id", nullable = false, unique = true)
-  private Long accId;
+  @Column(name = "application_id", nullable = false)
+  private Long appId;
 
   @Column(name = "company_code", nullable = false, length = 30, unique = true)
   private String comCode;
 
-  @Column(name = "name", nullable = false, length = 100)
-  private String name;
+  @Column(name = "company_name", nullable = false, length = 100)
+  private String comName;
 
-  @Column(name = "ceo_name", nullable = false, length = 50)
+  @Column(name = "ceo_name", length = 50)
   private String ceoName;
+
+  @Column(name = "company_email", length = 100)
+  private String comEmail;
 
   @Column(name = "biz_no", nullable = false, length = 30, unique = true)
   private String bizNo;
@@ -36,14 +39,8 @@ public class Company extends BaseTimeEntity {
   @Column(name = "address", nullable = false, length = 255)
   private String address;
 
-  @Column(name = "company_telephone", nullable = false, length = 30)
+  @Column(name = "company_telephone", length = 30)
   private String comTel;
-
-  @Column(name = "email", nullable = false, length = 100)
-  private String email;
-
-  @Column(name = "bis_no", nullable = false, length = 20)
-  private String bisNo;
 
   @Column(name = "founded_date")
   private LocalDate foundedDate;
@@ -52,7 +49,7 @@ public class Company extends BaseTimeEntity {
   @Column(name = "status", nullable = false, length = 15)
   private CompanyApplicationStatus status;
 
-  @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted = 'N';
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
 
 }

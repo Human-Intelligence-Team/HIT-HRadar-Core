@@ -1,39 +1,46 @@
 package org.hit.hradar.domain.employee.command.domain.aggregate;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Entity
-@Table(name = "employee")
+@Table(name = "employee",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UK_EMP_COMPANY_EMP_NO", columnNames = {"company_id", "employee_no"}),
+        @UniqueConstraint(name = "UK_EMP_COMPANY_EMAIL", columnNames = {"company_id", "email"})
+    }
+)
 public class Employee extends BaseTimeEntity {
 
   @Id
-  @Column(name = "emp_id", nullable = false, unique = true)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "employee_id", nullable = false)
   private Long empId;
 
-  @Column(name = "com_id", nullable = false, unique = true)
+  @Column(name = "company_id", nullable = false)
   private Long comId;
 
-  @Column(name = "dept_id", nullable = false)
+  @Column(name = "dept_id")
   private Long deptId;
 
   @Column(name = "position_id")
   private Long positionId;
 
-  @Column(name = "account_id", nullable = false, unique = true)
-  private Long accId;
+  @Column(name = "employee_name", length = 50, nullable = false)
+  private String name;
 
-  @Column(name = "employee_no", nullable = false, length = 30, unique = true)
+  @Column(name = "employee_no", length = 100)
   private String employeeNo;
 
-  @Column(name = "email", length = 255)
+  @Column(name = "email", length =150)
   private String email;
 
   @Enumerated(EnumType.STRING)
@@ -52,19 +59,61 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "image", length = 255)
   private String image;
 
-  @Column(name = "extension_number", length = 11)
+  @Column(name = "extension_number", length = 15)
   private String extNo;
 
-  @Column(name = "phone_number", length = 11)
+  @Column(name = "phone_number", length = 15)
   private String phoneNo;
 
   @Column(name = "note", length = 1000)
   private String note;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "type", nullable = false)
+  @Column(name = "type")
   private EmploymentType employmentType;
 
-  @Column(name = "is_deleted", nullable = false, length = 1)
-  private String isDeleted = "N";
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
+
+  @Builder
+  public Employee(Long empId, Long comId, Long deptId, Long positionId, Long accId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
+    this.empId = empId;
+    this.comId = comId;
+    this.deptId = deptId;
+    this.positionId = positionId;
+    this.name = name;
+    this.employeeNo = employeeNo;
+    this.email = email;
+    this.gender = gender;
+    this.birth = birth;
+    this.hireDate = hireDate;
+    this.exitDate = exitDate;
+    this.image = image;
+    this.extNo = extNo;
+    this.phoneNo = phoneNo;
+    this.note = note;
+    this.employmentType = employmentType;
+    this.isDeleted = 'N'; // Default to 'N' when building
+  }
+
+  public void updateEmployee(Long deptId, Long positionId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
+    this.deptId = deptId;
+    this.positionId = positionId;
+    this.name = name;
+    this.employeeNo = employeeNo;
+    this.email = email;
+    this.gender = gender;
+    this.birth = birth;
+    this.hireDate = hireDate;
+    this.exitDate = exitDate;
+    this.image = image;
+    this.extNo = extNo;
+    this.phoneNo = phoneNo;
+    this.note = note;
+    this.employmentType = employmentType;
+  }
+
+  public void markAsDeleted() {
+    this.isDeleted = 'Y';
+  }
 }

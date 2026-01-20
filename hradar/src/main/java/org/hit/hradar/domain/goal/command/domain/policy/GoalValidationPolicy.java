@@ -125,7 +125,7 @@ public class GoalValidationPolicy {
     //팀장판별
     public static boolean isTeamManager(Department dept, Long actorId){
 
-        return actorId.equals(dept.getManagerEmployeeId());
+        return actorId.equals(dept.getManagerEmpId());   // employee->emp
     }
 
     public static void validateChildPeriod(

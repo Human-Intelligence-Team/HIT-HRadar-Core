@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class EmployeeMovementHistory extends BaseTimeEntity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "movement_id", nullable = false)
   private Long movementId;
 
@@ -33,14 +34,14 @@ public class EmployeeMovementHistory extends BaseTimeEntity {
   @Column(name = "to_dept_id")
   private Long toDeptId;
 
-  @Column(name = "emp_acc_role_id", nullable = false)
-  private Long fromEmpAccRoleId;
+  @Column(name = "from_role_id", nullable = false)
+  private Long fromRoleId;
 
-  @Column(name = "emp_acc_role_id2", nullable = false)
-  private Long toEmpAccRoleId;
+  @Column(name = "to_role_id", nullable = false)
+  private Long toRoleId;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "movement_type", nullable = false, length = 100)
+  @Column(name = "movement_type", nullable = false, length = 30)
   private MovementType movementType;
 
   @Column(name = "event_reason", length = 255)

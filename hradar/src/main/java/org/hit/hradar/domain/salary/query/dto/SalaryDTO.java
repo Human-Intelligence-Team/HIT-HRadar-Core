@@ -2,7 +2,7 @@ package org.hit.hradar.domain.salary.query.dto;
 
 import java.time.LocalDateTime;
 import lombok.Getter;
-import org.hit.hradar.domain.employee.domain.aggregate.EmpolymentType;
+import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 
 @Getter
 public class SalaryDTO {
@@ -17,6 +17,6 @@ public class SalaryDTO {
   private LocalDateTime approvedAt; // 결재일시
 
   // 인사팀
-  private EmpolymentType empolymentType; // 재직상태
+  private EmploymentType employmentType; // 재직상태
 
 }
