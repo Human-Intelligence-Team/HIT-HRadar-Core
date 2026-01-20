@@ -24,27 +24,15 @@ public class ApprovalLine extends BaseTimeEntity {
   @Column(name = "doc_id", nullable = false)
   private Long docId;
 
-  //현재 진행 중 결재 단계
-  @Column(name = "current_step", nullable = false, length = 100)
-  private int currentStep = 1;
-
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
-  // ApprovalLine
-  public void increaseStep() {
-    this.currentStep++;
-  }
 
   public static ApprovalLine create(Long docId) {
     ApprovalLine line = new ApprovalLine();
     line.docId = docId;
-    line.currentStep = 1;
     return line;
   }
 
-  public void start() {
-    this.currentStep = 1;
-  }
 }

@@ -28,13 +28,15 @@ public class ApprovalCommandController {
   private final ApprovalProviderService approvalProviderService;
   private final ApprovalSubmitCommandService approvalSubmitCommandService;
 
+  //결재 문서 임시저장
   @PostMapping("/draft")
   public ResponseEntity<ApiResponse<Long>> createDraft(
       @CurrentUser AuthUser authUser,
       @RequestBody ApprovalCreateRequest request
   ) {
     Long docId = approvalProviderService.createDraft(
-        authUser.userId(),
+        authUser.employeeId(),
+        authUser.companyId(),
         request
     );
 
@@ -45,9 +47,9 @@ public class ApprovalCommandController {
   @PostMapping("/{docId}/submit")
   public ResponseEntity<ApiResponse<String>> submit(
       @PathVariable Long docId,
-      @CurrentUser AuthUser user
+      @CurrentUser AuthUser authUser
   ) {
-    approvalSubmitCommandService.submit(docId, user.userId());
+    approvalSubmitCommandService.submit(docId, authUser.employeeId());
     return ResponseEntity.ok(ApiResponse.success("submitted"));
   }
 
@@ -60,7 +62,7 @@ public class ApprovalCommandController {
   ) {
     approvalCommandService.approve(
         request.getDocId(),
-        authUser.userId()
+        authUser.employeeId()
     );
     // 성공 시 공통 응답 포맷으로 OK 반환
     return ResponseEntity.ok(
@@ -77,7 +79,7 @@ public class ApprovalCommandController {
 
     approvalCommandService.reject(
         request.getDocId(),
-        authUser.userId(),
+        authUser.employeeId(),
         request.getReason()
     );
 
@@ -90,11 +92,11 @@ public class ApprovalCommandController {
   @PostMapping("/{docId}/withdraw")
   public ResponseEntity<ApiResponse<String>> withdraw(
       @PathVariable Long docId,
-      @CurrentUser AuthUser user
+      @CurrentUser AuthUser authUser
   ) {
     approvalWithdrawCommandService.withdraw(
         docId,
-        user.userId()
+        authUser.employeeId()
     );
     return ResponseEntity.ok(ApiResponse.success("withdrawn"));
   }

@@ -22,14 +22,14 @@ public class ApprovalDetailQueryController {
   //결재 문서 상세 조회(제목,본문,유형,상태)
   //결재선(단계,결재자,상태)
   //결재 히스토리(승인/반려/회수)
-  @GetMapping("{docId}")
+  @GetMapping("/{docId}")
   public ResponseEntity<ApiResponse<ApprovalDetailResponse>> detail(
       @CurrentUser AuthUser authUser,
       @PathVariable Long docId
   ) {
     return ResponseEntity.ok(
         ApiResponse.success(
-            approvalDetailQueryService.findDetail(docId, authUser.userId())
+            approvalDetailQueryService.findDetail(docId, authUser.employeeId())
         )
     );
   }

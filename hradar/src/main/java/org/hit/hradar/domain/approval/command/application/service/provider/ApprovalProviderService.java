@@ -27,12 +27,14 @@ public class ApprovalProviderService {
   //문서/결재선/결재단계 생성
   public Long createDraft(
       Long writerId,
+      Long deptId,
       ApprovalCreateRequest request
   ) {
     //문서 생성
     ApprovalDocument doc =
         ApprovalDocument.createDraft(
             writerId,
+            deptId,
             request.getDocType(),
             request.getTitle(),
             request.getContent()
@@ -49,8 +51,8 @@ public class ApprovalProviderService {
           ApprovalLineStep.create(
               line.getLineId(),
               i + 1,
-              request.getApproverIds().get(i),    //결재자 생성
-              i == 0 // 첫 단계만 PENDING
+              request.getApproverIds().get(i),  //결재자 생성
+              i == 0
           )
       );
     }

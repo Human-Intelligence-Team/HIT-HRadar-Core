@@ -18,9 +18,6 @@ public class ApprovalTaskResponse {
   // 문서 유형
   private String docType;
 
-  // 현재 결재 단계
-  private int currentStep;
-
   // 제출 일시
   private LocalDateTime submittedAt;
 

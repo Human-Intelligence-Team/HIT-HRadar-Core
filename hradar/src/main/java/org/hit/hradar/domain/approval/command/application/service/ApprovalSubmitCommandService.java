@@ -40,9 +40,6 @@ public class ApprovalSubmitCommandService {
     // 도메인 규칙: DRAFT만 상신 가능
     doc.submit(actorId);
 
-    //결재선 시작(currentStep = 1)
-    line.start();
-
     //히스토리 기록
     approvalHistoryJpaRepository.save(
         ApprovalHistory.submit(docId, actorId)

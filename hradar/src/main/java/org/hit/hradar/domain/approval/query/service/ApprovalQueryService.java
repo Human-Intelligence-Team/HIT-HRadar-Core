@@ -19,22 +19,20 @@ public class ApprovalQueryService {
 
   //내 문서함 조회(로그인 사용자가 기안자인 문서)
   //사원/팀장/인사팀 공통
-  public List<ApprovalMyDocumentResponse> findMyDocuments(Long userId) {
-    return approvalQueryMapper.selectMyDocuments(userId);
+  public List<ApprovalMyDocumentResponse> findMyDocuments(Long employeeId) {
+    return approvalQueryMapper.selectMyDocuments(employeeId);
   }
 
   //결재 문서함 조회(결재 단계가 PENDING)
   //로그인 사용자가 결재자/대리결재자
-  public List<ApprovalTaskResponse> findApprovalTasks(Long userId, String role) {
-    if ("EMPLOYEE".equals(role)) {
-      return List.of();
+  public List<ApprovalTaskResponse> findApprovalTasks(Long employeeId) {
+    return approvalQueryMapper.selectApprovalTasks(employeeId);
     }
-    return approvalQueryMapper.selectApprovalTasks(userId);
-  }
+
 
   //반려 문서함 조회(로그인 사용자가 기안자)
-  public List<ApprovalRejectedDocumentResponse> findRejectedDocuments(Long userId) {
-    return approvalQueryMapper.selectRejectedDocuments(userId);
+  public List<ApprovalRejectedDocumentResponse> findRejectedDocuments(Long employeeId) {
+    return approvalQueryMapper.selectRejectedDocuments(employeeId);
   }
 
   //참조 문서함 조회(로그인 사용자가 참조자)

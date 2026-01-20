@@ -10,14 +10,14 @@ import org.hit.hradar.domain.approval.query.dto.response.ApprovalTaskResponse;
 @Mapper
 public interface ApprovalQueryMapper {
   // 내 문서함
-  List<ApprovalMyDocumentResponse> selectMyDocuments(Long userId);
+  List<ApprovalMyDocumentResponse> selectMyDocuments(Long employeeId);
 
   // 결재 문서함 (결재 대상)
-  List<ApprovalTaskResponse> selectApprovalTasks(Long userId);
+  List<ApprovalTaskResponse> selectApprovalTasks(Long employeeId);
 
   // 반려 문서함
-  List<ApprovalRejectedDocumentResponse> selectRejectedDocuments(Long userId);
+  List<ApprovalRejectedDocumentResponse> selectRejectedDocuments(Long employeeId);
 
   // 참조 문서함
-  List<ApprovalReferenceDocumentResponse> selectReferenceDocuments(Long userId);
+  List<ApprovalReferenceDocumentResponse> selectReferenceDocuments(Long employeeId);
 }

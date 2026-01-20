@@ -3,7 +3,6 @@ package org.hit.hradar.domain.approval.query.service;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.ApprovalErrorCode;
 import org.hit.hradar.domain.approval.query.dto.response.ApprovalDetailResponse;
-import org.hit.hradar.domain.approval.query.mapper.ApprovalAccessQueryMapper;
 import org.hit.hradar.domain.approval.query.mapper.ApprovalDetailQueryMapper;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ public class ApprovalDetailQueryService {
   // 결재 문서 상세 조회용 Mapper
   private final ApprovalDetailQueryMapper approvalDetailQueryMapper;
   // 결재 문서 접근 권한 체크용 Mapper
-  private final ApprovalAccessQueryMapper approvalAccessQueryMapper;
+
 
   //결재 문서 상세 조회
   //문서 기본 정보

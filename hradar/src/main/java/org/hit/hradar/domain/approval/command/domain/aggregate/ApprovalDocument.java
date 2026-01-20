@@ -26,7 +26,7 @@ public class ApprovalDocument extends BaseTimeEntity {
   private Long docId;
 
   //부서 id
-  @Column(name = "dept_id", nullable = false)
+  @Column(name = "dept_id")
   private Long deptId;
 
   //기안자 사원id
@@ -121,11 +121,13 @@ public class ApprovalDocument extends BaseTimeEntity {
 
   private ApprovalDocument(
       Long writerId,
+      Long deptId,
       ApprovalDocumentType docType,
       String title,
       String content
   ) {
     this.writerId = writerId;
+    this.deptId = deptId;
     this.docType = docType;
     this.title = title;
     this.content = content;
@@ -134,12 +136,14 @@ public class ApprovalDocument extends BaseTimeEntity {
 
   public static ApprovalDocument createDraft(
       Long writerId,
+      Long deptId,
       ApprovalDocumentType docType,
       String title,
       String content
   ) {
     return new ApprovalDocument(
         writerId,
+        deptId,
         docType,
         title,
         content

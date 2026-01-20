@@ -28,7 +28,7 @@ public class ApprovalQueryController {
       @CurrentUser AuthUser authUser
   ) {
     return ApiResponse.success(
-        approvalQueryService.findMyDocuments(authUser.userId())
+        approvalQueryService.findMyDocuments(authUser.employeeId())
     );
   }
 
@@ -39,19 +39,18 @@ public class ApprovalQueryController {
   ) {
     return ApiResponse.success(
         approvalQueryService.findApprovalTasks(
-            authUser.userId(),
-            authUser.role()
+            authUser.employeeId()
         )
     );
   }
 
   //반려 문서함 조회(내가 기안한 반려 문서)
-  @GetMapping("/rejected-document")
+  @GetMapping("/rejected-documents")
   public ApiResponse<List<ApprovalRejectedDocumentResponse>> rejectedDocument(
       @CurrentUser AuthUser authUser
   ) {
         return ApiResponse.success(
-            approvalQueryService.findRejectedDocuments(authUser.userId())
+            approvalQueryService.findRejectedDocuments(authUser.employeeId())
         );
   }
 
@@ -61,7 +60,7 @@ public class ApprovalQueryController {
       @CurrentUser AuthUser authUser
   ) {
     return ApiResponse.success(
-        approvalQueryService.findReferenceDocuments(authUser.userId())
+        approvalQueryService.findReferenceDocuments(authUser.employeeId())
     );
   }
 }
