@@ -65,5 +65,6 @@ public class SalaryService {
     BasicSalaryDTO prevSalary = salaryMapper.findBasicSalaryByEmpIdAndYear(empId, prevYearStr);
     BasicSalaryDTO currentSalary = salaryMapper.findBasicSalaryByEmpIdAndYear(empId, year);
 
+    return null;
   }
 }
