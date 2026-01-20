@@ -55,4 +55,27 @@
      WHERE ad.IS_DELETED = 'N'
        AND emp.EMP_ID = #{empId}
   </select>
+
+  <select id="findAllBasicSalaryByEmpIdAnd"
+    resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO">
+    <!-- 연봉 히스토리 (전년도/ 올해) -->
+    SELECT bse.emp_id
+         , YEAR(ad.approved_at) AS year
+         , ad.content           AS reason
+         , LAG(bse.basic_salary) OVER (PARTITION BY bse.emp_id
+                                           ORDER BY ad.approved_at
+                                      ) AS prev_salary
+         , bse.basic_salary     AS current_salary
+         , bse.increase_rate
+         , ad.approved_at
+     FROM basic_salary_employee bse
+     JOIN approval_document ad ON ad.doc_id = bse.doc_id
+    WHERE bse.is_deleted = 'N'
+      AND ad.is_deleted = 'N'
+      AND ad.status = 'APPROVED'
+      AND bse.EMP_ID = #{empId}
+    ORDER BY ad.approved_at DESC;
+  </select>
+
+
 </mapper>

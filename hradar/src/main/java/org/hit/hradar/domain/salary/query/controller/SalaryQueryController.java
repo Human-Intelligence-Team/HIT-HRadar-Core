@@ -55,8 +55,9 @@ public class SalaryQueryController {
       @CurrentUser AuthUser authUser,
       @PathVariable String year) {
 
+
     SalaryHistoryDTO response = salaryService.getMySalaryHistory(authUser, year);
-    return ResponseEntity.ok(ApiResponse.success(response));
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 
 }

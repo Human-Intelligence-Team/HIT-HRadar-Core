@@ -3,6 +3,7 @@ package org.hit.hradar.domain.salary.query.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.salary.command.domain.repository.BasicSalaryRepository;
 import org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.SalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.SalaryHistoryDTO;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SalaryService {
 
   private final SalaryMapper salaryMapper;
+  private final BasicSalaryRepository  basicSalaryRepository;
 
   /**
    * 연봉 목록 조회(전체)
@@ -56,15 +58,18 @@ public class SalaryService {
 
     // auth User 확인(?)
     //Long empId = authUser.employeeId();
-    Long empId = 1L;
+    Long empId = 1001L;
 
     // 전년도, 올해 연봉 정보
     Integer prevYear = Integer.valueOf(year) - 1;
     String prevYearStr = prevYear.toString();
 
-    BasicSalaryDTO prevSalary = salaryMapper.findBasicSalaryByEmpIdAndYear(empId, prevYearStr);
-    BasicSalaryDTO currentSalary = salaryMapper.findBasicSalaryByEmpIdAndYear(empId, year);
+    BasicSalaryDTO prevSalary = basicSalaryRepository.findByEmpIdAndYear(empId, prevYearStr);
+    //BasicSalaryDTO currentSalary =
 
-    return null;
+
+
+
+    return new SalaryHistoryDTO();
   }
 }
