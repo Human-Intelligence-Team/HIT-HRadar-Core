@@ -8,6 +8,7 @@ import org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.SalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.SalaryHistoryDTO;
 import org.hit.hradar.domain.salary.query.dto.request.SalarySearchRequest;
+import org.hit.hradar.domain.salary.query.dto.response.SalaryHistoryResponse;
 import org.hit.hradar.domain.salary.query.dto.response.SalarySearchResponse;
 import org.hit.hradar.domain.salary.query.mapper.SalaryMapper;
 import org.hit.hradar.global.dto.AuthUser;
@@ -54,22 +55,28 @@ public class SalaryService {
    * @param year
    * @return
    */
-  public SalaryHistoryDTO getMySalaryHistory(AuthUser authUser, String year) {
+  public SalaryHistoryResponse getMySalaryHistory(AuthUser authUser, String year) {
 
-    // auth User 확인(?)
-    //Long empId = authUser.employeeId();
-    Long empId = 1001L;
+     Long empId = authUser.employeeId();
+    // Long empId = 1001L;
 
     // 전년도, 올해 연봉 정보
     Integer prevYear = Integer.valueOf(year) - 1;
     String prevYearStr = prevYear.toString();
 
-    BasicSalaryDTO prevSalary = basicSalaryRepository.findByEmpIdAndYear(empId, prevYearStr);
-    //BasicSalaryDTO currentSalary =
+    BasicSalaryDTO prevSalary = salaryMapper.findBasicSalaryByEmpIdAndYear(empId, prevYearStr);
+    BasicSalaryDTO currentSalary = salaryMapper.findBasicSalaryByEmpIdAndYear(empId, year);
 
+    SalaryHistoryDTO result = new SalaryHistoryDTO(
+          currentSalary.getEmpId()
+        , year
+        , currentSalary.getContent()
+        , prevSalary.getBasicSalary()
+        , currentSalary.getBasicSalary()
+        , currentSalary.getIncreaseRate()
+        , currentSalary.getApprovedAt()
+    );
 
-
-
-    return new SalaryHistoryDTO();
+    return new SalaryHistoryResponse(result, null);
   }
 }
