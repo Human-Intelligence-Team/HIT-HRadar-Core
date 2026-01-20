@@ -40,7 +40,6 @@ public class ApprovalWithdrawCommandService {
             .orElseThrow(() ->
                 new BusinessException(ApprovalErrorCode.LINE_NOT_FOUND));
 
-
     // 승인/반려 이력 존재 여부
     boolean hasApprovalHistory =
         approvalLineStepJpaRepository.existsByLineIdAndApprovalStepStatusIn(
@@ -50,7 +49,6 @@ public class ApprovalWithdrawCommandService {
                 ApprovalStepStatus.REJECTED
             )
         );
-
 
     if (hasApprovalHistory) {
       throw new BusinessException(
@@ -62,11 +60,8 @@ public class ApprovalWithdrawCommandService {
     doc.withdraw(actorId);
 
     //회수 히스토리 저장
-    ApprovalHistory history =
-        ApprovalHistory.withdraw(docId, actorId);
-
-    approvalHistoryJpaRepository.save(history);
-
-
+    approvalHistoryJpaRepository.save(
+        ApprovalHistory.withdraw(docId, actorId)
+    );
   }
 }

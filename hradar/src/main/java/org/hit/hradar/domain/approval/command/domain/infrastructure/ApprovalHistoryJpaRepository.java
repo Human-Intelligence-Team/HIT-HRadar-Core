@@ -7,4 +7,6 @@ public interface ApprovalHistoryJpaRepository extends JpaRepository<ApprovalHist
 
   ApprovalHistory save(ApprovalHistory history);
 
+    
+
 }

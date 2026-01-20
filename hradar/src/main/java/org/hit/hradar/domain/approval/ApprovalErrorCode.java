@@ -15,8 +15,8 @@ public enum ApprovalErrorCode implements ErrorCode {
   CANNOT_WITHDRAW_AFTER_APPROVAL_STARTED("APP_006", "결재가 이미 시작된 문서는 회수할 수 없습니다.", HttpStatus.BAD_REQUEST),
   DOCUMENT_NOT_FOUND("APP_007", "결재 문서를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
   LINE_NOT_FOUND("APP_008", "결재선을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-  NO_PENDING_STEP("APP_009", "현재 처리할 결재 단계가 존재하지 않습니다.", HttpStatus.BAD_REQUEST);
-
+  NO_PENDING_STEP("APP_009", "현재 처리할 결재 단계가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+  NOT_ALLOWED_SUBMIT("APP_010", "해당 결재를 제출할 권한이 없습니다.", HttpStatus.BAD_REQUEST);
 
 
   private final String errorCode;

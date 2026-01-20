@@ -2,9 +2,12 @@ package org.hit.hradar.domain.approval.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalApproveRequest;
+import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalCreateRequest;
 import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalRejectRequest;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalCommandService;
+import org.hit.hradar.domain.approval.command.application.service.ApprovalSubmitCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalWithdrawCommandService;
+import org.hit.hradar.domain.approval.command.application.service.provider.ApprovalProviderService;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.hit.hradar.global.dto.AuthUser;
@@ -16,12 +19,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/approvals")
+@RequestMapping("/approvals")
 @RequiredArgsConstructor
 public class ApprovalCommandController {
 
   private final ApprovalCommandService approvalCommandService;
   private final ApprovalWithdrawCommandService approvalWithdrawCommandService;
+  private final ApprovalProviderService approvalProviderService;
+  private final ApprovalSubmitCommandService approvalSubmitCommandService;
+
+  @PostMapping("/draft")
+  public ResponseEntity<ApiResponse<Long>> createDraft(
+      @CurrentUser AuthUser authUser,
+      @RequestBody ApprovalCreateRequest request
+  ) {
+    Long docId = approvalProviderService.createDraft(
+        authUser.userId(),
+        request
+    );
+
+    return ResponseEntity.ok(
+        ApiResponse.success(docId));
+  }
+
+  @PostMapping("/{docId}/submit")
+  public ResponseEntity<ApiResponse<String>> submit(
+      @PathVariable Long docId,
+      @CurrentUser AuthUser user
+  ) {
+    approvalSubmitCommandService.submit(docId, user.userId());
+    return ResponseEntity.ok(ApiResponse.success("submitted"));
+  }
+
 
   //결재 승인 처리
   @PostMapping("/approve")

@@ -38,10 +38,6 @@ public class ApprovalDocument extends BaseTimeEntity {
   @Column(name = "doc_type", nullable = false)
   private ApprovalDocumentType docType = ApprovalDocumentType.ATT_CORRECTION;
 
-  // 업무 데이터 PK (vacationId, kpiId ...)
-  @Column(name = "payload_id", nullable = false)
-  private Long payloadId;
-
   //제목
   @Column(name = "title", nullable = false, length = 200)
   private String title;
@@ -72,11 +68,19 @@ public class ApprovalDocument extends BaseTimeEntity {
   //이미 상신(IN_PROGRESS), 결재(APPROVED), 반려(REJECTED), 회수(WITHDRAW)는 상신 불가능
   //'임시저장' 버튼: 문서를 DRAFT(생성) 상태로 저장만 한다. (submit() 호출 X)
   // 제출' 버튼: 문서를 저장한 뒤 submit()을 호출한다.
-  public void submit() {
+  public void submit(Long actorId) {
+
     if (this.status != ApprovalStatus.DRAFT) {
       throw new BusinessException(
           ApprovalErrorCode.CANNOT_SUBMIT_NOT_DRAFT
       );
+    }
+
+    if (!this.writerId.equals(actorId)) {
+      throw new BusinessException(
+          ApprovalErrorCode.NOT_ALLOWED_SUBMIT
+      );
+
     }
     this.status = ApprovalStatus.IN_PROGRESS;
     this.submittedAt = LocalDateTime.now();
@@ -118,13 +122,11 @@ public class ApprovalDocument extends BaseTimeEntity {
   private ApprovalDocument(
       Long writerId,
       ApprovalDocumentType docType,
-      Long payloadId,
       String title,
       String content
   ) {
     this.writerId = writerId;
     this.docType = docType;
-    this.payloadId = payloadId;
     this.title = title;
     this.content = content;
     this.status = ApprovalStatus.DRAFT;
@@ -133,14 +135,12 @@ public class ApprovalDocument extends BaseTimeEntity {
   public static ApprovalDocument createDraft(
       Long writerId,
       ApprovalDocumentType docType,
-      Long payloadId,
       String title,
       String content
   ) {
     return new ApprovalDocument(
         writerId,
         docType,
-        payloadId,
         title,
         content
     );

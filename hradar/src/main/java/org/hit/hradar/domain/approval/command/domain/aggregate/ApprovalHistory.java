@@ -15,7 +15,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 @Entity
 @Table(name = "approval_history")
 @Getter
-public class ApprovalHistory extends BaseTimeEntity  {
+public class ApprovalHistory extends BaseTimeEntity {
 
   //결재 이력id
   @Id
@@ -32,7 +32,7 @@ public class ApprovalHistory extends BaseTimeEntity  {
   private Long actorId;
 
   //결재 단계id
-  @Column(name = "step_id", nullable = false)
+  @Column(name = "step_id")
   private Long stepId;
 
   //결재 타입
@@ -53,7 +53,8 @@ public class ApprovalHistory extends BaseTimeEntity  {
   private Character isDeleted = 'N';
 
   //JPA 기본 생성자
-  protected ApprovalHistory() {}
+  protected ApprovalHistory() {
+  }
 
   //내부 생성자
   private ApprovalHistory(
@@ -102,15 +103,29 @@ public class ApprovalHistory extends BaseTimeEntity  {
     );
   }
 
-  public static ApprovalHistory withdraw(Long docId, Long actorId) {
-    ApprovalHistory history = new ApprovalHistory();
-    history.docId = docId;
-    history.actorId = actorId;
-    history.approvalActionType = ApprovalActionType.WITHDRAW;
-    history.actedAt = LocalDateTime.now();
-    return history;
+  public static ApprovalHistory withdraw(
+      Long docId,
+      Long actorId
+  ) {
+    return new ApprovalHistory(
+        docId,
+        actorId,
+        null,
+        ApprovalActionType.WITHDRAW,
+        null
+    );
   }
 
-
-
-}
+  public static ApprovalHistory submit(
+      Long docId,
+      Long actorId
+  ) {
+      return new ApprovalHistory(
+          docId,
+          actorId,
+          null,
+          ApprovalActionType.SUBMITTED,
+          null
+      );
+    }
+  }

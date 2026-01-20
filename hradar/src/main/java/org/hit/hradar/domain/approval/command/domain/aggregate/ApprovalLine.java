@@ -43,4 +43,8 @@ public class ApprovalLine extends BaseTimeEntity {
     line.currentStep = 1;
     return line;
   }
+
+  public void start() {
+    this.currentStep = 1;
+  }
 }

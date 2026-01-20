@@ -83,21 +83,14 @@ public class ApprovalCommandService {
     }
   }
 
-  /**
-   * 결재 문서를 반려한다.
-   *
-   * 처리 흐름:
-   * 1. 결재 문서 조회
-   * 2. 결재선 조회
-   * 3. 현재 처리해야 할 결재 단계(PENDING) 조회
-   * 4. 결재 단계 반려 처리
-   * 5. 반려 히스토리 기록
-   * 6. 문서 상태를 반려(REJECTED)로 변경
-   *
-   * @param docId   결재 문서 ID
-   * @param actorId 실제 반려 처리한 사원 ID
-   * @param reason 반려 사유
-   */
+  //결재 문서를 반려한다.
+   //1. 결재 문서 조회
+   //2. 결재선 조회
+   //3. 현재 처리해야 할 결재 단계(PENDING) 조회
+   //4. 결재 단계 반려 처리
+   //5. 반려 히스토리 기록
+   //6. 문서 상태를 반려(REJECTED)로 변경
+
   public void reject(Long docId, Long actorId, String reason) {
 
     // 1. 결재 문서 조회
