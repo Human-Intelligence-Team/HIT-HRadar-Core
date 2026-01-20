@@ -26,7 +26,7 @@ spring:
                 - Path=/api/v1/**
               filters:
                 - StripPrefix=2
-                # - JwtAuthenticationFilter  (나중에 필요하면)
+                - JwtAuthenticationFilter
 
             # =========================
             # Notification REST API (JWT 필요)
@@ -35,6 +35,14 @@ spring:
               uri: http://localhost:8083
               predicates:
                 - Path=/api/notifications/**
+              filters:
+                - StripPrefix=1
+                - JwtAuthenticationFilter
+
+            - id: chatbot
+              uri: http://localhost:8000
+              predicates:
+                - Path=/api/chat/**
               filters:
                 - StripPrefix=1
                 - JwtAuthenticationFilter
