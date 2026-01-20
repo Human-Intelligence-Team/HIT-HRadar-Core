@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 public enum CompanyErrorCode implements ErrorCode{
-  COMPANY_NOT_FOUND("COMPANY_001","Company not found",HttpStatus.NOT_FOUND),
+  COMPANY_NOT_FOUND("COMPANY_001","회사를 찾을 수 없습니다.",HttpStatus.NOT_FOUND),
   COMPANY_CODE_DUPLICATE("COMPANY_002", "회사코드 중복",HttpStatus.BAD_REQUEST),;
 
   private final String errorCode;

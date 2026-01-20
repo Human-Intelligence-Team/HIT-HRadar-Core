@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.department.query.mapper.DepartmentQueryMapper">
+
+    <select id="findDepartmentById" resultType="org.hit.hradar.domain.department.query.dto.DepartmentResponse">
+        SELECT
+            dept_id AS deptId,
+            company_id AS companyId,
+            parent_dept_id AS parentDeptId,
+            manager_employee_id AS managerEmpId,
+            dept_name AS deptName,
+            dept_phone_number AS deptPhoneNo,
+            is_deleted AS isDeleted,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM
+            department
+        WHERE
+            dept_id = #{deptId}
+            AND company_id = #{companyId}
+            AND is_deleted = 'N'
+    </select>
+
+    <select id="findAllDepartmentsByCompany" resultType="org.hit.hradar.domain.department.query.dto.DepartmentResponse">
+        SELECT
+            dept_id AS deptId,
+            company_id AS companyId,
+            parent_dept_id AS parentDeptId,
+            manager_employee_id AS managerEmpId,
+            dept_name AS deptName,
+            dept_phone_number AS deptPhoneNo,
+            is_deleted AS isDeleted,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM
+            department
+        WHERE
+            company_id = #{companyId}
+            AND is_deleted = 'N'
+        ORDER BY
+            dept_id
+    </select>
+
+</mapper>

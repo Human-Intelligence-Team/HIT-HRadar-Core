@@ -1,0 +1,85 @@
+package org.hit.hradar.domain.department.command.application.service;
+
+import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.department.DepartmentErrorCode;
+import org.hit.hradar.domain.department.command.application.dto.CreateDepartmentRequest;
+import org.hit.hradar.domain.department.command.application.dto.UpdateDepartmentRequest;
+import org.hit.hradar.domain.department.command.domain.aggregate.Department;
+import org.hit.hradar.domain.department.command.domain.repository.DepartmentRepository;
+import org.hit.hradar.domain.employee.EmployeeErrorCode;
+import org.hit.hradar.domain.employee.command.domain.repository.EmployeeRepository;
+import org.hit.hradar.global.exception.BusinessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class DepartmentCommandService {
+
+    private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
+
+    @Transactional
+    public Long createDepartment(CreateDepartmentRequest request, Long companyId) {
+        if (departmentRepository.existsByDeptNameAndCompanyIdAndIsDeleted(request.getDeptName(), companyId, 'N')) {
+            throw new BusinessException(DepartmentErrorCode.DUPLICATE_DEPARTMENT_NAME);
+        }
+
+        if (request.getParentDeptId() != null) {
+            if (!departmentRepository.findByDeptIdAndCompanyIdAndIsDeleted(request.getParentDeptId(), companyId, 'N').isPresent()) {
+                throw new BusinessException(DepartmentErrorCode.INVALID_PARENT_DEPARTMENT);
+            }
+        }
+
+      if (request.getManagerEmpId() != null) {
+        employeeRepository.findByEmpIdAndComIdAndIsDeleted(request.getManagerEmpId(), companyId, 'N')
+            .orElseThrow(() -> new BusinessException(EmployeeErrorCode.EMPLOYEE_NOT_FOUND));
+      }
+
+
+      Department department = Department.builder()
+                .companyId(companyId)
+                .deptName(request.getDeptName())
+                .parentDeptId(request.getParentDeptId())
+                .managerEmpId(request.getManagerEmpId())
+                .deptPhoneNo(request.getDeptPhoneNo())
+                .build();
+        departmentRepository.save(department);
+        return department.getDeptId();
+    }
+
+    @Transactional
+    public void updateDepartment(Long deptId, Long companyId, UpdateDepartmentRequest request) {
+        if (deptId.equals(request.getParentDeptId())) {
+            throw new BusinessException(DepartmentErrorCode.INVALID_PARENT_DEPARTMENT);
+        }
+
+        Department department = departmentRepository.findByDeptIdAndCompanyIdAndIsDeleted(deptId, companyId, 'N')
+                .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
+
+        if (!department.getDeptName().equals(request.getDeptName()) &&
+            departmentRepository.existsByDeptNameAndCompanyIdAndIsDeleted(request.getDeptName(), companyId, 'N')) {
+            throw new BusinessException(DepartmentErrorCode.DUPLICATE_DEPARTMENT_NAME);
+        }
+
+        if (request.getParentDeptId() != null) {
+            if (!departmentRepository.findByDeptIdAndCompanyIdAndIsDeleted(request.getParentDeptId(), companyId, 'N').isPresent()) {
+                throw new BusinessException(DepartmentErrorCode.INVALID_PARENT_DEPARTMENT);
+            }
+        }
+
+      if (request.getManagerEmpId() != null) {
+        employeeRepository.findByEmpIdAndComIdAndIsDeleted(request.getManagerEmpId(), companyId, 'N')
+            .orElseThrow(() -> new BusinessException(EmployeeErrorCode.EMPLOYEE_NOT_FOUND));
+      }
+
+        department.updateDepartment(request.getDeptName(), request.getParentDeptId(), request.getManagerEmpId(), request.getDeptPhoneNo());
+    }
+
+    @Transactional
+    public void deleteDepartment(Long deptId, Long companyId) {
+        Department department = departmentRepository.findByDeptIdAndCompanyIdAndIsDeleted(deptId, companyId, 'N')
+                .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
+        department.markAsDeleted();
+    }
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.positions.query.mapper.PositionQueryMapper">
+
+    <select id="findPositionById" resultType="org.hit.hradar.domain.positions.query.dto.PositionResponse">
+        SELECT
+            position_id AS positionId,
+            company_id AS companyId,
+            name AS name,
+            rank AS rank,
+            is_deleted AS isDeleted,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM
+            positions
+        WHERE
+            position_id = #{positionId}
+            AND company_id = #{companyId}
+            AND is_deleted = 'N'
+    </select>
+
+    <select id="findAllPositionsByCompany" resultType="org.hit.hradar.domain.positions.query.dto.PositionResponse">
+        SELECT
+            position_id AS positionId,
+            company_id AS companyId,
+            name AS name,
+            rank AS rank,
+            is_deleted AS isDeleted,
+            created_at AS createdAt,
+            updated_at AS updatedAt
+        FROM
+            positions
+        WHERE
+            company_id = #{companyId}
+            AND is_deleted = 'N'
+        ORDER BY
+            rank, name
+    </select>
+
+</mapper>
