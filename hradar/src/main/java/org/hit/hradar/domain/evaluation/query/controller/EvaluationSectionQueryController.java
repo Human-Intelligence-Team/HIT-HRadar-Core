@@ -18,6 +18,7 @@ public class EvaluationSectionQueryController {
 
     private final EvaluationSectionQueryService sectionQueryService;
 
+    //평가 유형에 포함된 섹션 조회
     @GetMapping("/{evalTypeId}/sections")
     public List<EvaluationSectionResponseDto> getSections(
             @PathVariable Long evalTypeId) {
