@@ -8,11 +8,6 @@ import java.util.Optional;
 
 public interface EvaluationResponseRepository {
 
-    Optional<EvaluationResponse> findByAssignment_AssignmentIdAndQuestion_QuestionId(
-            Long assignmentId,
-            Long questionId
-    );
-
     EvaluationResponse save(EvaluationResponse evaluationResponse);
 
     long countByAssignment_AssignmentId(Long assignmentId);

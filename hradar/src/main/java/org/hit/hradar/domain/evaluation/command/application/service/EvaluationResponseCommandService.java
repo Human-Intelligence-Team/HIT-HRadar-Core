@@ -70,7 +70,7 @@ public class EvaluationResponseCommandService {
 
             EvaluationResponse response =
                     responseRepository
-                            .findByAssignment_AssignmentIdAndQuestion_QuestionId(
+                            .findByAssignmentIdAndQuestionId(
                                     assignment.getAssignmentId(),
                                     question.getQuestionId()
                             )
@@ -146,7 +146,7 @@ public class EvaluationResponseCommandService {
 
         // 전체 문항
         List<EvaluationQuestion> questions =
-                questionRepository.findAllBySection_EvaluationType_EvalTypeId(evalTypeId);
+                questionRepository.findAllByEvalTypeId(evalTypeId);
 
         // 필수 문항 수
         long requiredCount = questions.stream()
