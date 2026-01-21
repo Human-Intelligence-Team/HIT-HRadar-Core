@@ -13,34 +13,27 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Document {
 
-    @Id
-    @Column(name = "document_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "com_id", nullable = false)
     private Long companyId;
-
-    @Column(name = "title", nullable = false, length = 50)
     private String title;
-
-    @Column(name = "description", nullable = false)
-    private String description;
+    private String category;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "document_type", nullable = false)
-    private DocumentType documentType; // FAQ, POLICY, MANUAL
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
     private DocumentStatus status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "source_type", nullable = false)
-    private SourceType sourceType; // PDF, MANUAL
-
-    @Column(name = "created_at", nullable = false)
+    private Long createdBy;
     private LocalDateTime createdAt;
 
-    @Column(name = "created_by", nullable = false, length = 50)
-    private String createdBy;
+    public static Document create(Long companyId, String title, Long actorId) {
+        Document d = new Document();
+        d.companyId = companyId;
+        d.title = title;
+        d.category = "HR_DOCUMENT";
+        d.status = DocumentStatus.ACTIVE;
+        d.createdBy = actorId;
+        d.createdAt = LocalDateTime.now();
+        return d;
+    }
 }

@@ -1,4 +1,6 @@
 spring:
+  main:
+    web-application-type: servlet
   data:
     redis:
       host: localhost
@@ -59,3 +61,8 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: mappers/**/*.xml
+
+vector:
+  index:
+    base-url: ${VECTOR_INDEX_BASE_URL}
+    timeout-ms: 3000

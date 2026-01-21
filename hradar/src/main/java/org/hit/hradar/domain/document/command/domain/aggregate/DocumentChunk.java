@@ -13,29 +13,34 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DocumentChunk {
 
-    @Id
-    @Column(name = "chunk_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "document_id", nullable = false)
+    private Long companyId;
     private Long documentId;
-
-    @Column(name = "chunk_index", nullable = false)
     private int chunkIndex;
 
-    @Column(name = "content_text", nullable = false)
-    private String contentText;
+    private String section;
 
-    @Column(name = "vector_id", nullable = false, length = 100)
-    private String vectorId;
+    @Column(columnDefinition = "TEXT")
+    private String content;
 
-    @Column(name = "token_count")
-    private Integer tokenCount;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "source_type", nullable = false)
-    private SourceType sourceType;
-
-    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
+
+    public static DocumentChunk create(
+            Long companyId,
+            Long documentId,
+            int index,
+            String section,
+            String content
+    ) {
+        DocumentChunk c = new DocumentChunk();
+        c.companyId = companyId;
+        c.documentId = documentId;
+        c.chunkIndex = index;
+        c.section = section;
+        c.content = content;
+        c.createdAt = LocalDateTime.now();
+        return c;
+    }
 }
