@@ -1,13 +1,17 @@
 package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDate;
 @Entity
 @Table(name = "objective_options")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ObjectiveOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +35,12 @@ public class ObjectiveOption {
     //연관관계 설정
     void setQuestion(EvaluationQuestion question) {
         this.question = question;
+    }
+
+    @Builder
+    public ObjectiveOption(Long id, EvaluationQuestion question, String optionContent, Integer optionScore) {
+        this.id = id;
+        this.question = question;
+        this.optionContent = optionContent;
     }
 }

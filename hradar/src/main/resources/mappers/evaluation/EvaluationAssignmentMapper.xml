@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.EvaluationAssignmentMapper">
+
+    <select id="selectAssignmentsByEvaluator"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentResponseDto">
+
+        SELECT
+            ea.assignment_id      AS assignmentId,
+            et.eval_type_id       AS evalTypeId,
+            et.eval_type_code          AS evalTypeCode,
+            ea.evaluatee_id       AS evaluateeId,
+            ea.assignment_status  AS assignmentStatus
+        FROM evaluation_assignment ea
+                 JOIN evaluation_type et
+                      ON ea.eval_type_id = et.eval_type_id
+        WHERE ea.evaluator_id = #{evaluatorId}
+          AND ea.assignment_status = 'PENDING'
+          AND ea.is_deleted = 'N'
+          AND et.is_deleted = 'N'
+        ORDER BY ea.created_at ASC
+
+    </select>
+    <select id="selectAssignments"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentListResponseDto">
+
+        SELECT
+        ea.assignment_id     AS assignmentId,
+        c.cycle_id           AS cycleId,
+        c.cycle_name         AS cycleName,
+        et.eval_type_code         AS evalTypeCode,
+        ea.evaluator_id      AS evaluatorId,
+        ea.evaluatee_id      AS evaluateeId,
+        ea.assignment_status AS assignmentStatus,
+        ea.submitted_at      AS submittedAt
+        FROM evaluation_assignment ea
+        JOIN evaluation_type et
+        ON ea.eval_type_id = et.eval_type_id
+        JOIN cycle c
+        ON et.cycle_id = c.cycle_id
+        WHERE c.cycle_id = #{cycleId}
+        AND ea.is_deleted = 'N'
+        AND et.is_deleted = 'N'
+        AND c.is_deleted = 'N'
+
+        <if test="evalTypeCode != null">
+            AND et.eval_type = #{evalTypeCode}
+        </if>
+
+        <if test="status != null">
+            AND ea.assignment_status = #{status}
+        </if>
+
+        <if test="evaluatorId != null">
+            AND ea.evaluator_id = #{evaluatorId}
+        </if>
+
+        <if test="evaluateeId != null">
+            AND ea.evaluatee_id = #{evaluateeId}
+        </if>
+
+        ORDER BY ea.created_at ASC
+
+    </select>
+
+
+</mapper>
