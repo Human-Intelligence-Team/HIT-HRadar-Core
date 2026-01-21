@@ -14,7 +14,7 @@ public interface ApprovalDetailQueryMapper {
 
 
   //결재 문서 기본 정보 조회 , 접근 권한 체크용 (docId + userId)
-  ApprovalDetailResponse selectDocument(
+  ApprovalDetailResponse selectApprovalDetail(
       @Param("docId") Long docId,
       @Param("employeeId") Long employeeId
   );
@@ -25,12 +25,12 @@ public interface ApprovalDetailQueryMapper {
   );
 
   //결재 히스토리 조회(SUBMITTED / APPROVED / REJECTED / WITHDRAW)
-  List<ApprovalHistoryResponse> selectHistories(
+  List<ApprovalHistoryResponse> selectApprovalHistories(
       @Param("docId") Long docId
   );
 
   //댓글 조회
-  List<ApprovalCommentResponse> selectComments(
+  List<ApprovalCommentResponse> selectApprovalComments(
       @Param("docId") Long docId
   );
 }

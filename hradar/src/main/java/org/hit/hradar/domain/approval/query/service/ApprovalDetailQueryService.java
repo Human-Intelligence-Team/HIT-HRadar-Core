@@ -28,7 +28,7 @@ public class ApprovalDetailQueryService {
 
     // 1. 문서 기본 정보 + 접근 권한 확인
     ApprovalDetailResponse detail =
-        approvalDetailQueryMapper.selectDocument(docId, userId);
+        approvalDetailQueryMapper.selectApprovalDetail(docId, userId);
 
     if (detail == null) {
       throw new BusinessException(
@@ -43,12 +43,12 @@ public class ApprovalDetailQueryService {
 
     // 3. 히스토리 조회 (회수 포함)
     detail.getHistories().addAll(
-        approvalDetailQueryMapper.selectHistories(docId)
+        approvalDetailQueryMapper.selectApprovalHistories(docId)
     );
 
     // 4. 댓글 조회
     detail.getComments().addAll(
-        approvalDetailQueryMapper.selectComments(docId)
+        approvalDetailQueryMapper.selectApprovalComments(docId)
     );
 
     return detail;

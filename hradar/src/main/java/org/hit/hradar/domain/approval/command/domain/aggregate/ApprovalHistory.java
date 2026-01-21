@@ -37,7 +37,7 @@ public class ApprovalHistory extends BaseTimeEntity {
 
   //결재 타입
   @Enumerated(EnumType.STRING)
-  @Column(name = "action_type", nullable = false)
+  @Column(name = "approval_action_type", nullable = false)
   private ApprovalActionType approvalActionType = ApprovalActionType.SUBMITTED;
 
   //반려 사유

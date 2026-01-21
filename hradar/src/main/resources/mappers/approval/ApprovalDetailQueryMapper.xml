@@ -65,7 +65,7 @@
     SELECT
       s.step_order,
       s.approver_id,
-      s.approval_step_status,
+      s.status,
       s.acted_at
     FROM approval_line_step s
            JOIN approval_line l

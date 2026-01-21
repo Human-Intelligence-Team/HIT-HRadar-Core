@@ -24,4 +24,6 @@ public interface ApprovalLineStepRepository {
       Long lineId,
       List<ApprovalStepStatus> statuses
   );
+
+
 }

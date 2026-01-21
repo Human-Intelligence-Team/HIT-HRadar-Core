@@ -6,10 +6,10 @@ import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocument;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalLine;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalLineStep;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalReference;
-import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalDocumentJpaRepository;
-import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalLineJpaRepository;
-import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalLineStepJpaRepository;
-import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalReferenceJpaRepository;
+import org.hit.hradar.domain.approval.command.infrastructure.ApprovalDocumentJpaRepository;
+import org.hit.hradar.domain.approval.command.infrastructure.ApprovalLineJpaRepository;
+import org.hit.hradar.domain.approval.command.infrastructure.ApprovalLineStepJpaRepository;
+import org.hit.hradar.domain.approval.command.infrastructure.ApprovalReferenceJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,14 +27,14 @@ public class ApprovalProviderService {
   //문서/결재선/결재단계 생성
   public Long createDraft(
       Long writerId,
-      Long deptId,
+      Long companyId,
       ApprovalCreateRequest request
   ) {
     //문서 생성
     ApprovalDocument doc =
         ApprovalDocument.createDraft(
             writerId,
-            deptId,
+            companyId,
             request.getDocType(),
             request.getTitle(),
             request.getContent()

@@ -1,10 +1,9 @@
 package org.hit.hradar.domain.approval.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalApproveRequest;
 import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalCreateRequest;
-import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalRejectRequest;
-import org.hit.hradar.domain.approval.command.application.service.ApprovalCommandService;
+import org.hit.hradar.domain.approval.command.application.service.ApprovalApproveCommandService;
+import org.hit.hradar.domain.approval.command.application.service.ApprovalRejectCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalSubmitCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalWithdrawCommandService;
 import org.hit.hradar.domain.approval.command.application.service.provider.ApprovalProviderService;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,10 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ApprovalCommandController {
 
-  private final ApprovalCommandService approvalCommandService;
+  private final ApprovalApproveCommandService approvalCommandService;
   private final ApprovalWithdrawCommandService approvalWithdrawCommandService;
   private final ApprovalProviderService approvalProviderService;
   private final ApprovalSubmitCommandService approvalSubmitCommandService;
+  private final ApprovalRejectCommandService approvalRejectCommandService;
 
   //결재 문서 임시저장
   @PostMapping("/draft")
@@ -44,43 +45,49 @@ public class ApprovalCommandController {
         ApiResponse.success(docId));
   }
 
+  //결재 상신 요청
   @PostMapping("/{docId}/submit")
   public ResponseEntity<ApiResponse<String>> submit(
       @PathVariable Long docId,
       @CurrentUser AuthUser authUser
   ) {
-    approvalSubmitCommandService.submit(docId, authUser.employeeId());
+    approvalSubmitCommandService.submit(
+        docId,
+        authUser.employeeId());
     return ResponseEntity.ok(ApiResponse.success("submitted"));
   }
 
 
   //결재 승인 처리
-  @PostMapping("/approve")
+  @PostMapping("/{docId}/approve")
   public ResponseEntity<ApiResponse<String>> approve(
       @CurrentUser AuthUser authUser,
-      @RequestBody ApprovalApproveRequest request
+      @PathVariable Long docId
   ) {
     approvalCommandService.approve(
-        request.getDocId(),
-        authUser.employeeId()
+        docId,
+        authUser.employeeId(),
+        authUser.companyId()
     );
+
     // 성공 시 공통 응답 포맷으로 OK 반환
     return ResponseEntity.ok(
         ApiResponse.success("approved")
     );
   }
 
-  //결재 반려 처리
-  @PostMapping("/reject")
+  // 결재 반려 처리
+  @PostMapping("/{docId}/reject")
   public ResponseEntity<ApiResponse<String>> reject(
       @CurrentUser AuthUser authUser,
-      @RequestBody ApprovalRejectRequest request
+      @PathVariable Long docId,
+      @RequestParam String reason
   ) {
 
-    approvalCommandService.reject(
-        request.getDocId(),
+    approvalRejectCommandService.reject(
+        docId,
         authUser.employeeId(),
-        request.getReason()
+        reason
     );
 
     return ResponseEntity.ok(

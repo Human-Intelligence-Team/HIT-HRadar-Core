@@ -132,8 +132,27 @@ public class ApprovalLineStep extends BaseTimeEntity {
 
     // 첫 단계만 PENDING, 나머지는 WAITING
     step.approvalStepStatus =
-        isFirst ? ApprovalStepStatus.PENDING : ApprovalStepStatus.WAITING;
+        ApprovalStepStatus.WAITING;
 
     return step;
   }
+
+  //내가 결재할 문서 검증
+  public boolean isApprover(Long actorId) {
+    return this.approverId.equals(actorId);
+  }
+
+  //승인 후 WAITING -> PENDING 으로 변경
+  public void changeToPending() {
+    if (this.approvalStepStatus != ApprovalStepStatus.WAITING) {
+      throw new BusinessException(
+          ApprovalErrorCode.CANNOT_APPROVE_NON_PENDING_STEP
+      );
+    }
+    this.approvalStepStatus = ApprovalStepStatus.PENDING;
+  }
+
+
+
+
 }

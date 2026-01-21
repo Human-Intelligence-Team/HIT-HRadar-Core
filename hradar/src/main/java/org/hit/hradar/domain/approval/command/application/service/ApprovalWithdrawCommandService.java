@@ -8,10 +8,10 @@ import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocument;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalHistory;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalLine;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalStepStatus;
-import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalDocumentJpaRepository;
-import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalHistoryJpaRepository;
-import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalLineJpaRepository;
-import org.hit.hradar.domain.approval.command.domain.infrastructure.ApprovalLineStepJpaRepository;
+import org.hit.hradar.domain.approval.command.infrastructure.ApprovalDocumentJpaRepository;
+import org.hit.hradar.domain.approval.command.infrastructure.ApprovalHistoryJpaRepository;
+import org.hit.hradar.domain.approval.command.infrastructure.ApprovalLineJpaRepository;
+import org.hit.hradar.domain.approval.command.infrastructure.ApprovalLineStepJpaRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 
@@ -49,14 +49,21 @@ public class ApprovalWithdrawCommandService {
                 ApprovalStepStatus.REJECTED
             )
         );
+    // 문서 상태 검증
+    // DRAFT 또는 SUBMITTED 상태만 회수 가능
+    if (!doc.isWithdrawable()) {
+      throw new BusinessException(ApprovalErrorCode.CANNOT_WITHDRAW_AFTER_APPROVAL_STARTED);
 
+    }
+
+    // 4. 승인/반려 이력 존재 여부 확인
     if (hasApprovalHistory) {
       throw new BusinessException(
           ApprovalErrorCode.CANNOT_WITHDRAW_AFTER_APPROVAL_STARTED
       );
     }
 
-    //문서 회수
+    //문서 회수 처리
     doc.withdraw(actorId);
 
     //회수 히스토리 저장

@@ -25,6 +25,10 @@ public class ApprovalDocument extends BaseTimeEntity {
   @Column(name = "doc_id")
   private Long docId;
 
+  // 회사 ID
+  @Column(name = "company_id", nullable = false)
+  private Long companyId;
+
   //부서 id
   @Column(name = "dept_id")
   private Long deptId;
@@ -51,11 +55,11 @@ public class ApprovalDocument extends BaseTimeEntity {
   @Column(name = "status", nullable = false)
   private ApprovalStatus status = ApprovalStatus.DRAFT;
 
-  //제출일시
+  //상신 일시
   @Column(name = "submitted_at")
   private LocalDateTime submittedAt;
 
-  //승인일시
+  //최종 승인 일시
   @Column(name = "approved_at")
   private LocalDateTime approvedAt;
 
@@ -86,10 +90,11 @@ public class ApprovalDocument extends BaseTimeEntity {
     this.submittedAt = LocalDateTime.now();
   }
 
-   //결재 문서를 회수한다.(DRAFT(임시저장) 상태)
-   //IN_PROGRESS(상신) 상태이면서, 아직 결재선에서 승인/반려가 한 건도 발생하지 않은 경우
-   // 결재 문서 회수
+   //결재 문서를 회수한다.(DRAFT(임시저장) or IN_PROGRESS)
+   //아직 결재선에서 승인/반려가 한 건도 발생하지 않은 경우
+   //결재 문서 회수
    public void withdraw(Long actorId) {
+
      if (!this.writerId.equals(actorId)) {
        throw new BusinessException(
            ApprovalErrorCode.NOT_ALLOWED_APPROVER
@@ -106,7 +111,7 @@ public class ApprovalDocument extends BaseTimeEntity {
      this.status = ApprovalStatus.WITHDRAWN;
    }
 
-  //결재 승인
+  //최종 결재 승인
   public void approve() {
     this.status = ApprovalStatus.APPROVED;
     this.approvedAt = LocalDateTime.now();
@@ -117,16 +122,35 @@ public class ApprovalDocument extends BaseTimeEntity {
     this.status = ApprovalStatus.REJECTED;
   }
 
+  // 승인 가능 여부 (결재자용)
+  public boolean isApprovable() {
+    return this.status == ApprovalStatus.IN_PROGRESS;
+  }
+
+  // 회수 가능 여부 (기안자용)
+  public boolean isWithdrawable() {
+    return this.status == ApprovalStatus.DRAFT
+        || this.status == ApprovalStatus.IN_PROGRESS;
+  }
+
+  // 기안자 여부
+  public boolean isOwner(Long actorId) {
+    return this.writerId.equals(actorId);
+  }
+
+  //생성자
   protected ApprovalDocument() {}
 
   private ApprovalDocument(
       Long writerId,
+      Long companyId,
       Long deptId,
       ApprovalDocumentType docType,
       String title,
       String content
   ) {
     this.writerId = writerId;
+    this.companyId = companyId;
     this.deptId = deptId;
     this.docType = docType;
     this.title = title;
@@ -134,20 +158,22 @@ public class ApprovalDocument extends BaseTimeEntity {
     this.status = ApprovalStatus.DRAFT;
   }
 
+  // ApprovalDocument 엔티티 안에 있는 팩토리 메서드만 이렇게 바꿔라
   public static ApprovalDocument createDraft(
       Long writerId,
-      Long deptId,
+      Long companyId,
       ApprovalDocumentType docType,
       String title,
       String content
   ) {
-    return new ApprovalDocument(
-        writerId,
-        deptId,
-        docType,
-        title,
-        content
-    );
+    ApprovalDocument doc = new ApprovalDocument();
+    doc.writerId = writerId;
+    doc.companyId = companyId;
+    doc.deptId = null;                // dept는 null로 간다고 했으니 고정
+    doc.docType = docType;
+    doc.title = title;
+    doc.content = content;
+    doc.status = ApprovalStatus.DRAFT;
+    return doc;
   }
-
-}
+  }
