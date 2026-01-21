@@ -86,6 +86,11 @@ public enum GradingErrorCode implements ErrorCode {
             "GRADE_041",
             "이미 해당 회차에 개인 등급이 존재합니다.",
             HttpStatus.CONFLICT
+    ),
+    GRADE_OBJECTION_NOT_FOUND(
+            "GRADE_014",
+            "이의제기를 찾을 수 없습니다.",
+            HttpStatus.NOT_FOUND
     );
 
 
