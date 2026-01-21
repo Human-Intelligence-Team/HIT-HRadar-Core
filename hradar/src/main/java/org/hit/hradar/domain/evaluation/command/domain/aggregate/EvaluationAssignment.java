@@ -1,7 +1,9 @@
 package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
         }
 )
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EvaluationAssignment extends BaseTimeEntity {
 
     @Id
