@@ -25,7 +25,7 @@ public class ApprovalComment extends BaseTimeEntity {
   private Long parentCommentId;
 
   //결재 문서id
-  @Column(name = "aprroval_document_id", nullable = false)
+  @Column(name = "approval_document_id", nullable = false)
   private Long approvalDocumentId;
 
   //작성자 사원id
