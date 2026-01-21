@@ -22,6 +22,9 @@ public class CompensationSalary extends BaseTimeEntity {
   @Column(name = "compensation_salary_employee_id", nullable = false)
   private Long compensationSalaryId;
 
+  @Column(name = "compensation_type", nullable = false, length = 50)
+  private String compensationType;
+
   @Column(name = "doc_id", nullable = false)
   private Long docId;
 

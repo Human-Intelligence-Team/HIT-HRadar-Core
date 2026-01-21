@@ -2,23 +2,26 @@ package org.hit.hradar.domain.salary.query.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class SalaryHistoryDTO {
+@NoArgsConstructor
+public class BasicSalaryHistoryDTO {
 
   private Long empId;
   private String year;
-  private String content;
+  private String title;
   private Long prevSalary;
   private Long currentSalary;
   private BigDecimal increaseRate;
-  private LocalDate approvedAt;
+  private LocalDateTime approvedAt;
 
-  public SalaryHistoryDTO(Long empId, String year, String content, Long prevSalary, Long currentSalary,  BigDecimal increaseRate, LocalDate approvedAt) {
+  public BasicSalaryHistoryDTO(Long empId, String year, String title, Long prevSalary, Long currentSalary,  BigDecimal increaseRate, LocalDateTime approvedAt) {
     this.empId = empId;
     this.year = year;
-    this.content = content;
+    this.title = title;
     this.prevSalary = prevSalary;
     this.currentSalary = currentSalary;
     this.increaseRate = increaseRate;

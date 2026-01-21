@@ -36,16 +36,8 @@ public class CompetencyReportQueryController {
   )  {
 
     Long empId = authUser.employeeId();
-    Long userId = authUser.userId();
-    Long companyId = authUser.companyId();
-    String role = authUser.role();
 
-    System.out.println("empId: " + empId);
-    System.out.println("userId: " + userId);
-    System.out.println("companyId: " + companyId);
-    System.out.println("role: " + role);
-
-    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(authUser,request);
+    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(empId,request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
@@ -56,10 +48,13 @@ public class CompetencyReportQueryController {
    */
   @GetMapping("/dept")
   public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getCompetencyReportByDeptId(
+      @CurrentUser AuthUser authUser,
       CompetencyReportSearchRequest request
   )  {
 
-    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportByDeptId(request);
+    Long empId = authUser.employeeId();
+
+    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportByDeptId(empId, request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
