@@ -41,7 +41,7 @@ public class  IndividualGrade extends BaseTimeEntity {
     //상태
     @Enumerated(EnumType.STRING)
     @Column(name = "grade_status", nullable = false)
-    private IndividualGradeStatus gradeStatus = IndividualGradeStatus.DRAFT;
+    private GradeApproveStatus gradeStatus = GradeApproveStatus.DRAFT;
 
     //created_at, updated_at, created_by, updated_by
 

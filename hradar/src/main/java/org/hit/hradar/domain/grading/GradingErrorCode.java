@@ -54,7 +54,28 @@ public enum GradingErrorCode implements ErrorCode {
             "GRADE_009",
             "등급 정책을 찾을 수 없습니다.",
             HttpStatus.NOT_FOUND
-    );
+    ),
+    CYCLE_NOT_IN_PROGRESS(
+            "GRADE_010",
+            "평가가 진행 중인 회차에서만 등급을 부여할 수 있습니다.",
+            HttpStatus.BAD_REQUEST
+    ),
+
+    DUPLICATE_DEPT_GRADE(
+            "GRADE_011",
+            "이미 해당 회차에 팀 등급이 부여되어 있습니다.",
+            HttpStatus.CONFLICT
+    ),
+    NOT_ALLOWED(
+            "GRADE_012",
+            "허가 되지 않는 수정입니다.",
+            HttpStatus.METHOD_NOT_ALLOWED
+    ),
+    DEPT_GRADE_NOT_FOUND(
+            "GRADE_013",
+            "팀 등급 정보를 찾을 수 없습니다.",
+            HttpStatus.NOT_FOUND
+    ),;
 
 
 
