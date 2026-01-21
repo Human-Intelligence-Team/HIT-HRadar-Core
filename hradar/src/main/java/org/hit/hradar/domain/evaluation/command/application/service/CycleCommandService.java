@@ -21,20 +21,25 @@ public class CycleCommandService {
     private final CycleRepository cycleRepository;
 
     /*평가 회차 생성*/
-    public void createCycle(CycleCreateRequestDto request, Long empId) {
+    @Transactional
+    public void createCycle(Long companyId, CycleCreateRequestDto request, Long empId) {
         validatePeriod(request.getStartDate(), request.getEndDate());
 
         Cycle cycle = Cycle.builder()
+                .year(request.getYear())
+                .quarter(request.getQuarter())
                 .cycleName(request.getCycleName())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .empId(empId)
+                .companyId(companyId)
                 .build();
 
         cycleRepository.save(cycle);
     }
 
     /*평가 기간 수정*/
+    @Transactional
     public void updatePeriod(Long cycleId, CycleUpdateRequestDto request) {
         Cycle cycle = getCycle(cycleId);
 
@@ -45,10 +50,11 @@ public class CycleCommandService {
         }
 
         validatePeriod(request.getStartDate(), request.getEndDate());
-        cycle.updateCycle(request.getCycleName(), request.getStartDate(), request.getEndDate());
+        cycle.updateCycle(request.getYear(), request.getQuarter(),request.getCycleName(), request.getStartDate(), request.getEndDate());
     }
 
     /* 평가 회차 강제 마감*/
+    @Transactional
     public void forceClose(Long cycleId) {
         Cycle cycle = getCycle(cycleId);
 
@@ -62,6 +68,7 @@ public class CycleCommandService {
     }
 
     /*회차 삭제*/
+    @Transactional
     public void deleteCycle(Long cycleId) {
         Cycle cycle = getCycle(cycleId);
 
@@ -71,6 +78,7 @@ public class CycleCommandService {
     }
 
     /*회차 승인*/
+    @Transactional
     public void approveCycle(Long cycleId) {
         Cycle cycle = getCycle(cycleId);
 

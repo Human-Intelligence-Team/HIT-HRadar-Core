@@ -1,9 +1,12 @@
 package org.hit.hradar.domain.evaluation.query.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
 import org.hit.hradar.domain.evaluation.command.domain.repository.CycleRepository;
+import org.hit.hradar.domain.evaluation.query.dto.response.CycleDetailResponseDto;
 import org.hit.hradar.domain.evaluation.query.dto.response.CycleListResponseDto;
 import org.hit.hradar.domain.evaluation.query.mapper.CycleMapper;
+import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,5 +24,28 @@ public class CycleQueryService {
         return cycleMapper.selectCycleList();
     }
 
+    /* 평가 회차 상세*/
+    @Transactional(readOnly = true)
+    public CycleDetailResponseDto getCycleDetail(Long cycleId) {
 
+        CycleDetailResponseDto cycle =
+                cycleMapper.selectCycleDetail(cycleId);
+
+        if (cycle == null) {
+            throw new BusinessException(EvaluationErrorCode.CYCLE_NOT_FOUND);
+        }
+
+        List<String> evalTypes =
+                cycleMapper.selectEvaluationTypesByCycleId(cycleId);
+
+        return new CycleDetailResponseDto(
+                cycle.getCycleId(),
+                cycle.getCycleName(),
+                cycle.getStartDate(),
+                cycle.getEndDate(),
+                cycle.getStatus(),
+                cycle.getEmpId(),
+                evalTypes
+        );
+    }
 }

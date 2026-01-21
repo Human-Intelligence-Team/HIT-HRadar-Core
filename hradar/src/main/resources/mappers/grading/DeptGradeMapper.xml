@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.grading.query.mapper.DeptGradeMapper">
+
+    <select id="findDeptGradeStatusList"
+            resultType="org.hit.hradar.domain.grading.query.dto.response.DeptGradeStatusResponseDto">
+
+        SELECT
+            d.dept_id           AS departmentId,
+            d.dept_name         AS departmentName,
+
+            dg.dept_grade_id    AS deptGradeId,
+            dg.grade_id         AS gradeId,
+            g.grade_name        AS gradeName,
+            dg.grade_reason     AS gradeReason,
+            dg.grade_status     AS gradeStatus
+
+        FROM department d
+
+                 LEFT JOIN dept_grade dg
+                           ON d.dept_id = dg.dept_id
+                               AND dg.cycle_id = #{cycleId}
+                               AND dg.is_deleted = 'N'
+
+                 LEFT JOIN grade g
+                           ON dg.grade_id = g.grade_id
+                               AND g.is_deleted = 'N'
+
+        WHERE d.com_id = #{companyId}
+          AND d.is_deleted = 'N'
+
+        ORDER BY d.dept_name ASC
+
+    </select>
+
+</mapper>

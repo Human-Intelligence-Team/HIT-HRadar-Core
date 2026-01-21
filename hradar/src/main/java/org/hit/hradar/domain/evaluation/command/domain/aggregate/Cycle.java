@@ -23,6 +23,10 @@ public class Cycle extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cycleId;
 
+    //회사 id
+    @Column(name = "company_id", nullable = false)
+    private Long companyId;
+
     //회차명
     @Column(name = "cycle_name", nullable = false, length=100)
     private String cycleName;
@@ -68,11 +72,16 @@ public class Cycle extends BaseTimeEntity {
 
     @Builder
     private Cycle(
+            String year,
+            Quarter quarter,
             String cycleName,
             LocalDateTime startDate,
             LocalDateTime endDate,
-            Long empId
+            Long empId,
+            Long companyId
     ){
+        this.year = year;
+        this.quarter = quarter;
         this.cycleName = cycleName;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -80,9 +89,12 @@ public class Cycle extends BaseTimeEntity {
         this.status = CycleStatus.DRAFT;
         this.isDeleted = 'N';
         this.isReportGenerated = 'N';
+        this.companyId = companyId;
     }
 
-    public void updateCycle(String cycleName,LocalDateTime startDate, LocalDateTime endDate){
+    public void updateCycle(String year, Quarter quarter, String cycleName,LocalDateTime startDate, LocalDateTime endDate){
+        this.year = year;
+        this.quarter = quarter;
         this.cycleName = cycleName;
         this.startDate = startDate;
         this.endDate = endDate;
