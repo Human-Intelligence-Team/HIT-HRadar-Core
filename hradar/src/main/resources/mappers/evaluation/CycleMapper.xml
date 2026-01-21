@@ -19,4 +19,34 @@
 
     </select>
 
+    <select id="selectCycleDetail"
+            parameterType="long"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.CycleDetailResponseDto">
+
+        SELECT
+            c.cycle_id   AS cycleId,
+            c.cycle_name AS cycleName,
+            c.start_date AS startDate,
+            c.end_date   AS endDate,
+            c.status     AS status,
+            c.emp_id     AS empId
+        FROM cycle c
+        WHERE c.cycle_id = #{cycleId}
+          AND c.is_deleted = 'N'
+
+    </select>
+
+    <select id="selectEvaluationTypesByCycleId"
+            parameterType="long"
+            resultType="string">
+
+        SELECT
+            et.eval_type_code
+        FROM evaluation_type et
+        WHERE et.cycle_id = #{cycleId}
+          AND et.is_deleted = 'N'
+        ORDER BY et.eval_type_code
+
+    </select>
+
 </mapper>

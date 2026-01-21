@@ -1,7 +1,10 @@
 package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "evaluation_question")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EvaluationQuestion extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +38,13 @@ public class EvaluationQuestion extends BaseTimeEntity {
     @Column(name = "rating_scale")
     private Integer ratingScale;
 
+    //필수 여부
+    @Enumerated(EnumType.STRING)
+    @Column(name = "is_required", nullable = false)
+    private RequiredStatus requiredStatus = RequiredStatus.OPTIONAL;
+
+    //created_at, updated_at, created_by, updated_by
+
     //객관식 선택지
     @OneToMany(
             //ObjectiveOption 엔티티 안의 필드명
@@ -55,10 +66,36 @@ public class EvaluationQuestion extends BaseTimeEntity {
         option.setQuestion(null);
     }
 
-    //필수 여부
-    @Enumerated(EnumType.STRING)
-    @Column(name = "is_required", nullable = false)
-    private RequiredStatus requiredStatus = RequiredStatus.OPTIONAL;
+    public void updateContent(String content) {
+        this.questionContent = content;
+    }
 
-    //created_at, updated_at, created_by, updated_by
+    public void updateRequiredStatus(RequiredStatus status) {
+        this.requiredStatus = status;
+    }
+
+    public void updateRatingScale(Integer ratingScale) {
+        this.ratingScale = ratingScale;
+    }
+
+    /*OBJECTIVE 옵션 전체 교체를 위한 헬퍼 */
+    public void clearOptions() {
+        this.options.clear(); // orphanRemoval=true면 DB에서도 삭제됨
+    }
+
+    @Builder
+    private EvaluationQuestion(
+            EvaluationSection section,
+            QuestionType questionType,
+            String questionContent,
+            Integer ratingScale,
+            RequiredStatus requiredStatus
+    ) {
+        this.section = section;
+        this.questionType = questionType;
+        this.questionContent = questionContent;
+        this.ratingScale = ratingScale;
+        this.requiredStatus = (requiredStatus == null) ? RequiredStatus.OPTIONAL : requiredStatus;
+    }
+
 }

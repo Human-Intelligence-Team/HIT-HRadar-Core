@@ -3,6 +3,7 @@ package org.hit.hradar.domain.evaluation.command.application.dto.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Quarter;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +11,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CycleUpdateRequestDto {
 
-    //TODO: 연도, 분기
+    private String year;
+
+    private Quarter quarter;
 
     private String cycleName;
     private LocalDateTime startDate;
