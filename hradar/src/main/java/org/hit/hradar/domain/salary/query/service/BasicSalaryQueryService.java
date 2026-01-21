@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BasicSalaryQueryService {
 
   private final BasicSalaryMapper basicSalaryMapper;
-  private final BasicSalaryRepository basicSalaryRepository;
 
   /**
    * 연봉 목록 조회(전체)
@@ -84,4 +83,17 @@ public class BasicSalaryQueryService {
     List<BasicSalaryHistoryDTO> history = basicSalaryMapper.findAllBasicSalariesHistoryByEmpId(empId);
     return new BasicSalaryHistoryResponse(null, history);
   }
+
+
+  /**
+   * 사원의 기본급
+   * @param empId
+   * @return
+   */
+  public BasicSalaryDTO getEmployeeBasicSalary(Long empId, String year) {
+
+    BasicSalaryDTO basic = basicSalaryMapper.findEmployeeBasicSalaryByEmpIdAndYear(empId,year);
+    return basic;
+  }
+
 }

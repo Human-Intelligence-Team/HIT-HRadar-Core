@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.salary.query.mapper.SalaryMapper">
+  <select id="findSalaryApprovalTargets"
+    parameterType="org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalTargetRequest"
+    resultType="org.hit.hradar.domain.salary.query.dto.SalaryApprovalTargetDTO">
+    SELECT emp.EMP_ID
+         , emp.EMPLOYEE_NO
+         , dep.DEPT_NAME
+         , emp.NAME
+         , cp.NAME AS positionName
+      FROM COMPENSATION_SALARY_EMPLOYEE cse
+      JOIN approval_document ad ON ad.doc_id = cse.DOC_ID
+      JOIN EMPLOYEE emp ON cse.EMP_ID = emp.EMP_ID
+      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
+      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.COM_POSITION_ID
+     WHERE ad.IS_DELETED = 'N'
+       AND cse.IS_DELETED = 'N'
+       AND emp.IS_DELETED = 'N'
+       AND dep.IS_DELETED = 'N'
+       AND cp.IS_DELETED = 'N'
+       AND ad.STATUS = 'SUBMITTED'
+       AND ad.DOC_TYPE = #{approvalDocumentType}
+     ORDER BY dep.DEPT_NAME ASC , emp.NAME asc
+  </select>
+
+</mapper>
