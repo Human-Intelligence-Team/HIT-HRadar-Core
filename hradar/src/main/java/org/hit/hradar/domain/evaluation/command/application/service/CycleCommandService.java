@@ -22,7 +22,7 @@ public class CycleCommandService {
 
     /*평가 회차 생성*/
     @Transactional
-    public void createCycle(CycleCreateRequestDto request, Long empId) {
+    public void createCycle(Long companyId, CycleCreateRequestDto request, Long empId) {
         validatePeriod(request.getStartDate(), request.getEndDate());
 
         Cycle cycle = Cycle.builder()
@@ -32,6 +32,7 @@ public class CycleCommandService {
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
                 .empId(empId)
+                .companyId(companyId)
                 .build();
 
         cycleRepository.save(cycle);

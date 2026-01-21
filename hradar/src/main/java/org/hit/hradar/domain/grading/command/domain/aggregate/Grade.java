@@ -53,4 +53,16 @@ public class Grade extends BaseTimeEntity {
         this.gradeName = gradeName;
         this.gradeOrder = gradeOrder;
     }
+
+    public void update(
+            String gradeName,
+            Integer gradeOrder
+    ){
+        this.gradeName = gradeName;
+        this.gradeOrder = gradeOrder;
+    }
+
+    public void delete() {
+        this.isDeleted = 'Y';
+    }
 }
