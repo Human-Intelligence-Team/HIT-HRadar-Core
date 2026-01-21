@@ -80,6 +80,17 @@ public enum EvaluationErrorCode implements ErrorCode {
             "EVAL_ASSIGN_006",
             "이미 취소된 평가 배정입니다.",
             HttpStatus.BAD_REQUEST
+    ), EVALUATION_ASSIGNMENT_DELETED(
+            "EVAL_ASSIGN_007",
+            "평가 배정이 취소 되었습니다.",
+            HttpStatus.BAD_REQUEST),
+    EVALUATION_ASSIGNMENT_FORBIDDEN("EVAL_ASSIGN_008", "평가가 할당되지 않았습니다.", HttpStatus.FORBIDDEN ),
+    EVALUATION_OPTION_NOT_FOUND("EVAL_OPTION_001", "해당 옵션을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
+    EVALUATION_ASSIGNMENT_INCOMPLETE(
+            "EVAL_ASSIGN_005",
+            "필수 문항에 대한 응답이 누락되었습니다.",
+            HttpStatus.BAD_REQUEST
     ),;
 
     private final String errorCode;

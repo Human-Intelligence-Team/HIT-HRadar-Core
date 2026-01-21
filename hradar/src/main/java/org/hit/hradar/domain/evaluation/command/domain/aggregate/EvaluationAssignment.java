@@ -78,4 +78,10 @@ public class EvaluationAssignment extends BaseTimeEntity {
     public boolean isDeleted() {
         return this.isDeleted == 'Y';
     }
+
+    public void submit() {
+        this.status = AssignmentStatus.SUBMITTED;
+        this.submittedAt = LocalDateTime.now();
+    }
+
 }

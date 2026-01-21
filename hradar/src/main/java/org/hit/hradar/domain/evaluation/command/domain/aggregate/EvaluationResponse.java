@@ -1,7 +1,9 @@
 package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
@@ -16,6 +18,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
         }
 )
 @Getter
+@NoArgsConstructor
 public class EvaluationResponse extends BaseTimeEntity {
 
     @Id
@@ -48,4 +51,32 @@ public class EvaluationResponse extends BaseTimeEntity {
     private String responseText;
 
     //created_at, updated_at
+
+    @Builder
+    private EvaluationResponse(
+            EvaluationAssignment assignment,
+            EvaluationQuestion question
+    ){
+        this.assignment=assignment;
+        this.question=question;
+    }
+
+    public void updateObjective(ObjectiveOption option) {
+        this.selectedOption = option;
+        this.responseScore = null;
+        this.responseText = null;
+    }
+
+    public void updateRating(Integer score) {
+        this.responseScore = score;
+        this.selectedOption = null;
+        this.responseText = null;
+    }
+
+    public void updateText(String text) {
+        this.responseText = text;
+        this.selectedOption = null;
+        this.responseScore = null;
+    }
+
 }
