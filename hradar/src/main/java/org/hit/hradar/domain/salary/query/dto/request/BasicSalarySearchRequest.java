@@ -7,7 +7,7 @@ import org.hit.hradar.domain.employee.domain.aggregate.EmpolymentType;
 
 @Getter
 @Setter
-public class SalarySearchRequest {
+public class BasicSalarySearchRequest {
 
   private Long deptId;
   private EmpolymentType employmentType;
@@ -15,7 +15,7 @@ public class SalarySearchRequest {
   private String employeeName;
 
 
-  public SalarySearchRequest(Long depthId, EmpolymentType employmentType, String employeeNo, String employeeName) {
+  public BasicSalarySearchRequest(Long depthId, EmpolymentType employmentType, String employeeNo, String employeeName) {
     this.deptId = depthId;
     this.employmentType = employmentType;
     this.employeeNo = employeeNo;

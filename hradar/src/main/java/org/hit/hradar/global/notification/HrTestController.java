@@ -23,6 +23,17 @@ public class HrTestController {
 
     @GetMapping("/test/notify2")
     public String notifyTest2(@CurrentUser AuthUser authUser) {
+
+      Long empId = authUser.employeeId();
+      Long userId = authUser.userId();
+      Long companyId = authUser.companyId();
+      String role = authUser.role();
+
+      System.out.println("empId: " + empId);
+      System.out.println("userId: " + userId);
+      System.out.println("companyId: " + companyId);
+      System.out.println("role: " + role);
+
         NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, authUser.userId(), "공지 알림 테스트", "공지 메시지 테스트입니다.", "/notice");
         producer.sendNotification(notificationDTO);
         return "sent";
