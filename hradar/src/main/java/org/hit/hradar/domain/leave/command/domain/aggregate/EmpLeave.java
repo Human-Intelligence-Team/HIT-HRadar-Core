@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.empLeave.command.domain.aggregate;
+package org.hit.hradar.domain.leave.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,71 +8,64 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
-@Entity
 @Table(name = "emp_leave")
+@Entity
 @Getter
 public class EmpLeave extends BaseTimeEntity {
 
-  //휴가id
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "leave_id")
   private Long leaveId;
 
-  //사원id
+  //사원 ID
   @Column(name = "emp_id", nullable = false)
   private Long empId;
 
-  //휴가 유형
+  //휴가 유형(연차/반차/반반차 saas)
   @Enumerated(EnumType.STRING)
   @Column(name = "leave_type", nullable = false)
-  private LeaveType leaveType = LeaveType.ANNUAL;
+  private String leaveType;
+
+  //휴가 기간
+  @Enumerated(EnumType.STRING)
+  @Column(name = "leave_unit_type", nullable = false)
+  private double leaveUnitType;
 
   //휴가 사유
-  @Column(name = "reason", nullable = false, length = 255)
+  @Column(name = "reason")
   private String reason;
 
-  //시작일
+  //휴가 시작일
   @Column(name = "start_date", nullable = false)
-  private LocalDate startDate;
+  private LocalDateTime startDate;
 
-  //종료일
+  //휴가 종료일
   @Column(name = "end_date", nullable = false)
-  private LocalDate endDate;
+  private LocalDateTime endDate;
 
-  //사용 일수
+  //휴가 사용일수
   @Column(name = "leave_days", nullable = false)
   private double leaveDays;
 
   //휴가 상태
   @Enumerated(EnumType.STRING)
-  @Column(name = "status", nullable = false)
-  private LeaveStatus status = LeaveStatus.REQUESTED;
+  @Column(name = "leave_status", nullable = false)
+  private LeaveStatus leaveStatus = LeaveStatus.ON_LEAVE;
 
-  //연차 기간
-  @Enumerated(EnumType.STRING)
-  @Column(name = "leave_unit_type", nullable = false)
-  private LeaveUnitType leaveUnitType = LeaveUnitType.FULL_DAY;
 
-  //휴가 신청
-  @Column(name = "requested_at", nullable = false)
-  private LocalDateTime requestedAt;
-
-  //휴가 승인
-  @Column(name = "approved_at")
-  private LocalDateTime approvedAt;
-
-  //반려 사유
-  @Column(name = "rejected_reason")
-  private String rejectedReason;
-
-  //삭제여부
+  //삭제 여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
+
+
+
+
+
+
 
 }
