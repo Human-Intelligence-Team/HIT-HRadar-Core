@@ -75,7 +75,18 @@ public enum GradingErrorCode implements ErrorCode {
             "GRADE_013",
             "팀 등급 정보를 찾을 수 없습니다.",
             HttpStatus.NOT_FOUND
-    ),;
+    ),
+    INDIVIDUAL_GRADE_NOT_FOUND(
+            "GRADE_040",
+            "개인 등급 정보를 찾을 수 없습니다.",
+            HttpStatus.NOT_FOUND
+    ),
+
+    DUPLICATE_INDIVIDUAL_GRADE(
+            "GRADE_041",
+            "이미 해당 회차에 개인 등급이 존재합니다.",
+            HttpStatus.CONFLICT
+    );
 
 
 
