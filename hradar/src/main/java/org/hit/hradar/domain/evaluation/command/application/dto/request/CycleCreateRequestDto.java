@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Quarter;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CycleCreateRequestDto {
 
-    //TODO: 연도, 분기
+    private String year;
+
+    private Quarter quarter;
 
     private String cycleName;
 

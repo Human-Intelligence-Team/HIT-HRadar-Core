@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.EvaluationResponseMapper">
+
+    <!-- 문항 메타 -->
+    <select id="selectQuestions"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.QuestionMetaRow">
+        SELECT
+            q.question_id      AS questionId,
+            q.question_content AS questionContent,
+            q.question_type    AS questionType
+        FROM evaluation_question q
+                 JOIN evaluation_section s ON q.section_id = s.section_id
+                 JOIN evaluation_type t ON s.eval_type_id = t.eval_type_id
+        WHERE t.eval_type_id = #{evalTypeId}
+    </select>
+
+    <!-- RATING 집계 -->
+    <select id="selectRatingStats"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.RatingStatRow">
+        SELECT
+            q.question_id AS questionId,
+            r.response_score AS score,
+            COUNT(*) AS count,
+            AVG(r.response_score) OVER (PARTITION BY q.question_id) AS averageScore
+        FROM evaluation_response r
+                 JOIN evaluation_question q ON r.question_id = q.question_id
+                 JOIN evaluation_assignment a ON r.assignment_id = a.assignment_id
+        WHERE q.question_type = 'RATING'
+          AND a.assignment_status = 'SUBMITTED'
+          AND a.eval_type_id = #{evalTypeId}
+        GROUP BY q.question_id, r.response_score
+    </select>
+
+    <!-- OBJECTIVE 집계 -->
+    <select id="selectObjectiveStats"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.ObjectiveStatRow">
+        SELECT
+            q.question_id AS questionId,
+            o.option_id AS optionId,
+            o.option_content AS optionContent,
+            COUNT(*) AS count
+        FROM evaluation_response r
+                 JOIN objective_options o ON r.option_id = o.option_id
+                 JOIN evaluation_question q ON r.question_id = q.question_id
+                 JOIN evaluation_assignment a ON r.assignment_id = a.assignment_id
+        WHERE q.question_type = 'OBJECTIVE'
+          AND a.assignment_status = 'SUBMITTED'
+          AND a.eval_type_id = #{evalTypeId}
+        GROUP BY q.question_id, o.option_id, o.option_content
+    </select>
+
+    <!-- SUBJECTIVE 응답 -->
+    <select id="selectSubjectiveAnswers"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.SubjectiveAnswerRow">
+        SELECT
+            q.question_id AS questionId,
+            r.response_text AS responseText
+        FROM evaluation_response r
+                 JOIN evaluation_question q ON r.question_id = q.question_id
+                 JOIN evaluation_assignment a ON r.assignment_id = a.assignment_id
+        WHERE q.question_type = 'SUBJECTIVE'
+          AND a.assignment_status = 'SUBMITTED'
+          AND a.eval_type_id = #{evalTypeId}
+    </select>
+
+</mapper>

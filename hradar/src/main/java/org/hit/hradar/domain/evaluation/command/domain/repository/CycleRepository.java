@@ -8,9 +8,9 @@ import java.util.Optional;
 
 public interface CycleRepository {
     Cycle save(Cycle cycle);
+
     Optional<Cycle> findById(Long cycleId);
 
     //자동 상태 전환용
     List<Cycle> findAllByStatusIn(List<CycleStatus> statuses);
-
 }
