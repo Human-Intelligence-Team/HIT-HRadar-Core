@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
-import org.hit.hradar.domain.employee.domain.aggregate.EmpolymentType;
+import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 
 @Getter
 public class BasicSalaryDTO {
@@ -24,6 +24,6 @@ public class BasicSalaryDTO {
   private String deptName; // 부서명
   private String positionName; // 직위명
 
-  private EmpolymentType employmentType; // 재직상태
+  private EmploymentType employmentType; // 재직상태
 
 }

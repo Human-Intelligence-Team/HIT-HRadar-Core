@@ -1,13 +1,11 @@
 package org.hit.hradar.domain.competencyReport.query.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.ContentDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.CycleDTO;
-import org.hit.hradar.domain.competencyReport.query.dto.TagDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.request.CompetencyReportSearchRequest;
 import org.hit.hradar.domain.competencyReport.query.dto.request.CompReportCycleSearchRequest;
 import org.hit.hradar.domain.competencyReport.query.dto.response.CompetencyReportDetailResponse;
@@ -18,7 +16,6 @@ import org.hit.hradar.domain.competencyReport.query.mapper.ContentMapper;
 import org.hit.hradar.domain.competencyReport.query.service.support.CommonQueryService;
 import org.hit.hradar.domain.employee.command.domain.aggregate.Employee;
 import org.hit.hradar.domain.employee.query.service.provider.EmployeeProviderService;
-import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.stereotype.Service;
 
 @Service
