@@ -6,6 +6,7 @@ import org.hit.hradar.domain.employee.query.dto.EmployeeResponse;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.repository.query.Param;
 
 @Mapper
 public interface EmployeeQueryMapper {
@@ -15,4 +16,7 @@ public interface EmployeeQueryMapper {
     List<EmployeeResponse> findAllEmployeesByCompany(Long comId);
 
     List<EmployeeForOrgChartResponse> findEmployeesForOrgChart(Long comId); // Add this method
+
+    EmployeeResponse findById(@Param("empId") Long empId, @Param("comId") Long comId);
+
 }

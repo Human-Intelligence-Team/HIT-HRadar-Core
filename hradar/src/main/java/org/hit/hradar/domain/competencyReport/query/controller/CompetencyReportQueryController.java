@@ -7,9 +7,7 @@ import org.hit.hradar.domain.competencyReport.query.dto.response.CompetencyRepor
 import org.hit.hradar.domain.competencyReport.query.dto.response.CompetencyReportSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.dto.response.CycleSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.service.CompetencyReportQueryService;
-import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
-import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -31,13 +29,10 @@ public class CompetencyReportQueryController {
  */
   @GetMapping("/me")
   public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getMyCompetencyReport(
-      @CurrentUser AuthUser authUser,
       CompetencyReportSearchRequest request
   )  {
 
-    Long empId = authUser.employeeId();
-
-    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(empId,request);
+    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
@@ -48,13 +43,10 @@ public class CompetencyReportQueryController {
    */
   @GetMapping("/dept")
   public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getCompetencyReportByDeptId(
-      @CurrentUser AuthUser authUser,
       CompetencyReportSearchRequest request
   )  {
 
-    Long empId = authUser.employeeId();
-
-    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportByDeptId(empId, request);
+    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportByDeptId(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 

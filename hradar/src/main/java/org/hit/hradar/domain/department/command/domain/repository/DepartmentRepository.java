@@ -18,4 +18,6 @@ public interface DepartmentRepository {
     List<Department> findAllByCompanyIdAndIsDeleted(Long companyId, char isDeleted);
 
     boolean existsByDeptNameAndCompanyIdAndIsDeleted(String deptName, Long companyId, char isDeleted);
+
+
 }

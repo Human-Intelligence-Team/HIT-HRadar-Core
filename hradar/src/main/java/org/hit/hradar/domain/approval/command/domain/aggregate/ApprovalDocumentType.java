@@ -8,6 +8,5 @@ public enum ApprovalDocumentType {
   TRIP,              // 출장
   LEAVE,             // 휴가
   CANCEL,            // 취소 요청
-  SALARY,           //  기본급
-  VACATION
+  SALARY              // 급여 관련
 }

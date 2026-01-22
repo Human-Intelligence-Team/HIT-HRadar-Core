@@ -15,7 +15,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 @Entity
 @Table(name = "approval_history")
 @Getter
-public class ApprovalHistory extends BaseTimeEntity {
+public class ApprovalHistory extends BaseTimeEntity  {
 
   //결재 이력id
   @Id
@@ -32,13 +32,13 @@ public class ApprovalHistory extends BaseTimeEntity {
   private Long actorId;
 
   //결재 단계id
-  @Column(name = "step_id")
+  @Column(name = "step_id", nullable = false)
   private Long stepId;
 
   //결재 타입
   @Enumerated(EnumType.STRING)
-  @Column(name = "approval_action_type", nullable = false)
-  private ApprovalActionType approvalActionType = ApprovalActionType.SUBMITTED;
+  @Column(name = "action_type", nullable = false)
+  private ApprovalActionType actionType = ApprovalActionType.SUBMITTED;
 
   //반려 사유
   @Column(name = "reason", length = 255)
@@ -52,80 +52,4 @@ public class ApprovalHistory extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
-  //JPA 기본 생성자
-  protected ApprovalHistory() {
-  }
-
-  //내부 생성자
-  private ApprovalHistory(
-      Long docId,
-      Long actorId,
-      Long stepId,
-      ApprovalActionType actionType,
-      String reason
-  ) {
-    this.docId = docId;
-    this.actorId = actorId;
-    this.stepId = stepId;
-    this.approvalActionType = actionType;
-    this.reason = reason;
-    this.actedAt = LocalDateTime.now();
-  }
-
-  // 승인 이력 생성
-  public static ApprovalHistory approved(
-      Long docId,
-      Long actorId,
-      ApprovalLineStep step
-  ) {
-    return new ApprovalHistory(
-        docId,
-        actorId,
-        step.getStepId(),
-        ApprovalActionType.APPROVED,
-        null
-    );
-  }
-
-  // 반려 이력 생성
-  public static ApprovalHistory rejected(
-      Long docId,
-      Long actorId,
-      ApprovalLineStep step,
-      String reason
-  ) {
-    return new ApprovalHistory(
-        docId,
-        actorId,
-        step.getStepId(),
-        ApprovalActionType.REJECTED,
-        reason
-    );
-  }
-
-  public static ApprovalHistory withdraw(
-      Long docId,
-      Long actorId
-  ) {
-    return new ApprovalHistory(
-        docId,
-        actorId,
-        null,
-        ApprovalActionType.WITHDRAW,
-        null
-    );
-  }
-
-  public static ApprovalHistory submit(
-      Long docId,
-      Long actorId
-  ) {
-      return new ApprovalHistory(
-          docId,
-          actorId,
-          null,
-          ApprovalActionType.SUBMITTED,
-          null
-      );
-    }
-  }
+}

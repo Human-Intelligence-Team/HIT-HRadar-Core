@@ -1,9 +1,8 @@
 package org.hit.hradar.domain.companyApplication.command.application.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import lombok.*;
+import org.hit.hradar.domain.companyApplication.command.domain.aggregate.CompanyApplicationStatus;
 
 @Getter
 @NoArgsConstructor
@@ -11,9 +10,14 @@ import lombok.*;
 @Builder
 public class RejectComAppResponse {
 
-  @NotBlank @Size(max = 500)
+  private Long appId;
+
+  private CompanyApplicationStatus status;
+
   private String rejectReason;
 
-  @NotBlank
   private LocalDateTime reviewedAt;
+
+  private Long reviewerUserId;
+
 }

@@ -13,13 +13,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "account",
     uniqueConstraints = {
-        @UniqueConstraint(name = "UK_COMPANY_LOGINID", columnNames = {"company_id", "login_id"}),
-        @UniqueConstraint(name = "UK_ACCOUNT_COMPANY_EMAIL", columnNames = {"company_id", "email"})
+        @UniqueConstraint(name = "UK_COMPANY_LOGINID", columnNames = {"com_id", "login_id"}),
+        @UniqueConstraint(name = "UK_ACCOUNT_COMPANY_EMAIL", columnNames = {"com_id", "email"})
 
     })
 @Getter
@@ -31,10 +30,10 @@ public class Account {
   @Column(name = "account_id")
   private Long accId;
 
-  @Column(name = "company_id", nullable = false)
+  @Column(name = "com_id", nullable = false)
   private Long comId;
 
-  @Column(name = "company_code", nullable = false, length = 30, unique = true)
+  @Column(name = "company_code", nullable = false, length = 30)
   private String comCode;
 
   @Column(name = "employee_id")
@@ -54,24 +53,29 @@ public class Account {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "role", nullable = false, length = 10)
-  private PlatformRole platformRole;
+  private UserRole userRole;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 15)
   private AccountStatus status;
 
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
+
 
   @Builder
-  public Account(Long accId, Long comId, Long empId, String loginId, String email, String password, String name, PlatformRole platformRole) {
+  public Account(Long accId, Long comId,String comCode, Long empId, String loginId, String email, String password, String name, UserRole userRole, Character isDeleted) {
     this.accId = accId;
     this.comId = comId;
+    this.comCode = comCode;
     this.empId = empId;
     this.loginId = loginId;
     this.email = email;
     this.password = password;
     this.name = name;
-    this.platformRole = platformRole;
-    this.status = AccountStatus.ACTIVE; // Default to ACTIVE when building
+    this.userRole = userRole;
+    this.status = AccountStatus.ACTIVE;
+    this.isDeleted = 'N';
   }
 
   public void updateLoginInfo(String loginId, String name, String email) {
@@ -89,6 +93,6 @@ public class Account {
   }
 
   public void markAsDeleted() {
-    this.status = AccountStatus.RETIRED;
+    this.isDeleted = 'N';
   }
 }

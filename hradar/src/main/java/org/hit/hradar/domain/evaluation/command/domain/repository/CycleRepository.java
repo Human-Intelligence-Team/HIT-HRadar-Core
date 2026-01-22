@@ -13,9 +13,4 @@ public interface CycleRepository {
 
     //자동 상태 전환용
     List<Cycle> findAllByStatusIn(List<CycleStatus> statuses);
-
-    boolean existsByCompanyIdAndStatus(
-            Long companyId,
-            CycleStatus status
-    );
 }

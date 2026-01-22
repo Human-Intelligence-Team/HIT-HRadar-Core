@@ -13,8 +13,8 @@ import org.springframework.data.repository.query.Param;
 @Mapper
 public interface CompetencyReportMapper {
 
-  List<CompetencyReportDTO> findAllByEmpId(
-      @Param("empId") Long empId,
+  List<CompetencyReportDTO> findAllByUserId(
+      @Param("userId") Long userId,
       @Param("request") CompetencyReportSearchRequest request
   );
 

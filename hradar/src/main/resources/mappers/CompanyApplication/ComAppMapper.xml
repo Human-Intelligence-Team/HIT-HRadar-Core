@@ -6,10 +6,11 @@
 <mapper namespace="org.hit.hradar.domain.companyApplication.query.infra.mapper.ComAppQueryMapper">
 
   <select id="findList"
-    parameterType="org.hit.hradar.domain.companyApplication.query.application.dto.CompanyApplicationSearchCondition"
-    resultType="org.hit.hradar.domain.companyApplication.query.application.dto.CompanyApplicationListItem">
+    parameterType="org.hit.hradar.domain.companyApplication.query.dto.ComAppSearchCondition"
+    resultType="org.hit.hradar.domain.companyApplication.query.dto.ComAppListItemResponse">
 
-    SELECT
+
+  SELECT
     application_id AS applicationId,
     company_name AS comName,
     biz_no AS bizNo,

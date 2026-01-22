@@ -32,7 +32,7 @@ public class DepartmentQueryController {
       @CurrentUser AuthUser authUser
   ) {
     List<DepartmentResponse> responses =
-        departmentQueryService.getAllDepartmentsByCompany(authUser.companyId());
+        departmentQueryService.getAllDepartmentsByCompany(authUser.companyId()); // dto에 담아서 전달 컨트롤러에서 list 생성 금지
     return ResponseEntity.ok(ApiResponse.success(responses));
   }
 

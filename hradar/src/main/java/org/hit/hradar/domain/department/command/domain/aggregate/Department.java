@@ -18,7 +18,7 @@ public class Department extends BaseTimeEntity {
   @Column(name = "dept_id", nullable = false)
   private Long deptId;
 
-  @Column(name = "company_id", nullable = false)
+  @Column(name = "com_id", nullable = false)
   private Long companyId;
 
   @Column(name = "parent_dept_id")
@@ -30,28 +30,28 @@ public class Department extends BaseTimeEntity {
   @Column(name = "dept_name", nullable = false)
   private String deptName;
 
-  @Column(name = "dept_phone_number", nullable = false)
-  private String deptPhoneNo;
+  @Column(name = "dept_phone")
+  private String deptPhone;
 
   @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isDeleted;
 
   @Builder
-  public Department(Long deptId, Long companyId, Long parentDeptId, Long managerEmpId, String deptName, String deptPhoneNo) {
+  public Department(Long deptId, Long companyId, Long parentDeptId, Long managerEmpId, String deptName, String deptPhone) {
     this.deptId = deptId;
     this.companyId = companyId;
     this.parentDeptId = parentDeptId;
     this.managerEmpId = managerEmpId;
     this.deptName = deptName;
-    this.deptPhoneNo = deptPhoneNo;
-    this.isDeleted = 'N'; // Default to 'N' when building
+    this.deptPhone = deptPhone;
+    this.isDeleted = 'N';
   }
 
-  public void updateDepartment(String deptName, Long parentDeptId, Long managerEmpId, String deptPhoneNo) {
+  public void updateDepartment(String deptName, Long parentDeptId, Long managerEmpId, String deptPhone) {
     this.deptName = deptName;
     this.parentDeptId = parentDeptId;
     this.managerEmpId = managerEmpId;
-    this.deptPhoneNo = deptPhoneNo;
+    this.deptPhone = deptPhone;
   }
 
   public void markAsDeleted() {

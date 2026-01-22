@@ -15,7 +15,7 @@ public enum UserErrorCode implements ErrorCode {
   EMAIL_ALREADY_EXISTS("EMAIL_003", "Email already exists", HttpStatus.BAD_REQUEST),
   ACCOUNT_RETIRED("USER_006", "Account is retired.", HttpStatus.FORBIDDEN), // Added
   FORBIDDEN("USER_007", "Access is forbidden.", HttpStatus.FORBIDDEN), // Added
-
+  INVALID_LOGIN_ID("USER_008","로그인id가 존재하지 않습니다.", HttpStatus.BAD_REQUEST)
   ;
   private final String errorCode;
   private final String message;

@@ -1,14 +1,11 @@
 package org.hit.hradar.domain.grading.command.domain.aggregate;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "grade_objection")
 @Getter
-@NoArgsConstructor
 public class GradeObjection extends BaseTimeEntity {
 
     @Id
@@ -41,25 +38,4 @@ public class GradeObjection extends BaseTimeEntity {
 
     @Column(name = "is_deleted", nullable = false)
     private Character isDeleted = 'N';
-
-    @Builder
-    public GradeObjection(
-            Long individualGradeId,
-            String objectionReason
-    ) {
-        this.individualGradeId = individualGradeId;
-        this.objectionReason = objectionReason;
-    }
-
-    public void accept(String result, Long resolverId) {
-        this.objectionStatus = ObjectionStatus.ACCEPTED;
-        this.objectionResult = result;
-        this.resolvedBy = resolverId;
-    }
-
-    public void reject(String result, Long resolverId) {
-        this.objectionStatus = ObjectionStatus.REJECTED;
-        this.objectionResult = result;
-        this.resolvedBy = resolverId;
-    }
 }

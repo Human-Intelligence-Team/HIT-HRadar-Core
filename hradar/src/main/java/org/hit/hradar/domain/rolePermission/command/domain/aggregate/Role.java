@@ -29,19 +29,11 @@ public class Role extends BaseTimeEntity {
   @Column(name = "com_id", nullable = false)
   private Long comId;
 
-  /**
-   * 시스템 기본 역할 여부
-   * - true  : 회사 생성 시 자동 생성되는 기본 역할(4개)
-   * - false : 회사 커스텀 역할
-   */
-  @Column(name = "is_system", nullable = false)
-  @Builder.Default
-  private boolean isSystem = false;
+  // 시스템 기본 역할 여부
+  @Column(name = "is_system", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isSystem;
 
-  /**
-   * 기본 역할 식별키 (커스텀 역할은 null 권장)
-   * 예: OWNER, HRTEAM, TEAMLEADER, EMPLOYEE
-   */
+  //기본 역할 식별키 (커스텀 역할은 null) - OWNER, HRTEAM, TEAMLEADER, EMPLOYEE
   @Column(name = "role_key", length = 100)
   private String roleKey;
 
@@ -52,11 +44,10 @@ public class Role extends BaseTimeEntity {
   private Character isDeleted;
 
 
-
   public static Role createSystemRole(Long comId, String roleKey, String name) {
     return Role.builder()
         .comId(comId)
-        .isSystem(true)
+        .isSystem('Y')
         .roleKey(roleKey)
         .name(name)
         .isDeleted('N')
@@ -66,7 +57,7 @@ public class Role extends BaseTimeEntity {
   public static Role createCustomRole(Long comId, String name) {
     return Role.builder()
         .comId(comId)
-        .isSystem(false)
+        .isSystem('N')
         .roleKey(null)  // 커스텀 역할은 null
         .name(name)
         .isDeleted('N')
@@ -76,12 +67,10 @@ public class Role extends BaseTimeEntity {
     return this.isDeleted != null && this.isDeleted == 'Y';
   }
 
-  public void markDeleted() {
+  public void changeDeleted() {
     this.isDeleted = 'Y';
   }
 
-  public void changeName(String name) {
-    this.name = name;
-  }
+
 
 }

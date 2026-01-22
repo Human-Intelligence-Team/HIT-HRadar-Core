@@ -18,13 +18,12 @@ public class CycleCommandController {
     private final CycleCommandService cycleCommandService;
 
     /* 회차 생성 */
-    @PostMapping("/{companyId}")
+    @PostMapping
     public ResponseEntity<ApiResponse<String>> createCycle(
             @CurrentUser AuthUser authUser,
-            @PathVariable Long companyId,
             @RequestBody CycleCreateRequestDto request
     ) {
-        cycleCommandService.createCycle(companyId, request,  authUser.userId());
+        cycleCommandService.createCycle(request,  authUser.userId());
         return ResponseEntity.ok(ApiResponse.success("null"));
     }
 

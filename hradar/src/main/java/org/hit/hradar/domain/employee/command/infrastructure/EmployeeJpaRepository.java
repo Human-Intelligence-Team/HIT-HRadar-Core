@@ -16,4 +16,7 @@ public interface EmployeeJpaRepository
 
   @Override
   boolean existsByEmailAndComIdAndIsDeleted(String email, Long comId, char isDeleted);
+
+
+
 }

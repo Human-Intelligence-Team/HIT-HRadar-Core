@@ -1,6 +1,5 @@
 package org.hit.hradar.domain.grading.command.domain.aggregate;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
@@ -14,7 +13,6 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
                 )
         }
 )
-@Getter
 public class GradeDistributionRule extends BaseTimeEntity {
 
     @Id
@@ -39,24 +37,4 @@ public class GradeDistributionRule extends BaseTimeEntity {
     //소프트 삭제 여부
     @Column(name = "is_deleted", nullable = false)
     private Character isDeleted = 'N';
-
-    @Builder
-    private GradeDistributionRule(
-            Long gradeId,
-            Integer minRatio,
-            Integer maxRatio
-    ){
-        this.gradeId = gradeId;
-        this.minRatio = minRatio;
-        this.maxRatio = maxRatio;
-    }
-
-    public void update(Integer minRatio, Integer maxRatio) {
-        this.minRatio = minRatio;
-        this.maxRatio = maxRatio;
-    }
-
-    public void delete() {
-        this.isDeleted = 'Y';
-    }
 }

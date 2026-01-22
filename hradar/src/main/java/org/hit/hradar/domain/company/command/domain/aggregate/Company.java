@@ -3,9 +3,10 @@ package org.hit.hradar.domain.company.command.domain.aggregate;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import org.hit.hradar.domain.company.CompanyErrorCode;
 import org.hit.hradar.domain.companyApplication.command.domain.aggregate.CompanyApplicationStatus;
 import org.hit.hradar.global.dto.BaseTimeEntity;
+import org.hit.hradar.global.exception.BusinessException;
 
 @Entity
 @Table(name = "company")
@@ -15,7 +16,7 @@ public class Company extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "company_id", nullable = false)
+  @Column(name = "com_id", nullable = false)
   private Long companyId;
 
   @Column(name = "application_id", nullable = false)
@@ -24,8 +25,8 @@ public class Company extends BaseTimeEntity {
   @Column(name = "company_code", nullable = false, length = 30, unique = true)
   private String comCode;
 
-  @Column(name = "company_name", nullable = false, length = 100)
-  private String comName;
+  @Column(name = "name", nullable = false, length = 100)
+  private String companyName;
 
   @Column(name = "ceo_name", length = 50)
   private String ceoName;
@@ -43,7 +44,7 @@ public class Company extends BaseTimeEntity {
   private String comTel;
 
   @Column(name = "founded_date")
-  private LocalDate foundedDate;
+  private String foundedDate;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 15)
@@ -51,5 +52,18 @@ public class Company extends BaseTimeEntity {
 
   @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isDeleted;
+
+  public void updateInfo(String comName, String comTel, String address) {
+    if (comName == null || comName.isBlank()) {
+      throw new BusinessException(CompanyErrorCode.COMPANY_NAME_NOT_BLANK);
+    }
+    this.companyName = comName;
+    this.comTel = comTel;
+    this.address = address;
+  }
+
+  public void isDeleted() {
+    this.isDeleted = 'Y';
+  }
 
 }

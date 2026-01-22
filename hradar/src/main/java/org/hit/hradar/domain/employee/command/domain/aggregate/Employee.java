@@ -9,6 +9,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDate;
 
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -22,10 +23,10 @@ public class Employee extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "employee_id", nullable = false)
+  @Column(name = "emp_id", nullable = false)
   private Long empId;
 
-  @Column(name = "company_id", nullable = false)
+  @Column(name = "com_id", nullable = false)
   private Long comId;
 
   @Column(name = "dept_id")
@@ -34,7 +35,7 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "position_id")
   private Long positionId;
 
-  @Column(name = "employee_name", length = 50, nullable = false)
+  @Column(name = "name", length = 50, nullable = false)
   private String name;
 
   @Column(name = "employee_no", length = 100)
@@ -76,7 +77,7 @@ public class Employee extends BaseTimeEntity {
   private Character isDeleted;
 
   @Builder
-  public Employee(Long empId, Long comId, Long deptId, Long positionId, Long accId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
+  public Employee(Long empId, Long comId, Long deptId, Long positionId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
     this.empId = empId;
     this.comId = comId;
     this.deptId = deptId;
@@ -93,7 +94,7 @@ public class Employee extends BaseTimeEntity {
     this.phoneNo = phoneNo;
     this.note = note;
     this.employmentType = employmentType;
-    this.isDeleted = 'N'; // Default to 'N' when building
+    this.isDeleted = 'N';
   }
 
   public void updateEmployee(Long deptId, Long positionId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {

@@ -14,7 +14,6 @@ import org.hit.hradar.domain.competencyReport.query.dto.response.ContentDetailRe
 import org.hit.hradar.domain.competencyReport.query.dto.response.ContentSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.mapper.ContentMapper;
 import org.hit.hradar.domain.competencyReport.query.mapper.TagMapper;
-import org.hit.hradar.domain.competencyReport.query.service.support.CommonQueryService;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,6 @@ public class ContentQueryService {
 
   private final ContentMapper contentMapper;
   private final TagMapper tagMapper;
-  private final CommonQueryService commonQueryService;
 
   /**
    * 학습 컨텐츠 목록 조회 (검색/조회)
@@ -37,8 +35,30 @@ public class ContentQueryService {
 
     List<ContentRowDTO> contents = contentMapper.findAllContents(request);
 
-    // 학습 컨텐츠 목록 변환
-    List<ContentDTO> result = commonQueryService.getContents(contents);
+    List<ContentDTO> result = contents.stream()
+        .collect(Collectors.groupingBy(ContentRowDTO::getContentId))
+        .entrySet().stream()
+        .map(entry -> {
+
+          // tag List
+          List<TagDTO> tags = entry.getValue().stream()
+              .map(f -> new TagDTO(f.getTagId(), f.getTagName()))
+              .toList();
+
+          ContentRowDTO first = entry.getValue().get(0);
+          ContentDTO dto = new ContentDTO(
+                first.getContentId()
+              , first.getTitle()
+              , first.getType()
+              , first.getLevel()
+              , first.getLearningTime()
+              , first.getResourcePath()
+              , first.getIsDeleted()
+              ,  tags
+          );
+          return dto;
+        }).toList();
+
     return new ContentSearchResponse(result);
 
   }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "positions",
+@Table(name = "company_position",
 uniqueConstraints = @UniqueConstraint(name="UK_POSITION_COMPANY_NAME", columnNames={"company_id","name"})
 )
 @Getter

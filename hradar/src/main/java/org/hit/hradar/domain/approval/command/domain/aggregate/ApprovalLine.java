@@ -24,15 +24,11 @@ public class ApprovalLine extends BaseTimeEntity {
   @Column(name = "doc_id", nullable = false)
   private Long docId;
 
+  //결재선 이름
+  @Column(name = "line_name", nullable = false, length = 100)
+  private String lineName;
+
   //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
-
-
-  public static ApprovalLine create(Long docId) {
-    ApprovalLine line = new ApprovalLine();
-    line.docId = docId;
-    return line;
-  }
-
 }
