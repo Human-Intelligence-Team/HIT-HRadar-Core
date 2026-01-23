@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.leave.query.mapper.LeaveDetailMapper">
+
+  <select id="findDetail"
+    resultType="org.hit.hradar.domain.leave.query.dto.LeaveDetailDto">
+    SELECT
+      leave_id        AS leaveId,
+      emp_id          AS empId,
+      leave_type      AS leaveType,
+      leave_unit_type AS leaveUnitType,
+      reason,
+      start_date      AS startDate,
+      end_date        AS endDate,
+      leave_days      AS leaveDays
+    FROM emp_leave
+    WHERE leave_id = #{leaveId}
+      AND is_deleted = 'N'
+  </select>
+
+</mapper>

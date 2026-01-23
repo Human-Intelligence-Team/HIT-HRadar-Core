@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.leave.query.mapper.LeaveUsageMapper">
+
+  <select id="findByLeaveId"
+    resultType="org.hit.hradar.domain.leave.query.dto.LeaveUsageDto">
+    SELECT
+      usage_id    AS usageId,
+      grant_id    AS grantId,
+      use_date    AS useDate,
+      used_days   AS usedDays
+    FROM leave_usage
+    WHERE leave_id = #{leaveId}
+      AND is_deleted = 'N'
+    ORDER BY use_date ASC
+  </select>
+
+</mapper>
