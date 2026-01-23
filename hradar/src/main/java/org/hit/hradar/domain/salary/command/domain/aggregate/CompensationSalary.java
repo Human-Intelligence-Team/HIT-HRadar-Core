@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import lombok.Getter;
@@ -40,10 +41,26 @@ public class CompensationSalary extends BaseTimeEntity {
   @Column(name = "rate", nullable = false, precision = 5, scale = 2)
   private BigDecimal rate;
 
-  @Column(name = "is_deleted", nullable = false, length = 1)
-  private Character isDeleted;
-
   @Column(name = "remark", length = 100)
   private String remark;
+
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
+
+  @PrePersist
+  public void prePersist() {
+    if (this.isDeleted == null) {
+      this.isDeleted = 'N';
+    }
+  }
+
+  public CompensationSalary(CompensationType compensationType, Long docId, Long empId, Long amount, BigDecimal rate, String remark) {
+    this.compensationType = compensationType;
+    this.docId = docId;
+    this.empId = empId;
+    this.amount = amount;
+    this.rate = rate;
+    this.remark = remark;
+  }
 
 }
