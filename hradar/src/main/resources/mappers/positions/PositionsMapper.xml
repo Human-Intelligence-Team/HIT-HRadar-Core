@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.positions.query.mapper.PositionQueryMapper">
+
+  <!-- 공통 컬럼 -->
+  <sql id="positionColumns">
+    p.position_id AS positionId,
+    p.com_id      AS comId,
+    p.name        AS name,
+    p.rank        AS rank,
+    p.is_deleted  AS isDeleted,
+    p.created_at  AS createdAt,
+    p.updated_at  AS updatedAt
+  </sql>
+
+  <select id="findPositionById"
+    resultType="org.hit.hradar.domain.positions.query.dto.PositionResponse">
+    SELECT
+    <include refid="positionColumns"/>
+    FROM company_position p
+    WHERE p.position_id = #{positionId}
+    AND p.com_id = #{comId}
+    AND p.is_deleted = 'N'
+  </select>
+
+  <select id="findAllPositionsByCompany"
+    resultType="org.hit.hradar.domain.positions.query.dto.PositionResponse">
+    SELECT
+    <include refid="positionColumns"/>
+    FROM company_position p
+    WHERE p.com_id = #{comId}
+    AND p.is_deleted = 'N'
+    ORDER BY p.rank, p.name
+  </select>
+
+</mapper>
