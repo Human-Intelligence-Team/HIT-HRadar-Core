@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JpaTagRepository extends TagRepository, JpaRepository<Tag, Long> {
+public interface TagJpaRepository extends TagRepository, JpaRepository<Tag, Long> {
 
   void deleteByTagIdIn(List<Long> tagIds);
 }

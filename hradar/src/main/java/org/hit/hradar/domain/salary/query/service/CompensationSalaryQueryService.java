@@ -3,6 +3,7 @@ package org.hit.hradar.domain.salary.query.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.salary.query.dto.CompensationHistoryDTO;
+import org.hit.hradar.domain.salary.query.dto.CompensationSalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.request.CompensationHistorySearchRequest;
 import org.hit.hradar.domain.salary.query.dto.response.CompensationHistorySearchResponse;
 import org.hit.hradar.domain.salary.query.mapper.CompensationSalaryMapper;
@@ -31,5 +32,17 @@ public class CompensationSalaryQueryService {
     return new CompensationHistorySearchResponse(compensationSalaries);
 
   }
+
+  /**
+   * 사원의 변동보상 총합
+   * @param empId
+   * @param year
+   * @return
+   */
+  public List<CompensationSalaryDTO> getEmployeeCompensationSalarySummary(Long empId, String year) {
+
+    return compensationSalaryMapper.findEmployeeCompensationSalarySummary(empId, year);
+  }
+
 
 }

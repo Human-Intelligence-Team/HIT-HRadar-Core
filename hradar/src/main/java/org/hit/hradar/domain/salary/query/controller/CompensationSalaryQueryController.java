@@ -2,6 +2,7 @@ package org.hit.hradar.domain.salary.query.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.salary.query.dto.request.CompensationHistorySearchRequest;
+import org.hit.hradar.domain.salary.query.dto.response.AnnualCompensationSummaryResponse;
 import org.hit.hradar.domain.salary.query.dto.response.CompensationHistorySearchResponse;
 import org.hit.hradar.domain.salary.query.service.CompensationSalaryQueryService;
 import org.hit.hradar.global.aop.CurrentUser;
@@ -34,6 +35,7 @@ public class CompensationSalaryQueryController {
     CompensationHistorySearchResponse response = compensationSalaryQueryService.getCompensationHistory(empId, request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
+
   /**
    * 사원의 변동 보상 히스토리 (전체)
    * @return
@@ -47,6 +49,7 @@ public class CompensationSalaryQueryController {
     CompensationHistorySearchResponse response = compensationSalaryQueryService.getCompensationHistory(empId, request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
+
 
 
 }

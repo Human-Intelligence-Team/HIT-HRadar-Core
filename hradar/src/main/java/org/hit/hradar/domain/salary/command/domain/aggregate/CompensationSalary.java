@@ -2,6 +2,8 @@ package org.hit.hradar.domain.salary.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,8 +24,9 @@ public class CompensationSalary extends BaseTimeEntity {
   @Column(name = "compensation_salary_employee_id", nullable = false)
   private Long compensationSalaryId;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "compensation_type", nullable = false, length = 50)
-  private String compensationType;
+  private CompensationType compensationType;
 
   @Column(name = "doc_id", nullable = false)
   private Long docId;
@@ -38,7 +41,7 @@ public class CompensationSalary extends BaseTimeEntity {
   private BigDecimal rate;
 
   @Column(name = "is_deleted", nullable = false, length = 1)
-  private String isDeleted;
+  private Character isDeleted;
 
 
 }

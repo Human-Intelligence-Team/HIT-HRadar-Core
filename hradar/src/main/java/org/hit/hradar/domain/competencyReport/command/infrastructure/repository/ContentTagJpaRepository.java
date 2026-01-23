@@ -7,7 +7,7 @@ import org.hit.hradar.domain.competencyReport.command.domain.repository.ContentT
 import org.hit.hradar.domain.competencyReport.query.dto.TagDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JpaContentTagRepository extends ContentTagRepository, JpaRepository<ContentTag, Long> {
+public interface ContentTagJpaRepository extends ContentTagRepository, JpaRepository<ContentTag, Long> {
 
   default void saveAllWithPolicy(List<ContentTag> contentTags) {
     if (contentTags == null || contentTags.isEmpty()) {
