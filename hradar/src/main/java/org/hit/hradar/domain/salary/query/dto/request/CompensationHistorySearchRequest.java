@@ -1,17 +1,18 @@
 package org.hit.hradar.domain.salary.query.dto.request;
 
 import lombok.Getter;
+import org.hit.hradar.domain.salary.command.domain.aggregate.CompensationType;
 
 @Getter
 public class CompensationHistorySearchRequest {
 
   private String year;  // 년도
-  private String compensationCode; // 변동 보상 타입
+  private CompensationType type; // 변동 보상 타입
   private Long empId;
 
-  public CompensationHistorySearchRequest(String year, String compensationCode, Long empId) {
+  public CompensationHistorySearchRequest(String year, CompensationType type, Long empId) {
     this.year = year;
-    this.compensationCode = compensationCode;
+    this.type = type;
     this.empId = empId;
   }
 
