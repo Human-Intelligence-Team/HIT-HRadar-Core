@@ -1,39 +1,47 @@
 package org.hit.hradar.domain.employee.command.domain.aggregate;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDate;
 
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Entity
-@Table(name = "employee")
+@Table(name = "employee",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UK_EMP_COMPANY_EMP_NO", columnNames = {"com_id", "employee_no"}),
+        @UniqueConstraint(name = "UK_EMP_COMPANY_EMAIL", columnNames = {"com_id", "email"})
+    }
+)
 public class Employee extends BaseTimeEntity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "emp_id", nullable = false)
   private Long empId;
 
   @Column(name = "com_id", nullable = false)
   private Long comId;
 
-  @Column(name = "dept_id", nullable = false)
+  @Column(name = "dept_id")
   private Long deptId;
 
   @Column(name = "position_id")
   private Long positionId;
 
-  @Column(name = "employee_no", nullable = false, length = 30)
-  private String employeeNo;
-
-  @Column(name = "name", nullable = false, length = 50)
+  @Column(name = "name", length = 50, nullable = false)
   private String name;
 
-  @Column(name = "email", length = 255)
+  @Column(name = "employee_no", length = 100)
+  private String employeeNo;
+
+  @Column(name = "email", length =150)
   private String email;
 
   @Enumerated(EnumType.STRING)
@@ -52,18 +60,61 @@ public class Employee extends BaseTimeEntity {
   @Column(name = "image", length = 255)
   private String image;
 
-  @Column(name = "cellphone_no", length = 11)
-  private String cellphoneNo;
+  @Column(name = "extension_number", length = 15)
+  private String extNo;
 
-  @Column(name = "telephone_no", length = 11)
-  private String telephoneNo;
+  @Column(name = "phone_number", length = 15)
+  private String phoneNo;
 
   @Column(name = "note", length = 1000)
   private String note;
 
-  @Column(name = "type", nullable = false)
-  private String EmploymentType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type")
+  private EmploymentType employmentType;
 
-  @Column(name = "is_deleted", nullable = false, length = 1)
-  private String isDeleted = "N";
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
+
+  @Builder
+  public Employee(Long empId, Long comId, Long deptId, Long positionId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
+    this.empId = empId;
+    this.comId = comId;
+    this.deptId = deptId;
+    this.positionId = positionId;
+    this.name = name;
+    this.employeeNo = employeeNo;
+    this.email = email;
+    this.gender = gender;
+    this.birth = birth;
+    this.hireDate = hireDate;
+    this.exitDate = exitDate;
+    this.image = image;
+    this.extNo = extNo;
+    this.phoneNo = phoneNo;
+    this.note = note;
+    this.employmentType = employmentType;
+    this.isDeleted = 'N';
+  }
+
+  public void updateEmployee(Long deptId, Long positionId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
+    this.deptId = deptId;
+    this.positionId = positionId;
+    this.name = name;
+    this.employeeNo = employeeNo;
+    this.email = email;
+    this.gender = gender;
+    this.birth = birth;
+    this.hireDate = hireDate;
+    this.exitDate = exitDate;
+    this.image = image;
+    this.extNo = extNo;
+    this.phoneNo = phoneNo;
+    this.note = note;
+    this.employmentType = employmentType;
+  }
+
+  public void markAsDeleted() {
+    this.isDeleted = 'Y';
+  }
 }
