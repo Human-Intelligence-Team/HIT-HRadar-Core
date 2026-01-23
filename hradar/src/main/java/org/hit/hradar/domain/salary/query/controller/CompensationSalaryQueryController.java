@@ -1,8 +1,10 @@
 package org.hit.hradar.domain.salary.query.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.salary.query.dto.request.CompensationSearchRequest;
 import org.hit.hradar.domain.salary.query.dto.request.CompensationHistorySearchRequest;
-import org.hit.hradar.domain.salary.query.dto.response.AnnualCompensationSummaryResponse;
+import org.hit.hradar.domain.salary.query.dto.response.CompensationSearchResponse;
+import org.hit.hradar.domain.salary.query.dto.response.CompensationSummaryResponse;
 import org.hit.hradar.domain.salary.query.dto.response.CompensationHistorySearchResponse;
 import org.hit.hradar.domain.salary.query.service.CompensationSalaryQueryService;
 import org.hit.hradar.global.aop.CurrentUser;
@@ -50,6 +52,30 @@ public class CompensationSalaryQueryController {
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
+  /**
+   * 변동 보상 내역 조회 (전체)
+   * @return
+   */
+  @GetMapping("/all")
+  public ResponseEntity<ApiResponse<CompensationSearchResponse>> compensationSalaries(
+      CompensationSearchRequest request
+  )  {
 
+    CompensationSearchResponse response = compensationSalaryQueryService.compensationSalaries(request);
+    return ResponseEntity.ok(ApiResponse.success(response));
+  }
+
+  /**
+   * 변동 보상 총 금액 요약
+   * @return
+   */
+  @GetMapping("/summary")
+  public ResponseEntity<ApiResponse<CompensationSummaryResponse>> getCompensationSalariesSummary(
+      CompensationSearchRequest request
+  )  {
+
+    CompensationSummaryResponse response = compensationSalaryQueryService.getCompensationSalariesSummary(request);
+    return ResponseEntity.ok(ApiResponse.success(response));
+  }
 
 }

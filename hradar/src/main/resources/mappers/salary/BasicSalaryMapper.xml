@@ -19,8 +19,12 @@
       JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
       JOIN EMPLOYEE emp ON bse.EMP_ID = emp.EMP_ID
       JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
-      JOIN company_position cp ON emp.POSITION_ID = cp.COM_POSITION_ID
+      JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID
      WHERE ad.IS_DELETED = 'N'
+       AND bse.IS_DELETED = 'N'
+       AND emp.IS_DELETED = 'N'
+       AND dep.IS_DELETED = 'N'
+       AND cp.IS_DELETED = 'N'
     <if test="deptId != null">
        AND dep.DEPT_ID = #{deptId}
     </if>
@@ -51,8 +55,12 @@
       JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
       JOIN EMPLOYEE emp ON bse.EMP_ID = emp.EMP_ID
       JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
-      JOIN company_position cp ON emp.POSITION_ID = cp.COM_POSITION_ID
+      JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID
      WHERE ad.IS_DELETED = 'N'
+       AND bse.IS_DELETED = 'N'
+       AND emp.IS_DELETED = 'N'
+       AND dep.IS_DELETED = 'N'
+       AND cp.IS_DELETED = 'N'
        AND emp.EMP_ID = #{empId}
   </select>
 

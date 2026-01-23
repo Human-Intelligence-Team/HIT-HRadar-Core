@@ -25,7 +25,7 @@ public class CompensationSalary extends BaseTimeEntity {
   private Long compensationSalaryId;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "compensation_type", nullable = false, length = 50)
+  @Column(name = "compensation_type", nullable = false)
   private CompensationType compensationType;
 
   @Column(name = "doc_id", nullable = false)
@@ -43,5 +43,7 @@ public class CompensationSalary extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false, length = 1)
   private Character isDeleted;
 
+  @Column(name = "remark", length = 100)
+  private String remark;
 
 }

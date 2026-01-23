@@ -2,6 +2,8 @@ package org.hit.hradar.domain.salary.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,6 +38,13 @@ public class BasicSalary  extends BaseTimeEntity {
 
   @Column(name = "increase_amount", nullable = false)
   private Integer increaseAmount;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "salary_increase_type", nullable = false)
+  private SalaryIncreaseType salaryIncreaseType;
+
+  @Column(name = "remark", length = 100)
+  private String remark;
 
   @Column(name = "is_deleted", nullable = false, length = 1)
   private String isDeleted;

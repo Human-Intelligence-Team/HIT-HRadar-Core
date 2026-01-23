@@ -31,20 +31,65 @@
     </if>
   </select>
 
-  <select id="findEmployeeCompensationSalarySummary"
+  <select id="findAllCompensationSalaries"
+    parameterType="org.hit.hradar.domain.salary.query.dto.request.CompensationSearchRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.CompensationSalaryDTO">
 
-    SELECT cse.COMPENSATION_TYPE
-         , SUM(cse.AMOUNT)  AS totalAmount
+    SELECT ad.DOC_ID
+         , MAX(ad.TITLE) AS title
+         , cse.COMPENSATION_TYPE AS compensationType
+         , SUM(cse.AMOUNT) AS totalAmount
+         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt
       FROM COMPENSATION_SALARY_EMPLOYEE cse
-      JOIN approval_document ad ON ad.doc_id = cse.doc_id
-     WHERE cse.is_deleted = 'N'
-       AND ad.is_deleted = 'N'
+      JOIN APPROVAL_DOCUMENT ad ON cse.DOC_ID = ad.DOC_ID
+     WHERE cse.IS_DELETED = 'N'
+       AND ad.IS_DELETED = 'N'
+       AND ad.DOC_TYPE = 'COMPENSATION'
+    <if test="compensationType != null and compensationType != ''">
+       AND cse.COMPENSATION_TYPE = #{compensationType}
+    </if>
+    <if test="startDate != null and startDate != ''">
+       AND ad.APPROVED_AT <![CDATA[>=]]> #{startDate}
+    </if>
+    <if test="endDate != null and endDate != ''">
+       AND ad.APPROVED_AT <![CDATA[<]]> DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+    </if>
+    GROUP BY ad.DOC_ID, cse.COMPENSATION_TYPE
+  </select>
+
+  <select id="findCompensationSalaries"
+    resultType="org.hit.hradar.domain.salary.query.dto.CompensationSalaryDTO">
+
+    SELECT ad.TITLE
+         , SUM( CASE WHEN cse.COMPENSATION_TYPE = 'BONUS' THEN cse.AMOUNT
+                     ELSE 0
+                 END
+         ) AS totalBonus
+         , SUM( CASE WHEN cse.COMPENSATION_TYPE = 'INCENTIVE' THEN cse.AMOUNT
+                     ELSE 0
+                 END
+         ) AS totalIncentive
+         , SUM( CASE WHEN cse.COMPENSATION_TYPE = 'PERFORMANCE' THEN cse.AMOUNT
+                     ELSE 0
+                 END
+         ) AS totalPerformance
+         , SUM( CASE WHEN cse.COMPENSATION_TYPE = 'ALLOWANCE' THEN cse.AMOUNT
+                     ELSE 0
+                 END
+         ) AS totalAllowance
+         , SUM(cse.AMOUNT) AS totalCompensation
+      FROM COMPENSATION_SALARY_EMPLOYEE cse
+      JOIN APPROVAL_DOCUMENT ad ON cse.DOC_ID = ad.DOC_ID
+     WHERE cse.IS_DELETED = 'N'
+       AND ad.IS_DELETED  = 'N'
        AND ad.STATUS = 'APPROVED'
        AND ad.DOC_TYPE = 'COMPENSATION'
-       AND YEAR(ad.approved_at) = #{year}
+       AND ad.APPROVED_AT <![CDATA[>=]]> #{startDate}
+       AND ad.APPROVED_AT <![CDATA[<]]> DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+    <if test="empId != null">
        AND cse.EMP_ID = #{empId}
-     GROUP BY cse.COMPENSATION_TYPE
+    </if>
+     GROUP BY ad.DOC_ID , ad.TITLE
   </select>
 
 </mapper>

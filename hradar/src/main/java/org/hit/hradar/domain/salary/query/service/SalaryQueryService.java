@@ -30,37 +30,25 @@ public class SalaryQueryService {
    */
   public AnnualCompensationSummaryResponse getEmployeeAnnualSalarySummary(Long empId) {
 
-    // setting
-    Long totalBonus = 0L; // 총 상여금
-    Long totalPerformance = 0L; // 총 성과금
-    Long totalIncentive = 0L; // 총 인센티브
-    Long totalAllowance = 0L;// 총 기타 수당
-    Long salary = 0L; // 총 연봉
-
     // 기본급 조회
+    Long basic = 0L;
     int year = LocalDate.now().getYear() - 1;
     String yearStr = String.valueOf(year);
     BasicSalaryDTO basicSalary = basicSalaryQueryService.getEmployeeBasicSalary(empId, yearStr);
-    Long basic = basicSalary.getBasicSalary();
-
-    // 변동 보상 조회 (각각 총 금액)
-    List<CompensationSalaryDTO> summary = compensationSalaryQueryService.getEmployeeCompensationSalarySummary(
-        empId, yearStr);
-
-    long totalCompensation = 0L;
-    for (CompensationSalaryDTO comp : summary) {
-      totalCompensation += comp.getTotalAmount();
-
-      switch (comp.getCompensationType()) {
-        case BONUS -> totalBonus += comp.getTotalAmount();
-        case PERFORMANCE -> totalPerformance += comp.getTotalAmount();
-        case INCENTIVE -> totalIncentive += comp.getTotalAmount();
-        case ALLOWANCE -> totalAllowance += comp.getTotalAmount();
-        default -> {}
-      }
+    if (basicSalary != null) {
+      basicSalary.getBasicSalary();
     }
 
-    salary = basic + totalCompensation;
+    // 변동 보상 조회 (각각 총 금액)
+    CompensationSalaryDTO summary = compensationSalaryQueryService.getEmployeeCompensationSalarySummary(empId, yearStr);
+
+    Long totalCompensation = summary == null ? 0L : summary.getTotalCompensation();
+    Long totalBonus = summary == null ? 0L : summary.getTotalBonus();
+    Long totalPerformance = summary == null ? 0L : summary.getTotalPerformance();
+    Long totalIncentive = summary == null ? 0L : summary.getTotalIncentive();
+    Long totalAllowance = summary == null ? 0L : summary.getTotalAllowance();
+
+    Long salary = basic + totalCompensation;
     return new AnnualCompensationSummaryResponse(
         basic
         , totalBonus
