@@ -24,11 +24,11 @@ public abstract class BaseTimeEntity {
     @Column(name = "updated_at", insertable = false)
     protected LocalDateTime updatedAt;
 
-    /*@CreatedBy
+    @CreatedBy
     @Column(name = "created_by", nullable = false, length = 50)
-    protected String createdBy;
+    protected Long createdBy;
 
     @LastModifiedBy
     @Column(name = "updated_by", length = 50)
-    protected String updatedBy;*/
+    protected Long updatedBy;
 }

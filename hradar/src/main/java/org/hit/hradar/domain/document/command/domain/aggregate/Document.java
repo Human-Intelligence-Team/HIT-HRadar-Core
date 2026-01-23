@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "DOCUMENT")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Document {
+public class Document extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,8 +24,6 @@ public class Document {
     @Enumerated(EnumType.STRING)
     private DocumentStatus status;
 
-    private Long createdBy;
-    private LocalDateTime createdAt;
 
     public static Document create(Long companyId, String title, Long actorId) {
         Document d = new Document();
@@ -33,7 +32,6 @@ public class Document {
         d.category = "HR_DOCUMENT";
         d.status = DocumentStatus.ACTIVE;
         d.createdBy = actorId;
-        d.createdAt = LocalDateTime.now();
         return d;
     }
 }

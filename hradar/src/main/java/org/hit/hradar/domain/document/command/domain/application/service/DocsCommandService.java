@@ -60,7 +60,8 @@ public class DocsCommandService {
                             document.getId(),
                             idx++,
                             c.getSection(),
-                            c.getContent()
+                            c.getContent(),
+                            actorId
                     )
             );
         }

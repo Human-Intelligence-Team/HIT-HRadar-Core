@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Table(name = "DOCUMENT_CHUNK")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DocumentChunk {
+public class DocumentChunk extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,14 +26,13 @@ public class DocumentChunk {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime createdAt;
-
     public static DocumentChunk create(
             Long companyId,
             Long documentId,
             int index,
             String section,
-            String content
+            String content,
+            Long actorId
     ) {
         DocumentChunk c = new DocumentChunk();
         c.companyId = companyId;
@@ -40,7 +40,7 @@ public class DocumentChunk {
         c.chunkIndex = index;
         c.section = section;
         c.content = content;
-        c.createdAt = LocalDateTime.now();
+        c.createdBy = actorId;
         return c;
     }
 }
