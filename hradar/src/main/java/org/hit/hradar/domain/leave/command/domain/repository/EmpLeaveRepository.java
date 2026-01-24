@@ -11,4 +11,6 @@ EmpLeave save(EmpLeave leave);
 
 Optional<EmpLeave> findByDocId(Long docId);
 
+boolean existsByDocId(Long docId);
+
 }

@@ -31,6 +31,11 @@ public class LeaveCommandService {
       LeaveApplyRequest request
   ) {
 
+    //동일 docId 중복 저장 방지 (가장 먼저)
+    if (empLeaveRepository.existsByDocId(docId)) {
+      throw new BusinessException(LeaveErrorCode.LEAVE_ALREADY_APPLIED);
+    }
+
     //휴가 기간 중복 검증
     boolean overlap = leaveListMapper.existsOverlap(
         employeeId,
