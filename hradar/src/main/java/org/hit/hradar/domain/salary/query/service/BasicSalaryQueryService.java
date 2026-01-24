@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BasicSalaryQueryService {
 
   private final BasicSalaryMapper basicSalaryMapper;
-  private final BasicSalaryRepository basicSalaryRepository;
 
   /**
    * 연봉 목록 조회(전체)
@@ -55,19 +54,21 @@ public class BasicSalaryQueryService {
     Integer prevYear = Integer.valueOf(year) - 1;
     String prevYearStr = prevYear.toString();
 
-    // 전년도, 올해 기본급
-    BasicSalaryDTO prevSalary = basicSalaryMapper.findBasicSalarySummaryByEmpIdAndYear(empId, prevYearStr);
+    // 올해/전년도 기본급 조회
     BasicSalaryDTO currentSalary = basicSalaryMapper.findBasicSalarySummaryByEmpIdAndYear(empId, year);
+    BasicSalaryDTO prevSalary = basicSalaryMapper.findBasicSalarySummaryByEmpIdAndYear(empId, prevYearStr);
 
-    // 히스토리
+    Long currentBasicSalary = currentSalary != null ? currentSalary.getBasicSalary() : 0L;
+    Long prevBasicSalary = prevSalary != null ? prevSalary.getBasicSalary() : 0L;
+
     BasicSalaryHistoryDTO result = new BasicSalaryHistoryDTO(
-          currentSalary.getEmpId()
-        , year
-        , currentSalary.getTitle()
-        , prevSalary.getBasicSalary()
-        , currentSalary.getBasicSalary()
-        , currentSalary.getIncreaseRate()
-        , currentSalary.getApprovedAt()
+        empId,
+        year,
+        currentSalary != null ? currentSalary.getTitle() : null,
+        prevBasicSalary,
+        currentBasicSalary,
+        currentSalary != null ? currentSalary.getIncreaseRate() : null,
+        currentSalary != null ? currentSalary.getApprovedAt() : null
     );
 
     return new BasicSalaryHistoryResponse(result, null);
@@ -84,4 +85,17 @@ public class BasicSalaryQueryService {
     List<BasicSalaryHistoryDTO> history = basicSalaryMapper.findAllBasicSalariesHistoryByEmpId(empId);
     return new BasicSalaryHistoryResponse(null, history);
   }
+
+
+  /**
+   * 사원의 기본급
+   * @param empId
+   * @return
+   */
+  public BasicSalaryDTO getEmployeeBasicSalary(Long empId, String year) {
+
+    BasicSalaryDTO basic = basicSalaryMapper.findEmployeeBasicSalaryByEmpIdAndYear(empId,year);
+    return basic;
+  }
+
 }

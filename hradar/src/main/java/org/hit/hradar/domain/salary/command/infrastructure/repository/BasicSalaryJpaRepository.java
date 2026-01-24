@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JpaBasicSalaryRepository extends BasicSalaryRepository, JpaRepository<BasicSalary, Long> {
+public interface BasicSalaryJpaRepository extends BasicSalaryRepository, JpaRepository<BasicSalary, Long> {
 
 
 

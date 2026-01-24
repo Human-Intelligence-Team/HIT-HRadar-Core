@@ -28,4 +28,8 @@ public class BasicSalaryHistoryDTO {
     this.approvedAt = approvedAt;
   }
 
+  public static BasicSalaryHistoryDTO create (Long empId, String year, String title, Long prevSalary, Long currentSalary,  BigDecimal increaseRate, LocalDateTime approvedAt) {
+   return new BasicSalaryHistoryDTO(empId, year, title, prevSalary, currentSalary, increaseRate, approvedAt);
+  }
+
 }
