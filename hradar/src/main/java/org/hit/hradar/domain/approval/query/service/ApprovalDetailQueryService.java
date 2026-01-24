@@ -36,21 +36,6 @@ public class ApprovalDetailQueryService {
       );
     }
 
-    // 2. 결재선 조회
-    detail.getApprovalSteps().addAll(
-        approvalDetailQueryMapper.selectApprovalSteps(docId)
-    );
-
-    // 3. 히스토리 조회 (회수 포함)
-    detail.getHistories().addAll(
-        approvalDetailQueryMapper.selectApprovalHistories(docId)
-    );
-
-    // 4. 댓글 조회
-    detail.getComments().addAll(
-        approvalDetailQueryMapper.selectApprovalComments(docId)
-    );
-
     return detail;
   }
 

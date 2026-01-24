@@ -20,6 +20,13 @@ public interface ApprovalLineStepJpaRepository
       Long approverId
   );
 
+  Optional<ApprovalLineStep>
+  findFirstByLineIdAndApprovalStepStatusAndProxyApproverIdOrderByStepOrderAsc(
+      Long lineId,
+      ApprovalStepStatus status,
+      Long proxyApproverId
+  );
+
   //[다음 결재자 활성화용]
   //현재 결재선에서 가장 빠른 WAITING 단계 조회
   //승인 완료 후 다음 결재자를 PENDING으로 변경할 때 사용
@@ -46,14 +53,8 @@ public interface ApprovalLineStepJpaRepository
   Optional<ApprovalLineStep>
   findFirstByLineIdOrderByStepOrderAsc(Long lineId);
 
-  // [승인/반려 처리용 - 결재자 + 대리결재자 포함]
-  Optional<ApprovalLineStep>
-  findFirstByLineIdAndApprovalStepStatusAndApproverIdOrProxyApproverIdOrderByStepOrderAsc(
-      Long lineId,
-      ApprovalStepStatus status,
-      Long approverId,
-      Long proxyApproverId
-  );
+  void deleteByLineId(Long lineId);
 
+  List<ApprovalLineStep> findAllByLineId(Long lineId);
 
 }

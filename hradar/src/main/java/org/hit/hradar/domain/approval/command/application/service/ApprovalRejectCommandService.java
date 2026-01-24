@@ -42,13 +42,22 @@ public class ApprovalRejectCommandService {
     // 3. 현재 차례(PENDING) + 결재자/대리결재자 조회 (핵심)
     ApprovalLineStep currentStep =
         approvalLineStepRepository
-            .findFirstByLineIdAndApprovalStepStatusAndApproverIdOrProxyApproverIdOrderByStepOrderAsc(
+            .findFirstByLineIdAndApprovalStepStatusAndApproverIdOrderByStepOrderAsc(
                 line.getLineId(),
                 ApprovalStepStatus.PENDING,
-                actorId,
                 actorId
             )
-            .orElseThrow(() -> new BusinessException(ApprovalErrorCode.NOT_ALLOWED_APPROVER));
+            .orElseGet(() ->
+                approvalLineStepRepository
+                    .findFirstByLineIdAndApprovalStepStatusAndProxyApproverIdOrderByStepOrderAsc(
+                        line.getLineId(),
+                        ApprovalStepStatus.PENDING,
+                        actorId
+                    )
+                    .orElseThrow(() ->
+                        new BusinessException(ApprovalErrorCode.NOT_ALLOWED_APPROVER)
+                    )
+            );
 
     // 4. 반려 처리
     currentStep.reject(actorId, reason);

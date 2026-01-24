@@ -19,4 +19,8 @@ public interface BasicSalaryMapper {
       @Param("year") String year);
 
   List<BasicSalaryHistoryDTO> findAllBasicSalariesHistoryByEmpId(Long empId);
+
+  BasicSalaryDTO findEmployeeBasicSalaryByEmpIdAndYear(
+      @Param("empId") Long empId,
+      @Param("year") String year);
 }

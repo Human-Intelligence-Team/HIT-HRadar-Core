@@ -62,6 +62,22 @@ public class ApprovalLineStep extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
+  //결재 단계 생성
+  public static ApprovalLineStep create(
+      Long lineId,
+      int order,
+      Long approverId
+  ) {
+    ApprovalLineStep step = new ApprovalLineStep();
+    step.lineId = lineId;
+    step.stepOrder = order;
+    step.approverId = approverId;
+    // 첫 단계만 PENDING, 나머지는 WAITING
+    step.approvalStepStatus = ApprovalStepStatus.WAITING;
+
+    return step;
+
+  }
   // 결재 승인
   public void approve(Long actorId) {
     // 현재 차례가 아니면 승인 불가
@@ -118,24 +134,7 @@ public class ApprovalLineStep extends BaseTimeEntity {
         || (this.proxyApproverId != null && actorId.equals(this.proxyApproverId));
   }
 
-  //결재 단계 생성
-  public static ApprovalLineStep create(
-      Long lineId,
-      int order,
-      Long approverId,
-      boolean isFirst
-  ) {
-    ApprovalLineStep step = new ApprovalLineStep();
-    step.lineId = lineId;
-    step.stepOrder = order;
-    step.approverId = approverId;
 
-    // 첫 단계만 PENDING, 나머지는 WAITING
-    step.approvalStepStatus =
-        ApprovalStepStatus.WAITING;
-
-    return step;
-  }
 
   //내가 결재할 문서 검증
   public boolean isApprover(Long actorId) {
@@ -152,6 +151,9 @@ public class ApprovalLineStep extends BaseTimeEntity {
     this.approvalStepStatus = ApprovalStepStatus.PENDING;
   }
 
+  public void cancel() {
+    this.approvalStepStatus = ApprovalStepStatus.CANCELED;
+  }
 
 
 
