@@ -8,4 +8,5 @@ public interface LeaveUsageRepository {
 
   LeaveUsage save(LeaveUsage usage);
 
+  void applyUsage(Long docId);
 }
