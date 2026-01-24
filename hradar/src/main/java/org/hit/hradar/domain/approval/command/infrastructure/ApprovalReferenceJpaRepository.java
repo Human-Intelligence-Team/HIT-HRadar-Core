@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ApprovalReferenceJpaRepository
     extends JpaRepository<ApprovalReference, Long> {
 
+  void deleteByDocId(Long docId);
+
 }
