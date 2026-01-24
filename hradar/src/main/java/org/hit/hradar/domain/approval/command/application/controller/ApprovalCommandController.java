@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalCreateRequest;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalApproveCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalRejectCommandService;
-import org.hit.hradar.domain.approval.command.application.service.ApprovalSubmitCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalWithdrawCommandService;
 import org.hit.hradar.domain.approval.command.application.service.provider.ApprovalProviderService;
+import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalSaveMode;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.hit.hradar.global.dto.AuthUser;
@@ -26,19 +26,20 @@ public class ApprovalCommandController {
   private final ApprovalApproveCommandService approvalCommandService;
   private final ApprovalWithdrawCommandService approvalWithdrawCommandService;
   private final ApprovalProviderService approvalProviderService;
-  private final ApprovalSubmitCommandService approvalSubmitCommandService;
   private final ApprovalRejectCommandService approvalRejectCommandService;
 
   //결재 문서 임시저장
   @PostMapping("/draft")
-  public ResponseEntity<ApiResponse<Long>> createDraft(
+  public ResponseEntity<ApiResponse<Long>> saveDraft(
       @CurrentUser AuthUser authUser,
       @RequestBody ApprovalCreateRequest request
   ) {
-    Long docId = approvalProviderService.createDraft(
+    Long docId = approvalProviderService.save(
+        null,               //최초 저장
         authUser.employeeId(),
         authUser.companyId(),
-        request
+        request,
+        ApprovalSaveMode.DRAFT
     );
 
     return ResponseEntity.ok(
@@ -51,9 +52,13 @@ public class ApprovalCommandController {
       @PathVariable Long docId,
       @CurrentUser AuthUser authUser
   ) {
-    approvalSubmitCommandService.submit(
+    approvalProviderService.save(
         docId,
-        authUser.employeeId());
+        authUser.employeeId(),
+        authUser.companyId(),
+        null,
+        ApprovalSaveMode.SUBMIT
+    );
     return ResponseEntity.ok(ApiResponse.success("submitted"));
   }
 

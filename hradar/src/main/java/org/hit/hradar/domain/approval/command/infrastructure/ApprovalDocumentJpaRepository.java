@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ApprovalDocumentJpaRepository extends JpaRepository<ApprovalDocument, Long> {
 
-  Optional<ApprovalDocument> findByDocIdAndCompanyId(Long docId, Long compnayId);
+  Optional<ApprovalDocument> findByDocIdAndCompanyId(Long docId, Long companyId);
+
+
 
 }
