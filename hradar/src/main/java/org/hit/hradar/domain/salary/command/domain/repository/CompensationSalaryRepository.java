@@ -5,7 +5,7 @@ import org.hit.hradar.domain.salary.command.domain.aggregate.CompensationSalary;
 
 public interface CompensationSalaryRepository {
 
-  void saveAll(List<CompensationSalary> compensationSalaries);
+//  void saveAll(List<CompensationSalary> compensationSalaries);
 
   List<CompensationSalary> findAllByDocId(Long docId);
 
