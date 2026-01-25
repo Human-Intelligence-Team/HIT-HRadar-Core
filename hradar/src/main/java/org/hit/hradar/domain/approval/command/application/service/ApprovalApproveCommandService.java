@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.ApprovalErrorCode;
 import org.hit.hradar.domain.approval.command.domain.aggregate.*;
 import org.hit.hradar.domain.approval.command.infrastructure.*;
+import org.hit.hradar.domain.approval.event.ApprovalEvent;
+import org.hit.hradar.domain.approval.event.ApprovalEventPublisher;
+import org.hit.hradar.domain.approval.event.ApprovalEventType;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +20,8 @@ public class ApprovalApproveCommandService {
   private final ApprovalLineJpaRepository approvalLineRepository;
   private final ApprovalDocumentJpaRepository approvalDocumentRepository;
   private final ApprovalHistoryJpaRepository approvalHistoryRepository;
+
+  private final ApprovalEventPublisher approvalEventPublisher;
 
   // 문서 승인
   public void approve(Long docId, Long actorId, Long companyId) {
@@ -81,5 +86,16 @@ public class ApprovalApproveCommandService {
     if (!hasPending) {
       doc.approve();
     }
+
+    approvalEventPublisher.publisher(
+        new ApprovalEvent(
+            ApprovalEventType.APPROVED,
+            docId,
+            actorId,
+            doc.getCompanyId()
+        )
+    );
+
   }
+
 }

@@ -22,13 +22,9 @@ public class ApprovalProviderService {
   private final ApprovalHistoryJpaRepository approvalHistoryJpaRepository;
   private final ApprovalReferenceJpaRepository approvalReferenceJpaRepository;
 
-  /**
-   * 결재 문서 저장 진입점
-   *
-   * 규칙
-   * - DRAFT : 문서 내용/결재선/참조자 수정 가능
-   * - SUBMIT: 상태 전이만 수행 (데이터 변경 X)
-   */
+  //결재 문서 저장 진입점
+  //DRAFT : 문서 내용/결재선/참조자 수정 가능
+  //SUBMIT: 상태 전이만 수행 (데이터 변경 X)
   public Long save(
       Long docId,
       Long writerId,
@@ -191,4 +187,5 @@ public class ApprovalProviderService {
         ApprovalReference.createAll(docId, referenceIds)
     );
   }
+
 }
