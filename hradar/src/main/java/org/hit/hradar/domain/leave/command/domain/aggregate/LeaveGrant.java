@@ -6,14 +6,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Date;
 import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table
+@Table(name = "leave_grant")
 @Getter
 public class LeaveGrant extends BaseTimeEntity {
 
@@ -26,9 +24,9 @@ public class LeaveGrant extends BaseTimeEntity {
   private Long empId;
 
   @Column(name = "year", nullable = false)
-  private int year;
+  private Integer year;
 
-  @Column(name = "tatal_Days", nullable = false)
+  @Column(name = "tatal_days", nullable = false)
   private double totalDays;
 
   @Column(name = "reamaining_Days", nullable = false)
@@ -40,7 +38,7 @@ public class LeaveGrant extends BaseTimeEntity {
 
   //연차 만료일
   @Column(name = "expire_date")
-  private Date expireDate;
+  private LocalDate expireDate;
 
   //삭제여부
   private Character isDeleted = 'N';

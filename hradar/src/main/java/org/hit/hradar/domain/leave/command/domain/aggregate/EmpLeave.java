@@ -8,12 +8,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import lombok.Builder;
 import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Table(name = "emp_leave")
 @Entity
 @Getter
+@Builder
 public class EmpLeave extends BaseTimeEntity {
 
   @Id

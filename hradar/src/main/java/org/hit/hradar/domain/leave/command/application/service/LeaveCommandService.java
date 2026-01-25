@@ -1,5 +1,6 @@
 package org.hit.hradar.domain.leave.command.application.service;
 
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.leave.LeaveErrorCode;
 import org.hit.hradar.domain.leave.command.application.dto.request.LeaveApplyRequest;
@@ -29,24 +30,21 @@ public class LeaveCommandService {
       Long employeeId,
       LeaveApplyRequest request
   ) {
-    System.out.println("1 휴가 저장 ");
 
     //동일 docId 중복 저장 방지 (가장 먼저)
     if (empLeaveJpaRepository.existsByDocId(docId)) {
       throw new BusinessException(LeaveErrorCode.LEAVE_ALREADY_APPLIED);
     }
-    System.out.println("2 휴가 저장 ");
     //휴가 기간 중복 검증
     boolean overlap = leaveListMapper.existsOverlap(
         employeeId,
         request.getStartDate(),
         request.getEndDate()
     );
-    System.out.println("3 휴가 저장 ");
+
     if (overlap)  {
       throw new BusinessException(LeaveErrorCode.LEAVE_OVERLAP);
     }
-    System.out.println("4 휴가 저장 ");
     //연차 잔여 검증
     LeaveGrantDto grant = leaveGrantMapper.findByGrantId(request.getGrantId());
     if (grant == null) {
@@ -58,19 +56,20 @@ public class LeaveCommandService {
     }
 
     //emp_leave 저장(휴가 사실)
-    EmpLeave leave  = EmpLeave.create(
-        docId,
-        employeeId,
-        request.getGrantId(),
-        request.getLeaveType(),
-        request.getLeaveUnitType(),
-        request.getReason(),
-        request.getStartDate(),
-        request.getEndDate(),
-        request.getLeaveDays()
-    );
-    System.out.println("5 휴가 저장 ");
+    EmpLeave leave  = EmpLeave.builder()
+        .docId(docId)
+        .empId(employeeId)
+        .grantId(request.getGrantId())
+        .leaveType(request.getLeaveType())
+        .leaveUnitType(request.getLeaveUnitType())
+        .reason(request.getReason())
+        .startDate(request.getStartDate())
+        .endDate(request.getEndDate())
+        .leaveDays(request.getLeaveDays())
+        .requestedAt(LocalDateTime.now())
+        .isDeleted('N')
+        .build();
+
     empLeaveJpaRepository.save(leave);
-    System.out.println("6 휴가 저장 ");
   }
 }

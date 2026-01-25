@@ -30,7 +30,7 @@ public class LeaveUsage {
   @Column(name = "used_days", nullable = false)
   private double usedDays;
 
-  @Column(name = "is_deleted")
+  @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
   // LeaveUsage.java (팩토리 메서드 추가)
