@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.empLeave.command.domain.aggregate;
+package org.hit.hradar.domain.leave.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,36 +8,44 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.Getter;
-import org.hit.hradar.global.dto.BaseTimeEntity;
 
-@Entity
 @Table(name = "leave_usage")
+@Entity
 @Getter
-public class LeaveUsage extends BaseTimeEntity {
+public class LeaveUsage {
 
-  //연차 이력id
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "usage_id")
   private Long usageId;
 
-  //휴가id
-  @Column(name ="leave_id", nullable = false)
+  @Column(name = "leave_id", nullable = false)
   private Long leaveId;
 
-  //연차id
   @Column(name = "grant_id", nullable = false)
   private Long grantId;
 
-  //차감 기준일
   @Column(name = "use_date", nullable = false)
   private LocalDate useDate;
 
-  //차감 연차
-  @Column(name = "used_days")
+  @Column(name = "used_days", nullable = false)
   private double usedDays;
 
-  //삭제여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
+
+  // LeaveUsage.java (팩토리 메서드 추가)
+  public static LeaveUsage create(
+      Long leaveId,
+      Long grantId,
+      double usedDays,
+      LocalDate useDate
+  ) {
+    LeaveUsage usage = new LeaveUsage();
+    usage.leaveId = leaveId;
+    usage.grantId = grantId;
+    usage.usedDays = usedDays;
+    usage.useDate = useDate;
+    usage.isDeleted = 'N';
+    return usage;
+  }
 }
