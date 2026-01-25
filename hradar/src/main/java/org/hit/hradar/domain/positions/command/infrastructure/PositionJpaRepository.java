@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PositionJpaRepository extends JpaRepository<Positions, Long>, PositionRepository {
+
+  boolean existsByPositionIdAndComIdAndIsDeleted(Long positionId, Long comId, Character isDeleted);
+
 }

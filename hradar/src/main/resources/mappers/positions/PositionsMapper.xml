@@ -7,7 +7,7 @@
   <!-- 공통 컬럼 -->
   <sql id="positionColumns">
     p.position_id AS positionId,
-    p.com_id      AS comId,
+    p.com_id      AS companyId,
     p.name        AS name,
     p.rank        AS rank,
     p.is_deleted  AS isDeleted,

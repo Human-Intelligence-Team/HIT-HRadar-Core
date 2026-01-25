@@ -7,7 +7,7 @@
   <!-- 공통 컬럼 -->
   <sql id="deptColumns">
     d.dept_id             AS deptId,
-    d.com_id              AS comId,
+    d.com_id              AS companyId,
     d.parent_dept_id      AS parentDeptId,
     d.manager_employee_id AS managerEmployeeId,
     d.dept_name           AS deptName,

@@ -5,8 +5,8 @@ import org.hit.hradar.domain.department.DepartmentErrorCode;
 import org.hit.hradar.domain.department.query.dto.DepartmentNode;
 import org.hit.hradar.domain.department.query.dto.DepartmentResponse;
 import org.hit.hradar.domain.department.query.mapper.DepartmentQueryMapper;
-import org.hit.hradar.domain.employee.query.dto.EmployeeForOrgChartResponse;
-import org.hit.hradar.domain.employee.query.dto.EmployeeNode;
+//import org.hit.hradar.domain.employee.query.dto.EmployeeForOrgChartResponse;
+//import org.hit.hradar.domain.employee.query.dto.EmployeeNode;
 import org.hit.hradar.domain.employee.query.mapper.EmployeeQueryMapper;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
@@ -41,21 +41,21 @@ public class DepartmentQueryService {
         Map<Long, DepartmentNode> departmentMap = new HashMap<>();
         List<DepartmentNode> rootNodes = new ArrayList<>();
 
-
-        List<EmployeeForOrgChartResponse> allEmployees = employeeQueryMapper.findEmployeesForOrgChart(companyId);
-        Map<Long, List<EmployeeNode>> employeesByDept = allEmployees.stream()
-                .filter(e -> e.getDeptId() != null)
-                .collect(Collectors.groupingBy(
-                        EmployeeForOrgChartResponse::getDeptId,
-                        Collectors.mapping(e -> new EmployeeNode(e.getEmpId(), e.getName(), e.getPositionName()), Collectors.toList())
-                ));
-
-
-        for (DepartmentResponse dept : allDepartments) {
-            DepartmentNode node = new DepartmentNode(dept.getDeptId(), dept.getDeptName(), dept.getParentDeptId());
-            node.setEmployees(employeesByDept.getOrDefault(dept.getDeptId(), new ArrayList<>()));
-            departmentMap.put(dept.getDeptId(), node);
-        }
+//
+//        List<EmployeeForOrgChartResponse> allEmployees = employeeQueryMapper.findEmployeesForOrgChart(companyId);
+//        Map<Long, List<EmployeeNode>> employeesByDept = allEmployees.stream()
+//                .filter(e -> e.getDeptId() != null)
+//                .collect(Collectors.groupingBy(
+//                        EmployeeForOrgChartResponse::getDeptId,
+//                        Collectors.mapping(e -> new EmployeeNode(e.getEmpId(), e.getName(), e.getPositionName()), Collectors.toList())
+//                ));
+//
+//
+//        for (DepartmentResponse dept : allDepartments) {
+//            DepartmentNode node = new DepartmentNode(dept.getDeptId(), dept.getDeptName(), dept.getParentDeptId());
+//            node.setEmployees(employeesByDept.getOrDefault(dept.getDeptId(), new ArrayList<>()));
+//            departmentMap.put(dept.getDeptId(), node);
+//        }
 
 
         for (DepartmentNode node : departmentMap.values()) {
