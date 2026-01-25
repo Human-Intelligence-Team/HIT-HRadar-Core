@@ -18,7 +18,6 @@ public class PositionCommandService {
 
   private Long requireComId(Long companyId) {
     if (companyId == null) {
-      // 프로젝트에 맞는 에러코드로 교체 가능
       throw new BusinessException(PositionErrorCode.POSITION_NOT_FOUND);
     }
     return companyId;

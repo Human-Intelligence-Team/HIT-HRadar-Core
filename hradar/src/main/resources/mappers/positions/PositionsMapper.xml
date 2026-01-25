@@ -4,34 +4,41 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.hit.hradar.domain.positions.query.mapper.PositionQueryMapper">
 
-  <!-- 공통 컬럼 -->
+  <!-- ✅ 공통 컬럼(리스트/상세 공용) : created_at, updated_at 제외 -->
   <sql id="positionColumns">
     p.position_id AS positionId,
     p.com_id      AS companyId,
     p.name        AS name,
     p.rank        AS rank,
-    p.is_deleted  AS isDeleted,
+    p.is_deleted  AS isDeleted
+  </sql>
+
+  <!-- ✅ 감사 컬럼(상세에만 필요할 때 include) -->
+  <sql id="positionAuditColumns">
     p.created_at  AS createdAt,
     p.updated_at  AS updatedAt
   </sql>
 
+  <!-- ✅ 상세 조회: audit 컬럼 포함 -->
   <select id="findPositionById"
     resultType="org.hit.hradar.domain.positions.query.dto.PositionResponse">
     SELECT
-    <include refid="positionColumns"/>
+    <include refid="positionColumns"/>,
+    <include refid="positionAuditColumns"/>
     FROM company_position p
-    WHERE p.position_id = #{positionId}
+    WHERE p.is_deleted = 'N'
+    AND p.position_id = #{positionId}
     AND p.com_id = #{comId}
-    AND p.is_deleted = 'N'
   </select>
 
+  <!-- ✅ 목록 조회: audit 컬럼 제외 -->
   <select id="findAllPositionsByCompany"
     resultType="org.hit.hradar.domain.positions.query.dto.PositionResponse">
     SELECT
     <include refid="positionColumns"/>
     FROM company_position p
-    WHERE p.com_id = #{comId}
-    AND p.is_deleted = 'N'
+    WHERE p.is_deleted = 'N'
+    AND p.com_id = #{comId}
     ORDER BY p.rank, p.name
   </select>
 

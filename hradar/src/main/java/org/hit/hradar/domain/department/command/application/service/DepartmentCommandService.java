@@ -25,11 +25,14 @@ public class DepartmentCommandService {
             throw new BusinessException(DepartmentErrorCode.DUPLICATE_DEPARTMENT_NAME);
         }
 
-        if (request.getParentDeptId() != null) {
-            if (!departmentRepository.findByDeptIdAndComIdAndIsDeleted(request.getParentDeptId(), companyId, 'N').isPresent()) {
-                throw new BusinessException(DepartmentErrorCode.INVALID_PARENT_DEPARTMENT);
-            }
+      if (request.getParentDeptId() != null) {
+        boolean exists = departmentRepository
+            .existsByDeptIdAndComIdAndIsDeleted(request.getParentDeptId(), companyId, 'N'); // 존재 여부 쿼리
+
+        if (!exists) {
+          throw new BusinessException(DepartmentErrorCode.INVALID_PARENT_DEPARTMENT);
         }
+      }
 
       if (request.getManagerEmpId() != null) {
         employeeRepository.findByEmpIdAndComIdAndIsDeleted(request.getManagerEmpId(), companyId, 'N')
@@ -62,10 +65,12 @@ public class DepartmentCommandService {
             throw new BusinessException(DepartmentErrorCode.DUPLICATE_DEPARTMENT_NAME);
         }
 
-        if (request.getParentDeptId() != null) {
-            if (!departmentRepository.findByDeptIdAndComIdAndIsDeleted(request.getParentDeptId(), companyId, 'N').isPresent()) {
-                throw new BusinessException(DepartmentErrorCode.INVALID_PARENT_DEPARTMENT);
-            }
+      if (request.getParentDeptId() != null) {
+        boolean exists = departmentRepository
+            .existsByDeptIdAndComIdAndIsDeleted(request.getParentDeptId(), companyId, 'N');
+
+        if (!exists) {
+          throw new BusinessException(DepartmentErrorCode.INVALID_PARENT_DEPARTMENT);
         }
 
       if (request.getManagerEmpId() != null) {
@@ -73,7 +78,8 @@ public class DepartmentCommandService {
             .orElseThrow(() -> new BusinessException(EmployeeErrorCode.EMPLOYEE_ERROR_CODE));
       }
 
-        department.updateDepartment(request.getDeptName(), request.getParentDeptId(), request.getManagerEmpId(), request.getDeptPhoneNo());
+        department.updateDepartment(request.getDeptName(), request.getParentDeptId(), request.getManagerEmpId(), request.getDeptPhone());
+    }
     }
 
     @Transactional

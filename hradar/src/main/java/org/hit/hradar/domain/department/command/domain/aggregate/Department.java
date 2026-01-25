@@ -27,10 +27,10 @@ public class Department extends BaseTimeEntity {
   @Column(name = "manager_employee_id")
   private Long managerEmployeeId;
 
-  @Column(name = "dept_name", nullable = false)
+  @Column(name = "dept_name", nullable = false, length = 40)
   private String deptName;
 
-  @Column(name = "dept_phone")
+  @Column(name = "dept_phone", length = 20)
   private String deptPhone;
 
   @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")

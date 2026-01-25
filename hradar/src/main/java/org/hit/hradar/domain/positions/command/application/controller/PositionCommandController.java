@@ -1,5 +1,6 @@
 package org.hit.hradar.domain.positions.command.application.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.positions.command.application.dto.CreatePositionRequest;
 import org.hit.hradar.domain.positions.command.application.dto.UpdatePositionRequest;
@@ -20,7 +21,7 @@ public class PositionCommandController {
 
   @PostMapping
   public ResponseEntity<ApiResponse<Long>> createPosition(
-      @RequestBody CreatePositionRequest request,
+      @Valid @RequestBody CreatePositionRequest request,
       @CurrentUser AuthUser authUser
   ) {
     Long positionId = positionCommandService.createPosition(request, authUser.companyId());
@@ -32,12 +33,11 @@ public class PositionCommandController {
   @PatchMapping("/{positionId}")
   public ResponseEntity<ApiResponse<Void>> updatePosition(
       @PathVariable Long positionId,
-      @RequestBody UpdatePositionRequest request,
+      @Valid @RequestBody UpdatePositionRequest request,
       @CurrentUser AuthUser authUser
   ) {
     positionCommandService.updatePosition(positionId, authUser.companyId(), request);
-    return ResponseEntity
-        .ok(ApiResponse.success(null));
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 
   @DeleteMapping("/{positionId}")
@@ -46,7 +46,6 @@ public class PositionCommandController {
       @CurrentUser AuthUser authUser
   ) {
     positionCommandService.deletePosition(positionId, authUser.companyId());
-    return ResponseEntity
-        .ok(ApiResponse.success(null));
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 }
