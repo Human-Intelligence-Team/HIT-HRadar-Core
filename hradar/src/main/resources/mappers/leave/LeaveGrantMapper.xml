@@ -6,14 +6,14 @@
 <mapper namespace="org.hit.hradar.domain.leave.query.mapper.LeaveGrantMapper">
 
   <select id="findByGrantId"
-    resultType="org.hit.hradar.domain.leave.query.dto.LeaveGrantDto">
+    resultType="org.hit.hradar.domain.leave.query.dto.response.LeaveGrantDto">
     SELECT
       grant_id       AS grantId,
       emp_id         AS empId,
       year,
       total_days     AS totalDays,
       remaining_days AS remainingDays,
-      granted_date   AS grantedDate,
+      granted_days   AS grantedDate,
       expire_date    AS expireDate
     FROM leave_grant
     WHERE grant_id = #{grantId}

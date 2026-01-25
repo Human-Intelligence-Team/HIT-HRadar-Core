@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
@@ -26,6 +27,10 @@ public class EmpLeave extends BaseTimeEntity {
   //사원 ID
   @Column(name = "emp_id", nullable = false)
   private Long empId;
+
+  // 연차(grant)에서 차감할지
+  @Column(name = "grant_id", nullable = false)
+  private Long grantId;
 
   //휴가 유형(연차/병가/경조사/공가/기타 saas)
   @Column(name = "leave_type", nullable = false)
@@ -51,6 +56,10 @@ public class EmpLeave extends BaseTimeEntity {
   @Column(name = "leave_days", nullable = false)
   private double leaveDays;
 
+  //휴가 신청 시각
+  @Column(name = "requested_at", nullable = false)
+  private LocalDateTime requestedAt;
+
   //삭제 여부
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
@@ -61,6 +70,7 @@ public class EmpLeave extends BaseTimeEntity {
   public static EmpLeave create(
       Long docId,
       Long empId,
+      Long grantId,
       String leaveType,
       String leaveUnitType,
       String reason,
@@ -71,12 +81,14 @@ public class EmpLeave extends BaseTimeEntity {
     EmpLeave leave = new EmpLeave();
     leave.docId = docId;
     leave.empId = empId;
+    leave.grantId = grantId;
     leave.leaveType = leaveType;
     leave.leaveUnitType = leaveUnitType;
     leave.reason = reason;
     leave.startDate = startDate;
     leave.endDate = endDate;
     leave.leaveDays = leaveDays;
+    leave.requestedAt = LocalDateTime.now();
     leave.isDeleted = 'N';
     return leave;
   }

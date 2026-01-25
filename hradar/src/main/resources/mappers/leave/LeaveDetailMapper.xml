@@ -6,7 +6,7 @@
 <mapper namespace="org.hit.hradar.domain.leave.query.mapper.LeaveDetailMapper">
 
   <select id="findDetail"
-    resultType="org.hit.hradar.domain.leave.query.dto.LeaveDetailDto">
+    resultType="org.hit.hradar.domain.leave.query.dto.response.LeaveDetailDto">
     SELECT
       leave_id        AS leaveId,
       emp_id          AS empId,

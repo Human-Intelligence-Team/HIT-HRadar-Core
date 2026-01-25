@@ -1,7 +1,9 @@
 package org.hit.hradar.domain.leave.query.dto.response;
 
 import java.time.LocalDate;
+import lombok.Getter;
 
+@Getter
 public class LeaveDetailDto {
 
   /** 휴가 ID */

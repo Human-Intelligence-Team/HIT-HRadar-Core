@@ -6,7 +6,7 @@
 <mapper namespace="org.hit.hradar.domain.leave.query.mapper.LeaveUsageMapper">
 
   <select id="findByLeaveId"
-    resultType="org.hit.hradar.domain.leave.query.dto.LeaveUsageDto">
+    resultType="org.hit.hradar.domain.leave.query.dto.response.LeaveUsageDto">
     SELECT
       usage_id    AS usageId,
       grant_id    AS grantId,
@@ -17,5 +17,13 @@
       AND is_deleted = 'N'
     ORDER BY use_date ASC
   </select>
+
+  <!-- 연차 잔여 일수 차감 -->
+  <update id="decreaseRemainingDays">
+    UPDATE leave_grant
+    SET remaining_days = remaining_days - #{days}
+    WHERE grant_id = #{grantId}
+      AND is_deleted = 'N'
+  </update>
 
 </mapper>
