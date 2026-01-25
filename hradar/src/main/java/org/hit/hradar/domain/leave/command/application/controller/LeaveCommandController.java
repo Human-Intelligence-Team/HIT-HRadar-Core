@@ -11,7 +11,6 @@ import org.hit.hradar.domain.leave.command.application.service.LeaveCommandServi
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.hit.hradar.global.dto.AuthUser;
-import org.springdoc.core.service.GenericResponseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
