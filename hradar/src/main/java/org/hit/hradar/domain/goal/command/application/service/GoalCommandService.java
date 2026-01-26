@@ -13,6 +13,7 @@ import org.hit.hradar.domain.goal.command.domain.aggregate.*;
 import org.hit.hradar.domain.goal.command.domain.repository.GoalRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
@@ -20,6 +21,7 @@ import static org.hit.hradar.domain.goal.command.domain.policy.GoalValidationPol
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class GoalCommandService {
     /*
     * Goal (LEVEL_1, KPI) 팀
@@ -114,10 +116,6 @@ public class GoalCommandService {
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
 
-        Department department = departmentRepository.findById(goal.getDepartmentId())
-                        .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-
-        validateEditPermission(goal, department, actorId);
 
         //상태 검증 //SUBMITTED 이하
         validateEditable(goal);
@@ -182,11 +180,6 @@ public class GoalCommandService {
         Goal rejectedGoal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
-        Department department = departmentRepository.findById(rejectedGoal.getDepartmentId())
-                .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-
-        // 권한 검증
-        validateEditPermission(rejectedGoal, department, actorId);
 
         // 상태 검증
         validateResubmittable(rejectedGoal);
@@ -262,19 +255,12 @@ public class GoalCommandService {
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
-        Department department = departmentRepository.findById(goal.getDepartmentId())
-                .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
 
         //삭제 여부 판단
         validateNotDeleted(goal);
 
         //TODO: 인사팀의 경우 삭제 권한 추가
-        //팀장 판단
-        boolean isManager = isTeamManager(department, actorId);
 
-        if(!isManager && goal.getApproveStatus() != GoalApproveStatus.DRAFT) {
-            throw new BusinessException(GoalErrorCode.GOAL_NOT_DELETABLE);
-        }
 
         if (goal.getType() == GoalType.KPI) {
             goal.getKpis().forEach(KpiDetail::delete);
@@ -298,13 +284,6 @@ public class GoalCommandService {
         // 제출된 건만 반려 가능
         validateSubmitted(goal);
 
-        //팀장만 가능
-        Department department = departmentRepository.findById(goal.getDepartmentId())
-                .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-        if(!isTeamManager(department, actorId)) {
-            throw new BusinessException(GoalErrorCode.GOAL_APPROVE_FORBIDDEN);
-        }
-
         goal.approve();
     }
 
@@ -313,19 +292,12 @@ public class GoalCommandService {
         Goal goal = goalRepository.findById(goalId)
                 .orElseThrow(() -> new BusinessException(GoalErrorCode.GOAL_NOT_FOUND));
 
-        Department department = departmentRepository.findById(goal.getDepartmentId())
-                .orElseThrow(() -> new BusinessException(DepartmentErrorCode.DEPARTMENT_NOT_FOUND));
-
         //삭제 여부 판단
         validateNotDeleted(goal);
 
         // 제출된 건만 반려 가능
         validateSubmitted(goal);
 
-        //팀장만 가능
-        if(!isTeamManager(department, actorId)) {
-            throw new BusinessException(GoalErrorCode.GOAL_APPROVE_FORBIDDEN);
-        }
 
         //반려 사유 없는 경우 차단
         if(request.getRejectReason() == null || request.getRejectReason().isBlank()) {

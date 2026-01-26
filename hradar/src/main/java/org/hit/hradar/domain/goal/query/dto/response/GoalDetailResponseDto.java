@@ -17,6 +17,8 @@ public class GoalDetailResponseDto {
     private Long goalId;
     private Long parentGoalId;
 
+    private Long ownerId;
+
     private GoalDepth depth;
     private GoalScope scope;
     private GoalType type;
@@ -25,6 +27,7 @@ public class GoalDetailResponseDto {
     private String description;
 
     private GoalApproveStatus approveStatus;
+    private String rejectReason;
     private LocalDate startDate;
     private LocalDate endDate;
 
