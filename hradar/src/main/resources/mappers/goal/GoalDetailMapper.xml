@@ -7,77 +7,120 @@
     <select id="findGoalDetail"
             parameterType="long"
             resultType="org.hit.hradar.domain.goal.query.dto.response.GoalDetailResponseDto">
-        /*Goal 기본 정보*/
+
         SELECT
-        g.goal_id             AS goalId,
-        g.parent_goal_id      AS parentGoalId,
-        g.goal_depth          AS depth,
-        g.goal_scope          AS scope,
-        g.goal_type           AS type,
-        g.goal_title          AS title,
-        g.goal_description    AS description,
-        g.goal_approve_status AS approveStatus,
-        g.goal_start_date     AS startDate,
-        g.goal_end_date       AS endDate,
-        g.goal_dept_id        AS departmentId,
+            g.goal_id             AS goalId,
+            g.parent_goal_id      AS parentGoalId,
+            g.owner_id AS ownerId,
+            g.goal_depth          AS depth,
+            g.goal_scope          AS scope,
+            g.goal_type           AS type,
+            g.goal_title          AS title,
+            g.goal_description    AS description,
+            g.goal_approve_status AS approveStatus,
+            g.reject_reason       AS rejectReason,
+            g.goal_start_date     AS startDate,
+            g.goal_end_date       AS endDate,
+            g.goal_dept_id        AS departmentId,
 
-        /*Goal 진행률 계산*/
-        CASE
-        /* KPI Goal */
-        WHEN g.goal_type = 'KPI' THEN
-        COALESCE((
-        SELECT ROUND(AVG(kpi_calc.kpi_progress), 2)
-        FROM (
-        SELECT
-        kd.kpi_id,
-        CASE
-        WHEN (kd.kpi_target_value - kd.kpi_start_value) = 0 THEN 0
-        ELSE
-        LEAST(
-        100,
-        GREATEST(
-        0,
-        (
-        (
-        (kd.kpi_start_value + IFNULL(SUM(kpl.log_value), 0))
-        - kd.kpi_start_value
-        )
-        / (kd.kpi_target_value - kd.kpi_start_value)
-        ) * 100
-        )
-        )
-        END AS kpi_progress
-        FROM kpi_detail kd
-        LEFT JOIN kpi_progress_log kpl
-        ON kpl.kpi_id = kd.kpi_id
-        AND kpl.is_deleted = 'N'
-        WHERE kd.goal_id = g.goal_id
-        AND kd.is_deleted = 'N'
-        GROUP BY kd.kpi_id, kd.kpi_start_value, kd.kpi_target_value
-        ) kpi_calc
-        ), 0)
+            CASE
+                WHEN g.goal_type = 'KPI' THEN IFNULL(kpi.progress_rate, 0)
+                WHEN g.goal_type = 'OKR' THEN IFNULL(okr.progress_rate, 0)
+                ELSE 0
+                END AS progressRate
 
-        /* KR Goal */
-        WHEN g.goal_type = 'OKR' THEN
-        COALESCE((
-        SELECT ROUND(AVG(
-        CASE
-        WHEN kr.is_achieved = 'Y' THEN 100
-        ELSE 0
-        END
-        ), 2)
-        FROM okr_key_result kr
-        WHERE kr.goal_id = g.goal_id
-        AND kr.is_deleted = 'N'
-        ), 0)
+        FROM hit.goal g
 
-        ELSE 0
-        END AS progressRate
+                 /* ================= KPI 진행률 ================= */
+                 LEFT JOIN (
+            SELECT
+                kpi_avg.goal_id,
+                ROUND(AVG(kpi_avg.kpi_progress), 2) AS progress_rate
+            FROM (
+                     SELECT
+                         kd.goal_id,
+                         kd.kpi_id,
+                         CASE
+                             WHEN (kd.kpi_target_value - kd.kpi_start_value) = 0 THEN 0
+                             ELSE LEAST(
+                                     100,
+                                     GREATEST(
+                                             0,
+                                             (
+                                                 (
+                                                     kd.kpi_start_value
+                                                         + IFNULL(SUM(kpl.log_value), 0)
+                                                     ) - kd.kpi_start_value
+                                                 )
+                                                 / (kd.kpi_target_value - kd.kpi_start_value)
+                                                 * 100
+                                     )
+                                  )
+                             END AS kpi_progress
+                     FROM hit.kpi_detail kd
+                              LEFT JOIN hit.kpi_progress_log kpl
+                                        ON kpl.kpi_id = kd.kpi_id
+                                            AND kpl.is_deleted = 'N'
+                     WHERE kd.is_deleted = 'N'
+                     GROUP BY
+                         kd.goal_id,
+                         kd.kpi_id,
+                         kd.kpi_start_value,
+                         kd.kpi_target_value
+                 ) kpi_avg
+            GROUP BY kpi_avg.goal_id
+        ) kpi ON kpi.goal_id = g.goal_id
 
-        FROM goal g
+            /* ================= OKR 진행률 ================= */
+                 LEFT JOIN (
+            SELECT
+                okr_avg.goal_id,
+                ROUND(AVG(okr_avg.kr_progress), 2) AS progress_rate
+            FROM (
+                     SELECT
+                         kr.goal_id,
+                         kr.key_result_id,
+                         CASE
+                             WHEN kr.key_target_value = 0 THEN 0
+                             ELSE
+                                 (
+                                     IFNULL(opl.current_progress, 0)
+                                         * 100.0
+                                         / kr.key_target_value
+                                     )
+                             END AS kr_progress
+                     FROM hit.okr_key_result kr
+                              LEFT JOIN (
+                         SELECT
+                             opl1.key_result_id,
+                             opl1.current_progress
+                         FROM hit.okr_progress_log opl1
+                                  INNER JOIN (
+                             SELECT
+                                 key_result_id,
+                                 MAX(log_date) AS max_log_date
+                             FROM hit.okr_progress_log
+                             WHERE is_deleted = 'N'
+                             GROUP BY key_result_id
+                         ) latest
+                                             ON opl1.key_result_id = latest.key_result_id
+                                                 AND opl1.log_date = latest.max_log_date
+                         WHERE opl1.is_deleted = 'N'
+                     ) opl ON opl.key_result_id = kr.key_result_id
+                     WHERE kr.is_deleted = 'N'
+                     GROUP BY
+                         kr.goal_id,
+                         kr.key_result_id,
+                         kr.key_target_value,
+                         opl.current_progress
+                 ) okr_avg
+            GROUP BY okr_avg.goal_id
+        ) okr ON okr.goal_id = g.goal_id
+
         WHERE g.goal_id = #{goalId}
-        AND g.is_deleted = 'N'
+          AND g.is_deleted = 'N'
 
     </select>
+
 
 </mapper>

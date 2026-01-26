@@ -24,14 +24,7 @@
             CASE
                 WHEN kr.key_target_value = 0 THEN 0
                 ELSE
-                    LEAST(
-                            100,
-                            GREATEST(
-                                    0,
-                                    (COALESCE(latest.current_progress, 0)
-                                        / kr.key_target_value) * 100
-                            )
-                    )
+                    (COALESCE(latest.current_progress, 0) * 100.0 / kr.key_target_value)
                 END AS progressRate
 
         FROM okr_key_result kr
@@ -72,13 +65,7 @@
             CASE
                 WHEN kr.key_target_value = 0 THEN 0
                 ELSE
-                    LEAST(
-                            100,
-                            GREATEST(
-                                    0,
-                                    (p.current_progress / kr.key_target_value) * 100
-                            )
-                    )
+                    (p.current_progress * 100.0 / kr.key_target_value)
                 END AS progressRate
 
         FROM okr_progress_log p
