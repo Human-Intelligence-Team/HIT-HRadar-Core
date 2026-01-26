@@ -32,8 +32,7 @@ public class DocsCommandController {
     ) {
         docsCommandService.create(
                 request,
-                authUser.companyId(),
-                authUser.userId()
+                authUser.companyId()
         );
         return ResponseEntity.ok(ApiResponse.success(null));
     }
@@ -47,8 +46,7 @@ public class DocsCommandController {
         docsCommandService.update(
                 id,
                 request,
-                authUser.companyId(),
-                authUser.userId()
+                authUser.companyId()
         );
         return ResponseEntity.ok(ApiResponse.success(null));
     }

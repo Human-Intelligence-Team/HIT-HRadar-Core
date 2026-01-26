@@ -19,7 +19,7 @@ public record DocumentDetailResponse(
         return new DocumentDetailResponse(
                 doc.getId(),
                 doc.getTitle(),
-                "규정",
+                doc.getCategory(),
                 chunks.stream().map(Chunk::from).toList()
         );
     }

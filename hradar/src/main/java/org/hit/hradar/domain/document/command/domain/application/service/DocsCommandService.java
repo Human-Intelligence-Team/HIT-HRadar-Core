@@ -78,11 +78,10 @@ public class DocsCommandService {
 
     public void create(
             DocumentCreateRequest request,
-            Long companyId,
-            Long actorId
+            Long companyId
     ) {
         Document document = documentRepository.save(
-                Document.create(companyId, request.getDocTitle(), actorId)
+                Document.create(companyId, request.getDocTitle(), request.getCategory())
         );
 
         List<DocumentChunk> chunks = new ArrayList<>();
@@ -95,8 +94,7 @@ public class DocsCommandService {
                             document.getId(),
                             idx++,
                             c.getSection(),
-                            c.getContent(),
-                            actorId
+                            c.getContent()
                     )
             );
         }
@@ -108,13 +106,12 @@ public class DocsCommandService {
     public void update(
             Long documentId,
             DocumentCreateRequest request,
-            Long companyId,
-            Long actorId
+            Long companyId
     ) {
         Document document = documentRepository.findByIdAndCompanyId(documentId, companyId)
                 .orElseThrow();
 
-        document.updateTitle(request.getDocTitle(), actorId);
+        document.updateDocument(request.getDocTitle(), request.getCategory());
 
         chunkRepository.deleteByDocumentId(documentId);
 
@@ -128,8 +125,7 @@ public class DocsCommandService {
                             document.getId(),
                             idx++,
                             c.getSection(),
-                            c.getContent(),
-                            actorId
+                            c.getContent()
                     )
             );
         }

@@ -25,19 +25,17 @@ public class Document extends BaseTimeEntity {
     private DocumentStatus status;
 
 
-    public static Document create(Long companyId, String title, Long actorId) {
+    public static Document create(Long companyId, String title, String category) {
         Document d = new Document();
         d.companyId = companyId;
         d.title = title;
-        d.category = "HR_DOCUMENT";
+        d.category = category;
         d.status = DocumentStatus.ACTIVE;
-        d.createdBy = actorId;
         return d;
     }
 
-    public void updateTitle(String docTitle, Long actorId) {
+    public void updateDocument(String docTitle, String category) {
         this.title = docTitle;
-        this.updatedAt = LocalDateTime.now();
-        this.updatedBy = actorId;
+        this.category = category;
     }
 }
