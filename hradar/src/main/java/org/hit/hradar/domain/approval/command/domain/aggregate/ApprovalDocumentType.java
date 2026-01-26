@@ -9,5 +9,7 @@ public enum ApprovalDocumentType {
   LEAVE,             // 휴가
   CANCEL,            // 취소 요청
   SALARY,           //  기본급
-  VACATION
+  VACATION,         //
+  BASIC_SALARY,     // 기본급
+  COMPENSATION_SALARY,     // 변동보상
 }

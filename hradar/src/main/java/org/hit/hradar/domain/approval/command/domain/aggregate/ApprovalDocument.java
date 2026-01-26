@@ -90,26 +90,26 @@ public class ApprovalDocument extends BaseTimeEntity {
     this.submittedAt = LocalDateTime.now();
   }
 
-   //결재 문서를 회수한다.(DRAFT(임시저장) or IN_PROGRESS)
-   //아직 결재선에서 승인/반려가 한 건도 발생하지 않은 경우
-   //결재 문서 회수
-   public void withdraw(Long actorId) {
+  //결재 문서를 회수한다.(DRAFT(임시저장) or IN_PROGRESS)
+  //아직 결재선에서 승인/반려가 한 건도 발생하지 않은 경우
+  //결재 문서 회수
+  public void withdraw(Long actorId) {
 
-     if (!this.writerId.equals(actorId)) {
-       throw new BusinessException(
-           ApprovalErrorCode.NOT_ALLOWED_APPROVER
-       );
-     }
+    if (!this.writerId.equals(actorId)) {
+      throw new BusinessException(
+          ApprovalErrorCode.NOT_ALLOWED_APPROVER
+      );
+    }
 
-     if (this.status == ApprovalStatus.APPROVED
-         || this.status == ApprovalStatus.REJECTED) {
-       throw new BusinessException(
-           ApprovalErrorCode.CANNOT_WITHDRAW_AFTER_APPROVAL_STARTED
-       );
-     }
+    if (this.status == ApprovalStatus.APPROVED
+        || this.status == ApprovalStatus.REJECTED) {
+      throw new BusinessException(
+          ApprovalErrorCode.CANNOT_WITHDRAW_AFTER_APPROVAL_STARTED
+      );
+    }
 
-     this.status = ApprovalStatus.WITHDRAWN;
-   }
+    this.status = ApprovalStatus.WITHDRAWN;
+  }
 
   //최종 결재 승인
   public void approve() {
@@ -139,7 +139,8 @@ public class ApprovalDocument extends BaseTimeEntity {
   }
 
   //생성자
-  protected ApprovalDocument() {}
+  protected ApprovalDocument() {
+  }
 
   private ApprovalDocument(
       Long writerId,
@@ -176,4 +177,26 @@ public class ApprovalDocument extends BaseTimeEntity {
     doc.status = ApprovalStatus.DRAFT;
     return doc;
   }
+
+  public boolean isDraft() {
+    return this.status == ApprovalStatus.DRAFT;
   }
+
+  // 임시저장 문서 내용 수정
+  public void update(
+      String title,
+      String content,
+      ApprovalDocumentType docType
+  ) {
+    if (this.status != ApprovalStatus.DRAFT) {
+      throw new BusinessException(
+          ApprovalErrorCode.CANNOT_EDIT_AFTER_SUBMIT
+      );
+    }
+
+    this.title = title;
+    this.content = content;
+    this.docType = docType;
+  }
+
+}
