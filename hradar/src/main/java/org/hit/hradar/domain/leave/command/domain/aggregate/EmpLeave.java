@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.hit.hradar.global.dto.BaseTimeEntity;
@@ -16,6 +18,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 @Entity
 @Getter
 @Builder
+@AllArgsConstructor
 public class EmpLeave extends BaseTimeEntity {
 
   @Id
@@ -64,7 +67,7 @@ public class EmpLeave extends BaseTimeEntity {
 
   //삭제 여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted = 'N';
+  private Character isDeleted;
 
   protected EmpLeave() {}
 
