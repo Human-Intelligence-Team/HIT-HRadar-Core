@@ -9,7 +9,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "company_position",
-    uniqueConstraints = @UniqueConstraint(name="UK_POSITION_COMPANY_NAME", columnNames={"company_id","name"})
+    uniqueConstraints = @UniqueConstraint(name="UK_POSITION_COMPANY_NAME", columnNames={"com_id","name"})
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,7 +20,7 @@ public class Positions extends BaseTimeEntity {
   @Column(name = "position_id", nullable = false)
   private Long positionId;
 
-  @Column(name = "company_id", nullable = false)
+  @Column(name = "com_id", nullable = false)
   private Long comId;
 
   @Column(name = "name", nullable = false, length = 50)

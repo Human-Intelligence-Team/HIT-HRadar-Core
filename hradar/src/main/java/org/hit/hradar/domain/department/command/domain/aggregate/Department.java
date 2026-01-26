@@ -1,18 +1,20 @@
 package org.hit.hradar.domain.department.command.domain.aggregate;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
 @Entity
 @Table(name = "department")
 public class Department extends BaseTimeEntity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "dept_id", nullable = false)
   private Long deptId;
 
@@ -25,13 +27,34 @@ public class Department extends BaseTimeEntity {
   @Column(name = "manager_employee_id")
   private Long managerEmployeeId;
 
-  @Column(name = "dept_name", nullable = false)
+  @Column(name = "dept_name", nullable = false, length = 40)
   private String deptName;
 
-  @Column(name = "dept_phone", nullable = false)
+  @Column(name = "dept_phone", length = 20)
   private String deptPhone;
 
-  @Column(name = "is_deleted", nullable = false)
-  private String isDeleted = "N";
+  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
 
+  @Builder
+  public Department(Long deptId, Long companyId, Long parentDeptId, Long managerEmpId, String deptName, String deptPhone) {
+    this.deptId = deptId;
+    this.comId = companyId;
+    this.parentDeptId = parentDeptId;
+    this.managerEmployeeId = managerEmpId;
+    this.deptName = deptName;
+    this.deptPhone = deptPhone;
+    this.isDeleted = 'N';
+  }
+
+  public void updateDepartment(String deptName, Long parentDeptId, Long managerEmpId, String deptPhone) {
+    this.deptName = deptName;
+    this.parentDeptId = parentDeptId;
+    this.managerEmployeeId = managerEmpId;
+    this.deptPhone = deptPhone;
+  }
+
+  public void isDeleted() {
+    this.isDeleted = 'Y';
+  }
 }
