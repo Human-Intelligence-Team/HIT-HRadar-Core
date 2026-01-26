@@ -34,9 +34,8 @@ public class Attendance extends BaseTimeEntity {
   private LocalDate workDate;
 
   //근무 유형
-  @Enumerated(EnumType.STRING)
-  @Column(name = "work_type", nullable = false)
-  private WorkType workType = WorkType.WORK;
+  @Column(name = "work_type", nullable = false, length = 50)
+  private String workType;
 
   //근태 상태
   @Enumerated(EnumType.STRING)
@@ -50,6 +49,10 @@ public class Attendance extends BaseTimeEntity {
   public Attendance(Long empId, LocalDate workDate) {
     this.empId = empId;
     this.workDate = workDate;
-    this.workType = workType.WORK;
+    this.workType = "WORK";
+  }
+
+  public void changeWorkType(String workType) {
+    this.workType = workType;
   }
 }
