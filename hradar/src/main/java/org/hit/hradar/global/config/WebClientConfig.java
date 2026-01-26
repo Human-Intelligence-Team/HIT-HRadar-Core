@@ -1,21 +1,23 @@
 package org.hit.hradar.global.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebClientConfig {
 
-    @Bean
-    public WebClient.Builder webClientBuilder() {
-        return WebClient.builder();
-    }
+    private final VectorIndexProperties vectorIndexProperties;
 
     @Bean
-    public WebClient vectorIndexWebClient(WebClient.Builder builder) {
-        return builder
-                .baseUrl("http://localhost:8000")
+    public WebClient vectorIndexWebClient() {
+        return WebClient.builder()
+                .baseUrl(vectorIndexProperties.getBaseUrl())
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }
 }

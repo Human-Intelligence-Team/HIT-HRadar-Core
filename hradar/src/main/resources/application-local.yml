@@ -62,7 +62,9 @@ mybatis:
     map-underscore-to-camel-case: true
   mapper-locations: mappers/**/*.xml
 
-vector:
-  index:
+external:
+  vector-index:
     base-url: ${VECTOR_INDEX_BASE_URL}
-    timeout-ms: 3000
+    timeout:
+      connect: 3s
+      read: 10s

@@ -8,4 +8,6 @@ public interface DocumentChunkRepository {
     <S extends DocumentChunk> List<S> saveAll(Iterable<S> entities);
 
     List<DocumentChunk> findByDocumentIdOrderByChunkIndex(Long documentId);
+
+    void deleteByDocumentId(Long documentId);
 }

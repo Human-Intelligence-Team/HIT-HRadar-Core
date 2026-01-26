@@ -6,7 +6,7 @@ import org.hit.hradar.domain.document.command.domain.aggregate.Document;
 import org.hit.hradar.domain.document.command.domain.aggregate.DocumentChunk;
 import org.hit.hradar.domain.document.command.domain.application.csv.CsvParseResult;
 import org.hit.hradar.domain.document.command.domain.application.csv.CsvParser;
-import org.hit.hradar.domain.document.command.domain.application.dto.request.DocumentCommitRequest;
+import org.hit.hradar.domain.document.command.domain.application.dto.request.DocumentCreateRequest;
 import org.hit.hradar.domain.document.command.domain.application.dto.response.DocumentPreviewResponse;
 import org.hit.hradar.domain.document.command.domain.repository.DocumentChunkRepository;
 import org.hit.hradar.domain.document.command.domain.repository.DocumentRepository;
@@ -39,37 +39,6 @@ public class DocsCommandService {
         validateHeader(result.getHeaderIndex());
 
         return buildPreview(result);
-    }
-
-    public void commit(
-            DocumentCommitRequest request,
-            Long companyId,
-            Long actorId
-    ) {
-        Document document = documentRepository.save(
-                Document.create(companyId, request.getDocTitle(), actorId)
-        );
-
-        List<DocumentChunk> chunks = new ArrayList<>();
-        int idx = 1;
-
-        for (var c : request.getChunks()) {
-            chunks.add(
-                    DocumentChunk.create(
-                            companyId,
-                            document.getId(),
-                            idx++,
-                            c.getSection(),
-                            c.getContent(),
-                            actorId
-                    )
-            );
-        }
-
-        chunkRepository.saveAll(chunks);
-
-        // Python 색인
-        vectorIndexClient.index(companyId, document.getId(), chunks);
     }
 
     private void validateHeader(Map<String, Integer> headerIndex) {
@@ -105,6 +74,74 @@ public class DocsCommandService {
     private String get(String[] row, CsvParseResult result, String col) {
         Integer idx = result.getHeaderIndex().get(col);
         return (idx == null || idx >= row.length) ? null : row[idx].trim();
+    }
+
+    public void create(
+            DocumentCreateRequest request,
+            Long companyId,
+            Long actorId
+    ) {
+        Document document = documentRepository.save(
+                Document.create(companyId, request.getDocTitle(), actorId)
+        );
+
+        List<DocumentChunk> chunks = new ArrayList<>();
+        int idx = 1;
+
+        for (var c : request.getChunks()) {
+            chunks.add(
+                    DocumentChunk.create(
+                            companyId,
+                            document.getId(),
+                            idx++,
+                            c.getSection(),
+                            c.getContent(),
+                            actorId
+                    )
+            );
+        }
+
+        chunkRepository.saveAll(chunks);
+        vectorIndexClient.indexAsync(companyId, document.getId(), chunks);
+    }
+
+    public void update(
+            Long documentId,
+            DocumentCreateRequest request,
+            Long companyId,
+            Long actorId
+    ) {
+        Document document = documentRepository.findByIdAndCompanyId(documentId, companyId)
+                .orElseThrow();
+
+        document.updateTitle(request.getDocTitle(), actorId);
+
+        chunkRepository.deleteByDocumentId(documentId);
+
+        List<DocumentChunk> chunks = new ArrayList<>();
+        int idx = 1;
+
+        for (var c : request.getChunks()) {
+            chunks.add(
+                    DocumentChunk.create(
+                            companyId,
+                            document.getId(),
+                            idx++,
+                            c.getSection(),
+                            c.getContent(),
+                            actorId
+                    )
+            );
+        }
+        chunkRepository.saveAll(chunks);
+        vectorIndexClient.deleteIndex(companyId, documentId);
+        vectorIndexClient.indexAsync(companyId, documentId, chunks);
+    }
+
+    public void delete(Long documentId, Long companyId) {
+        chunkRepository.deleteByDocumentId(documentId);
+        documentRepository.deleteByIdAndCompanyId(documentId, companyId);
+        vectorIndexClient.deleteIndex(companyId, documentId);
     }
 }
 

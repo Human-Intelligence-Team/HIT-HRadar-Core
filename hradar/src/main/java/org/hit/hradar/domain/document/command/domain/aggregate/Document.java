@@ -34,4 +34,10 @@ public class Document extends BaseTimeEntity {
         d.createdBy = actorId;
         return d;
     }
+
+    public void updateTitle(String docTitle, Long actorId) {
+        this.title = docTitle;
+        this.updatedAt = LocalDateTime.now();
+        this.updatedBy = actorId;
+    }
 }

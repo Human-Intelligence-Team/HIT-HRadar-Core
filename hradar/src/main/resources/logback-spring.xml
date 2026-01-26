@@ -97,4 +97,23 @@
         <appender-ref ref="CONSOLE"/>
     </root>
 
+    <appender name="VECTOR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/${APP_NAME}-vector.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/${APP_NAME}-vector.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.hit.hradar.domain.document.command.infrastructure.vector"
+            level="INFO"
+            additivity="false">
+        <appender-ref ref="VECTOR_FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+
 </configuration>

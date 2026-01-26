@@ -7,6 +7,10 @@ import java.util.Optional;
 
 public interface DocumentRepository {
     <S extends Document> S save(S document);
+
     List<Document> findByCompanyIdOrderByCreatedAtDesc(Long companyId);
+
     Optional<Document> findByIdAndCompanyId(Long id, Long companyId);
+
+    void deleteByIdAndCompanyId(Long documentId, Long companyId);
 }
