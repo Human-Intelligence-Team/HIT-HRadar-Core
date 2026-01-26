@@ -11,9 +11,11 @@ import org.hit.hradar.domain.goal.command.domain.repository.OkrKeyResultReposito
 import org.hit.hradar.domain.goal.command.infrastructure.OkrProgressLogJpaRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OkrProgressCommandService {
     private final OkrKeyResultRepository okrKeyResultRepository;
     private final OkrProgressLogJpaRepository okrProgressLogJpaRepository;

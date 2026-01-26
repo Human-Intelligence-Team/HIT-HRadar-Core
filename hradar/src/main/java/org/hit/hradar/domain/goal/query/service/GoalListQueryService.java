@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -157,6 +154,77 @@ public class GoalListQueryService {
                         .getChildren()
                         .add(g);
             }
+        }
+
+        return roots;
+    }
+
+    public List<GoalNodeResponseDto> getMyGoal(Long empId) {
+
+    /* =========================
+       1. 내 Goal 목록 조회
+       ========================= */
+        List<GoalNodeResponseDto> goals =
+                goalMapper.selectMyGoals(empId);
+
+        if (goals.isEmpty()) {
+            return List.of();
+        }
+
+        List<Long> goalIds = goals.stream()
+                .map(GoalNodeResponseDto::getGoalId)
+                .toList();
+
+    /* =========================
+       2. KPI 목록 조회
+       ========================= */
+        List<KpiListResponseDto> kpis =
+                goalMapper.selectKpisByGoalIds(goalIds);
+
+        Map<Long, List<KpiListResponseDto>> kpisByGoal =
+                kpis.stream().collect(Collectors.groupingBy(
+                        KpiListResponseDto::getGoalId
+                ));
+
+    /* =========================
+       3. OKR 목록 조회
+       ========================= */
+        List<OkrListResponseDto> okrs =
+                goalMapper.selectOkrsByGoalIds(goalIds);
+
+        Map<Long, List<OkrListResponseDto>> okrsByGoal =
+                okrs.stream().collect(Collectors.groupingBy(
+                        OkrListResponseDto::getGoalId
+                ));
+
+    /* =========================
+       4. KPI / OKR 붙이기
+       ========================= */
+        for (GoalNodeResponseDto goal : goals) {
+
+            if (goal.getType() == GoalType.KPI) {
+                goal.setKpis(
+                        kpisByGoal.getOrDefault(goal.getGoalId(), List.of())
+                );
+            }
+
+            if (goal.getType() == GoalType.OKR) {
+                goal.setOkrs(
+                        okrsByGoal.getOrDefault(goal.getGoalId(), List.of())
+                );
+            }
+        }
+
+    /* =========================
+       5. 트리 구성
+       ========================= */
+        List<GoalNodeResponseDto> roots = buildTree(goals);
+
+    /* =========================
+       6. progress 계산
+       ========================= */
+        for (GoalNodeResponseDto root : roots) {
+            calcProgressDfs(root);
         }
 
         return roots;
