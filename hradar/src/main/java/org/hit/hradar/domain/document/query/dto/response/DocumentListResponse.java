@@ -18,7 +18,7 @@ public record DocumentListResponse(
             return new Item(
                     doc.getId(),
                     doc.getTitle(),
-                    "규정", // 지금은 고정, 나중에 enum 가능
+                    doc.getCategory(),
                     doc.getCreatedAt().toString()
             );
         }

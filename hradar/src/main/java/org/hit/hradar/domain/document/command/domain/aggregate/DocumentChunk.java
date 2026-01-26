@@ -31,8 +31,7 @@ public class DocumentChunk extends BaseTimeEntity {
             Long documentId,
             int index,
             String section,
-            String content,
-            Long actorId
+            String content
     ) {
         DocumentChunk c = new DocumentChunk();
         c.companyId = companyId;
@@ -40,7 +39,6 @@ public class DocumentChunk extends BaseTimeEntity {
         c.chunkIndex = index;
         c.section = section;
         c.content = content;
-        c.createdBy = actorId;
         return c;
     }
 }

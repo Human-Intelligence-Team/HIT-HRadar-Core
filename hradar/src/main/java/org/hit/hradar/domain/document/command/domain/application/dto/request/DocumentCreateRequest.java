@@ -7,6 +7,7 @@ import java.util.List;
 @Getter
 public class DocumentCreateRequest {
     private String docTitle;
+    private String category;
     private List<ChunkRequest> chunks;
 
     @Getter
