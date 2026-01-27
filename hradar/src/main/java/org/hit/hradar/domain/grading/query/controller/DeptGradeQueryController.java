@@ -1,9 +1,12 @@
 package org.hit.hradar.domain.grading.query.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hit.hradar.domain.grading.query.dto.response.DeptGradeStatusResponseDto;
 import org.hit.hradar.domain.grading.query.service.DeptGradeQueryService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +27,11 @@ public class DeptGradeQueryController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<DeptGradeStatusResponseDto>>> getDeptGradeStatus(
-            @RequestParam Long companyId,
+            @CurrentUser AuthUser authUser,
             @RequestParam Long cycleId
     ) {
-
         List<DeptGradeStatusResponseDto> response =
-                deptGradeQueryService.getDeptGradeStatusList(companyId, cycleId);
+                deptGradeQueryService.getDeptGradeStatusList(authUser.companyId(), cycleId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

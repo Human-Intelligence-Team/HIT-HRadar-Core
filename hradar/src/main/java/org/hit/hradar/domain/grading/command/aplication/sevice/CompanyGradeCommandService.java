@@ -20,7 +20,7 @@ public class CompanyGradeCommandService {
     private final EvaluationCycleStatusProvider evaluationCycleStatusProvider;
 
 
-    public void registerCompanyGrade(Long compId, RegisterCompanyGradeRequestDto request){
+    public Long registerCompanyGrade(Long compId, RegisterCompanyGradeRequestDto request){
 
         //회사 내 등급 코드 중복 체크
         if(gradeRepository.existsByCompanyIdAndGradeNameAndIsDeleted(
@@ -48,6 +48,8 @@ public class CompanyGradeCommandService {
                 .build();
 
         gradeRepository.save(grade);
+
+        return grade.getGradeId();
     }
 
     //등급 수정

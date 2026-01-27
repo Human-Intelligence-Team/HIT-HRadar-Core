@@ -7,15 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(
-        name = "grade",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_company_grade_code",
-                        columnNames = {"com_id", "grade_code"}
-                )
-        }
-)
+@Table
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Grade extends BaseTimeEntity {
