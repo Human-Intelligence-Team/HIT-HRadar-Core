@@ -19,6 +19,11 @@ public interface ApprovalDetailQueryMapper {
       @Param("userId") Long userId
   );
 
+  // [관리자용] 결재 문서 상세 조회
+  ApprovalDetailResponse selectApprovalDetailByAdmin(
+      @Param("docId") Long docId
+  );
+
   //결재선 조회 (단계 순서대로)
   List<ApprovalLineStepResponse> selectApprovalSteps(
       @Param("docId") Long docId
