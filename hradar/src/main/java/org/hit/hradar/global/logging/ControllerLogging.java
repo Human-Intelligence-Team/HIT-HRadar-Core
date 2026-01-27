@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-@Slf4j
+@Slf4j(topic = "api")
 @Aspect
 @Component
 public class ControllerLogging {

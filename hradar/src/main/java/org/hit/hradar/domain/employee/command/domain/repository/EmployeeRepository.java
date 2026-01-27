@@ -8,22 +8,13 @@ import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
-  // 회사 내 사번 중복 방지/조회용
-  Optional<Employee> findByComIdAndEmployeeNo(Long comId, String employeeNo);
+  Optional<Employee> findById(Long empId);
 
-  boolean existsByComIdAndEmployeeNo(Long comId, String employeeNo);
+  Employee save(Employee employee);
 
-  // 회사 내 이메일 중복/조회용 (email이 null 허용이면 Optional로)
-  Optional<Employee> findByComIdAndEmail(Long comId, String email);
+  Optional<Employee> findByEmpIdAndComIdAndIsDeleted(Long empId, Long comId, char isDeleted);
 
-  boolean existsByComIdAndEmail(Long comId, String email);
+  boolean existsByEmployeeNoAndComIdAndIsDeleted(String employeeNo, Long comId, char isDeleted);
 
-  // 회사별 전체 조회 (삭제 제외)
-  List<Employee> findAllByComIdAndIsDeletedFalse(Long comId);
-
-  // 부서별 조회 (삭제 제외)
-  List<Employee> findAllByComIdAndDeptIdAndIsDeletedFalse(Long comId, Long deptId);
-
-  // 단건 조회 (삭제 제외)
-  Optional<Employee> findByEmpIdAndIsDeletedFalse(Long empId);
+  boolean existsByEmailAndComIdAndIsDeleted(String email, Long comId, char isDeleted);
 }

@@ -28,6 +28,8 @@ public class GoalNodeResponseDto {
 
     private GoalApproveStatus approveStatus;
 
+    private Long ownerId;
+
     // 계산된 현재 진행률 (0~100)
     private BigDecimal progressRate;
 

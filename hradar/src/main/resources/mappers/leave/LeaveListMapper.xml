@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.leave.query.mapper.LeaveListMapper">
+
+  <select id="existsOverlap" resultType="boolean">
+    SELECT EXISTS (
+      SELECT 1
+      FROM emp_leave
+      WHERE emp_id = #{empId}
+        AND is_deleted = 'N'
+        AND start_date &lt;= #{end}
+        AND end_date &gt;= #{start}
+    )
+  </select>
+
+  <select id="findByEmpId"
+    resultType="org.hit.hradar.domain.leave.query.dto.response.LeaveListDto">
+    SELECT
+      leave_id        AS leaveId,
+      leave_type      AS leaveType,
+      leave_unit_type AS leaveUnitType,
+      start_date      AS startDate,
+      end_date        AS endDate,
+      leave_days      AS leaveDays
+    FROM emp_leave
+    WHERE emp_id = #{empId}
+      AND is_deleted = 'N'
+    ORDER BY start_date DESC
+  </select>
+
+
+</mapper>

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/kpis")
 public class KpiDetailQueryController {
 
-    KpiDetailQueryService kpiDetailQueryService;
+    private final KpiDetailQueryService kpiDetailQueryService;
 
     /*KPI 상세 및 로그 조회*/
     @GetMapping("/{kpiId}/detail")

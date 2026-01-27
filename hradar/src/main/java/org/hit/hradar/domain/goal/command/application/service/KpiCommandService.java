@@ -12,9 +12,11 @@ import org.hit.hradar.domain.goal.command.domain.repository.GoalRepository;
 import org.hit.hradar.domain.goal.command.domain.repository.KpiDetailRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class KpiCommandService {
 
     private final GoalRepository goalRepository;
