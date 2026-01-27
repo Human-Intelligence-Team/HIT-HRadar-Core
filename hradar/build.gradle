@@ -30,6 +30,16 @@ ext {
 }
 
 dependencies {
+    // WebClient (권장)
+//    implementation 'org.springframework:spring-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // CSV 파싱
+    implementation 'com.opencsv:opencsv:5.9'
+
+    // BOM 처리 (한글 깨짐 방지)
+    implementation 'commons-io:commons-io:2.15.1'
+
     // JWT
     implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"

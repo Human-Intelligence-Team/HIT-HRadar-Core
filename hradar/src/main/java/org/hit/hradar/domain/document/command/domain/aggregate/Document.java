@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
@@ -11,36 +12,30 @@ import java.time.LocalDateTime;
 @Table(name = "DOCUMENT")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Document {
+public class Document extends BaseTimeEntity {
 
-    @Id
-    @Column(name = "document_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "com_id", nullable = false)
     private Long companyId;
-
-    @Column(name = "title", nullable = false, length = 50)
     private String title;
-
-    @Column(name = "description", nullable = false)
-    private String description;
+    private String category;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "document_type", nullable = false)
-    private DocumentType documentType; // FAQ, POLICY, MANUAL
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
     private DocumentStatus status;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "source_type", nullable = false)
-    private SourceType sourceType; // PDF, MANUAL
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    public static Document create(Long companyId, String title, String category) {
+        Document d = new Document();
+        d.companyId = companyId;
+        d.title = title;
+        d.category = category;
+        d.status = DocumentStatus.ACTIVE;
+        return d;
+    }
 
-    @Column(name = "created_by", nullable = false, length = 50)
-    private String createdBy;
+    public void updateDocument(String docTitle, String category) {
+        this.title = docTitle;
+        this.category = category;
+    }
 }

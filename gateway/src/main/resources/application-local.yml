@@ -17,6 +17,16 @@ spring:
                 - StripPrefix=1
 
 
+          # =========================
+          # HR API - 인증 제외
+          # =========================
+            - id: hr-public
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/v1/company-applications,/api/v1/health
+              filters:
+                - StripPrefix=2
+
             # =========================
             # HR API (JWT 필요)
             # =========================

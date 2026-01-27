@@ -66,6 +66,15 @@ public class ApprovalWithdrawCommandService {
     //문서 회수 처리
     doc.withdraw(actorId);
 
+    approvalLineStepJpaRepository
+        .findAllByLineId(line.getLineId())
+            .forEach(step -> {
+              if (step.getApprovalStepStatus() == ApprovalStepStatus.PENDING
+                  || step.getApprovalStepStatus() == ApprovalStepStatus.WAITING) {
+                step.cancel();
+              }
+            });
+
     //회수 히스토리 저장
     approvalHistoryJpaRepository.save(
         ApprovalHistory.withdraw(docId, actorId)

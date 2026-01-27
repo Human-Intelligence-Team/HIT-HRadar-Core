@@ -27,5 +27,8 @@ public interface GoalMapper {
     List<OkrListResponseDto> selectOkrsByGoalIds(
             @Param("goalIds") List<Long> goalIds
     );
-}
+
+    List<GoalNodeResponseDto> selectMyGoals(
+            @Param("ownerId") Long ownerId
+    );}
 

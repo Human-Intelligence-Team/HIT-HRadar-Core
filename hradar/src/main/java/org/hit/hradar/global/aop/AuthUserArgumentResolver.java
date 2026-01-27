@@ -1,5 +1,7 @@
 package org.hit.hradar.global.aop;
 
+import lombok.RequiredArgsConstructor;
+import org.hit.hradar.global.context.RequestUserContext;
 import org.hit.hradar.global.dto.AuthUser;
 import org.hit.hradar.global.exception.UnauthorizedException;
 import org.springframework.core.MethodParameter;
@@ -10,7 +12,10 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
+@RequiredArgsConstructor
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private final RequestUserContext requestUserContext;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -34,11 +39,15 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             throw new UnauthorizedException("인증 헤더 누락");
         }
 
-        return new AuthUser(
+        AuthUser authUser = new AuthUser(
                 Long.valueOf(userId),
                 role,
                 Long.valueOf(companyId),
                 Long.valueOf(employeeId)
         );
+
+        requestUserContext.set(authUser);
+
+        return authUser;
     }
 }

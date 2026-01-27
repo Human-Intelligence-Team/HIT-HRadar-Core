@@ -10,11 +10,13 @@ import org.hit.hradar.domain.goal.command.domain.repository.KpiDetailRepository;
 import org.hit.hradar.domain.goal.command.infrastructure.KpiProgressLogJpaRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hit.hradar.domain.goal.command.domain.policy.GoalValidationPolicy.validateProgressCreatable;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class KpiProgressCommandService {
 
     private final KpiDetailRepository kpiDetailRepository;

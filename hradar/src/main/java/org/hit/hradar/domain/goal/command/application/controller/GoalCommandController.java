@@ -30,11 +30,11 @@ public class GoalCommandController {
 
         //상위목표가 없으면 root, 상위목표가 있으면 child
         if (request.getParentGoalId() == null) {
-            goalId = goalCommandService.createRootGoal(request, authUser.userId());
+            goalId = goalCommandService.createRootGoal(request, authUser.employeeId());
         }else {
-            goalId = goalCommandService.createChildGoal(request, authUser.userId());
+            goalId = goalCommandService.createChildGoal(request, authUser.employeeId());
         }
-        return ResponseEntity.ok(ApiResponse.success(null));
+        return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
     }
 
     //GOAL 수정
@@ -44,7 +44,7 @@ public class GoalCommandController {
             @PathVariable Long goalId,
             @RequestBody UpdateGoalRequest request
     ){
-        goalCommandService.updateGoal(goalId, request, authUser.userId());
+        goalCommandService.updateGoal(goalId, request, authUser.employeeId());
         return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
     }
 
@@ -55,7 +55,7 @@ public class GoalCommandController {
             @PathVariable Long goalId,
             @RequestBody ResubmitGoalRequest request
     ) {
-        Long newGoalId = goalCommandService.resubmitGoal(goalId, request,  authUser.userId());
+        Long newGoalId = goalCommandService.resubmitGoal(goalId, request,  authUser.employeeId());
         return ResponseEntity.ok(ApiResponse.success(newGoalId.toString()));
     }
 
@@ -65,7 +65,7 @@ public class GoalCommandController {
             @CurrentUser AuthUser authUser,
             @PathVariable Long goalId
     ) {
-        goalCommandService.submitGoal(goalId,  authUser.userId());
+        goalCommandService.submitGoal(goalId,  authUser.employeeId());
         return ResponseEntity.ok(ApiResponse.success(goalId.toString()));
     }
 
