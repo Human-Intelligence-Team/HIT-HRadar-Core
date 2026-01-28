@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
@@ -29,8 +30,6 @@ public class LocalFileStorageClient implements FileStorageClient {
         String originalName = file.getOriginalFilename();
         String extension = extractExtension(originalName);
 
-        validateExtension(extension);
-
         // 저장용 파일명 생성 (핵심)
         String storedName = UUID.randomUUID() + extension;
 
@@ -39,7 +38,9 @@ public class LocalFileStorageClient implements FileStorageClient {
             Files.createDirectories(baseDir);
 
             Path target = baseDir.resolve(storedName);
-            file.transferTo(target.toFile());
+            try (InputStream in = file.getInputStream()) {
+                Files.copy(in, target);
+            }
         } catch (IOException e) {
             throw new BusinessException(FileErrorCode.FAIL_UPLOAD);
         }
@@ -52,17 +53,27 @@ public class LocalFileStorageClient implements FileStorageClient {
         );
     }
 
+    @Override
+    public void delete(String storedName) {
+        try {
+            Path target = Path.of(BASE_DIR).resolve(storedName);
+
+            // 파일 없으면 조용히 종료 (이미 삭제된 경우)
+            if (!Files.exists(target)) {
+                return;
+            }
+
+            Files.delete(target);
+        } catch (IOException e) {
+            throw new BusinessException(FileErrorCode.FAIL_DELETE);
+        }
+    }
+
     private String extractExtension(String filename) {
         if (filename == null) {
             return "";
         }
         int idx = filename.lastIndexOf('.');
         return (idx > -1) ? filename.substring(idx + 1).toLowerCase() : "";
-    }
-
-    private void validateExtension(String ext) {
-        if (!ALLOWED_EXTENSIONS.contains(ext)) {
-            throw new BusinessException(FileErrorCode.INVALID_EXTENSION);
-        }
     }
 }

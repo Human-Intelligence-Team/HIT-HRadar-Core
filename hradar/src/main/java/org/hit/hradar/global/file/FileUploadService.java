@@ -19,5 +19,9 @@ public class FileUploadService {
         // 실제 저장
         return storageClient.upload(file);
     }
+
+    public void delete(String storedName) {
+        storageClient.delete(storedName);
+    }
 }
 
