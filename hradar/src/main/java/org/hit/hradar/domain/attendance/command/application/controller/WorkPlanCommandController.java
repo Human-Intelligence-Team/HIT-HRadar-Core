@@ -1,7 +1,7 @@
 package org.hit.hradar.domain.attendance.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalCreateRequest;
+import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalDraftCreateRequest;
 import org.hit.hradar.domain.approval.command.application.service.provider.ApprovalProviderService;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalSaveMode;
 import org.hit.hradar.domain.attendance.command.application.dto.request.WorkPlanCreateRequest;
@@ -25,7 +25,7 @@ public class WorkPlanCommandController {
   @PostMapping("/draft")
   public Long createDraft(
       @CurrentUser AuthUser authUser,
-      @RequestBody ApprovalCreateRequest request
+      @RequestBody ApprovalDraftCreateRequest request
   ) {
     return approvalProviderService.save(
         null,

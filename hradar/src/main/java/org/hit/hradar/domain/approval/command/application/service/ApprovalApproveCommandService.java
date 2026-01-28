@@ -20,7 +20,6 @@ public class ApprovalApproveCommandService {
   private final ApprovalLineJpaRepository approvalLineRepository;
   private final ApprovalDocumentJpaRepository approvalDocumentRepository;
   private final ApprovalHistoryJpaRepository approvalHistoryRepository;
-
   private final ApprovalEventPublisher approvalEventPublisher;
 
   // 문서 승인
@@ -97,5 +96,4 @@ public class ApprovalApproveCommandService {
     );
 
   }
-
 }

@@ -38,9 +38,8 @@ public class ApprovalDocument extends BaseTimeEntity {
   private Long writerId;
 
   //문서 유형
-  @Enumerated(EnumType.STRING)
   @Column(name = "doc_type", nullable = false)
-  private ApprovalDocumentType docType = ApprovalDocumentType.ATT_CORRECTION;
+  private String docType;
 
   //제목
   @Column(name = "title", nullable = false, length = 200)
@@ -146,7 +145,7 @@ public class ApprovalDocument extends BaseTimeEntity {
       Long writerId,
       Long companyId,
       Long deptId,
-      ApprovalDocumentType docType,
+      String docType,
       String title,
       String content
   ) {
@@ -163,14 +162,13 @@ public class ApprovalDocument extends BaseTimeEntity {
   public static ApprovalDocument createDraft(
       Long writerId,
       Long companyId,
-      ApprovalDocumentType docType,
+      String docType,
       String title,
       String content
   ) {
     ApprovalDocument doc = new ApprovalDocument();
     doc.writerId = writerId;
     doc.companyId = companyId;
-    doc.deptId = null;                // dept는 null로 간다고 했으니 고정
     doc.docType = docType;
     doc.title = title;
     doc.content = content;
@@ -186,7 +184,7 @@ public class ApprovalDocument extends BaseTimeEntity {
   public void update(
       String title,
       String content,
-      ApprovalDocumentType docType
+      String docType
   ) {
     if (this.status != ApprovalStatus.DRAFT) {
       throw new BusinessException(
