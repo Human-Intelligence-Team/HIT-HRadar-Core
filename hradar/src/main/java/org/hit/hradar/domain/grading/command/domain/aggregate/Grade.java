@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table
+@Table(name = "grade")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Grade extends BaseTimeEntity {

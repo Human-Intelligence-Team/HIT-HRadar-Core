@@ -9,6 +9,7 @@ import java.util.List;
 public interface EmployeeGradeMapper {
     List<EmployeeGradeStatusResponseDto> findEmployeeGradeStatusList(
             @Param("companyId") Long companyId,
+            @Param("deptId") Long deptId,
             @Param("cycleId") Long cycleId
     );
 }

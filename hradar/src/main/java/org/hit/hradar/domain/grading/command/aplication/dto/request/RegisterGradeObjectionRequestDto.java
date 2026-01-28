@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 public class RegisterGradeObjectionRequestDto {
 
     private Long individualGradeId;
-    private String ObjectionReason;
+    private String objectionReason;
 }

@@ -2,9 +2,12 @@ package org.hit.hradar.domain.grading.command.aplication.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.grading.command.aplication.dto.request.AssignIndividualGradeRequestDto;
+import org.hit.hradar.domain.grading.command.aplication.dto.request.IndividualGradeObjectionApproveRequestDto;
 import org.hit.hradar.domain.grading.command.aplication.dto.request.IndividualGradeUpdateRequestDto;
 import org.hit.hradar.domain.grading.command.aplication.sevice.IndividualGradeCommandService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +21,10 @@ public class IndividualGradeCommandController {
     //등록
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> assignIndividualGrade(
+            @CurrentUser AuthUser authUser,
             @RequestBody AssignIndividualGradeRequestDto request
     ) {
-        individualGradeCommandService.assignIndividualGrade(request);
+        individualGradeCommandService.assignIndividualGrade(authUser.companyId(), request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
@@ -60,6 +64,19 @@ public class IndividualGradeCommandController {
             @PathVariable Long individualGradeId
     ) {
         individualGradeCommandService.approveIndividualGrade(individualGradeId);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    //이의제기시 등급 수정 허가
+    @PostMapping("/{individualGradeId}/approve-by-objection")
+    public ResponseEntity<ApiResponse<Void>> approveByObjection(
+            @PathVariable Long individualGradeId,
+            @RequestBody IndividualGradeObjectionApproveRequestDto gradeObjectionApproveRequestDto
+    ) {
+        individualGradeCommandService.approveByObjection(
+                individualGradeId,
+                gradeObjectionApproveRequestDto
+        );
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

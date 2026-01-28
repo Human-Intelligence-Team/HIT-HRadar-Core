@@ -17,10 +17,12 @@ public class EmployeeGradeQueryService {
 
     public List<EmployeeGradeStatusResponseDto> getEmployeeGradeStatusList(
             Long companyId,
+            Long deptId,
             Long cycleId
     ) {
         return employeeGradeMapper.findEmployeeGradeStatusList(
                 companyId,
+                deptId,
                 cycleId
         );
     }

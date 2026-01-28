@@ -5,9 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class AssignIndividualGradeRequestDto {
-    private Long cycleId;
-    private Long empId;
+public class IndividualGradeObjectionApproveRequestDto {
 
     private Long gradeId;
     private String gradeReason;
