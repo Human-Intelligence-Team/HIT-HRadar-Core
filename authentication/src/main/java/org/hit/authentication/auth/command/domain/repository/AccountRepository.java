@@ -8,4 +8,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
   Optional<Account> findByComCodeAndLoginIdAndIsDeleted(String companyCode, String loginId, char isDeleted);
 
+  Optional<Account> findByAccIdAndIsDeleted(Long accId, Character isDeleted);
+
+
 }
