@@ -1,9 +1,7 @@
 package org.hit.hradar.domain.department.query.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.department.query.dto.DepartmentListResponse;
-import org.hit.hradar.domain.department.query.dto.DepartmentNode;
 import org.hit.hradar.domain.department.query.dto.DepartmentResponse;
 import org.hit.hradar.domain.department.query.dto.OrganizationChartResponse;
 import org.hit.hradar.domain.department.query.service.DepartmentQueryService;

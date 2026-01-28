@@ -33,7 +33,7 @@ public class PasswordResetService {
   public String requestResetToken(PasswordResetRequest req) {
     // 삭제 아닌 계정만 찾는 버전
     Account account = accountRepository
-        .findByCompanyCodeAndLoginIdAndIsDeleted(req.companyCode(), req.loginId(), 'N')
+        .findByComCodeAndLoginIdAndIsDeleted(req.comCode(), req.loginId(), 'N')
         .orElseThrow(() -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
 
