@@ -3,7 +3,7 @@ package org.hit.hradar.domain.attendance.query.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.IpPolicyType;
-import org.hit.hradar.domain.attendance.command.domain.repository.IpRangePolicyRepository;
+import org.hit.hradar.domain.attendance.command.infrastructure.IpRangePolicyJpaRepository;
 import org.hit.hradar.domain.attendance.query.dto.response.IpRangePolicyResponseDto;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class IpRangePolicyQueryService {
 
-  private final IpRangePolicyRepository ipRangePolicyRepository;
+  private final IpRangePolicyJpaRepository ipRangePolicyRepository;
 
   //관리자 회사 전체 IP 정책 목록
   public List<IpRangePolicyResponseDto> getAll(Long comId) {

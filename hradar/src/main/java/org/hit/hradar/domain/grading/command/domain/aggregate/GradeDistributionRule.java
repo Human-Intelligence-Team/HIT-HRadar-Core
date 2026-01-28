@@ -2,6 +2,7 @@ package org.hit.hradar.domain.grading.command.domain.aggregate;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
@@ -15,6 +16,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
         }
 )
 @Getter
+@NoArgsConstructor
 public class GradeDistributionRule extends BaseTimeEntity {
 
     @Id

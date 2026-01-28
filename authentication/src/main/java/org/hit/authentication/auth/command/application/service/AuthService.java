@@ -1,6 +1,7 @@
 package org.hit.authentication.auth.command.application.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hit.authentication.auth.AccountErrorCode;
 import org.hit.authentication.auth.AuthErrorCode;
 import org.hit.authentication.auth.command.application.dto.AccessTokenResponse;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -29,15 +31,16 @@ public class AuthService {
     @Transactional
     public TokenResponse login(LoginRequest request) {
 
-        Account account = accountRepository.findByLoginId(request.getLoginId())
-                .orElseThrow(
-                        () -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+      Account account = accountRepository
+          .findByComCodeAndLoginIdAndIsDeleted(request.getCompanyCode(), request.getLoginId(), 'N')
+          .orElseThrow(() -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
-        if (!account.getComCode().equals(request.getCompanyCode())) {
+
+      if (!account.getComCode().equals(request.getCompanyCode())) {
             throw new BusinessException(AccountErrorCode.COMPANY_INVALID);
         }
 
-        if (account.getStatus() == AccountStatus.RETIRED) {
+        if (account.getStatus() == AccountStatus.INACTIVE) {
             throw new BusinessException(AccountErrorCode.ACCOUNT_CANCELED);
         }
 
@@ -91,14 +94,15 @@ public class AuthService {
         jwtTokenProvider.validateToken(refreshToken);
 
         // RefreshToken이 Redis에 존재하는지 확인
-        Long userId = jwtTokenProvider.getUserIdFromJWT(refreshToken);
-
-        Boolean exists = authRedisService.existRefreshTokenByUserId(userId);
+        Long accId = jwtTokenProvider.getUserIdFromJWT(refreshToken);
+        log.info("[REISSUE] accId(from refreshToken)={}", accId);
+        Boolean exists = authRedisService.existRefreshTokenByUserId(accId);
         if (Boolean.FALSE.equals(exists)) {
             throw new BusinessException(AuthErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        Account account = accountRepository.findById(userId).orElseThrow(
+
+        Account account = accountRepository.findByAccIdAndIsDeleted(accId, 'N').orElseThrow(
                         () -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
         TokenDTO tokenDTO = TokenDTO.builder()

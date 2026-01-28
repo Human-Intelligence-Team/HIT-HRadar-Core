@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.grading.query.mapper.TeamGradeDistributionPolicyMapper">
+
+    <select id="findByTeamGrade"
+            resultType="org.hit.hradar.domain.grading.query.dto.response.TeamGradeDistributionPolicyDto">
+        SELECT
+            policy_id       AS policyId,
+            company_id      AS companyId,
+            team_grade_id   AS teamGradeId,
+            member_grade_id AS memberGradeId,
+            min_ratio       AS minRatio,
+            max_ratio       AS maxRatio
+        FROM team_grade_distribution_policy
+        WHERE company_id = #{companyId}
+          AND team_grade_id = #{teamGradeId}
+          AND is_deleted = 'N'
+        ORDER BY member_grade_id
+    </select>
+
+    <select id="findOne"
+            resultType="org.hit.hradar.domain.grading.query.dto.response.TeamGradeDistributionPolicyDto">
+        SELECT
+            policy_id       AS policyId,
+            company_id      AS companyId,
+            team_grade_id   AS teamGradeId,
+            member_grade_id AS memberGradeId,
+            min_ratio       AS minRatio,
+            max_ratio       AS maxRatio
+        FROM team_grade_distribution_policy
+        WHERE company_id = #{companyId}
+          AND team_grade_id = #{teamGradeId}
+          AND member_grade_id = #{memberGradeId}
+          AND is_deleted = 'N'
+    </select>
+
+</mapper>

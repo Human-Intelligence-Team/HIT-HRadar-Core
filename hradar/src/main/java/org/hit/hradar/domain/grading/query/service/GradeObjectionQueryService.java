@@ -1,6 +1,7 @@
 package org.hit.hradar.domain.grading.query.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.grading.query.dto.response.GradeObjectionAdminResponseDto;
 import org.hit.hradar.domain.grading.query.dto.response.GradeObjectionResponseDto;
 import org.hit.hradar.domain.grading.query.mapper.GradeObjectionMapper;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,15 @@ public class GradeObjectionQueryService {
         return gradeObjectionMapper.findByIndividualGradeId(
                 individualGradeId
         );
+    }
+
+    public List<GradeObjectionAdminResponseDto> getObjectionsByDepartment( Long companyId, Long deptId) {
+        return gradeObjectionMapper.findByDepartment(companyId, deptId);
+    }
+
+    public List<GradeObjectionAdminResponseDto> getAllObjections(
+            Long companyId
+    ) {
+        return gradeObjectionMapper.findAllByCompany(companyId);
     }
 }

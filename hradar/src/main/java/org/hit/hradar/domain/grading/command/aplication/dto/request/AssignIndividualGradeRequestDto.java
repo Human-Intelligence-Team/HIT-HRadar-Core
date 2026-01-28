@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class AssignIndividualGradeRequestDto {
-    private Long companyId;
     private Long cycleId;
     private Long empId;
 
