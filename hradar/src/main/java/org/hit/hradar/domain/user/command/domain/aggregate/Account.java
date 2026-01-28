@@ -42,9 +42,10 @@ public class Account {
    @Column(name = "login_id", nullable = false, length = 50)
    private String loginId;
 
-   @Column(name = "email", length = 50) private String email;
+   @Column(name = "email", length = 50)
+   private String email;
 
-   @Column(name = "password", nullable = false, length = 255)
+   @Column(name = "password", nullable = false, length = 150)
    private String password;
 
    @Column(name = "name", nullable = false, length = 100)

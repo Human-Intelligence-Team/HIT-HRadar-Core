@@ -2,10 +2,12 @@ package org.hit.hradar.domain.user.command.application.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hit.hradar.domain.user.UserErrorCode;
 import org.hit.hradar.domain.user.command.application.dto.request.ChangeMyPasswordRequest;
 import org.hit.hradar.domain.user.command.domain.aggregate.Account;
 import org.hit.hradar.domain.user.command.domain.repository.AccountRepository;
 import org.hit.hradar.global.client.AuthInternalClient;
+import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +25,10 @@ public class MyPasswordCommandService {
   public void changeMyPassword(Long accId, ChangeMyPasswordRequest request) {
 
     Account account = accountRepository.findByAccIdAndIsDeleted(accId, 'N')
-        .orElseThrow(() -> new IllegalArgumentException("ACCOUNT_NOT_FOUND"));
+        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
     if (!passwordEncoder.matches(request.currentPassword(), account.getPassword())) {
-      throw new IllegalArgumentException("INVALID_PASSWORD");
+      throw new BusinessException(UserErrorCode.PASSWORD_DUPLICATED);
     }
 
     account.updatePassword(passwordEncoder.encode(request.newPassword()));

@@ -1,6 +1,7 @@
 package org.hit.hradar.domain.company.command.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 //회사 수정 dto
@@ -10,15 +11,20 @@ import lombok.*;
 @Builder
 public class UpdateCompanyRequest {
 
-  @NotBlank
-  private String comName;   // 회사명
+  @NotBlank(message = "회사이름은 필수 입니다.")
+  @Size(max = 100)
+  private String comName;
 
-  @NotBlank
-  private String bizNo;     // 사업자번호 (변경 가능 정책이면 유지, 아니면 제거)
+  @NotBlank(message = "사업자 등록번호는 필수 입니다.")
+  @Size(max = 30)
+  private String bizNo;
 
-  private String address;   // 주소
+  @Size(max = 255)
+  private String address;
 
-  private String comTel;    // 전화번호
+  @Size(max = 30)
+  private String comTel;
 
+  @Size(max = 10)
   private String foundDate;
 }

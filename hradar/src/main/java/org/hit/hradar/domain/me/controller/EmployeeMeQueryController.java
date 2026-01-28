@@ -20,7 +20,14 @@ public class EmployeeMeQueryController {
   public ResponseEntity<ApiResponse<MeResponse>> getMe(
       @CurrentUser AuthUser authUser
   ) {
-    MeResponse res = employeeMeQueryService.getMe(authUser);
+    Long userId = authUser.userId();
+    String role = authUser.role();
+    Long comId = authUser.companyId();
+    Long empId = authUser.employeeId();
+
+    MeResponse res =
+        employeeMeQueryService.getMe(userId, role, comId, empId);
+
     return ResponseEntity.ok(ApiResponse.success(res));
   }
 }

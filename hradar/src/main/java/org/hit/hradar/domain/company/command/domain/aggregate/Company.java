@@ -2,8 +2,6 @@ package org.hit.hradar.domain.company.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-//import org.hit.hradar.domain.company.CompanyErrorCode;
 import org.hit.hradar.domain.company.CompanyErrorCode;
 import org.hit.hradar.domain.companyApplication.command.domain.aggregate.CompanyApplicationStatus;
 import org.hit.hradar.global.dto.BaseTimeEntity;

@@ -28,35 +28,38 @@ public class ComAppCommandController {
    */
   @PostMapping("/submit")
   public ResponseEntity<ApiResponse<CreateComAppResponse>> create(
-      @Valid @RequestBody CreateComAppRequest request
+      @RequestBody @Valid CreateComAppRequest request
   ) {
     CreateComAppResponse response = comAppCommandService.create(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
-  /**
-   * 회사 신청 승인
-   */
   @PostMapping("/{applicationId}/approve")
   public ResponseEntity<ApiResponse<ApproveComAppResponse>> approve(
-      @CurrentUser AuthUser authUser,
-      @PathVariable Long applicationId
+      @PathVariable Long applicationId,
+      @CurrentUser AuthUser authUser
   ) {
-    ApproveComAppResponse response = comAppApprovalService.approve(applicationId, authUser);
+    Long userId = authUser.userId();
+    String role = authUser.role();
+
+    ApproveComAppResponse response =
+        comAppApprovalService.approve(applicationId, userId, role);
+
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
-  /**
-   * 회사 신청 반려
-   */
   @PostMapping("/{applicationId}/reject")
   public ResponseEntity<ApiResponse<RejectComAppResponse>> reject(
-      @CurrentUser AuthUser authUser,
       @PathVariable Long applicationId,
-      @Valid @RequestBody RejectComAppRequest request
+      @RequestBody @Valid RejectComAppRequest request,
+      @CurrentUser AuthUser authUser
   ) {
+    Long userId = authUser.userId();
+    String role = authUser.role();
+
     RejectComAppResponse response =
-        comAppApprovalService.reject(applicationId, authUser, request.getReason());
+        comAppApprovalService.reject(applicationId, userId, role, request.getReason());
+
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 }

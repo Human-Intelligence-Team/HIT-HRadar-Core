@@ -6,9 +6,9 @@ import org.hit.hradar.domain.companyApplication.CompanyApplicationErrorCode;
 import org.hit.hradar.domain.companyApplication.query.dto.ComAppDetailResponse;
 import org.hit.hradar.domain.companyApplication.query.dto.ComAppListItemResponse;
 import org.hit.hradar.domain.companyApplication.query.dto.ComAppSearchRequest;
+import org.hit.hradar.domain.companyApplication.query.dto.ComAppSearchResponse;
 import org.hit.hradar.domain.companyApplication.query.mapper.ComAppQueryMapper;
 import org.hit.hradar.domain.user.UserErrorCode;
-import org.hit.hradar.global.dto.AuthUser;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +20,13 @@ public class ComAppQueryService {
 
   private final ComAppQueryMapper comAppQueryMapper;
 
-  public List<ComAppListItemResponse> search(AuthUser authUser, ComAppSearchRequest request) {
+  public ComAppSearchResponse search(
+      Long userId,
+      String role,
+      ComAppSearchRequest request
+  ) {
 
-    if (authUser == null || authUser.role() == null || !"admin".equalsIgnoreCase(authUser.role())) {
+    if (userId == null || role == null || !"admin".equalsIgnoreCase(role)) {
       throw new BusinessException(UserErrorCode.FORBIDDEN);
     }
 
@@ -30,27 +34,19 @@ public class ComAppQueryService {
       request = new ComAppSearchRequest();
     }
 
-    if (request.getCompanyName() != null) {
-      String v = request.getCompanyName().trim();
-      request.setCompanyName(v.isEmpty() ? null : v);
-    }
+    normalize(request);
 
-    if (request.getBizNo() != null) {
-      String v = request.getBizNo().trim();
-      request.setBizNo(v.isEmpty() ? null : v);
-    }
-
-    if (request.getStatus() != null) {
-      String v = request.getStatus().trim();
-      request.setStatus(v.isEmpty() ? null : v);
-    }
-
-    return comAppQueryMapper.findList(request);
+    List<ComAppListItemResponse> list = comAppQueryMapper.findList(request);
+    return ComAppSearchResponse.of(list);
   }
 
-  public ComAppDetailResponse getDetail(AuthUser authUser, Long applicationId) {
+  public ComAppDetailResponse getDetail(
+      Long userId,
+      String role,
+      Long applicationId
+  ) {
 
-    if (authUser == null || authUser.role() == null || !"admin".equalsIgnoreCase(authUser.role())) {
+    if (userId == null || role == null || !"admin".equalsIgnoreCase(role)) {
       throw new BusinessException(UserErrorCode.FORBIDDEN);
     }
 
@@ -58,7 +54,22 @@ public class ComAppQueryService {
     if (detail == null) {
       throw new BusinessException(CompanyApplicationErrorCode.APPLICATION_NOT_FOUND);
     }
+
     return detail;
   }
 
+  private void normalize(ComAppSearchRequest request) {
+    if (request.getCompanyName() != null) {
+      String v = request.getCompanyName().trim();
+      request.setCompanyName(v.isEmpty() ? null : v);
+    }
+    if (request.getBizNo() != null) {
+      String v = request.getBizNo().trim();
+      request.setBizNo(v.isEmpty() ? null : v);
+    }
+    if (request.getStatus() != null) {
+      String v = request.getStatus().trim();
+      request.setStatus(v.isEmpty() ? null : v);
+    }
+  }
 }

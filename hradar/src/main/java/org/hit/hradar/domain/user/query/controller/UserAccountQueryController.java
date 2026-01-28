@@ -1,8 +1,9 @@
 package org.hit.hradar.domain.user.query.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.user.query.dto.*;
+import org.hit.hradar.domain.user.query.dto.UserAccountDetailResponse;
+import org.hit.hradar.domain.user.query.dto.UserAccountListResponse;
+import org.hit.hradar.domain.user.query.dto.UserAccountSearchCondition;
 import org.hit.hradar.domain.user.query.service.UserAccountQueryService;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
@@ -18,20 +19,24 @@ public class UserAccountQueryController {
   private final UserAccountQueryService userAccountQueryService;
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<UserAccountListItemResponse>>> list(
-      @CurrentUser AuthUser authUser,
-      @ModelAttribute UserAccountSearchCondition condition
+  public ResponseEntity<ApiResponse<UserAccountListResponse>> list(
+      @ModelAttribute UserAccountSearchCondition condition,
+      @CurrentUser AuthUser authUser
   ) {
-    List<UserAccountListItemResponse> result = userAccountQueryService.getList(authUser, condition);
+    Long comId = authUser.companyId();
+
+    UserAccountListResponse result = userAccountQueryService.getList(comId, condition);
     return ResponseEntity.ok(ApiResponse.success(result));
   }
 
   @GetMapping("/{accId}")
   public ResponseEntity<ApiResponse<UserAccountDetailResponse>> detail(
-      @CurrentUser AuthUser authUser,
-      @PathVariable Long accId
+      @PathVariable Long accId,
+      @CurrentUser AuthUser authUser
   ) {
-    UserAccountDetailResponse result = userAccountQueryService.getDetail(authUser, accId);
+    Long comId = authUser.companyId();
+
+    UserAccountDetailResponse result = userAccountQueryService.getDetail(comId, accId);
     return ResponseEntity.ok(ApiResponse.success(result));
   }
 }

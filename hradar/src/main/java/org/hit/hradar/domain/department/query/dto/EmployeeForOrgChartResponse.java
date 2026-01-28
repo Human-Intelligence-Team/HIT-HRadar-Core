@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.employee.query.dto;
+package org.hit.hradar.domain.department.query.dto;
 
 import lombok.Getter;
 

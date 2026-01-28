@@ -24,7 +24,7 @@ public class EmailService {
       helper.setText("""
           <p>비밀번호 재설정을 요청하셨습니다.</p>
           <p><a href="%s">비밀번호 재설정</a></p>
-          <p>본 링크는 30분간 유효합니다.</p>
+          <p>본 링크는 15분간 유효합니다.</p>
           <p>요청하지 않으셨다면 이 메일을 무시하세요.</p>
           """.formatted(link), true);
 

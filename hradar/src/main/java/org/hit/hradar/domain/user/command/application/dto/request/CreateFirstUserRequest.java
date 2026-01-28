@@ -1,6 +1,7 @@
 package org.hit.hradar.domain.user.command.application.dto.request;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

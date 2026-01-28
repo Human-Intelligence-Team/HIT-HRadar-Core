@@ -2,7 +2,7 @@ package org.hit.hradar.domain.employee.query.mapper;
 
 import java.util.Optional;
 import org.apache.ibatis.annotations.Mapper;
-import org.hit.hradar.domain.employee.query.dto.EmployeeForOrgChartResponse; // Import the DTO
+import org.hit.hradar.domain.department.query.dto.EmployeeForOrgChartResponse; // Import the DTO
 import org.hit.hradar.domain.employee.query.dto.EmployeeResponse;
 
 import java.util.List;

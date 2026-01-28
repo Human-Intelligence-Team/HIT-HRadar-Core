@@ -1,7 +1,8 @@
 package org.hit.hradar.domain.employee.query.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.employee.query.dto.EmployeeListRequest;
+import org.hit.hradar.domain.employee.query.dto.EmployeeListResponse;
 import org.hit.hradar.domain.employee.query.dto.EmployeeResponse;
 import org.hit.hradar.domain.employee.query.service.EmployeeQueryService;
 import org.hit.hradar.global.aop.CurrentUser;
@@ -22,17 +23,23 @@ public class EmployeeQueryController {
       @CurrentUser AuthUser authUser,
       @PathVariable Long empId
   ) {
-    EmployeeResponse res = employeeQueryService.getById(authUser.companyId(), empId);
+    EmployeeResponse res =
+        employeeQueryService.getById(authUser.companyId(), empId);
+
     return ResponseEntity.ok(ApiResponse.success(res));
   }
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<EmployeeResponse>>> list(
+  public ResponseEntity<ApiResponse<EmployeeListResponse>> list(
       @CurrentUser AuthUser authUser,
-      @RequestParam(required = false) Long deptId,
-      @RequestParam(required = false) Long positionId
+      EmployeeListRequest request
   ) {
-    List<EmployeeResponse> res = employeeQueryService.list(authUser.companyId(), deptId, positionId);
+    Long comId = authUser.companyId(); // authUser에서 가져온 정보
+
+    EmployeeListResponse res = employeeQueryService.list(comId, request);
+
     return ResponseEntity.ok(ApiResponse.success(res));
   }
+
 }
+

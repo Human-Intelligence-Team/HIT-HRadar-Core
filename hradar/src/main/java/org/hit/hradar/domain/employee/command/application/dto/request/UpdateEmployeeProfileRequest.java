@@ -10,7 +10,7 @@ import org.hit.hradar.domain.employee.command.domain.aggregate.Gender;
 @Builder
 public class UpdateEmployeeProfileRequest {
   private String name;       // required
-  private String email;      // nullable (들어오면 회사 내 유니크)
+  private String email;      // nullable
   private Gender gender;     // nullable
   private String birth;      // nullable
   private LocalDate hireDate;// nullable

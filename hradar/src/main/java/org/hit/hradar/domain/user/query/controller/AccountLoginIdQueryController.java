@@ -18,10 +18,13 @@ public class AccountLoginIdQueryController {
 
   @GetMapping("/{accId}/login-id")
   public ResponseEntity<ApiResponse<AccountLoginIdResponse>> getLoginId(
-      @CurrentUser AuthUser authUser,
-      @PathVariable Long accId
+      @PathVariable Long accId,
+      @CurrentUser AuthUser authUser
   ) {
-    AccountLoginIdResponse res = userAccountQueryService.getLoginIdAsAdmin(authUser, accId);
+    Long comId = authUser.companyId();
+    String role = authUser.role();
+
+    AccountLoginIdResponse res = userAccountQueryService.getLoginIdAsAdmin(comId, role, accId);
     return ResponseEntity.ok(ApiResponse.success(res));
   }
 }

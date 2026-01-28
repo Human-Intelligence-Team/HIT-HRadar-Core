@@ -6,6 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PositionJpaRepository extends JpaRepository<Positions, Long>, PositionRepository {
 
-  boolean existsByPositionIdAndComIdAndIsDeleted(Long positionId, Long comId, Character isDeleted);
 
 }

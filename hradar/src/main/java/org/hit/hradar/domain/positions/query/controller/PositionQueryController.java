@@ -2,6 +2,7 @@ package org.hit.hradar.domain.positions.query.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.positions.query.dto.PositionListResponse;
 import org.hit.hradar.domain.positions.query.dto.PositionResponse;
 import org.hit.hradar.domain.positions.query.service.PositionQueryService;
 import org.hit.hradar.global.aop.CurrentUser;
@@ -22,15 +23,19 @@ public class PositionQueryController {
       @PathVariable Long positionId,
       @CurrentUser AuthUser authUser
   ) {
-    PositionResponse response = positionQueryService.getPositionById(positionId, authUser.companyId());
+    PositionResponse response =
+        positionQueryService.getPositionById(positionId, authUser.companyId());
+
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<PositionResponse>>> getAllPositionsByCompany(
+  public ResponseEntity<ApiResponse<PositionListResponse>> getAllPositionsByCompany(
       @CurrentUser AuthUser authUser
   ) {
-    List<PositionResponse> responses = positionQueryService.getAllPositionsByCompany(authUser.companyId());
-    return ResponseEntity.ok(ApiResponse.success(responses));
+    PositionListResponse response =
+        positionQueryService.getAllPositionsByCompany(authUser.companyId());
+
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 }

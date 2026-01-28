@@ -3,7 +3,6 @@ package org.hit.hradar.domain.user.command.application.service;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.user.UserErrorCode;
 import org.hit.hradar.domain.user.command.application.dto.request.CreateFirstUserRequest;
-import org.hit.hradar.domain.user.command.application.dto.request.CreateAccountRequest;
 import org.hit.hradar.domain.user.command.application.dto.request.UpdateUserAccountRequest;
 import org.hit.hradar.domain.user.command.domain.aggregate.Account;
 import org.hit.hradar.domain.user.command.domain.aggregate.AccountStatus;
@@ -71,52 +70,25 @@ public class UserService {
   }
 
   @Transactional
-  public Long createUserAccount(CreateAccountRequest request, Long comId) {
-    if (userJpaRepository.existsByComIdAndLoginIdAndStatus(comId, request.getLoginId(), AccountStatus.ACTIVE)) {
-      throw new BusinessException(UserErrorCode.DUPLICATE_LOGIN_ID);
-    }
-    if (request.getEmail() != null && userJpaRepository.existsByComIdAndEmailAndStatus(comId, request.getEmail(), AccountStatus.ACTIVE)) {
-      throw new BusinessException(UserErrorCode.EMAIL_ALREADY_EXISTS);
-    }
-
-    String encodedPw = passwordEncoder.encode(request.getPassword());
-
-    Account saved = accountRepository.save(
-        Account.builder()
-            .comId(comId)
-            .loginId(request.getLoginId())
-            .name(request.getName())
-            .email(request.getEmail())
-            .password(encodedPw)
-            .userRole(request.getUserRole())
-            .build()
-    );
-    return saved.getAccId();
-  }
-
-  @Transactional
   public void updateUserAccount(Long accId, Long comId, UpdateUserAccountRequest request) {
+
     Account account = userJpaRepository.findByAccIdAndComIdAndStatus(accId, comId, AccountStatus.ACTIVE)
         .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
 
-    if (!account.getLoginId().equals(request.getLoginId()) &&
-        userJpaRepository.existsByComIdAndLoginIdAndStatus(comId, request.getLoginId(), AccountStatus.ACTIVE)) {
+    String newLoginId = request.getLoginId();
+    String newEmail = request.getEmail();
+
+    if (!account.getLoginId().equals(newLoginId)
+        && userJpaRepository.existsByComIdAndLoginIdAndStatus(comId, newLoginId, AccountStatus.ACTIVE)) {
       throw new BusinessException(UserErrorCode.DUPLICATE_LOGIN_ID);
     }
-    if (request.getEmail() != null && !account.getEmail().equals(request.getEmail()) &&
-        userJpaRepository.existsByComIdAndEmailAndStatus(comId, request.getEmail(), AccountStatus.ACTIVE)) {
+
+    if (newEmail != null && !newEmail.equals(account.getEmail())
+        && userJpaRepository.existsByComIdAndEmailAndStatus(comId, newEmail, AccountStatus.ACTIVE)) {
       throw new BusinessException(UserErrorCode.EMAIL_ALREADY_EXISTS);
     }
 
-    account.updateLoginInfo(request.getLoginId(), request.getName(), request.getEmail());
-    account.updateAccountStatus(request.getStatus());
-  }
-
-  @Transactional
-  public void deleteUserAccount(Long accId, Long comId) {
-    Account account = userJpaRepository.findByAccIdAndComIdAndStatus(accId, comId, AccountStatus.ACTIVE)
-        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
-    account.isDeleted();
+    account.updateLoginInfo(newLoginId, request.getName(), newEmail);
   }
 
 

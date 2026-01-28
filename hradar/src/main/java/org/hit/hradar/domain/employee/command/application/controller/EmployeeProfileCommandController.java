@@ -7,7 +7,6 @@ import org.hit.hradar.domain.employee.command.application.dto.request.UpdateEmpl
 import org.hit.hradar.domain.employee.command.application.dto.reponse.UpdateEmployeeProfileResponse;
 import org.hit.hradar.domain.employee.command.application.service.EmployeeAccountCommandService;
 import org.hit.hradar.domain.employee.command.application.service.EmployeeCommandService;
-import org.hit.hradar.domain.employee.command.application.service.EmployeeUpdateApplicationService;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.hit.hradar.global.dto.AuthUser;
@@ -24,34 +23,40 @@ public class EmployeeProfileCommandController {
 
   @PostMapping
   public ResponseEntity<ApiResponse<CreateEmployeeWithAccountResponse>> createEmployee(
-      @CurrentUser AuthUser authUser,
-      @RequestBody CreateEmployeeWithAccountRequest request
+      @RequestBody CreateEmployeeWithAccountRequest request,
+      @CurrentUser AuthUser authUser
   ) {
-    CreateEmployeeWithAccountResponse response =
-        employeeAccountCommandService.createEmployeeWithAccount(authUser, request);
+    Long companyId = authUser.companyId();
 
-    return ResponseEntity.ok(ApiResponse.success(null));
+    CreateEmployeeWithAccountResponse response =
+        employeeAccountCommandService.createEmployeeWithAccount(companyId, request);
+
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   @PatchMapping("/{empId}/profile")
   public ResponseEntity<ApiResponse<UpdateEmployeeProfileResponse>> updateProfile(
-      @CurrentUser AuthUser authUser,
       @PathVariable Long empId,
-      @RequestBody UpdateEmployeeProfileRequest request
+      @RequestBody UpdateEmployeeProfileRequest request,
+      @CurrentUser AuthUser authUser
   ) {
+    Long companyId = authUser.companyId();
+
     UpdateEmployeeProfileResponse response =
-        employeeCommandService.updateProfile(authUser.companyId(), empId, request);
+        employeeCommandService.updateProfile(companyId, empId, request);
 
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   @DeleteMapping("/{empId}")
   public ResponseEntity<ApiResponse<Void>> deleteEmployee(
-      @CurrentUser AuthUser authUser,
-      @PathVariable Long empId
+      @PathVariable Long empId,
+      @CurrentUser AuthUser authUser
   ) {
-    employeeCommandService.deleteEmployee(empId, authUser.companyId());
+    Long companyId = authUser.companyId();
+
+    employeeCommandService.deleteEmployee(empId, companyId);
+
     return ResponseEntity.ok(ApiResponse.success(null));
   }
-
 }

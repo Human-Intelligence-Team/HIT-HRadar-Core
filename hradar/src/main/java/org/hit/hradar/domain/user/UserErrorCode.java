@@ -5,17 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 
 public enum UserErrorCode implements ErrorCode {
-  USER_NOT_FOUND("USER_001", "User not found", HttpStatus.NOT_FOUND),
-  USER_DUPLICATED("USER_002", "User duplicated", HttpStatus.BAD_REQUEST),
-  USER_INVALID_PASSWORD("USER_003", "User invalid password", HttpStatus.BAD_REQUEST),
-  USER_CANCELED("USER_004", "User canceled", HttpStatus.NOT_ACCEPTABLE),
-  DUPLICATE_LOGIN_ID("USER_005","User Id duplicated", HttpStatus.BAD_REQUEST),
-  EMAIL_REQUIRED("EMAIL_001", "Email required" , HttpStatus.BAD_REQUEST),
-  INVALID_PURPOSE("EMAIL_002", "Purpose required" , HttpStatus.BAD_REQUEST),
-  EMAIL_ALREADY_EXISTS("EMAIL_003", "Email already exists", HttpStatus.BAD_REQUEST),
-  ACCOUNT_RETIRED("USER_006", "Account is retired.", HttpStatus.FORBIDDEN), // Added
-  FORBIDDEN("USER_007", "Access is forbidden.", HttpStatus.FORBIDDEN), // Added
-  INVALID_LOGIN_ID("USER_008","로그인id가 존재하지 않습니다.", HttpStatus.BAD_REQUEST)
+  USER_NOT_FOUND("USER_001", "회원이 존재하지 않습니다", HttpStatus.NOT_FOUND),
+  USER_DUPLICATED("USER_002", "같은 회원이 이미 존재합니다", HttpStatus.BAD_REQUEST),
+  PASSWORD_DUPLICATED("USER_003", "같은 비빌번호가 존재합니다", HttpStatus.BAD_REQUEST),
+  DUPLICATE_LOGIN_ID("USER_005","해당 ID가 이미 존재합니다", HttpStatus.BAD_REQUEST),
+  EMAIL_REQUIRED("EMAIL_001", "이메일이 필요합니다" , HttpStatus.BAD_REQUEST),
+  EMAIL_ALREADY_EXISTS("EMAIL_002", "같은 이메일이 존재합니다", HttpStatus.BAD_REQUEST),
+  FORBIDDEN("USER_007", "접근 권한이 없습니다", HttpStatus.FORBIDDEN),
+  INVALID_LOGIN_ID("USER_008","로그인id가 존재하지 않습니다", HttpStatus.BAD_REQUEST)
   ;
   private final String errorCode;
   private final String message;

@@ -1,6 +1,7 @@
 package org.hit.hradar.domain.positions.query.service;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.positions.PositionErrorCode;
+import org.hit.hradar.domain.positions.query.dto.PositionListResponse;
 import org.hit.hradar.domain.positions.query.dto.PositionResponse;
 import org.hit.hradar.domain.positions.query.mapper.PositionQueryMapper;
 import org.hit.hradar.global.exception.BusinessException;
@@ -16,10 +17,9 @@ public class PositionQueryService {
 
   private final PositionQueryMapper positionQueryMapper;
 
-
   private Long toComId(Long companyId) {
     if (companyId == null) {
-      throw new BusinessException(PositionErrorCode.POSITION_NOT_FOUND); // 정책에 맞는 에러로 바꿔도 됨
+      throw new BusinessException(PositionErrorCode.POSITION_NOT_FOUND);
     }
     return companyId;
   }
@@ -31,9 +31,12 @@ public class PositionQueryService {
         .orElseThrow(() -> new BusinessException(PositionErrorCode.POSITION_NOT_FOUND));
   }
 
-  public List<PositionResponse> getAllPositionsByCompany(Long companyId) {
+  public PositionListResponse getAllPositionsByCompany(Long companyId) {
     Long comId = toComId(companyId);
 
-    return positionQueryMapper.findAllPositionsByCompany(comId);
+    List<PositionResponse> list =
+        positionQueryMapper.findAllPositionsByCompany(comId);
+
+    return PositionListResponse.of(list);
   }
 }

@@ -19,6 +19,7 @@ public enum EmployeeErrorCode implements ErrorCode {
   private final String errorCode;
   private final String message;
   private final HttpStatus httpStatus;
+
   EmployeeErrorCode(String errorCode, String message, HttpStatus httpStatus) {
     this.errorCode = errorCode;
     this.message = message;

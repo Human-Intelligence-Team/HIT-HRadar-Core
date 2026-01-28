@@ -27,20 +27,24 @@ public class CompanyQueryController {
   public ResponseEntity<ApiResponse<CompanyDetailResponse>> getMyCompany(
       @CurrentUser AuthUser authUser
   ) {
-    return ResponseEntity.ok(ApiResponse.success(companyQueryService.getMyCompany(authUser)));
+    Long companyId = authUser.companyId();
+    CompanyDetailResponse response = companyQueryService.getMyCompany(companyId);
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   @GetMapping
   public ResponseEntity<ApiResponse<List<CompanyResponse>>> getCompanies(
       CompanySearchCondition condition
   ) {
-    return ResponseEntity.ok(ApiResponse.success(companyQueryService.getCompanies(condition)));
+    List<CompanyResponse> response = companyQueryService.getCompanies(condition);
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   @GetMapping("/{companyId}")
   public ResponseEntity<ApiResponse<CompanyDetailResponse>> getCompany(
       @PathVariable Long companyId
   ) {
-    return ResponseEntity.ok(ApiResponse.success(companyQueryService.getCompany(companyId)));
+    CompanyDetailResponse response = companyQueryService.getCompany(companyId);
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 }

@@ -17,11 +17,14 @@ public class EmployeeMeQueryService {
 
   private final EmployeeMeQueryMapper employeeMeQueryMapper;
 
-  public MeResponse getMe(AuthUser authUser) {
-    Long comId = authUser.companyId();
-    Long empId = authUser.employeeId();
+  public MeResponse getMe(
+      Long userId,
+      String role,
+      Long comId,
+      Long empId
+  ) {
 
-    if (comId == null || empId == null) {
+    if (userId == null || role == null || comId == null || empId == null) {
       throw new BusinessException(UserErrorCode.FORBIDDEN);
     }
 
@@ -29,21 +32,26 @@ public class EmployeeMeQueryService {
         .orElseThrow(() -> new BusinessException(EmployeeErrorCode.EMPLOYEE_ERROR_CODE));
 
     return MeResponse.builder()
-        .userId(authUser.userId())
-        .role(authUser.role())
+        // token 기반
+        .userId(userId)
+        .role(role)
 
+        // 회사
         .comId(profile.getComId())
         .companyCode(profile.getCompanyCode())
         .companyName(profile.getCompanyName())
 
+        // 사원
         .empId(profile.getEmpId())
         .employeeName(profile.getEmployeeName())
         .employeeNo(profile.getEmployeeNo())
         .email(profile.getEmail())
 
+        // 부서
         .deptId(profile.getDeptId())
         .deptName(profile.getDeptName())
 
+        // 직위
         .positionId(profile.getPositionId())
         .positionName(profile.getPositionName())
 
