@@ -40,10 +40,6 @@ public class Holiday extends BaseTimeEntity  {
   @Column(name = "holiday_type", nullable = false)
   private HolidayType holidayType = HolidayType.LEGAL;
 
-  //급여 휴일
-  @Column(name = "is_paid", nullable = false)
-  private boolean paid;
-
   //비고
   @Column(name = "description", length = 200)
   private String description;

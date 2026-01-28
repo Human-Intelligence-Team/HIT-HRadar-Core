@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.companyApplication.query.mapper.ComAppQueryMapper">
+
+  <select id="selectCompanyApplications"
+    parameterType="org.hit.hradar.domain.companyApplication.query.dto.ComAppSearchRequest"
+    resultType="org.hit.hradar.domain.companyApplication.query.dto.ComAppListItemResponse">
+
+    SELECT
+    application_id      AS appId,
+    company_name        AS companyName,
+    biz_no              AS bizNo,
+    company_telephone   AS comTel,
+    address             AS address,
+
+    creater_name        AS createrName,
+    creater_email       AS createrEmail,
+    creater_login_id    AS createrLoginId,
+
+    status              AS status,
+    reviewed_at         AS reviewedAt,
+    reviewed_by         AS reviewedBy,
+    reject_reason       AS rejectReason,
+
+    created_at          AS createdAt,
+    updated_at          AS updatedAt
+    FROM company_application
+    WHERE 1=1
+
+    <!-- 회사명 부분검색 -->
+    <if test="companyName != null and companyName != ''">
+      AND company_name LIKE CONCAT('%', #{companyName}, '%')
+    </if>
+
+    <!-- 사업자번호 정확검색 -->
+    <if test="bizNo != null and bizNo != ''">
+      AND biz_no = #{bizNo}
+    </if>
+
+    <!-- 상태 필터 -->
+    <if test="status != null and status != ''">
+      AND status = #{status}
+    </if>
+
+    ORDER BY application_id DESC
+
+  </select>
+
+</mapper>
