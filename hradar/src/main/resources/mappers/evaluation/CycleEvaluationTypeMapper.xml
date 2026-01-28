@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.CycleEvaluationTypeMapper">
+
+    <select id="selectEvaluationTypesByCycleId"
+            parameterType="long"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.CycleEvaluationTypeResponse">
+
+        SELECT
+            et.eval_type_id AS evalTypeId,
+            et.type_name    AS typeName
+        FROM cycle_evaluation_type cet
+                 INNER JOIN evaluation_type et
+                            ON cet.eval_type_id = et.eval_type_id
+        WHERE cet.cycle_id = #{cycleId}
+          AND cet.is_deleted = 'N'
+          AND et.is_deleted = 'N'
+        ORDER BY et.eval_type_id ASC
+
+    </select>
+
+</mapper>

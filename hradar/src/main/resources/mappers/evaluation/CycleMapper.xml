@@ -43,11 +43,11 @@
             resultType="string">
 
         SELECT
-            et.eval_type_code
+            et.type_name
         FROM evaluation_type et
         WHERE et.cycle_id = #{cycleId}
           AND et.is_deleted = 'N'
-        ORDER BY et.eval_type_code
+        ORDER BY et.type_name
 
     </select>
 

@@ -20,13 +20,13 @@ public class EvaluationType extends BaseTimeEntity{
     @Column(name = "eval_type_id")
     private Long evalTypeId;
 
-    //평가 회차 연결
-    @Column(name = "cycle_id", nullable = false)
-    private Long cycleId;
-
     //평가 유형
-    @Column(name = "eval_type_code", nullable = false)
-    private String evalTypeCode;
+    @Column(name = "type_name", nullable = false)
+    private String typeName;
+
+    // 회사 ID
+    @Column(name = "company_id", nullable = false)
+    private Long companyId;
 
     //created_at, updated_at, created_by, updated_by
 
@@ -34,15 +34,17 @@ public class EvaluationType extends BaseTimeEntity{
     private Character isDeleted = 'N';
 
     @Builder
-    EvaluationType(
-            Long cycleId,
-            String evalTypeCode
-    ){
-        this.cycleId = cycleId;
-        this.evalTypeCode = evalTypeCode;
+    private EvaluationType(Long companyId, String typeName) {
+        this.companyId = companyId;
+        this.typeName = typeName;
+    }
+
+    public void updateName(String typeName) {
+        this.typeName = typeName;
     }
 
     public void delete() {
         this.isDeleted = 'Y';
     }
+
 }

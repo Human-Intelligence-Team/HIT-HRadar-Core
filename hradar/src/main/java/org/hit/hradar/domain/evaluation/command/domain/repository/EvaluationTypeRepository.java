@@ -6,13 +6,13 @@ import java.util.Optional;
 
 public interface EvaluationTypeRepository {
 
-    boolean existsByCycleIdAndEvalTypeCodeAndIsDeleted(
-            Long cycleId,
-            String evalTypeCode,
+    boolean existsByCompanyIdAndTypeNameAndIsDeleted(
+            Long companyId,
+            String typeName,
             Character isDeleted
     );
 
-    Optional<EvaluationType> findById(Long evalTypeId);
-
     EvaluationType save(EvaluationType evaluationType);
+
+    Optional<EvaluationType> findById(Long evalTypeId);
 }
