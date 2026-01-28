@@ -77,7 +77,9 @@ public class Employee extends BaseTimeEntity {
   private Character isDeleted;
 
   @Builder
-  public Employee(Long empId, Long comId, Long deptId, Long positionId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
+  public Employee(Long empId, Long comId, Long deptId, Long positionId, String name, String employeeNo,
+      String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image,
+      String extNo, String phoneNo, String note, EmploymentType employmentType) {
     this.empId = empId;
     this.comId = comId;
     this.deptId = deptId;
@@ -97,11 +99,9 @@ public class Employee extends BaseTimeEntity {
     this.isDeleted = 'N';
   }
 
-  public void updateEmployee(Long deptId, Long positionId, String name, String employeeNo, String email, Gender gender, String birth, LocalDate hireDate, LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
-    this.deptId = deptId;
-    this.positionId = positionId;
+  public void updateEmployee( String name, String email, Gender gender, String birth, LocalDate hireDate,
+      LocalDate exitDate, String image, String extNo, String phoneNo) {
     this.name = name;
-    this.employeeNo = employeeNo;
     this.email = email;
     this.gender = gender;
     this.birth = birth;
@@ -110,11 +110,35 @@ public class Employee extends BaseTimeEntity {
     this.image = image;
     this.extNo = extNo;
     this.phoneNo = phoneNo;
-    this.note = note;
-    this.employmentType = employmentType;
   }
 
-  public void markAsDeleted() {
+  public void deletedEmployee() {
     this.isDeleted = 'Y';
+    this.employmentType = EmploymentType.RESIGNED;
   }
+
+
+  public void changeDepartment(Long deptId) {
+    // null 허용: 미배정(삭제) 가능
+    if (this.deptId != null && this.deptId.equals(deptId)) return;
+    this.deptId = deptId;
+  }
+
+  public void changePosition(Long positionId) {
+    // null 허용
+    if (this.positionId != null && this.positionId.equals(positionId)) return;
+    this.positionId = positionId;
+  }
+
+  public void changeEmployeeNo(String employeeNo) {
+    // 선택지 B: null/blank 모두 삭제(null 저장)
+    if (employeeNo == null || employeeNo.trim().isEmpty()) {
+      this.employeeNo = null;
+      return;
+    }
+    String v = employeeNo.trim();
+    if (v.equals(this.employeeNo)) return;
+    this.employeeNo = v;
+  }
+
 }

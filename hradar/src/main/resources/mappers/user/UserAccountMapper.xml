@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.user.query.mapper.UserAccountQueryMapper">
+
+  <!-- =======================
+       ResultMap
+       ======================= -->
+
+  <resultMap id="UserAccountListItemMap"
+    type="org.hit.hradar.domain.user.query.dto.UserAccountListItemResponse">
+    <id     property="accId"     column="account_id"/>
+    <result property="comId"     column="com_id"/>
+    <result property="comCode"   column="company_code"/>
+    <result property="empId"     column="employee_id"/>
+    <result property="loginId"   column="login_id"/>
+    <result property="name"      column="name"/>
+    <result property="email"     column="email"/>
+    <result property="role"      column="role"/>
+    <result property="status"    column="status"/>
+    <result property="isDeleted" column="is_deleted"/>
+  </resultMap>
+
+  <resultMap id="UserAccountDetailMap"
+    type="org.hit.hradar.domain.user.query.dto.UserAccountDetailResponse">
+    <id     property="accId"     column="account_id"/>
+    <result property="comId"     column="com_id"/>
+    <result property="comCode"   column="company_code"/>
+    <result property="empId"     column="employee_id"/>
+    <result property="loginId"   column="login_id"/>
+    <result property="name"      column="name"/>
+    <result property="email"     column="email"/>
+    <result property="role"      column="role"/>
+    <result property="status"    column="status"/>
+    <result property="isDeleted" column="is_deleted"/>
+  </resultMap>
+
+  <resultMap id="AccountLoginIdMap"
+    type="org.hit.hradar.domain.user.query.dto.AccountLoginIdResponse">
+    <id     property="accId"   column="account_id"/>
+    <result property="loginId" column="login_id"/>
+    <result property="name"    column="name"/>
+    <result property="email"   column="email"/>
+  </resultMap>
+
+
+  <!-- =======================
+       SQL Fragments
+       ======================= -->
+
+  <sql id="UserAccountColumns">
+    a.account_id,
+    a.com_id,
+    a.company_code,
+    a.employee_id,
+    a.login_id,
+    a.name,
+    a.email,
+    a.role,
+    a.status,
+    a.is_deleted
+  </sql>
+
+  <sql id="BaseWhere">
+    a.com_id = #{comId}
+    <if test="condition != null and condition.includeDeleted != true">
+      AND a.is_deleted = 'N'
+    </if>
+  </sql>
+
+  <sql id="SearchWhere">
+    <if test="condition != null and condition.keyword != null and condition.keyword != ''">
+      AND (
+      a.login_id LIKE CONCAT('%', #{condition.keyword}, '%')
+      OR a.name  LIKE CONCAT('%', #{condition.keyword}, '%')
+      OR a.email LIKE CONCAT('%', #{condition.keyword}, '%')
+      )
+    </if>
+
+    <if test="condition != null and condition.status != null and condition.status != ''">
+      AND a.status = #{condition.status}
+    </if>
+
+    <if test="condition != null and condition.role != null and condition.role != ''">
+      AND a.role = #{condition.role}
+    </if>
+  </sql>
+
+
+  <!-- =======================
+       Queries
+       ======================= -->
+
+  <!-- 계정 목록 조회 -->
+  <select id="findList"
+    resultMap="UserAccountListItemMap">
+    SELECT
+    <include refid="UserAccountColumns"/>
+    FROM user_account a
+    WHERE
+    <include refid="BaseWhere"/>
+    <include refid="SearchWhere"/>
+    ORDER BY a.account_id DESC
+  </select>
+
+  <!-- 계정 상세 조회 -->
+  <select id="findById"
+    resultMap="UserAccountDetailMap">
+    SELECT
+    <include refid="UserAccountColumns"/>
+    FROM user_account a
+    WHERE a.com_id = #{comId}
+    AND a.account_id = #{accId}
+    LIMIT 1
+  </select>
+
+  <!-- (관리자) loginId 조회 -->
+  <select id="findLoginIdByAccId"
+    resultMap="AccountLoginIdMap">
+    SELECT
+    a.account_id,
+    a.login_id,
+    a.name,
+    a.email
+    FROM user_account a
+    WHERE a.com_id = #{comId}
+    AND a.account_id = #{accId}
+    AND a.is_deleted = 'N'
+    LIMIT 1
+  </select>
+
+</mapper>

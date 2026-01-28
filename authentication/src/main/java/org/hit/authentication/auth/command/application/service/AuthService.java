@@ -15,7 +15,6 @@ import org.hit.authentication.common.jwt.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -37,7 +36,7 @@ public class AuthService {
             throw new BusinessException(AccountErrorCode.COMPANY_INVALID);
         }
 
-        if (account.getStatus() == AccountStatus.RETIRED) {
+        if (account.getStatus() == AccountStatus.INACTIVE) {
             throw new BusinessException(AccountErrorCode.ACCOUNT_CANCELED);
         }
 

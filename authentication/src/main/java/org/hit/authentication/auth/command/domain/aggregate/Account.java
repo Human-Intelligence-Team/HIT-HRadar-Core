@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,21 +16,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "account")
+@Table(
+    name = "user_account",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UK_COMPANY_LOGINID", columnNames = {"com_id", "login_id"}),
+        @UniqueConstraint(name = "UK_ACCOUNT_COMPANY_EMAIL", columnNames = {"com_id", "email"})
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class Account {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "account_id")
   private Long accId;
 
-  @Column(name = "company_id", nullable = false)
+  // HR 스키마 기준: com_id
+  @Column(name = "com_id", nullable = false)
   private Long comId;
 
-  @Column(name = "company_code", nullable = false, length = 30, unique = true)
+  // HR 스키마 기준: company_code (unique 금지)
+  @Column(name = "company_code", nullable = false, length = 30)
   private String comCode;
 
   @Column(name = "employee_id")
@@ -38,7 +48,8 @@ public class Account {
   @Column(name = "login_id", nullable = false, length = 50)
   private String loginId;
 
-  @Column(length = 50, unique = true, nullable = false)
+  // HR 스키마 기준: email nullable 허용 + (com_id, email) 유니크
+  @Column(name = "email", length = 50)
   private String email;
 
   @Column(name = "password", nullable = false, length = 255)
@@ -55,27 +66,46 @@ public class Account {
   @Column(name = "status", nullable = false, length = 15)
   private AccountStatus status;
 
-  public static Account createAccount(
-      String loginId,
-      String password,
-      String name,
-      String email) {
+  @Column(name = "is_deleted", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+  private Character isDeleted;
 
+  public static Account createAccount(
+      Long comId,
+      String comCode,
+      Long empId,
+      String loginId,
+      String encodedPassword,
+      String name,
+      String email,
+      Role role
+  ) {
     return Account.builder()
-        .role(Role.user)
+        .comId(comId)
+        .comCode(comCode)
+        .empId(empId)
         .loginId(loginId)
-        .password(password)
+        .password(encodedPassword)
         .name(name)
         .email(email)
+        .role(role == null ? Role.user : role)
         .status(AccountStatus.ACTIVE)
+        .isDeleted('N')
         .build();
   }
 
-  public void updatePassword(String encode) {
-    this.password = encode;
+  public void updatePassword(String encodedPw) {
+    this.password = encodedPw;
   }
 
   public void linkEmployee(Long empId) {
     this.empId = empId;
+  }
+
+  public void deactivate() {
+    this.status = AccountStatus.INACTIVE; // enum에 없으면 제거/수정
+  }
+
+  public void softDelete() {
+    this.isDeleted = 'Y';
   }
 }

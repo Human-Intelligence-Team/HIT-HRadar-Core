@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.me.mapper.EmployeeMeQueryMapper">
+
+  <select id="findMe"
+    resultType="org.hit.hradar.domain.me.dto.MeResponse">
+
+    SELECT
+    -- ===== Company  =====
+    c.com_id         AS comId,
+    c.company_code   AS companyCode,
+    c.name           AS companyName,
+
+    -- ===== Employee =====
+    e.emp_id         AS empId,
+    e.name           AS employeeName,
+    e.employee_no    AS employeeNo,
+    e.email          AS email,
+
+    -- ===== Department (nullable) =====
+    d.dept_id        AS deptId,
+    d.dept_name      AS deptName,
+
+    -- ===== Position (nullable) =====
+    p.position_id    AS positionId,
+    p.name  AS positionName,
+
+    -- ===== Time =====
+    e.created_at     AS createdAt,
+    e.updated_at     AS updatedAt
+
+    FROM employee e
+    JOIN company c
+    ON c.com_id = e.com_id
+    AND c.is_deleted = 'N'
+
+    LEFT JOIN department d
+    ON d.dept_id = e.dept_id
+    AND d.is_deleted = 'N'
+
+    LEFT JOIN positions p
+    ON p.position_id = e.position_id
+    AND p.is_deleted = 'N'
+
+    WHERE e.com_id = #{comId}
+    AND e.emp_id = #{empId}
+    AND e.is_deleted = 'N'
+    LIMIT 1
+  </select>
+
+</mapper>
