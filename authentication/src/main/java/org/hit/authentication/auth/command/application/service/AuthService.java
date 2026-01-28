@@ -29,11 +29,11 @@ public class AuthService {
     public TokenResponse login(LoginRequest request) {
 
       Account account = accountRepository
-          .findByCompanyCodeAndLoginIdAndIsDeleted(request.getCompanyCode(), request.getLoginId(), 'N')
+          .findByComCodeAndLoginIdAndIsDeleted(request.getComCode(), request.getLoginId(), 'N')
           .orElseThrow(() -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
 
-      if (!account.getComCode().equals(request.getCompanyCode())) {
+      if (!account.getComCode().equals(request.getComCode())) {
             throw new BusinessException(AccountErrorCode.COMPANY_INVALID);
         }
 

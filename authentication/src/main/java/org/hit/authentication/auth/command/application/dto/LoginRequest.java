@@ -10,7 +10,7 @@ import lombok.Getter;
 public class LoginRequest {
 
     @NotBlank
-    private String companyCode;
+    private String comCode;
 
     @NotBlank(message = "아이디를 입력해주세요.")
     @Size(max = 30, message = "아이디 최대 길이는 {max}글자입니다.")

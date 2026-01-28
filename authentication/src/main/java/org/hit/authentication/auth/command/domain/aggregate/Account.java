@@ -34,11 +34,11 @@ public class Account {
   @Column(name = "account_id")
   private Long accId;
 
-  // HR 스키마 기준: com_id
+
   @Column(name = "com_id", nullable = false)
   private Long comId;
 
-  // HR 스키마 기준: company_code (unique 금지)
+
   @Column(name = "company_code", nullable = false, length = 30)
   private String comCode;
 
@@ -48,8 +48,8 @@ public class Account {
   @Column(name = "login_id", nullable = false, length = 50)
   private String loginId;
 
-  // HR 스키마 기준: email nullable 허용 + (com_id, email) 유니크
-  @Column(name = "email", length = 50)
+
+  @Column(name = "email", length = 50, nullable = false)
   private String email;
 
   @Column(name = "password", nullable = false, length = 255)
