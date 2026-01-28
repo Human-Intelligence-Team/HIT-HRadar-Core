@@ -1,6 +1,7 @@
 package org.hit.gateway.filter;
 
 import io.jsonwebtoken.Claims;
+import java.util.List;
 import org.hit.gateway.jwt.JwtTokenProvider;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -16,6 +17,7 @@ public class JwtAuthenticationFilter
         extends AbstractGatewayFilterFactory<JwtAuthenticationFilter.Config> {
 
     private final JwtTokenProvider jwtTokenProvider;
+
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         super(Config.class);

@@ -15,7 +15,6 @@ import org.hit.authentication.common.jwt.JwtTokenProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -29,15 +28,16 @@ public class AuthService {
     @Transactional
     public TokenResponse login(LoginRequest request) {
 
-        Account account = accountRepository.findByLoginId(request.getLoginId())
-                .orElseThrow(
-                        () -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+      Account account = accountRepository
+          .findByComCodeAndLoginIdAndIsDeleted(request.getComCode(), request.getLoginId(), 'N')
+          .orElseThrow(() -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
 
-        if (!account.getComCode().equals(request.getCompanyCode())) {
+
+      if (!account.getComCode().equals(request.getComCode())) {
             throw new BusinessException(AccountErrorCode.COMPANY_INVALID);
         }
 
-        if (account.getStatus() == AccountStatus.RETIRED) {
+        if (account.getStatus() == AccountStatus.INACTIVE) {
             throw new BusinessException(AccountErrorCode.ACCOUNT_CANCELED);
         }
 

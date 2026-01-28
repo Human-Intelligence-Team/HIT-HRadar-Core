@@ -1,20 +1,24 @@
 package org.hit.hradar.domain.employee.command.domain.repository;
 
-import org.hit.hradar.domain.employee.command.domain.aggregate.Employee;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
 import java.util.Optional;
+import org.hit.hradar.domain.employee.command.domain.aggregate.Employee;
 
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository {
 
   Optional<Employee> findById(Long empId);
 
   Employee save(Employee employee);
 
-  Optional<Employee> findByEmpIdAndComIdAndIsDeleted(Long empId, Long comId, char isDeleted);
+  Optional<Employee> findByEmpIdAndComIdAndIsDeleted(Long empId, Long companyId, Character isDeleted);
 
-  boolean existsByEmployeeNoAndComIdAndIsDeleted(String employeeNo, Long comId, char isDeleted);
+  boolean existsByEmployeeNoAndComIdAndIsDeleted(String employeeNo, Long companyId, Character isDeleted);
 
-  boolean existsByEmailAndComIdAndIsDeleted(String email, Long comId, char isDeleted);
+  boolean existsByEmailAndComIdAndIsDeleted(String email, Long companyId, Character isDeleted);
+
+  List<Employee> findAllByComIdAndIsDeleted(Long companyId, Character isDeleted);
+
+  List<Employee> findAllByComIdAndDeptIdAndIsDeleted(Long companyId, Long deptId, Character isDeleted);
+
+  List<Employee> findAllByComIdAndPositionIdAndIsDeleted(Long companyId, Long positionId, Character isDeleted);
 }

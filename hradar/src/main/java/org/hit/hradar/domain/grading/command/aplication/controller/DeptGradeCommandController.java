@@ -2,6 +2,7 @@ package org.hit.hradar.domain.grading.command.aplication.controller;
 
 import lombok.RequiredArgsConstructor;
 
+import org.hit.hradar.domain.employee.command.domain.repository.EmployeeRepository;
 import org.hit.hradar.domain.grading.command.aplication.dto.request.AssignDeptGradeRequestDto;
 import org.hit.hradar.domain.grading.command.aplication.dto.request.DeptGradeUpdateRequestDto;
 import org.hit.hradar.domain.grading.command.aplication.sevice.DeptGradeCommandService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/dept-grades")
 public class DeptGradeCommandController {
     private final DeptGradeCommandService deptGradeCommandService;
+    private final EmployeeRepository employeeRepository;
 
     //등록
     @PostMapping
@@ -31,6 +33,7 @@ public class DeptGradeCommandController {
     //수정
     @PutMapping("/{deptGradeId}")
     public ResponseEntity<ApiResponse<Void>> updateDeptGrade(
+            @CurrentUser AuthUser authUser,
             @PathVariable Long deptGradeId,
             @RequestBody DeptGradeUpdateRequestDto request
     ) {
@@ -68,6 +71,5 @@ public class DeptGradeCommandController {
         );
         return ResponseEntity.ok(ApiResponse.success(null));
     }
-
 
 }

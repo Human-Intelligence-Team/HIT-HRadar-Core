@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/cycles")
+@RequestMapping("/evaluation-cycles")
 public class CycleQueryController {
 
     private final CycleQueryService cycleQueryService;

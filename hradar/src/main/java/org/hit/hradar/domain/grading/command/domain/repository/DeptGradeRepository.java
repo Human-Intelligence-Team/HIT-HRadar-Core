@@ -9,4 +9,6 @@ public interface DeptGradeRepository {
     DeptGrade save(DeptGrade deptGrade);
 
     Optional<DeptGrade> findByDeptGradeId(Long deptGradeId);
+
+    Optional<DeptGrade> findByDepartmentId(Long deptId);
 }

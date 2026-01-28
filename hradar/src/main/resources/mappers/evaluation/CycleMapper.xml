@@ -26,6 +26,8 @@
         SELECT
             c.cycle_id   AS cycleId,
             c.cycle_name AS cycleName,
+            c.quarter    AS quarter,
+            c.is_comp_report_generated AS isCompReportGenerated,
             c.start_date AS startDate,
             c.end_date   AS endDate,
             c.status     AS status,
