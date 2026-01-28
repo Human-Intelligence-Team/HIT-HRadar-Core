@@ -91,8 +91,8 @@ public class ApprovalApproveCommandService {
         new ApprovalEvent(
             ApprovalEventType.APPROVED,
             docId,
-            actorId,
-            doc.getCompanyId()
+            doc.getCompanyId(),
+            actorId
         )
     );
 
