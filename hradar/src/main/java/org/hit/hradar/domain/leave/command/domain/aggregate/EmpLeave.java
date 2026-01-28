@@ -67,7 +67,7 @@ public class EmpLeave extends BaseTimeEntity {
 
   //삭제 여부
   @Column(name = "is_deleted", nullable = false)
-  private Character isDeleted = 'N';
+  private Character isDeleted;
 
   protected EmpLeave() {}
 

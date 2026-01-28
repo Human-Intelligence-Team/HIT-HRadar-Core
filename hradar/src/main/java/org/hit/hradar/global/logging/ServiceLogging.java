@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+@Slf4j(topic = "business")
 @Aspect
 @Component
 public class ServiceLogging {

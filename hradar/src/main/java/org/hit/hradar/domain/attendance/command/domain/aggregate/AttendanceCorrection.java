@@ -31,6 +31,10 @@ public class AttendanceCorrection extends BaseTimeEntity {
   @Column(name ="work_log_id", nullable = false)
   private Long workLogId;
 
+  //결재 문서 생성
+  @Column(name = "doc_id", nullable = false)
+  private Long docId;
+
   //결정자 사원id
   @Column(name = "decider_emp_id", nullable = false)
   private Long deciderEmpId;
@@ -55,7 +59,7 @@ public class AttendanceCorrection extends BaseTimeEntity {
   //신청 상태
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private CorrectionStatus status = CorrectionStatus.REQUESTED;
+  private ApprovalStatus status = ApprovalStatus.REQUESTED;
 
   //요청 일자(같은 요청이 여러 개일 경우)
   @Column(name = "requested_at", nullable = false)
@@ -90,14 +94,14 @@ public class AttendanceCorrection extends BaseTimeEntity {
     correction.correctionType = correctionType;
     correction.reason = reason;
     correction.requestedValue = requestedValue;
-    correction.status = CorrectionStatus.REQUESTED;
+    correction.status = ApprovalStatus.REQUESTED;
     correction.requestedAt = LocalDateTime.now();
     return correction;
   }
 
     //승인
     public void approve(Long deciderEmpId) {
-      this.status = CorrectionStatus.APPROVED;
+      this.status = ApprovalStatus.APPROVED;
       this.deciderEmpId = deciderEmpId;
       this.decidedAt = LocalDateTime.now();
     }
@@ -105,7 +109,7 @@ public class AttendanceCorrection extends BaseTimeEntity {
 
   //반려
   public void reject(Long deciderEmpId, String rejectReason) {
-    this.status = CorrectionStatus.REJECTED;
+    this.status = ApprovalStatus.REJECTED;
     this.deciderEmpId = deciderEmpId;
     this.rejectReason = rejectReason;
     this.decidedAt = LocalDateTime.now();
