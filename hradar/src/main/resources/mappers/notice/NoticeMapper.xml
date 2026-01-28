@@ -23,7 +23,7 @@
         ON n.category_id = c.category_id
         AND c.is_deleted = 'N'
         WHERE n.com_id = #{cond.companyId}
-        AND n.is_deleted = false
+        AND n.is_deleted = 'N'
 
         <if test="cond.categoryId != null">
             AND n.category_id = #{cond.categoryId}
@@ -62,7 +62,7 @@
         SELECT COUNT(*)
         FROM notice n
         WHERE n.com_id = #{cond.companyId}
-        AND n.is_deleted = false
+        AND n.is_deleted = 'N'
 
         <if test="cond.categoryId != null">
             AND n.category_id = #{cond.categoryId}
