@@ -1,6 +1,6 @@
 package org.hit.hradar.domain.notice.query.service;
 
-import org.hit.hradar.domain.notice.query.dto.NoticeCategoryResponse;
+import org.hit.hradar.domain.notice.query.dto.response.NoticeCategoryResponse;
 import org.hit.hradar.domain.notice.query.mapper.NoticeCategoryMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

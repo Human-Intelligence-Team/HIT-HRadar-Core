@@ -1,6 +1,7 @@
 package org.hit.hradar.domain.notice.command.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.notice.NoticeErrorCode;
 import org.hit.hradar.domain.notice.command.application.dto.NoticeDto;
 import org.hit.hradar.domain.notice.command.application.dto.NoticeRequest;
 import org.hit.hradar.domain.notice.command.domain.aggregate.Notice;
@@ -11,7 +12,7 @@ import org.hit.hradar.domain.notice.command.domain.repository.NoticeAttachmentRe
 import org.hit.hradar.domain.notice.command.domain.repository.NoticeCategoryRepository;
 import org.hit.hradar.domain.notice.command.domain.repository.NoticeImageRepository;
 import org.hit.hradar.domain.notice.command.domain.repository.NoticeRepository;
-import org.hit.hradar.global.file.FileStorageClient;
+import org.hit.hradar.global.exception.BusinessException;
 import org.hit.hradar.global.file.FileType;
 import org.hit.hradar.global.file.FileUploadService;
 import org.hit.hradar.global.file.StoredFile;
@@ -59,7 +60,7 @@ public class NoticeCommandService {
         NoticeCategory category =
                 categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(
                         req.getCategoryId(), req.getCompanyId(), 'Y'
-                ).orElseThrow();
+                ).orElseThrow(() -> new BusinessException(NoticeErrorCode.NOT_FOUND_CATEGORY));
 
         Notice notice = noticeRepository.save(
                 Notice.create(

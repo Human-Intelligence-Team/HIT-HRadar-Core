@@ -5,7 +5,7 @@
 <mapper namespace="org.hit.hradar.domain.notice.query.mapper.NoticeCategoryMapper">
 
     <select id="findByCompany"
-            resultType="org.hit.hradar.domain.notice.query.dto.NoticeCategoryResponse">
+            resultType="org.hit.hradar.domain.notice.query.dto.response.NoticeCategoryResponse">
         SELECT
         category_id AS id,
         name

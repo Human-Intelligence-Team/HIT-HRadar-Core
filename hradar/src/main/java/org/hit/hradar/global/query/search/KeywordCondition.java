@@ -4,14 +4,22 @@ import lombok.Getter;
 
 @Getter
 public class KeywordCondition {
-    private String keyword;
 
-    public boolean hasKeyword() {
-        return keyword != null && !keyword.isBlank();
+    private final String keyword;
+
+    public KeywordCondition(String keyword) {
+        this.keyword = keyword;
     }
 
-    public String likeKeyword() {
-        if (!hasKeyword()) return null;
-        return "%" + keyword.trim() + "%";
+
+    public static KeywordCondition of(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return null;
+        }
+        return new KeywordCondition(keyword.trim());
+    }
+
+    public String like() {
+        return "%" + keyword + "%";
     }
 }

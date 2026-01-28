@@ -1,4 +1,4 @@
-package org.hit.hradar.domain.notice.query.dto;
+package org.hit.hradar.domain.notice.query.dto.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
