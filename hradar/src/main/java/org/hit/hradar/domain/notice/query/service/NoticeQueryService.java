@@ -1,10 +1,13 @@
 package org.hit.hradar.domain.notice.query.service;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.notice.NoticeErrorCode;
 import org.hit.hradar.domain.notice.query.dto.request.NoticeSearchCondition;
+import org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse;
 import org.hit.hradar.domain.notice.query.dto.response.NoticeListItemResponse;
 import org.hit.hradar.domain.notice.query.dto.request.NoticeSearchRequest;
 import org.hit.hradar.domain.notice.query.mapper.NoticeMapper;
+import org.hit.hradar.global.exception.BusinessException;
 import org.hit.hradar.global.query.paging.PageResponse;
 import org.hit.hradar.global.query.search.KeywordCondition;
 import org.slf4j.Logger;
@@ -27,15 +30,6 @@ public class NoticeQueryService {
     public PageResponse<NoticeListItemResponse> search(
             NoticeSearchRequest req
     ) {
-
-        bizLog.info(
-                "[NOTICE SEARCH COND] companyId={}, categoryId={}, keyword={}, sortKey={}, sortDir={}",
-                req.getCond().getCompanyId(),
-                req.getCond().getCategoryId(),
-                req.getCond().getKeyword(),
-                req.getCond().getSortKey(),
-                req.getCond().getSortDir()
-        );
 
         NoticeSearchCondition cond = req.getCond();
         KeywordCondition keywordCond =
@@ -68,5 +62,19 @@ public class NoticeQueryService {
         long total = mapper.count(cond, keywordLike);
 
         return PageResponse.of(items, page, size, total);
+    }
+
+    public NoticeDetailResponse getDetail(
+            Long noticeId,
+            Long companyId
+    ) {
+        NoticeDetailResponse result =
+                mapper.findDetail(noticeId, companyId);
+
+        if (result == null) {
+            throw new BusinessException(NoticeErrorCode.NOT_FOUND_NOTICE);
+        }
+
+        return result;
     }
 }

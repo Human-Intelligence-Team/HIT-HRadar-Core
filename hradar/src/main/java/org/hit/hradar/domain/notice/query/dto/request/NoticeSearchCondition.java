@@ -2,13 +2,11 @@ package org.hit.hradar.domain.notice.query.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.hit.hradar.domain.notice.query.dto.NoticeSortKey;
 import org.hit.hradar.global.query.sort.SortDirection;
 
 @Getter
 @Setter
-@ToString
 public class NoticeSearchCondition {
     private Long companyId;
     private Long categoryId;

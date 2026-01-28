@@ -25,12 +25,21 @@ public class NoticeCommandController {
     /** 이미지 드래그 업로드 */
     @PostMapping("/images")
     public ApiResponse<String> uploadImage(
-            @RequestParam Long companyId,
+            @CurrentUser AuthUser authUser,
             @RequestPart MultipartFile image
     ) {
         return ApiResponse.success(
-                noticeCommandService.uploadImage(companyId, image)
+                noticeCommandService.uploadImage(authUser.companyId(), image)
         );
+    }
+
+    @DeleteMapping("/images")
+    public ApiResponse<Void> deleteImage(
+            @RequestParam String imageUrl,
+            @CurrentUser AuthUser authUser
+    ) {
+        noticeCommandService.deleteImage(authUser.companyId(), imageUrl);
+        return ApiResponse.success(null);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -44,18 +53,29 @@ public class NoticeCommandController {
         return ApiResponse.success(null);
     }
 
-//    @PutMapping("/{id}")
-//    public ApiResponse<Void> update(
-//            @PathVariable Long id,
-//            @RequestBody NoticeUpdateRequest request
-//    ) {
-//        noticeCommandService.update(id, request);
-//        return ApiResponse.success(null);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ApiResponse<Void> delete(@PathVariable Long id) {
-//        noticeCommandService.delete(id);
-//        return ApiResponse.success(null);
-//    }
+    @PutMapping("/{noticeId}")
+    public ApiResponse<Void> update(
+            @PathVariable Long noticeId,
+            @RequestBody NoticeRequest request,
+            @CurrentUser AuthUser authUser
+    ) {
+        NoticeDto dto = new NoticeDto(
+                request.getCategoryId(),
+                request.getTitle(),
+                request.getContent(),
+                authUser.companyId()
+        );
+
+        noticeCommandService.updateNotice(noticeId, dto);
+        return ApiResponse.success(null);
+    }
+
+    @DeleteMapping("/{noticeId}")
+    public ApiResponse<Void> delete(
+            @PathVariable Long noticeId,
+            @CurrentUser AuthUser authUser
+    ) {
+        noticeCommandService.deleteNotice(noticeId, authUser.companyId());
+        return ApiResponse.success(null);
+    }
 }

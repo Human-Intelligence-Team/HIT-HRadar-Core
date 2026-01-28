@@ -21,6 +21,9 @@ public class NoticeImage extends BaseTimeEntity {
     @Column(name = "com_id", nullable = false)
     private Long companyId;
 
+    @Column(name = "notice_id")
+    private Long noticeId;
+
     @Column(nullable = false)
     private String url;
 
@@ -33,7 +36,7 @@ public class NoticeImage extends BaseTimeEntity {
     /* used=false 배치로 정리 */
     @Column(name = "is_used", nullable = false)
     private boolean used;
-
+// 삭제 추가
     public static NoticeImage create(
             Long companyId,
             StoredFile file,
@@ -50,6 +53,10 @@ public class NoticeImage extends BaseTimeEntity {
 
     public void markUsed() {
         this.used = true;
+    }
+
+    public void attachToNotice(Long id) {
+        this.noticeId = id;
     }
 }
 

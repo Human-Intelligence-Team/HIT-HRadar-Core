@@ -1,10 +1,10 @@
 package org.hit.hradar.global.query.paging;
 
 import lombok.Getter;
-import lombok.ToString;
+import lombok.Setter;
 
 @Getter
-@ToString
+@Setter
 public class PageRequest {
     private int page = 1;
     private int size = 20;

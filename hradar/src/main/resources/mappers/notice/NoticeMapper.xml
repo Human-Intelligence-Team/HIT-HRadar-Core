@@ -11,8 +11,14 @@
             n.notice_id AS id,
             n.title,
             COALESCE(c.name, '미분류') AS categoryName,
-            n.created_at AS createdAt
+            n.created_at AS createdAt,
+            CASE
+            WHEN ua.account_id IS NULL THEN '탈퇴한 사용자'
+            ELSE ua.name
+            END AS createdByName
         FROM notice n
+        LEFT JOIN user_account ua
+        ON n.created_by = ua.account_id
         LEFT JOIN notice_category c
         ON n.category_id = c.category_id
         AND c.is_deleted = 'N'
@@ -68,6 +74,47 @@
             OR n.content LIKE #{keywordLike}
             )
         </if>
+    </select>
+
+    <select id="findDetail"
+            resultType="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse">
+
+        SELECT
+            n.notice_id      AS noticeId,
+            n.title          AS title,
+            n.content        AS content,
+
+            c.category_id    AS categoryId,
+            c.name           AS categoryName,
+
+            n.created_by     AS createdBy,
+            CASE
+                WHEN cua.account_id IS NULL THEN '탈퇴한 사용자'
+                ELSE cua.name
+                END          AS createdByName,
+
+            n.updated_by     AS updatedBy,
+            CASE
+                WHEN uua.account_id IS NULL THEN '탈퇴한 사용자'
+                ELSE uua.name
+                END          AS updatedByName,
+            n.created_at     AS createdAt,
+            n.updated_at     AS updatedAt
+
+        FROM notice n
+                 LEFT JOIN notice_category c
+                           ON n.category_id = c.category_id
+
+                 LEFT JOIN user_account cua
+                           ON n.created_by = cua.account_id
+
+                 LEFT JOIN user_account uua
+                           ON n.updated_by = uua.account_id
+
+        WHERE n.notice_id = #{noticeId}
+          AND n.com_id = #{companyId}
+          AND n.is_deleted = 'N'
+
     </select>
 
 </mapper>

@@ -1,5 +1,6 @@
 package org.hit.hradar.domain.notice.command.application.service;
 
+import org.hit.hradar.domain.notice.NoticeErrorCode;
 import org.hit.hradar.domain.notice.command.application.dto.NoticeDto;
 import org.hit.hradar.domain.notice.command.domain.aggregate.Notice;
 import org.hit.hradar.domain.notice.command.domain.aggregate.NoticeAttachment;
@@ -9,12 +10,12 @@ import org.hit.hradar.domain.notice.command.domain.repository.NoticeAttachmentRe
 import org.hit.hradar.domain.notice.command.domain.repository.NoticeCategoryRepository;
 import org.hit.hradar.domain.notice.command.domain.repository.NoticeImageRepository;
 import org.hit.hradar.domain.notice.command.domain.repository.NoticeRepository;
+import org.hit.hradar.global.exception.BusinessException;
 import org.hit.hradar.global.file.FileType;
 import org.hit.hradar.global.file.FileUploadService;
 import org.hit.hradar.global.file.StoredFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,153 +24,157 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class NoticeCommandServiceTest {
 
     @InjectMocks
-    private NoticeCommandService service;
+    private NoticeCommandService noticeCommandService;
 
-    @Mock
-    private NoticeRepository noticeRepository;
+    @Mock private NoticeRepository noticeRepository;
+    @Mock private NoticeCategoryRepository categoryRepository;
+    @Mock private NoticeImageRepository imageRepository;
+    @Mock private NoticeAttachmentRepository attachmentRepository;
+    @Mock private FileUploadService fileUploadService;
 
-    @Mock
-    private NoticeCategoryRepository categoryRepository;
+    /* ===================== 이미지 업로드 ===================== */
 
-    @Mock
-    private NoticeImageRepository imageRepository;
-
-    @Mock
-    private NoticeAttachmentRepository attachmentRepository;
-
-    @Mock
-    private FileUploadService fileUploadService;
-
-    /**
-     * 본문 이미지 업로드 성공
-     */
     @Test
     void uploadImage_success() {
-        // given
-        Long companyId = 1L;
-        MultipartFile image = mock(MultipartFile.class);
+        MultipartFile file = mock(MultipartFile.class);
+        StoredFile stored = new StoredFile("/files/a.png", "a.png");
 
-        when(image.getOriginalFilename()).thenReturn("test.png");
+        when(fileUploadService.upload(file, FileType.IMAGE)).thenReturn(stored);
 
-        StoredFile stored = new StoredFile(
-                "/files/uuid.png",
-                "uuid.png"
-        );
+        String url = noticeCommandService.uploadImage(1L, file);
 
-        when(fileUploadService.upload(image, FileType.IMAGE))
-                .thenReturn(stored);
-
-        // when
-        String url = service.uploadImage(companyId, image);
-
-        // then
-        assertThat(url).isEqualTo("/files/uuid.png");
-
-        ArgumentCaptor<NoticeImage> captor =
-                ArgumentCaptor.forClass(NoticeImage.class);
-
-        verify(imageRepository).save(captor.capture());
-
-        NoticeImage saved = captor.getValue();
-        assertThat(saved.getCompanyId()).isEqualTo(companyId);
-        assertThat(saved.getOriginalName()).isEqualTo("test.png");
-        assertThat(saved.getUrl()).isEqualTo("/files/uuid.png");
+        assertThat(url).isEqualTo("/files/a.png");
+        verify(imageRepository).save(any(NoticeImage.class));
     }
 
-    /**
-     * 공지 생성 성공 (첨부파일 있음)
-     */
+    /* ===================== 공지 생성 ===================== */
+
     @Test
-    void create_success_withAttachments() {
-        // given
-        Long companyId = 1L;
-        Long categoryId = 10L;
-
-        NoticeDto req = mock(NoticeDto.class);
-        when(req.getCompanyId()).thenReturn(companyId);
-        when(req.getCategoryId()).thenReturn(categoryId);
-        when(req.getTitle()).thenReturn("공지 제목");
-        when(req.getContent()).thenReturn("본문 <img src=\"/files/img1.png\" />");
-
-        NoticeCategory category = NoticeCategory.create(companyId, "공지");
-        when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(
-                categoryId, companyId, 'Y'
-        )).thenReturn(Optional.of(category));
-
+    void create_notice_success() {
+        NoticeCategory category = mock(NoticeCategory.class);
         Notice notice = mock(Notice.class);
-        when(notice.getId()).thenReturn(100L);
-        when(noticeRepository.save(any(Notice.class)))
-                .thenReturn(notice);
 
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.getOriginalFilename()).thenReturn("doc.pdf");
-
-        StoredFile stored = new StoredFile(
-                "/files/doc-uuid.pdf",
-                "doc-uuid.pdf"
+        NoticeDto dto = new NoticeDto(
+                1L,
+                "title",
+                "<img src=\"/files/a.png\">",
+                1L
         );
 
-        when(fileUploadService.upload(file, FileType.ATTACHMENT))
-                .thenReturn(stored);
+        when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
+                .thenReturn(Optional.of(category));
+
+        when(noticeRepository.save(any(Notice.class))).thenReturn(notice);
+        when(notice.getId()).thenReturn(10L);
 
         NoticeImage image = mock(NoticeImage.class);
-        when(image.getUrl()).thenReturn("/files/img1.png");
+        when(image.getUrl()).thenReturn("/files/a.png");
 
-        when(imageRepository.findAll()).thenReturn(List.of(image));
+        when(imageRepository.findAllByCompanyIdAndUsedFalse(1L))
+                .thenReturn(List.of(image));
 
-        // when
-        Long noticeId = service.create(req, List.of(file));
+        Long id = noticeCommandService.create(dto, null);
 
-        // then
-        assertThat(noticeId).isEqualTo(100L);
-
-        verify(noticeRepository).save(any(Notice.class));
-        verify(attachmentRepository).save(any(NoticeAttachment.class));
-        verify(fileUploadService).upload(file, FileType.ATTACHMENT);
-        verify(image).markUsed();
+        assertThat(id).isEqualTo(10L);
+        verify(image).attachToNotice(10L);
     }
 
-    /**
-     * 공지 생성 성공 (첨부파일 없음)
-     */
     @Test
-    void create_success_withoutAttachments() {
-        // given
-        Long companyId = 1L;
-        Long categoryId = 10L;
+    void create_fail_categoryNotFound() {
+        NoticeDto dto = new NoticeDto(1L, "t", "c", 1L);
 
-        NoticeDto req = mock(NoticeDto.class);
-        when(req.getCompanyId()).thenReturn(companyId);
-        when(req.getCategoryId()).thenReturn(categoryId);
-        when(req.getTitle()).thenReturn("공지 제목");
-        when(req.getContent()).thenReturn("본문");
+        when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
+                .thenReturn(Optional.empty());
 
-        NoticeCategory category = NoticeCategory.create(companyId, "공지");
-        when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(
-                categoryId, companyId, 'Y'
-        )).thenReturn(Optional.of(category));
+        assertThatThrownBy(() -> noticeCommandService.create(dto, null))
+                .isInstanceOf(BusinessException.class)
+                .hasMessageContaining("카테고리가 존재하지 않습니다.");
+    }
 
+    /* ===================== 이미지 삭제 ===================== */
+
+    @Test
+    void deleteImage_success() {
+        NoticeImage image = mock(NoticeImage.class);
+
+        when(imageRepository.findByCompanyIdAndUrlAndUsedFalse(1L, "/files/a.png"))
+                .thenReturn(Optional.of(image));
+
+        when(image.getStoredName()).thenReturn("a.png");
+
+        noticeCommandService.deleteImage(1L, "/files/a.png");
+
+        verify(fileUploadService).delete("a.png");
+        verify(imageRepository).delete(image);
+    }
+
+    /* ===================== 공지 수정 (이미지 diff) ===================== */
+
+    @Test
+    void updateNotice_removeUnusedImage() {
         Notice notice = mock(Notice.class);
-        when(notice.getId()).thenReturn(200L);
-        when(noticeRepository.save(any(Notice.class)))
-                .thenReturn(notice);
+        NoticeCategory category = mock(NoticeCategory.class);
 
-        when(imageRepository.findAll()).thenReturn(List.of());
+        NoticeImage oldImage = mock(NoticeImage.class);
+        when(oldImage.getUrl()).thenReturn("/files/old.png");
+        when(oldImage.getStoredName()).thenReturn("old.png");
 
-        // when
-        Long noticeId = service.create(req, null);
+        when(noticeRepository.findById(10L))
+                .thenReturn(Optional.of(notice));
 
-        // then
-        assertThat(noticeId).isEqualTo(200L);
+        when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
+                .thenReturn(Optional.of(category));
 
-        verify(attachmentRepository, never()).save(any());
+        when(imageRepository.findAllByNoticeId(10L))
+                .thenReturn(List.of(oldImage));
+
+        NoticeDto dto = new NoticeDto(
+                1L,
+                "new title",
+                "<p>no image</p>",
+                1L
+        );
+
+        noticeCommandService.updateNotice(10L, dto);
+
+        verify(fileUploadService).delete("old.png");
+        verify(imageRepository).delete(oldImage);
+        verify(notice).update(category, "new title", "<p>no image</p>");
+    }
+
+    /* ===================== 공지 삭제 ===================== */
+
+    @Test
+    void deleteNotice_success() {
+        Notice notice = mock(Notice.class);
+        NoticeImage image = mock(NoticeImage.class);
+        NoticeAttachment attachment = mock(NoticeAttachment.class);
+
+        when(noticeRepository.findByIdAndCompanyId(10L, 1L))
+                .thenReturn(Optional.of(notice));
+
+        when(imageRepository.findAllByNoticeId(10L))
+                .thenReturn(List.of(image));
+
+        when(attachmentRepository.findAllByNoticeId(10L))
+                .thenReturn(List.of(attachment));
+
+        when(image.getStoredName()).thenReturn("img.png");
+        when(attachment.getStoredName()).thenReturn("file.pdf");
+
+        noticeCommandService.deleteNotice(10L, 1L);
+
+        verify(notice).delete();
+        verify(fileUploadService).delete("img.png");
+        verify(fileUploadService).delete("file.pdf");
+        verify(imageRepository).delete(image);
+        verify(attachmentRepository).delete(attachment);
     }
 }

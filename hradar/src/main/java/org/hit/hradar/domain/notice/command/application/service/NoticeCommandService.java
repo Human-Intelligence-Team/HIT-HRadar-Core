@@ -21,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
+
+import static org.hit.hradar.domain.notice.command.application.service.NoticeContentParser.extractImageUrls;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +74,9 @@ public class NoticeCommandService {
                 )
         );
 
+        List<NoticeImage> images = extractImages(req.getContent(), req.getCompanyId());
+        images.forEach(img -> img.attachToNotice(notice.getId()));
+
         // 첨부파일 저장
         if (attachments != null) {
             for (MultipartFile file : attachments) {
@@ -93,5 +99,84 @@ public class NoticeCommandService {
 
         return notice.getId();
     }
+
+    private List<NoticeImage> extractImages(String content, Long companyId) {
+        return imageRepository.findAllByCompanyIdAndUsedFalse(companyId).stream()
+                .filter(img -> content.contains(img.getUrl()))
+                .toList();
+    }
+
+    public void deleteImage(Long companyId, String imageUrl) {
+        NoticeImage img = imageRepository
+                .findByCompanyIdAndUrlAndUsedFalse(companyId, imageUrl)
+                .orElseThrow(() -> new BusinessException(NoticeErrorCode.NOT_FOUND_IMAGE));
+
+        fileUploadService.delete(img.getStoredName());
+        imageRepository.delete(img);
+    }
+
+    public void updateNotice(
+            Long noticeId,
+            NoticeDto req
+    ) {
+
+        NoticeCategory category =
+                categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(
+                        req.getCategoryId(), req.getCompanyId(), 'Y'
+                ).orElseThrow(() -> new BusinessException(NoticeErrorCode.NOT_FOUND_CATEGORY));
+
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new BusinessException(NoticeErrorCode.NOT_FOUND_NOTICE));
+
+        List<NoticeImage> existingImages =
+                imageRepository.findAllByNoticeId(noticeId);
+
+        Set<String> usedUrls = extractImageUrls(req.getContent());
+
+        existingImages.stream()
+                .filter(img -> !usedUrls.contains(img.getUrl()))
+                .forEach(img -> {
+                    fileUploadService.delete(img.getStoredName());
+                    imageRepository.delete(img);
+                });
+
+        // 새로 추가된 이미지 (임시 → 연결)
+        imageRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
+                .filter(img -> usedUrls.contains(img.getUrl()))
+                .forEach(img -> img.attachToNotice(noticeId));
+
+        notice.update(
+                category,
+                req.getTitle(),
+                req.getContent()
+        );
+    }
+
+    @Transactional
+    public void deleteNotice(Long noticeId, Long companyId) {
+
+        Notice notice = noticeRepository
+                .findByIdAndCompanyId(noticeId, companyId)
+                .orElseThrow(() -> new BusinessException(NoticeErrorCode.NOT_FOUND_NOTICE));
+
+        notice.delete();
+
+        // 본문 이미지 삭제
+        List<NoticeImage> images = imageRepository.findAllByNoticeId(noticeId);
+        images.forEach(img -> {
+            fileUploadService.delete(img.getStoredName());
+            imageRepository.delete(img);
+        });
+
+        // 첨부파일 삭제
+        List<NoticeAttachment> attachments =
+                attachmentRepository.findAllByNoticeId(noticeId);
+
+        attachments.forEach(att -> {
+            fileUploadService.delete(att.getStoredName());
+            attachmentRepository.delete(att);
+        });
+    }
+
 }
 
