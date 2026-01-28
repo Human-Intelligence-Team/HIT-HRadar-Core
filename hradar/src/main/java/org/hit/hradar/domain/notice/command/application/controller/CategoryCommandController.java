@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notice/categories")
+@RequestMapping("/notices/categories")
 public class CategoryCommandController {
 
     private final NoticeCategoryCommandService noticeCategoryCommandService;

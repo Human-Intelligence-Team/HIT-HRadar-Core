@@ -10,4 +10,6 @@ public interface NoticeCategoryRepository {
     <S extends NoticeCategory> S save(S NoticeCategory);
 
     Optional<NoticeCategory> findByIdAndCompanyId(Long categoryId, Long companyId);
+
+    Optional<NoticeCategory> findByIdAndCompanyIdAndIsDeletedNot(Long categoryId, Long companyId, Character isDeleted);
 }

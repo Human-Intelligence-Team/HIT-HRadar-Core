@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/notice/categories")
+@RequestMapping("/notices/categories")
 public class NoticeCategoryQueryController {
 
     private final NoticeCategoryQueryService noticeCategoryQueryService;
