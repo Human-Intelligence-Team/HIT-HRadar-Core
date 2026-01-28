@@ -33,9 +33,9 @@ public class PasswordResetService {
   public String requestResetToken(PasswordResetRequest req) {
     // 삭제 아닌 계정만 찾는 버전
     Account account = accountRepository
-        .findByLoginIdAndIsDeleted(req.loginId(), 'N')
-        .orElseGet(() -> accountRepository.findByLoginId(req.loginId())
-            .orElseThrow(() -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND)));
+        .findByCompanyCodeAndLoginIdAndIsDeleted(req.companyCode(), req.loginId(), 'N')
+        .orElseThrow(() -> new BusinessException(AccountErrorCode.ACCOUNT_NOT_FOUND));
+
 
     if (account.getEmail() == null || account.getEmail().isBlank()) {
       throw new BusinessException(AccountErrorCode.EMAIL_REQUIRED);
