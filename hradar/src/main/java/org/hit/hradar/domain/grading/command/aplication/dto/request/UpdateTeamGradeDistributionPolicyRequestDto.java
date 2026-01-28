@@ -5,8 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class RegisterGradeObjectionRequestDto {
+public class UpdateTeamGradeDistributionPolicyRequestDto {
 
-    private Long individualGradeId;
-    private String objectionReason;
+    private Integer minRatio;
+    private Integer maxRatio;
 }

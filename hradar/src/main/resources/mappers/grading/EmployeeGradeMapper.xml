@@ -8,16 +8,16 @@
             resultType="org.hit.hradar.domain.grading.query.dto.response.EmployeeGradeStatusResponseDto">
 
         SELECT
-            e.emp_id                 AS empId,
-            e.employee_no            AS employeeNo,
-            e.name                   AS employeeName,
-            e.dept_id                AS departmentId,
+            e.emp_id               AS empId,
+            e.employee_no          AS employeeNo,
+            e.name                 AS employeeName,
+            e.dept_id              AS departmentId,
 
-            ig.individual_grade_id   AS individualGradeId,
-            ig.grade_id              AS gradeId,
-            g.grade_name             AS gradeName,
-            ig.grade_reason          AS gradeReason,
-            ig.grade_status          AS gradeStatus
+            ig.individual_grade_id AS individualGradeId,
+            ig.grade_id            AS gradeId,
+            g.grade_name           AS gradeName,
+            ig.grade_reason        AS gradeReason,
+            ig.grade_status        AS gradeStatus
 
         FROM employee e
 
@@ -31,9 +31,10 @@
                                AND g.is_deleted = 'N'
 
         WHERE e.com_id = #{companyId}
+          AND e.dept_id = #{deptId}
           AND e.is_deleted = 'N'
 
-        ORDER BY e.dept_id, e.emp_id
+        ORDER BY e.emp_id ASC
 
     </select>
 

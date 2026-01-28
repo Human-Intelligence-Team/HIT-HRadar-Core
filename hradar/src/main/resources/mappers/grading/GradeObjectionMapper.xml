@@ -18,4 +18,83 @@
         ORDER BY created_at DESC
 
     </select>
+
+    <select id="findByDepartment"
+            resultType="org.hit.hradar.domain.grading.query.dto.response.GradeObjectionAdminResponseDto">
+
+        SELECT
+            go.objection_id          AS objectionId,
+            go.individual_grade_id   AS individualGradeId,
+
+            e.emp_id                 AS employeeId,
+            e.name                   AS employeeName,
+            e.employee_no            AS employeeNo,
+
+            d.dept_id                AS departmentId,
+            d.dept_name              AS departmentName,
+
+            go.objection_reason      AS objectionReason,
+            go.objection_status      AS objectionStatus,
+            go.objection_result      AS objectionResult
+
+        FROM grade_objection go
+                 JOIN individual_grade ig
+                      ON go.individual_grade_id = ig.individual_grade_id
+                          AND ig.is_deleted = 'N'
+
+                 JOIN employee e
+                      ON ig.emp_id = e.emp_id
+                          AND e.is_deleted = 'N'
+
+                 JOIN department d
+                      ON e.dept_id = d.dept_id
+                          AND d.is_deleted = 'N'
+
+        WHERE e.com_id = #{companyId}
+          AND d.dept_id = #{deptId}
+          AND go.is_deleted = 'N'
+
+        ORDER BY go.created_at DESC
+
+    </select>
+
+    <!--전체 사원 이의제기 조회 -->
+    <select id="findAllByCompany"
+            resultType="org.hit.hradar.domain.grading.query.dto.response.GradeObjectionAdminResponseDto">
+
+        SELECT
+            go.objection_id          AS objectionId,
+            go.individual_grade_id   AS individualGradeId,
+
+            e.emp_id                 AS employeeId,
+            e.name                   AS employeeName,
+            e.employee_no            AS employeeNo,
+
+            d.dept_id                AS departmentId,
+            d.dept_name              AS departmentName,
+
+            go.objection_reason      AS objectionReason,
+            go.objection_status      AS objectionStatus,
+            go.objection_result      AS objectionResult
+
+        FROM grade_objection go
+                 JOIN individual_grade ig
+                      ON go.individual_grade_id = ig.individual_grade_id
+                          AND ig.is_deleted = 'N'
+
+                 JOIN employee e
+                      ON ig.emp_id = e.emp_id
+                          AND e.is_deleted = 'N'
+
+                 JOIN department d
+                      ON e.dept_id = d.dept_id
+                          AND d.is_deleted = 'N'
+
+        WHERE e.com_id = #{companyId}
+          AND go.is_deleted = 'N'
+
+        ORDER BY d.dept_name, e.name, go.created_at DESC
+
+    </select>
+
 </mapper>

@@ -41,6 +41,8 @@ public class CycleQueryService {
         return new CycleDetailResponseDto(
                 cycle.getCycleId(),
                 cycle.getCycleName(),
+                cycle.getQuarter(),
+                cycle.getIs_comp_report_generated(),
                 cycle.getStartDate(),
                 cycle.getEndDate(),
                 cycle.getStatus(),

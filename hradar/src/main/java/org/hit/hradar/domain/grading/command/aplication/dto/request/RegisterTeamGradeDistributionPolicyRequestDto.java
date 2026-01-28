@@ -5,10 +5,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class AssignIndividualGradeRequestDto {
-    private Long cycleId;
-    private Long empId;
+public class RegisterTeamGradeDistributionPolicyRequestDto {
 
-    private Long gradeId;
-    private String gradeReason;
+    private Long memberGradeId;
+    private Integer minRatio;
+    private Integer maxRatio;
 }

@@ -9,15 +9,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
 @Entity
-@Table(
-        name = "individual_grade",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_cycle_employee",
-                        columnNames = {"cycle_id", "emp_id"}
-                )
-        }
-)
+@Table(name = "individual_grade")
 @Getter
 @NoArgsConstructor
 public class  IndividualGrade extends BaseTimeEntity {
@@ -98,5 +90,14 @@ public class  IndividualGrade extends BaseTimeEntity {
         if (this.gradeStatus != GradeApproveStatus.DRAFT) {
             throw new BusinessException(GradingErrorCode.NOT_ALLOWED);
         }
+    }
+
+    public void reviseByObjection(Long gradeId, String gradeReason) {
+        if (this.gradeStatus != GradeApproveStatus.CONFIRMED) {
+            throw new BusinessException(GradingErrorCode.NOT_ALLOWED);
+        }
+
+        this.gradeId = gradeId;
+        this.gradeReason = gradeReason;
     }
 }
