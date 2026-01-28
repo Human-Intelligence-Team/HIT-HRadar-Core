@@ -2,19 +2,22 @@ package org.hit.hradar.domain.notice.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "NOTICE")
+@Table(name = "notice")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-class Notice {
+public class Notice extends BaseTimeEntity {
 
     @Id
     @Column(name = "notice_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "com_id", nullable = false)
@@ -23,32 +26,48 @@ class Notice {
     @Column(name = "title", nullable = false, length = 255)
     private String title;
 
-    @Column(name = "content", nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private NoticeStatus status;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
     private NoticeCategory category;
 
-    @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private Character isDeleted;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @PrePersist
+    public void prePersist() {
+        if (this.isDeleted == null) {
+            this.isDeleted = 'N';
+        }
+    }
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    public static Notice create(
+            Long companyId,
+            NoticeCategory category,
+            String title,
+            String content
+    ) {
+        Notice n = new Notice();
+        n.companyId = companyId;
+        n.category = category;
+        n.title = title;
+        n.content = content;
+        return n;
+    }
 
-    @Column(name = "created_by", nullable = false, length = 50)
-    private String createdBy;
+    public void update(
+            NoticeCategory category,
+            String title,
+            String content
+    ) {
+        this.category = category;
+        this.title = title;
+        this.content = content;
+    }
 
-    @Column(name = "updated_by", length = 50)
-    private String updatedBy;
-
-    @Column(name = "is_deleted", nullable = false)
-    private boolean deleted;
+    public void delete() {
+        this.isDeleted = 'Y';
+    }
 }
