@@ -9,6 +9,7 @@ import org.hit.hradar.domain.evaluation.query.dto.response.row.ObjectiveOptionRo
 import org.hit.hradar.domain.evaluation.query.mapper.*;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -49,9 +50,10 @@ public class EvaluationSheetQueryService {
                         .toList();
 
         // 6. 객관식 옵션 조회 (OBJECTIVE 타입만 의미 있음)
-        List<ObjectiveOptionRow> options =
-                objectiveOptionMapper.findByQuestionIds(questionIds);
-
+        List<ObjectiveOptionRow> options = Collections.emptyList();
+        if (!questionIds.isEmpty()) {
+            options = objectiveOptionMapper.findByQuestionIds(questionIds);
+        }
         // 7. 섹션 → 문제 → 옵션 구조로 조립
         return EvaluationSheetAssembler.assemble(
                 sections, questions, options

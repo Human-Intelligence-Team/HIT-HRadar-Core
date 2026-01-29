@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EvaluationSectionCommandService {
 
     private final EvaluationSectionRepository evaluationSectionRepository;
