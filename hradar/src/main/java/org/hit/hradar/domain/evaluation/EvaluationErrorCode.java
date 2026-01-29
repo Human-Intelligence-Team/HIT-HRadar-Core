@@ -91,7 +91,8 @@ public enum EvaluationErrorCode implements ErrorCode {
             "EVAL_ASSIGN_005",
             "필수 문항에 대한 응답이 누락되었습니다.",
             HttpStatus.BAD_REQUEST
-    ), DUPLICATE_EVALUATION_TYPE("Eval_Type_001", "중복된 평가 유형입니다", HttpStatus.BAD_REQUEST);
+    ), DUPLICATE_EVALUATION_TYPE("Eval_Type_001", "중복된 평가 유형입니다", HttpStatus.BAD_REQUEST),
+    CYCLE_EVAL_TYPE_NOT_FOUND("Eval_Type_002", "회차에 귀속된 평가 유형을 찾을 수 없습니다." , HttpStatus.NOT_FOUND ),;
 
     private final String errorCode;
     private final String message;

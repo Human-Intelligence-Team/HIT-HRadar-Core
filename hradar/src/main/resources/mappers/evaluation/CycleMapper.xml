@@ -38,17 +38,4 @@
 
     </select>
 
-    <select id="selectEvaluationTypesByCycleId"
-            parameterType="long"
-            resultType="string">
-
-        SELECT
-            et.type_name
-        FROM evaluation_type et
-        WHERE et.cycle_id = #{cycleId}
-          AND et.is_deleted = 'N'
-        ORDER BY et.type_name
-
-    </select>
-
 </mapper>
