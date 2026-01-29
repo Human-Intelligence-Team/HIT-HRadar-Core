@@ -21,4 +21,17 @@
 
     </select>
 
+    <select id="findCycleEvalTypeId"
+            parameterType="map"
+            resultType="long">
+
+        SELECT
+            cycle_eval_type_id
+        FROM cycle_evaluation_type
+        WHERE cycle_id = #{cycleId}
+          AND eval_type_id = #{evalTypeId}
+          AND is_deleted = 'N'
+
+    </select>
+
 </mapper>

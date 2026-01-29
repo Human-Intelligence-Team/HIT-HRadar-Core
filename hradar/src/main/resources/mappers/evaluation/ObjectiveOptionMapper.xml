@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.ObjectiveOptionMapper">
+
+    <select id="findByQuestionIds"
+            parameterType="list"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.row.ObjectiveOptionRow">
+
+        SELECT
+        option_id      AS optionId,
+        question_id    AS questionId,
+        option_content AS optionContent,
+        option_score   AS optionScore
+        FROM objective_options
+        WHERE question_id IN
+        <foreach collection="questionIds"
+                 item="questionId"
+                 open="("
+                 close=")"
+                 separator=",">
+            #{questionId}
+        </foreach>
+        ORDER BY option_id ASC
+
+    </select>
+
+</mapper>

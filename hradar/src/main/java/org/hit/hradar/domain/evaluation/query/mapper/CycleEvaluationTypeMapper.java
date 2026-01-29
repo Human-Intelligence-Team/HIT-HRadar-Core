@@ -11,4 +11,9 @@ public interface CycleEvaluationTypeMapper {
     List<CycleEvaluationTypeResponse> selectEvaluationTypesByCycleId(
             @Param("cycleId") Long cycleId
     );
+
+    Long findCycleEvalTypeId(
+            @Param("cycleId") Long cycleId,
+            @Param("evalTypeId") Long evalTypeId
+    );
 }
