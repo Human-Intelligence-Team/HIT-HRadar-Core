@@ -25,7 +25,7 @@ public class LeavePolicyCommandService {
         request.getTypeCode(),
         request.getUnitCode()
     )) {
-      throw new BusinessException(LeaveErrorCode.LEAVE_NOT_ENOUGH);
+      throw new BusinessException(LeaveErrorCode.LEAVE_POLICY_DUPLICATE);
     }
 
     LeavePolicy policy = LeavePolicy.builder()
