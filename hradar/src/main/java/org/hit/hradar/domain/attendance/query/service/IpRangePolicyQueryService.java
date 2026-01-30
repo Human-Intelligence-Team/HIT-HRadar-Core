@@ -23,7 +23,7 @@ public class IpRangePolicyQueryService {
 
   //관리자 활성 IP 정책 목록
   public List<IpRangePolicyResponseDto> getActive(Long comId) {
-    return ipRangePolicyRepository.findByComIdAndIsActiveTrue(comId)
+    return ipRangePolicyRepository.findByComIdAndIsActiveTrueAndIsDeletedFalse(comId)
         .stream()
         .map(IpRangePolicyResponseDto::from)
         .toList();
@@ -32,7 +32,9 @@ public class IpRangePolicyQueryService {
   //관리자 출퇴근용 IP 정책 목록
   public List<IpRangePolicyResponseDto> getAttendanceIps(Long comId) {
     return ipRangePolicyRepository
-        .findByComIdAndIpPolicyTypeAndIsActiveTrue(comId, IpPolicyType.ATTENDANCE)
+        .findByComIdAndIpPolicyTypeAndIsActiveTrueAndIsDeletedFalse(
+            comId, IpPolicyType.ATTENDANCE
+        )
         .stream()
         .map(IpRangePolicyResponseDto::from)
         .toList();

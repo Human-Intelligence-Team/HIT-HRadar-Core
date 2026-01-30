@@ -37,11 +37,11 @@ public class EmpLeave extends BaseTimeEntity {
   @Column(name = "grant_id", nullable = false)
   private Long grantId;
 
-  //휴가 유형(연차/병가/경조사/공가/기타 saas)
+  //휴가 유형
   @Column(name = "leave_type", nullable = false)
   private String leaveType;
 
-  //휴가 기간(FULL_DAY/HALF_AM/HALF_PM/HOUR saas)
+  //휴가 기간
   @Column(name = "leave_unit_type", nullable = false)
   private String leaveUnitType;
 
