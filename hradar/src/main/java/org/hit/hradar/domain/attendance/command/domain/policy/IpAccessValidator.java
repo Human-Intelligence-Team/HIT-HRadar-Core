@@ -3,6 +3,7 @@ package org.hit.hradar.domain.attendance.command.domain.policy;
 import java.net.InetAddress;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.attendance.command.domain.aggregate.IpPolicyType;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.IpRangePolicy;
 import org.hit.hradar.domain.attendance.command.infrastructure.IpRangePolicyJpaRepository;
 import org.springframework.stereotype.Component;
@@ -15,15 +16,17 @@ public class IpAccessValidator {
   private final IpRangePolicyJpaRepository ipRangePolicyJpaRepository;
 
   //회사 활성 ip 목록 조회
-  public boolean validate(Long comId, String clinetIp) {
+  public boolean validate(Long comId, String clientIp) {
     List<IpRangePolicy> policies =
-        ipRangePolicyJpaRepository.findByComIdAndIsActiveTrue(comId);
-
+        ipRangePolicyJpaRepository
+            .findByComIdAndIpPolicyTypeAndIsActiveTrueAndIsDeletedFalse(
+                comId, IpPolicyType.ATTENDANCE
+            );
     //CIDR에 clientIp 포함 여부 판단
     for (IpRangePolicy policy : policies) {
 
       //CIDR 범위에 포함되면 출퇴근 허용
-      if (inRange(policy.getCidr(), clinetIp)) {
+      if (inRange(policy.getCidr(), clientIp)) {
         return true;
       }
     }
