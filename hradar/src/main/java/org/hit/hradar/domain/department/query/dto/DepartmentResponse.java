@@ -19,5 +19,5 @@ public class DepartmentResponse extends BaseTimeEntity {
     private Long managerEmpId;
     private String deptName;
     private String deptPhoneNo;
-    private char isDeleted;
+
 }
