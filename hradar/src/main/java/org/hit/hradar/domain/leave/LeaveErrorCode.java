@@ -41,5 +41,8 @@ public enum LeaveErrorCode implements ErrorCode {
     public HttpStatus getHttpStatusCode() {
       return httpStatus;
     }
+
   }
+
+
 
