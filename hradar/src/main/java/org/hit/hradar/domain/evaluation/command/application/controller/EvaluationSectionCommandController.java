@@ -23,8 +23,6 @@ public class EvaluationSectionCommandController {
     ) {
         Long sectionId =
                 evaluationSectionCommandService.create(cycleEvalTypeId, request);
-        System.out.println("title = " + request.getSectionTitle());
-        System.out.println("desc  = " + request.getSectionDescription());
         return ResponseEntity.ok(ApiResponse.success(sectionId));
     }
 
@@ -34,8 +32,7 @@ public class EvaluationSectionCommandController {
             @PathVariable Long sectionId,
             @RequestBody EvaluationSectionUpdateRequest request
     ) {
-        System.out.println("title = " + request.getSectionTitle());
-        System.out.println("desc  = " + request.getSectionDescription());
+
         evaluationSectionCommandService.update(sectionId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }

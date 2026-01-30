@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.EvaluationAssignmentDeptDetailMapper">
+
+    <!--
+        부서 기준 평가 배정 상세 조회
+        - 평가자 기준
+        - 배정 없는 사원도 포함 (LEFT JOIN)
+    -->
+    <select id="selectDeptAssignmentDetails"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.DepartmentEvaluationAssignmentDetailResponse">
+
+        SELECT
+            -- 평가자
+            evaluator.emp_id        AS evaluatorId,
+            evaluator.name          AS evaluatorName,
+
+            -- 부서
+            d.dept_id               AS deptId,
+            d.dept_name             AS deptName,
+
+            -- 피평가자
+            evaluatee.emp_id        AS evaluateeId,
+            evaluatee.name          AS evaluateeName,
+
+            -- 회차
+            c.cycle_id              AS cycleId,
+            c.cycle_name            AS cycleName,
+
+            -- 평가 유형
+            et.eval_type_id         AS evalTypeId,
+            et.type_name            AS evalTypeName,
+
+            -- 배정 상태
+            ea.assignment_status    AS assignmentStatus
+
+        FROM employee evaluator
+                 JOIN department d
+                      ON evaluator.dept_id = d.dept_id
+                          AND d.is_deleted = 'N'
+
+                 LEFT JOIN evaluation_assignment ea
+                           ON ea.evaluator_id = evaluator.emp_id
+                               AND ea.is_deleted = 'N'
+
+                 LEFT JOIN employee evaluatee
+                           ON ea.evaluatee_id = evaluatee.emp_id
+                               AND evaluatee.is_deleted = 'N'
+
+                 LEFT JOIN cycle_evaluation_type cet
+                           ON ea.cycle_eval_type_id = cet.cycle_eval_type_id
+                               AND cet.is_deleted = 'N'
+
+                 LEFT JOIN cycle c
+                           ON cet.cycle_id = c.cycle_id
+                               AND c.is_deleted = 'N'
+
+                 LEFT JOIN evaluation_type et
+                           ON cet.eval_type_id = et.eval_type_id
+                               AND et.is_deleted = 'N'
+
+        WHERE evaluator.dept_id = #{deptId}
+          AND evaluator.is_deleted = 'N'
+
+        ORDER BY
+            evaluator.name ASC,
+            c.cycle_id ASC,
+            et.eval_type_id ASC
+    </select>
+
+</mapper>
