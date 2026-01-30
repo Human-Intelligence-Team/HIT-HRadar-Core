@@ -1,35 +1,51 @@
 package org.hit.hradar.domain.evaluation.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationTypeAddRequest;
+import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationTypeCreateRequest;
+import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationTypeUpdateRequest;
 import org.hit.hradar.domain.evaluation.command.application.service.EvaluationTypeCommandService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/evaluation-cycles")
+@RequestMapping("/evaluation-types")
 public class EvaluationTypeCommandController {
 
     private final EvaluationTypeCommandService evaluationTypeCommandService;
 
-    //회차 평가 유형 추가
-    @PostMapping("/{cycleId}/types")
-    public ResponseEntity<ApiResponse<String>> addEvaluationType(
-            @PathVariable Long cycleId,
-            @RequestBody EvaluationTypeAddRequest request
+    @PostMapping
+    public ResponseEntity<ApiResponse<Void>> create(
+            @CurrentUser AuthUser authUser,
+            @RequestBody EvaluationTypeCreateRequest request
     ) {
-        evaluationTypeCommandService.addEvaluationType(cycleId, request);
+        Long evalTypeId = evaluationTypeCommandService.create(authUser.companyId(), request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
-    //회차 평가 유형 제거
-    @DeleteMapping("/types/{evalTypeId}")
-    public ResponseEntity<ApiResponse<String>> removeEvaluationType(
+    /**
+     * 평가 유형 수정
+     */
+    @PutMapping("/{evalTypeId}")
+    public ResponseEntity<ApiResponse<Void>> update(
+            @PathVariable Long evalTypeId,
+            @RequestBody EvaluationTypeUpdateRequest request
+    ) {
+        evaluationTypeCommandService.update(evalTypeId, request);
+        return ResponseEntity.ok(ApiResponse.success(null));
+    }
+
+    /**
+     * 평가 유형 삭제
+     */
+    @DeleteMapping("/{evalTypeId}")
+    public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long evalTypeId
     ) {
-        evaluationTypeCommandService.removeEvaluationType(evalTypeId);
+        evaluationTypeCommandService.delete(evalTypeId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

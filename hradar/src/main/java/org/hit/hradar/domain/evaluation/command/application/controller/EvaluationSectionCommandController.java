@@ -10,37 +10,39 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/types")
+@RequestMapping("/cycle-evaluation-types")
 public class EvaluationSectionCommandController {
 
-    private final EvaluationSectionCommandService sectionCommandService;
+    private final EvaluationSectionCommandService evaluationSectionCommandService;
 
-    //섹션 생성
-    @PostMapping("/{typeId}/sections")
-    public ResponseEntity<ApiResponse<String>> createSection(
-            @PathVariable Long typeId,
+    //섹션생성
+    @PostMapping("/{cycleEvalTypeId}/sections")
+    public ResponseEntity<ApiResponse<Long>> create(
+            @PathVariable Long cycleEvalTypeId,
             @RequestBody EvaluationSectionCreateRequest request
-    ){
-        sectionCommandService.createSection(typeId, request);
-        return ResponseEntity.ok(ApiResponse.success(null));
+    ) {
+        Long sectionId =
+                evaluationSectionCommandService.create(cycleEvalTypeId, request);
+        return ResponseEntity.ok(ApiResponse.success(sectionId));
     }
 
     //섹션 수정
     @PutMapping("/sections/{sectionId}")
-    public ResponseEntity<ApiResponse<String>> updateSection(
+    public ResponseEntity<ApiResponse<Void>> update(
             @PathVariable Long sectionId,
             @RequestBody EvaluationSectionUpdateRequest request
     ) {
-        sectionCommandService.updateSection(sectionId, request);
+
+        evaluationSectionCommandService.update(sectionId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     //섹션 삭제
     @DeleteMapping("/sections/{sectionId}")
-    public ResponseEntity<ApiResponse<String>> deleteSection(
+    public ResponseEntity<ApiResponse<Void>> delete(
             @PathVariable Long sectionId
     ) {
-        sectionCommandService.deleteSection(sectionId);
+        evaluationSectionCommandService.delete(sectionId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 }

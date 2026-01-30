@@ -1,17 +1,15 @@
 package org.hit.hradar.domain.evaluation.query.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentListResponseDto;
-import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentResponseDto;
+import org.hit.hradar.domain.evaluation.query.dto.response.DepartmentEvaluationAssignmentDetailResponse;
+import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentAdminResponse;
+import org.hit.hradar.domain.evaluation.query.service.EvaluationAssignmentDeptDetailQueryService;
 import org.hit.hradar.domain.evaluation.query.service.EvaluationAssignmentQueryService;
+import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentResponse;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.hit.hradar.global.dto.AuthUser;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,43 +17,36 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/evaluation-assignments")
 public class EvaluationAssignmentQueryController {
-    private final EvaluationAssignmentQueryService assignmentQueryService;
 
-    //내가 평가해야할 목록 조회
-    @GetMapping("/me")
-    public ResponseEntity<ApiResponse<List<EvaluationAssignmentResponseDto>>> getMyAssignments(
+    private final EvaluationAssignmentQueryService assignmentQueryService;
+    private final EvaluationAssignmentDeptDetailQueryService queryService;
+
+    //평가자 기준 평가 배정 조회
+    @GetMapping("/evaluator")
+    public ApiResponse<List<EvaluationAssignmentResponse>> getAssignmentsByEvaluator(
             @CurrentUser AuthUser authUser
     ) {
-        Long employeeId = authUser.employeeId();
-
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        assignmentQueryService.getMyAssignments(employeeId)
-                )
+        return ApiResponse.success(
+                assignmentQueryService.getAssignmentsByEvaluator(authUser.employeeId())
         );
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<ApiResponse<List<EvaluationAssignmentListResponseDto>>> getAssignments(
-            @RequestParam Long cycleId,
-            @RequestParam(required = false) String evalTypeCode,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) Long evaluatorId,
-            @RequestParam(required = false) Long evaluateeId
+    //전체 조회
+    @GetMapping("/cycle-eval-types/{cycleEvalTypeId}")
+    public ApiResponse<List<EvaluationAssignmentAdminResponse>> getAssignments(
+            @PathVariable Long cycleEvalTypeId
     ) {
-        return ResponseEntity.ok(
-                ApiResponse.success(
-                        assignmentQueryService.getAssignments(
-                                cycleId,
-                                evalTypeCode,
-                                status,
-                                evaluatorId,
-                                evaluateeId
-                        )
-                )
+        return ApiResponse.success(
+                assignmentQueryService.getAssignments(cycleEvalTypeId)
         );
     }
 
-
-
+    @GetMapping("/department/details")
+    public ApiResponse<List<DepartmentEvaluationAssignmentDetailResponse>> getDeptAssignmentDetails(
+            @RequestParam Long deptId
+    ) {
+        return ApiResponse.success(
+                queryService.getDeptAssignmentDetails(deptId)
+        );
+    }
 }
