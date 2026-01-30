@@ -2,8 +2,7 @@ package org.hit.hradar.domain.company.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-//import org.hit.hradar.domain.company.CompanyErrorCode;
+import org.hit.hradar.domain.company.CompanyErrorCode;
 import org.hit.hradar.domain.companyApplication.command.domain.aggregate.CompanyApplicationStatus;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
@@ -53,15 +52,18 @@ public class Company extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isDeleted;
 
-//  public void updateInfo(String comName, String comTel, String address) {
-//    if (comName == null || comName.isBlank()) {
-//      throw new BusinessException(CompanyErrorCode.COMPANY_NAME_NOT_BLANK);
-//    }
-//    this.companyName = comName;
-//    this.comTel = comTel;
-//    this.address = address;
-//  }
+  public void updateInfo(String comName, String comTel, String address) {
+    if (comName == null || comName.isBlank()) {
+      throw new BusinessException(CompanyErrorCode.COMPANY_NAME_NOT_BLANK);
+    }
+    this.companyName = comName;
+    this.comTel = comTel;
+    this.address = address;
+  }
 
+  public void isDeleted() {
+    this.isDeleted = 'Y';
+  }
 }
 
 

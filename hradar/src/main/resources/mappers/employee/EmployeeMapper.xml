@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.employee.query.mapper.EmployeeQueryMapper">
+
+  <resultMap id="EmployeeResponseMap"
+    type="org.hit.hradar.domain.employee.query.dto.EmployeeResponse">
+
+    <id     property="empId"          column="emp_id"/>
+    <result property="comId"          column="com_id"/>
+    <result property="deptId"         column="dept_id"/>
+    <result property="positionId"     column="position_id"/>
+
+    <result property="name"           column="name"/>
+    <result property="employeeNo"     column="employee_no"/>
+    <result property="email"          column="email"/>
+
+    <result property="gender"         column="gender"/>
+    <result property="birth"          column="birth"/>
+    <result property="hireDate"       column="hire_date"/>
+    <result property="exitDate"       column="exit_date"/>
+
+    <result property="image"          column="image"/>
+    <result property="extNo"          column="extension_number"/>
+    <result property="phoneNo"        column="phone_number"/>
+    <result property="note"           column="note"/>
+
+    <result property="employmentType" column="type"/>
+    <result property="isDeleted"      column="is_deleted"/>
+
+    <result property="accId"          column="account_id"/>
+    <result property="loginId"        column="login_id"/>
+    <result property="role"           column="role"/>
+    <result property="status"         column="status"/>
+  </resultMap>
+
+  <sql id="SelectColumns">
+    e.emp_id,
+    e.com_id,
+    e.dept_id,
+    e.position_id,
+    e.name,
+    e.employee_no,
+    e.email,
+    e.gender,
+    e.birth,
+    e.hire_date,
+    e.exit_date,
+    e.image,
+    e.extension_number,
+    e.phone_number,
+    e.note,
+    e.type,
+    e.is_deleted,
+    a.account_id,
+    a.login_id,
+    a.role,
+    a.status
+  </sql>
+
+  <sql id="BaseFromJoin">
+    FROM employee e
+    LEFT JOIN user_account a
+    ON a.com_id = e.com_id
+    AND a.employee_id = e.emp_id
+    AND a.is_deleted = 'N'
+  </sql>
+
+  <sql id="BaseWhere">
+    WHERE e.com_id = #{comId}
+    AND e.is_deleted = 'N'
+  </sql>
+
+  <!-- 단건 -->
+  <select id="findById" resultMap="EmployeeResponseMap">
+    SELECT
+    <include refid="SelectColumns"/>
+    <include refid="BaseFromJoin"/>
+    <include refid="BaseWhere"/>
+    AND e.emp_id = #{empId}
+    LIMIT 1
+  </select>
+
+  <!-- 통합 목록 (deptId/positionId 옵션) -->
+  <select id="findList" resultMap="EmployeeResponseMap">
+    SELECT
+    <include refid="SelectColumns"/>
+    <include refid="BaseFromJoin"/>
+    <include refid="BaseWhere"/>
+
+    <if test="deptId != null">
+      AND e.dept_id = #{deptId}
+    </if>
+
+    <if test="positionId != null">
+      AND e.position_id = #{positionId}
+    </if>
+
+    ORDER BY e.emp_id DESC
+  </select>
+
+</mapper>

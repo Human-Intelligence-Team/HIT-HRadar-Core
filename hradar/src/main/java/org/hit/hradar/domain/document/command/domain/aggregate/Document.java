@@ -9,7 +9,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "DOCUMENT")
+@Table(name = "document")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Document extends BaseTimeEntity {

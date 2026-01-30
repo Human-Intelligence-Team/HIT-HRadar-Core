@@ -5,9 +5,12 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.attendance.query.dto.request.AttendanceDetailQueryRequest;
 import org.hit.hradar.domain.attendance.query.dto.request.AttendanceListQueryRequest;
+import org.hit.hradar.domain.attendance.query.dto.response.AttendanceCalendarItemDto;
 import org.hit.hradar.domain.attendance.query.dto.response.AttendanceDetailResponseDto;
 import org.hit.hradar.domain.attendance.query.dto.response.AttendanceListResponseDto;
 import org.hit.hradar.domain.attendance.query.service.AttendanceQueryService;
+import org.hit.hradar.global.aop.CurrentUser;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,16 +46,37 @@ public class AttendanceQueryController {
   //근태 상세 조회(하루 단위) 특정사원 + 특정 날짜
   @GetMapping("/detail")
   public AttendanceDetailResponseDto getAttendanceDetail(
+      @CurrentUser AuthUser authUser,
       @RequestParam Long targetEmpId,
       @RequestParam LocalDate workDate
   ) {
     AttendanceDetailQueryRequest request =
         new AttendanceDetailQueryRequest(
-            null,
+            authUser.userId(),
             targetEmpId,
             workDate
         );
 
     return attendanceQueryService.getAttendanceDetail(request);
   }
+
+  @GetMapping("/calendar")
+  public List<AttendanceCalendarItemDto> getAttedanceCalendar(
+      @RequestParam(required = false) Long targetEmpId,
+      @RequestParam(required = false) Long targetDeptId,
+      @RequestParam LocalDate fromDate,
+      @RequestParam LocalDate toDate
+  ) {
+    AttendanceListQueryRequest request =
+        new AttendanceListQueryRequest(
+            targetEmpId,
+            targetDeptId,
+            fromDate,
+            toDate
+        );
+
+    return attendanceQueryService.getAttendanceCalendar(request);
+  }
+
+
 }

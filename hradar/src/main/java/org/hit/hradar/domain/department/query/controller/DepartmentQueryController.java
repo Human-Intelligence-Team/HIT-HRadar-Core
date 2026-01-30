@@ -1,9 +1,9 @@
 package org.hit.hradar.domain.department.query.controller;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.department.query.dto.DepartmentNode;
+import org.hit.hradar.domain.department.query.dto.DepartmentListResponse;
 import org.hit.hradar.domain.department.query.dto.DepartmentResponse;
+import org.hit.hradar.domain.department.query.dto.OrganizationChartResponse;
 import org.hit.hradar.domain.department.query.service.DepartmentQueryService;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
@@ -23,25 +23,29 @@ public class DepartmentQueryController {
       @PathVariable Long deptId,
       @CurrentUser AuthUser authUser
   ) {
-    DepartmentResponse response = departmentQueryService.getDepartmentById(deptId, authUser.companyId());
+    DepartmentResponse response =
+        departmentQueryService.getDepartmentById(deptId, authUser.companyId());
+
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
   @GetMapping
-  public ResponseEntity<ApiResponse<List<DepartmentResponse>>> getAllDepartmentsByCompany(
+  public ResponseEntity<ApiResponse<DepartmentListResponse>> getAllDepartmentsByCompany(
       @CurrentUser AuthUser authUser
   ) {
-    List<DepartmentResponse> responses =
+    DepartmentListResponse response =
         departmentQueryService.getAllDepartmentsByCompany(authUser.companyId());
-    return ResponseEntity.ok(ApiResponse.success(responses));
+
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 
-  @GetMapping("/organization-chart")        // 아직 불가능
-  public ResponseEntity<ApiResponse<List<DepartmentNode>>> getOrganizationChart(
+  @GetMapping("/organization-chart")
+  public ResponseEntity<ApiResponse<OrganizationChartResponse>> getOrganizationChart(
       @CurrentUser AuthUser authUser
   ) {
-    List<DepartmentNode> organizationChart =
+    OrganizationChartResponse response =
         departmentQueryService.getOrganizationChart(authUser.companyId());
-    return ResponseEntity.ok(ApiResponse.success(organizationChart));
+
+    return ResponseEntity.ok(ApiResponse.success(response));
   }
 }

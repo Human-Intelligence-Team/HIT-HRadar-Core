@@ -11,6 +11,7 @@ public enum AccountErrorCode implements ErrorCode {
     ACCOUNT_CANCELED("ACCOUNT_004", "삭제된 계정입니다.", HttpStatus.NOT_ACCEPTABLE),
     DUPLICATE_LOGIN_ID("ACCOUNT_005", "중복된 아이디입니다.", HttpStatus.BAD_REQUEST),
     COMPANY_INVALID("ACCOUNT_006", "회사 코드가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
+    COMPANY_DUPLICATED("ACCOUNT_007", "중복된 회사 코드가 입니다.", HttpStatus.BAD_REQUEST),
     EMAIL_REQUIRED("EMAIL_001", "이메일이 필요합니다.", HttpStatus.BAD_REQUEST),
     INVALID_PURPOSE("EMAIL_002", "이메일 인증 목적이 필요합니다.", HttpStatus.BAD_REQUEST),
     EMAIL_ALREADY_EXISTS("EMAIL_003", "중복된 이메일입니다.", HttpStatus.BAD_REQUEST),
