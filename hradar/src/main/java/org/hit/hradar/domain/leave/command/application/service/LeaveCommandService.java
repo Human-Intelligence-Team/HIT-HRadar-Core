@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.leave.LeaveErrorCode;
 import org.hit.hradar.domain.leave.command.application.dto.request.LeaveApplyRequest;
 import org.hit.hradar.domain.leave.command.domain.aggregate.EmpLeave;
+import org.hit.hradar.domain.leave.command.domain.aggregate.LeaveUsage;
 import org.hit.hradar.domain.leave.command.infrastructure.EmpLeaveJpaRepository;
 import org.hit.hradar.domain.leave.command.infrastructure.LeaveUsageJpaRepository;
 import org.hit.hradar.domain.leave.query.dto.response.LeaveGrantDto;
 import org.hit.hradar.domain.leave.query.mapper.LeaveGrantMapper;
 import org.hit.hradar.domain.leave.query.mapper.LeaveListMapper;
+import org.hit.hradar.domain.leave.query.mapper.LeaveUsageMapper;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,8 @@ public class LeaveCommandService {
   private final LeaveUsageJpaRepository leaveUsageJpaRepository;
   private final LeaveListMapper leaveListMapper;
   private final LeaveGrantMapper leaveGrantMapper;
+  private final LeaveUsageMapper leaveUsageMapper;
+
 
   //휴가 도메인 데이터 저장(결재 이미 생성된 상태)
   public void applyLeave(
@@ -71,5 +75,20 @@ public class LeaveCommandService {
         .build();
 
     empLeaveJpaRepository.save(leave);
+
+    leaveUsageJpaRepository.save(
+        LeaveUsage.create(
+            leave.getLeaveId(),
+            request.getGrantId(),
+            request.getLeaveDays(),
+            request.getStartDate()
+        )
+    );
+
+// leave_grant remaining_days 차감
+    leaveUsageMapper.decreaseRemainingDays(
+        request.getGrantId(),
+        request.getLeaveDays()
+    );
   }
 }
