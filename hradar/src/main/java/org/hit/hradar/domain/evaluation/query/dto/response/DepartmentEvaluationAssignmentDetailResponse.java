@@ -20,6 +20,8 @@ public class DepartmentEvaluationAssignmentDetailResponse {
     private Long cycleId;
     private String cycleName;
 
+    private String cycleStatus;
+
     private Long evalTypeId;
     private String evalTypeName;
 

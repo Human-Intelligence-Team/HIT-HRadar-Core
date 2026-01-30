@@ -2,12 +2,12 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.EvaluationAssignmentAdminMapper">
 
-    <select id="findAssignmentsByCycleEvalType"
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.EvaluationAssignmentMapper">
+    <select id="findByEvaluatorId"
             parameterType="long"
-            resultType="org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentAdminResponse">
-
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentResponse">
+        /*평가자 기준 평가 배정 조회*/
         SELECT
             a.assignment_id        AS assignmentId,
 
@@ -15,6 +15,8 @@
             c.cycle_name           AS cycleName,
             c.year                 AS year,
             c.quarter              AS quarter,
+
+            c.status               AS cycleStatus,
 
             et.eval_type_id        AS evalTypeId,
             et.type_name           AS evalTypeName,
@@ -36,12 +38,10 @@
                       ON cet.eval_type_id = et.eval_type_id
                           AND et.is_deleted = 'N'
 
-        WHERE a.cycle_eval_type_id = #{cycleEvalTypeId}
+        WHERE a.evaluator_id = #{evaluatorId}
           AND a.is_deleted = 'N'
 
-        ORDER BY
-            a.assignment_status ASC,
-            a.created_at ASC
+        ORDER BY c.start_date DESC
     </select>
 
 </mapper>

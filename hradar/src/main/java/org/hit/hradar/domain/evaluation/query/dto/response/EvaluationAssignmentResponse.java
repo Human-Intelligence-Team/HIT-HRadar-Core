@@ -14,6 +14,8 @@ public class EvaluationAssignmentResponse {
     private String year;
     private String quarter;
 
+    private String cycleStatus;
+
     // 평가 유형 정보
     private Long evalTypeId;
     private String evalTypeName;
