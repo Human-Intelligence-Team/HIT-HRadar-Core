@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.attendance.query.dto.request.AttendanceDetailQueryRequest;
 import org.hit.hradar.domain.attendance.query.dto.request.AttendanceListQueryRequest;
+import org.hit.hradar.domain.attendance.query.dto.response.AttendanceCalendarItemDto;
 import org.hit.hradar.domain.attendance.query.dto.response.AttendanceDetailResponseDto;
 import org.hit.hradar.domain.attendance.query.dto.response.AttendanceListResponseDto;
 import org.hit.hradar.domain.attendance.query.mapper.AttendanceQueryMapper;
@@ -31,5 +32,11 @@ public class  AttendanceQueryService {
       AttendanceDetailQueryRequest request
   ) {
     return attendanceQueryMapper.findAttendanceDetail(request);
+  }
+
+  public List<AttendanceCalendarItemDto> getAttendanceCalendar(
+      AttendanceListQueryRequest request
+  ) {
+    return attendanceQueryMapper.findAttendanceCalendar(request);
   }
 }
