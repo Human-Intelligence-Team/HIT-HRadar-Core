@@ -14,6 +14,8 @@ public interface IpRangePolicyJpaRepository
 
   List<IpRangePolicy> findByComIdAndIsActiveTrueAndIsDeletedFalse(Long comId);
 
+  List<IpRangePolicy> findByComIdAndIsDeletedFalse(Long comId);
+
   List<IpRangePolicy>
   findByComIdAndIpPolicyTypeAndIsActiveTrueAndIsDeletedFalse(
       Long comId,

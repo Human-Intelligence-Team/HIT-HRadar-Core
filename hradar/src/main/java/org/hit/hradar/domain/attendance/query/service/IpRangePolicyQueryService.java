@@ -15,7 +15,8 @@ public class IpRangePolicyQueryService {
 
   //관리자 회사 전체 IP 정책 목록
   public List<IpRangePolicyResponseDto> getAll(Long comId) {
-    return ipRangePolicyRepository.findByComId(comId)
+    return ipRangePolicyRepository
+        .findByComIdAndIsDeletedFalse(comId)
         .stream()
         .map(IpRangePolicyResponseDto::from)
         .toList();

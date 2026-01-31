@@ -1,12 +1,13 @@
 package org.hit.hradar.domain.approval.command.infrastructure;
 
 import java.util.List;
-import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocument;
+import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocumentType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ApprovalDocumentTypeJpaRepository
-    extends JpaRepository<ApprovalDocument, Long> {
+    extends JpaRepository<ApprovalDocumentType, Long> {
 
-  List<ApprovalDocument> findByActiveTrueAndIsTemplateTrue();
+  List<ApprovalDocumentType> findByCompanyIdAndActiveTrue(Long companyId);
 
+  List<ApprovalDocumentType> findByCompanyId(Long companyId);
 }
