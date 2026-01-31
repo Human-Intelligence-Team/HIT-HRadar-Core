@@ -3,7 +3,9 @@ package org.hit.hradar.domain.approval.command.application.controller;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalDocumentTypeRequest;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalDocumentTypeCommandService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,9 +24,11 @@ public class ApprovalDocumentTypeCommandController {
 
   @PostMapping
   public ResponseEntity<ApiResponse<Void>> create(
+      @CurrentUser AuthUser authUser,
       @RequestBody ApprovalDocumentTypeRequest request
   ) {
     approvalDocumentTypeCommandService.create(
+        authUser.companyId(),
         request
     );
     return ResponseEntity.ok(ApiResponse.success(null));
