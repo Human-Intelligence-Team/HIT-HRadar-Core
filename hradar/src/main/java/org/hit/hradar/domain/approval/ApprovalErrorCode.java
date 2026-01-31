@@ -26,7 +26,10 @@ public enum ApprovalErrorCode implements ErrorCode {
   DOMAIN_PAYLOAD_REQUIRED("APP_017", "결재 문서 유형에 필요한 추가 정보가 누락되었습니다.", HttpStatus.BAD_REQUEST),
   DOMAIN_PAYLOAD_INVALID("APP_018", "결재 문서 유형에 대한 입력 정보가 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
   INVALID_SAVE_MODE("APP_020","지원하지 않는 결재 저장 모드입니다.",HttpStatus.BAD_REQUEST),
-  INVALID_DOC_TYPE_FORMAT("APP_021","결재 문서 유형은 필수입니다.",HttpStatus.BAD_REQUEST);
+  INVALID_DOC_TYPE_FORMAT("APP_021","결재 문서 유형은 필수입니다.",HttpStatus.BAD_REQUEST),
+  INVALID_REQUEST("APP_000", "요청 값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
+
+
 
   private final String errorCode;
   private final String message;

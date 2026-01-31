@@ -139,7 +139,7 @@ public class ApprovalProviderService {
 
   private void validateDraftRequest(ApprovalDraftCreateRequest request) {
     if (request == null) {
-      throw new IllegalArgumentException("request는 필수입니다.");
+      throw new BusinessException(ApprovalErrorCode.INVALID_REQUEST);
     }
     if (request.getDocType() == null || request.getDocType().isBlank()) {
       throw new BusinessException(ApprovalErrorCode.INVALID_DOC_TYPE_FORMAT);
@@ -150,24 +150,24 @@ public class ApprovalProviderService {
   }
 
   private void savePayload(Long docId, Object payload) {
-    try {
-      String json = objectMapper.writeValueAsString(payload);
-      approvalPayloadJpaRepository.save(
-          ApprovalPayload.create(docId, json)
-      );
-    } catch (Exception e) {
-      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_INVALID);
+    if (payload == null) {
+      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_REQUIRED);
     }
+
+    String json = writeJson(payload);
+    approvalPayloadJpaRepository.save(
+        ApprovalPayload.create(docId, json)
+    );
   }
 
   private void updatePayload(Long docId, Object payload) {
-    try {
-      String json = objectMapper.writeValueAsString(payload);
-      approvalPayloadJpaRepository.findByDocId(docId)
-          .ifPresent(p -> p.update(json));
-    } catch (Exception e) {
-      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_INVALID);
+    if (payload == null) {
+      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_REQUIRED);
     }
+
+    String json = writeJson(payload);
+    approvalPayloadJpaRepository.findByDocId(docId)
+        .ifPresent(p -> p.update(json));
   }
 
   private void saveSteps(Long lineId, List<Long> approverIds) {
@@ -189,5 +189,13 @@ public class ApprovalProviderService {
     approvalReferenceJpaRepository.saveAll(
         ApprovalReference.createAll(docId, referenceIds)
     );
+  }
+
+  private String writeJson(Object payload) {
+    try {
+      return objectMapper.writeValueAsString(payload);
+    } catch (Exception e) {
+      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_INVALID);
+    }
   }
 }
