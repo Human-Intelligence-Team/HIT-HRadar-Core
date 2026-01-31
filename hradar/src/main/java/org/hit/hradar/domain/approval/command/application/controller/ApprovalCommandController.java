@@ -1,8 +1,10 @@
 package org.hit.hradar.domain.approval.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalCommentCreateRequest;
 import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalDraftCreateRequest;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalApproveCommandService;
+import org.hit.hradar.domain.approval.command.application.service.ApprovalCommentCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalRejectCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalWithdrawCommandService;
 import org.hit.hradar.domain.approval.command.application.service.provider.ApprovalProviderService;
@@ -27,6 +29,7 @@ public class ApprovalCommandController {
   private final ApprovalApproveCommandService approvalApproveCommandService;
   private final ApprovalRejectCommandService approvalRejectCommandService;
   private final ApprovalWithdrawCommandService approvalWithdrawCommandService;
+  private final ApprovalCommentCommandService approvalCommentCommandService;
 
   //임시저장
   @PostMapping("/draft")
@@ -104,4 +107,22 @@ public class ApprovalCommandController {
     approvalWithdrawCommandService.withdraw(docId, authUser.employeeId());
     return ResponseEntity.ok(ApiResponse.success(null));
   }
+
+  @PostMapping("/{docId}/comments")
+  public ResponseEntity<ApiResponse<Void>> addComment(
+      @PathVariable Long docId,
+      @CurrentUser AuthUser authUser,
+      @RequestBody ApprovalCommentCreateRequest request
+  ) {
+    approvalCommentCommandService.addComment(
+        docId,
+        authUser.employeeId(),
+        request.getContent(),
+        request.getParentCommentId()
+    );
+    return ResponseEntity.ok(ApiResponse.success(null));
+  }
+
+
+
 }

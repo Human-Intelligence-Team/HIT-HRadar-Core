@@ -1,5 +1,6 @@
 package org.hit.hradar.domain.approval.command.application.dto.request;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import java.util.List;
 import lombok.Getter;
 
@@ -13,5 +14,6 @@ public class ApprovalDraftCreateRequest {
   private String content;
   private List<Long> approverIds;
   private List<Long> referenceIds;
-  private Object Payload;
+
+  private JsonNode Payload;
 }

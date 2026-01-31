@@ -40,5 +40,17 @@ public class ApprovalComment extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
-
+  public static ApprovalComment create(
+      Long docId,
+      Long writerId,
+      String content,
+      Long parentCommentId
+  ) {
+    ApprovalComment c = new ApprovalComment();
+    c.approvalDocumentId = docId;
+    c.writerId = writerId;
+    c.content = content;
+    c.parentCommentId = parentCommentId;
+    return c;
+  }
 }

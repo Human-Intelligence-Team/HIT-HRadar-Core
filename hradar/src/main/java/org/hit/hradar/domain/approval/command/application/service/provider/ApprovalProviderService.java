@@ -1,5 +1,6 @@
 package org.hit.hradar.domain.approval.command.application.service.provider;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -149,7 +150,7 @@ public class ApprovalProviderService {
     }
   }
 
-  private void savePayload(Long docId, Object payload) {
+  private void savePayload(Long docId, JsonNode payload) {
     if (payload == null) {
       throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_REQUIRED);
     }
@@ -160,7 +161,7 @@ public class ApprovalProviderService {
     );
   }
 
-  private void updatePayload(Long docId, Object payload) {
+  private void updatePayload(Long docId, JsonNode payload) {
     if (payload == null) {
       throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_REQUIRED);
     }
@@ -191,9 +192,9 @@ public class ApprovalProviderService {
     );
   }
 
-  private String writeJson(Object payload) {
+  private String writeJson(JsonNode payload) {
     try {
-      return objectMapper.writeValueAsString(payload);
+      return payload.toString();
     } catch (Exception e) {
       throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_INVALID);
     }
