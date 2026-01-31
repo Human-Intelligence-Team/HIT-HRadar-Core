@@ -3,6 +3,7 @@ package org.hit.hradar.domain.notice.query.dto.response;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 public class NoticeDetailResponse {
@@ -19,4 +20,12 @@ public class NoticeDetailResponse {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private List<AttachmentResponse> attachments;
+
+    @Getter
+    public static class AttachmentResponse {
+        private String url;
+        private String originalName;
+    }
 }
