@@ -4,6 +4,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.hit.hradar.domain.attendance.query.dto.request.AttendanceDetailQueryRequest;
 import org.hit.hradar.domain.attendance.query.dto.request.AttendanceListQueryRequest;
+import org.hit.hradar.domain.attendance.query.dto.response.AttendanceCalendarItemDto;
 import org.hit.hradar.domain.attendance.query.dto.response.AttendanceDetailResponseDto;
 import org.hit.hradar.domain.attendance.query.dto.response.AttendanceListResponseDto;
 
@@ -19,4 +20,9 @@ public interface AttendanceQueryMapper {
   AttendanceDetailResponseDto findAttendanceDetail(
     AttendanceDetailQueryRequest request
   );
+
+  List<AttendanceCalendarItemDto> findAttendanceCalendar(
+      AttendanceListQueryRequest request
+  );
+
 }

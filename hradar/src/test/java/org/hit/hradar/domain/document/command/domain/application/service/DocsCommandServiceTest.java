@@ -113,7 +113,6 @@ class DocsCommandServiceTest {
     void create_success() {
         // given
         Long companyId = 1L;
-        Long actorId = 10L;
 
         DocumentCreateRequest request = mock(DocumentCreateRequest.class);
 
@@ -128,6 +127,7 @@ class DocsCommandServiceTest {
         when(chunk2.getContent()).thenReturn("내용2");
 
         when(request.getDocTitle()).thenReturn("연차 규정");
+        when(request.getCategory()).thenReturn("HR");
         when(request.getChunks()).thenReturn(List.of(chunk1, chunk2));
 
         Document savedDoc = mock(Document.class);
@@ -137,7 +137,7 @@ class DocsCommandServiceTest {
                 .thenReturn(savedDoc);
 
         // when
-        docsCommandService.create(request, companyId, actorId);
+        docsCommandService.create(request, companyId);
 
         // then
         verify(documentRepository).save(any(Document.class));
@@ -152,7 +152,6 @@ class DocsCommandServiceTest {
     @Test
     void update_success() {
         Long companyId = 1L;
-        Long actorId = 10L;
         Long documentId = 100L;
 
         Document document = mock(Document.class);
@@ -169,13 +168,14 @@ class DocsCommandServiceTest {
         when(chunk.getContent()).thenReturn("내용");
 
         when(request.getDocTitle()).thenReturn("수정된 제목");
+        when(request.getCategory()).thenReturn("HR");
         when(request.getChunks()).thenReturn(List.of(chunk));
 
         // when
-        docsCommandService.update(documentId, request, companyId, actorId);
+        docsCommandService.update(documentId, request, companyId);
 
         // then
-        verify(document).updateTitle("수정된 제목", actorId);
+        verify(document).updateDocument("수정된 제목", "HR"); // ✅ 파라미터 맞춤
         verify(chunkRepository).deleteByDocumentId(documentId);
         verify(chunkRepository).saveAll(anyList());
         verify(vectorIndexClient).deleteIndex(companyId, documentId);

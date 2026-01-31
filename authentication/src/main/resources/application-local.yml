@@ -47,6 +47,10 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
 
 jwt:
   secret-key: Q8b83bmIq4KI2lvE+bViXYvo9SyODg1g0Q0dPyG9VNutj0GgBG8SxhWwL3oexDlWtq5uxFZs+k+NWXHYXKLjYg==

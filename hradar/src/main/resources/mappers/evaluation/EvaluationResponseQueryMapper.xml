@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.EvaluationResponseQueryMapper">
+
+    <select id="selectResponsesByAssignmentId"
+            parameterType="long"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.EvaluationResponseQueryDto">
+
+        SELECT
+            ea.assignment_id            AS assignmentId,
+            ea.assignment_status        AS assignmentStatus,
+
+            q.question_id               AS questionId,
+            q.question_type             AS questionType,
+            q.required_status           AS requiredStatus,
+
+            er.score                    AS score,
+            er.text_answer              AS textAnswer,
+            er.option_id                AS optionId
+
+        FROM evaluation_assignment ea
+
+                 /* 평가 문항 */
+                 JOIN evaluation_question q
+                      ON q.section_id IN (
+                          SELECT es.section_id
+                          FROM evaluation_section es
+                          WHERE es.cycle_eval_type_id = ea.cycle_eval_type_id
+                      )
+
+            /* 응답은 없을 수도 있으므로 LEFT JOIN */
+                 LEFT JOIN evaluation_response er
+                           ON er.assignment_id = ea.assignment_id
+                               AND er.question_id = q.question_id
+
+        WHERE ea.assignment_id = #{assignmentId}
+
+        ORDER BY q.question_id ASC
+    </select>
+
+</mapper>

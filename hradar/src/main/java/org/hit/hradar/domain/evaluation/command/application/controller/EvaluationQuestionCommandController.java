@@ -10,32 +10,36 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/evaluation-sections")
 public class EvaluationQuestionCommandController {
 
     private final EvaluationQuestionCommandService questionCommandService;
 
-    @PostMapping("/sections/{sectionId}/question")
-    public ResponseEntity<ApiResponse<String>> createQuestion (
+    @PostMapping("/{sectionId}/questions")
+    public ResponseEntity<ApiResponse<Long>> createQuestion(
             @PathVariable Long sectionId,
             @RequestBody EvaluationQuestionCreateRequest request
-    ){
-        questionCommandService.createQuestion(sectionId, request);
-        return ResponseEntity.ok(ApiResponse.success(null));
+    ) {
+        request.setSectionId(sectionId);
+
+        Long questionId = questionCommandService.create(request);
+        return ResponseEntity.ok(ApiResponse.success(questionId));
     }
 
     @PutMapping("/questions/{questionId}")
-    public ResponseEntity<ApiResponse<String>> updateQuestion (
+    public ResponseEntity<ApiResponse<Void>> updateQuestion(
             @PathVariable Long questionId,
             @RequestBody EvaluationQuestionUpdateRequest request
-    ){
-        questionCommandService.updateQuestion(questionId, request);
+    ) {
+        questionCommandService.update(questionId, request);
         return ResponseEntity.ok(ApiResponse.success(null));
     }
 
+
     @DeleteMapping("/questions/{questionId}")
-    public ResponseEntity<ApiResponse<String>> deleteQuestion (
+    public ResponseEntity<ApiResponse<Void>> deleteQuestion(
             @PathVariable Long questionId
-    ){
+    ) {
         questionCommandService.deleteQuestion(questionId);
         return ResponseEntity.ok(ApiResponse.success(null));
     }

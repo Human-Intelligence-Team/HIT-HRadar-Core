@@ -6,12 +6,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.attendance.IpPolicyErrorCode;
 import org.hit.hradar.domain.attendance.command.application.dto.response.AttendanceCheckResponse;
-import org.hit.hradar.domain.attendance.command.domain.aggregate.ApprovalStatus;
-import org.hit.hradar.domain.attendance.command.domain.aggregate.Attendance;
-import org.hit.hradar.domain.attendance.command.domain.aggregate.AttendanceAuthLog;
-import org.hit.hradar.domain.attendance.command.domain.aggregate.AttendanceWorkLog;
-import org.hit.hradar.domain.attendance.command.domain.aggregate.AttendanceWorkPlan;
-import org.hit.hradar.domain.attendance.command.domain.aggregate.WorkLogType;
+import org.hit.hradar.domain.attendance.command.domain.aggregate.*;
 import org.hit.hradar.domain.attendance.command.domain.policy.IpAccessValidator;
 import org.hit.hradar.domain.attendance.command.domain.repository.AttendanceRepository;
 import org.hit.hradar.domain.attendance.command.infrastructure.AttendanceAuthLogJpaRepository;
@@ -28,92 +23,95 @@ public class AttendanceCommandService {
 
   private final AttendanceRepository attendanceRepository;
   private final IpAccessValidator ipAccessValidator;
-  private final AttendanceWorkLogJpaRepository attendanceWorkLogJpaRepository;
-  private final AttendanceAuthLogJpaRepository attendanceAuthLogJpaRepository;
-  private final AttendanceWorkPlanJpaRepository attendanceWorkPlanJpaRepository;
+  private final AttendanceWorkLogJpaRepository workLogRepository;
+  private final AttendanceAuthLogJpaRepository authLogRepository;
+  private final AttendanceWorkPlanJpaRepository workPlanRepository;
 
-  // 출퇴근 버튼 클릭 처리
   public AttendanceCheckResponse processAttendance(
       Long empId,
       Long comId,
       String clientIp
   ) {
-    System.out.println("1 ip대역 통과");
-    // 1. 회사 IP 대역 검증
+    // 1. IP 검증
     if (!ipAccessValidator.validate(comId, clientIp)) {
       throw new BusinessException(IpPolicyErrorCode.IpRange_NOT_FOUND);
     }
-    System.out.println("2 ip대역 통과");
+
     LocalDate today = LocalDate.now();
     LocalDateTime now = LocalDateTime.now();
 
-    System.out.println("3 ip대역 통과");
-    // 2. 당일 근태 조회 (없으면 생성)
+    // 2. 오늘 근태 조회 or 생성
     Attendance attendance = attendanceRepository
         .findByEmpIdAndWorkDate(empId, today)
-        .orElseGet(() -> createTodayAttendance(empId, today));
+        .orElseGet(() -> attendanceRepository.save(new Attendance(empId, today)));
 
-    System.out.println("4 ip대역 통과");
-    LocalDateTime startOfDay = today.atStartOfDay();
-    LocalDateTime endOfDay = today.atTime(23, 59, 59);
-
-    System.out.println("5 ip대역 통과");
-    Optional<AttendanceWorkPlan> approvedPlanOpt =
-        attendanceWorkPlanJpaRepository
+    // 3. 승인된 근무계획 조회
+    Optional<AttendanceWorkPlan> approvedPlan =
+        workPlanRepository
             .findByEmpIdAndStatusAndStartAtLessThanEqualAndEndAtGreaterThanEqual(
-            empId,
-            ApprovalStatus.APPROVED,
-            now,
-            now
+                empId,
+                ApprovalStatus.APPROVED,
+                now,
+                now
+            );
+
+    // 4. 현재 열려 있는 로그 확인
+    Optional<AttendanceWorkLog> openedLog =
+        workLogRepository.findTopByAttendanceIdAndEndAtIsNullOrderByStartAtDesc(
+            attendance.getAttendanceId()
         );
 
-    System.out.println("6 ip대역 통과");
-    // 3. 현재 열려 있는 근무 로그 조회
-    Optional<AttendanceWorkLog> openedLogOpt =
-        attendanceWorkLogJpaRepository
-            .findTopByAttendanceIdAndEndAtIsNullOrderByStartAtDesc(
-                attendance.getAttendanceId()
-            );
-    System.out.println("7 ip대역 통과");
-    if (openedLogOpt.isEmpty()) {
-      // 출근 처리
-      System.out.println("8 ip대역 통과");
-      AttendanceWorkPlan plan = approvedPlanOpt.orElse(null);
+    String attendanceStatusType;
+    String workType;
+    String workLocation;
+    LocalDateTime checkInTime;
 
-      String location = (plan != null) ? plan.getLocation() : "OFFICE";
-      System.out.println("9 ip대역 통과");
+    if (openedLog.isEmpty()) {
+      // ===== 출근 =====
+      attendanceStatusType = "CHECK_IN";
+
+      AttendanceWorkPlan plan = approvedPlan.orElse(null);
+      workType = (plan != null) ? plan.getWorkType() : attendance.getWorkType();
+      workLocation = (plan != null) ? plan.getLocation() : "OFFICE";
+
       AttendanceWorkLog log = new AttendanceWorkLog(
           attendance.getAttendanceId(),
           WorkLogType.CHECK_IN,
           now,
-          location
-      ); System.out.println("10 ip대역 통과");
-      attendanceWorkLogJpaRepository.save(log);
+          workLocation
+      );
+      workLogRepository.save(log);
 
-      if (plan != null) {
-        attendance.changeWorkType(plan.getWorkType());
+      attendance.changeWorkType(workType);
+      checkInTime = now;
 
-      }
-
-      System.out.println("11 ip대역 통과");
     } else {
-      // 퇴근 처리
-      AttendanceWorkLog openedLog = openedLogOpt.get();
-      openedLog.close(now);
-      attendanceWorkLogJpaRepository.save(openedLog);
+      // ===== 퇴근 =====
+      attendanceStatusType = "CHECK_OUT";
+
+      AttendanceWorkLog log = openedLog.get();
+      log.close(now);
+      workLogRepository.save(log);
+
+      workType = attendance.getWorkType();
+      workLocation = log.getLocation();
+      checkInTime = log.getStartAt();
     }
-    System.out.println("12 ip대역 통과");
-    // 4. 출퇴근 인증 로그 기록 (성공 시만)
-    attendanceAuthLogJpaRepository.save(
+
+    // 5. 인증 로그 저장
+    authLogRepository.save(
         new AttendanceAuthLog(attendance.getAttendanceId(), clientIp)
     );
-    System.out.println("13 ip대역 통과");
-    // ★ 응답값도 실제 근무유형 기반으로 반환 가능
-    return new AttendanceCheckResponse(attendance.getWorkType());
-  }
 
-  private Attendance createTodayAttendance(Long empId, LocalDate date) {
-    Attendance attendance = new Attendance(empId, date);
-    return attendanceRepository.save(attendance);
+    // 직원 정보 / 초과근무는 아직 자리표시자
+    return new AttendanceCheckResponse(
+        workType,
+        today,
+        checkInTime,
+        workLocation,
+        "NONE",
+        clientIp,
+        attendanceStatusType
+    );
   }
 }

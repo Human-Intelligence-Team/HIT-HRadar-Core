@@ -2,12 +2,14 @@ package org.hit.hradar.domain.evaluation.command.application.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.RequiredStatus;
 
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
+@Setter
 public class EvaluationQuestionUpdateRequest {
 
     //문항 유형은 수정을 막음

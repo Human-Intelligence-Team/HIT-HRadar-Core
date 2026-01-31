@@ -7,12 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface EvaluationTypeJpaRepository
 extends JpaRepository<EvaluationType, Long>, EvaluationTypeRepository {
 
-    @Override
-    boolean existsByCycleIdAndEvalTypeCodeAndIsDeleted(
-            Long cycleId,
-            String evalTypeCode,
-            Character isDeleted
-    );
-
 
 }

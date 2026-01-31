@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("admin/ip-policies")
+@RequestMapping("/admin/ip-policies")
 public class IpRangePolicyQueryController {
 
   private final IpRangePolicyQueryService queryService;

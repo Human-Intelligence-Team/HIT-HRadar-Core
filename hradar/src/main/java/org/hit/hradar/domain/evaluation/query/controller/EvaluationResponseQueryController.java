@@ -1,25 +1,27 @@
 package org.hit.hradar.domain.evaluation.query.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationResponseResultDto;
+import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationResponseQueryDto;
 import org.hit.hradar.domain.evaluation.query.service.EvaluationResponseQueryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/evaluation/results")
+@RequestMapping("/evaluation-responses")
 public class EvaluationResponseQueryController {
-    private final EvaluationResponseQueryService  responseQueryService;
 
-    @GetMapping("/types/{evalTypeId}")
-    public List<EvaluationResponseResultDto> getResults(
-            @PathVariable Long evalTypeId
+    private final EvaluationResponseQueryService queryService;
+
+
+    @GetMapping("/{assignmentId}")
+    public ResponseEntity<List<EvaluationResponseQueryDto>> getResponses(
+            @PathVariable Long assignmentId
     ) {
-        return responseQueryService.getResults(evalTypeId);
+        return ResponseEntity.ok(
+                queryService.getResponses(assignmentId)
+        );
     }
 }
