@@ -41,6 +41,7 @@
                 ON l.doc_id = d.doc_id
                   AND d.is_deleted = 'N'
     WHERE s.status = 'PENDING'
+      AND d.status = 'IN_PROGRESS'
       AND (
       s.approver_id = #{userId}
         OR s.proxy_approver_id = #{userId}
