@@ -1,6 +1,7 @@
 package org.hit.hradar.global.file;
 
 import org.hit.hradar.global.exception.BusinessException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,13 +17,11 @@ import java.util.UUID;
 @Profile("local")
 public class LocalFileStorageClient implements FileStorageClient {
 
-    private static final String BASE_DIR = "/tmp/uploads";
-    private static final String BASE_URL = "/files";
+    @Value("${file.local.base-dir}")
+    private String baseDir;
 
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
-            "jpg", "jpeg", "png", "gif", "webp",
-            "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"
-    );
+    @Value("${file.local.base-url}")
+    private String baseUrl;
 
     @Override
     public StoredFile upload(MultipartFile file) {
@@ -30,42 +29,41 @@ public class LocalFileStorageClient implements FileStorageClient {
         String originalName = file.getOriginalFilename();
         String extension = extractExtension(originalName);
 
-        // 저장용 파일명 생성 (핵심)
-        String storedName = UUID.randomUUID() + extension;
+        // 저장용 파일명 (점 포함)
+        String storedName = UUID.randomUUID() + "." + extension;
 
         try {
-            Path baseDir = Path.of(BASE_DIR);
-            Files.createDirectories(baseDir);
+            Path dirPath = Path.of(baseDir);
+            Files.createDirectories(dirPath);
 
-            Path target = baseDir.resolve(storedName);
+            Path target = dirPath.resolve(storedName);
             try (InputStream in = file.getInputStream()) {
                 Files.copy(in, target);
             }
+
         } catch (IOException e) {
-            throw new BusinessException(FileErrorCode.FAIL_UPLOAD);
+            throw new BusinessException(FileErrorCode.FAIL_UPLOAD, e);
         }
 
-        String url = BASE_URL + "/" + storedName;
+        // 접근 URL
+        String url = baseUrl + "/" + storedName;
 
-        return new StoredFile(
-                url,
-                storedName
-        );
+        return new StoredFile(url, storedName);
     }
 
     @Override
     public void delete(String storedName) {
         try {
-            Path target = Path.of(BASE_DIR).resolve(storedName);
+            Path target = Path.of(baseDir).resolve(storedName);
 
-            // 파일 없으면 조용히 종료 (이미 삭제된 경우)
+            // 이미 삭제된 경우 조용히 종료
             if (!Files.exists(target)) {
                 return;
             }
 
             Files.delete(target);
         } catch (IOException e) {
-            throw new BusinessException(FileErrorCode.FAIL_DELETE);
+            throw new BusinessException(FileErrorCode.FAIL_DELETE, e);
         }
     }
 
@@ -74,6 +72,8 @@ public class LocalFileStorageClient implements FileStorageClient {
             return "";
         }
         int idx = filename.lastIndexOf('.');
-        return (idx > -1) ? filename.substring(idx + 1).toLowerCase() : "";
+        return (idx > -1)
+                ? filename.substring(idx + 1).toLowerCase()
+                : "";
     }
 }

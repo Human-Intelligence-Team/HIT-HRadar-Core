@@ -60,7 +60,9 @@ server:
   port: 8082
 
 file:
-  root-dir: ./uploads
+  local:
+    base-dir: uploads
+    base-url: /api/v1/files
 
 mybatis:
   configuration:
