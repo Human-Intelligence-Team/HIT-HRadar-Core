@@ -205,14 +205,19 @@ public class ApprovalDocument extends BaseTimeEntity {
     this.content = content;
     this.docType = docType;
   }
-  public ApprovalDocument(String docType, String name, boolean isActive) {
+  public ApprovalDocument(Long companyId, String docType, String name, boolean active) {
+    this.companyId = companyId;
     this.docType = docType;
     this.name = name;
-    this.active = isActive;
-    this.isTemplate = true;
+    this.active = active;
 
-    this.title = name;
-    this.content = "";
+    this.isTemplate = true;
+    this.isDeleted = 'N';
+
+    this.writerId = 0L;   // 또는 SYSTEM 계정 ID
+    this.status = ApprovalStatus.DRAFT;
+    this.title = name;    // NOT NULL 방지
+    this.content = "";   // NOT NULL 방지
   }
 
   public void updateName(String name) {

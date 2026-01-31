@@ -14,9 +14,10 @@ public class ApprovalDocumentTypeCommandService {
 
   private final ApprovalDocumentTypeJpaRepository approvalDocumentTypeJpaRepository;
 
-  public void create(ApprovalDocumentTypeRequest req) {
+  public void create(Long companyId, ApprovalDocumentTypeRequest req) {
     approvalDocumentTypeJpaRepository.save(
         new ApprovalDocument(
+            companyId,
             req.getDocType(),
             req.getName(),
             true
