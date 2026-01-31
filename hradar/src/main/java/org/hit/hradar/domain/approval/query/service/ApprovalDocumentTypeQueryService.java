@@ -12,15 +12,14 @@ public class ApprovalDocumentTypeQueryService {
 
   private final ApprovalDocumentTypeJpaRepository approvalDocumentTypeJpaRepository;
 
-  public List<ApprovalDocumentTypeResponse> findAllActiveTypes() {
-    return approvalDocumentTypeJpaRepository
-        .findByActiveTrueAndIsTemplateTrue()
+  public List<ApprovalDocumentTypeResponse> findAllActiveTypes(Long companyId) {
+    return approvalDocumentTypeJpaRepository.findByCompanyIdAndActiveTrue(companyId)
         .stream()
-        .map(d -> new ApprovalDocumentTypeResponse(
-            d.getDocId(),
-            d.getDocType(),
-            d.getName(),
-            d.isActive()
+        .map(t -> new ApprovalDocumentTypeResponse(
+            t.getTypeId(),
+            t.getDocType(),
+            t.getName(),
+            t.isActive()
         ))
         .toList();
   }

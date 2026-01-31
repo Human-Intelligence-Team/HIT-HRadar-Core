@@ -11,4 +11,5 @@ public class ApprovalDocumentTypeRequest {
 
   private String docType;
   private String name;
+  private Boolean active;
 }
