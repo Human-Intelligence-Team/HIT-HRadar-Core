@@ -3,45 +3,37 @@ package org.hit.hradar.domain.evaluation.command.application.service;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
 import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationAssignmentCreateRequest;
-import org.hit.hradar.domain.evaluation.command.domain.aggregate.Cycle;
+import org.hit.hradar.domain.evaluation.command.domain.aggregate.CycleEvaluationType;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.EvaluationAssignment;
-import org.hit.hradar.domain.evaluation.command.domain.aggregate.EvaluationType;
-import org.hit.hradar.domain.evaluation.command.domain.repository.CycleRepository;
+import org.hit.hradar.domain.evaluation.command.domain.repository.CycleEvaluationTypeRepository;
 import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationAssignmentRepository;
-import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationTypeRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class EvaluationAssignmentCommandService {
 
     private final EvaluationAssignmentRepository assignmentRepository;
-    private final EvaluationTypeRepository evaluationTypeRepository;
-    private final CycleRepository cycleRepository;
-    private final CycleStatusService cycleStatusService;
+    private final CycleEvaluationTypeRepository  cycleEvaluationTypeRepository;
 
     /*평가 배정 생성*/
     @Transactional
-    public void createAssignments(
-            Long evalTypeId,
+    public List<Long> createAssignments(
+            Long cycleEvalTypeId,
             EvaluationAssignmentCreateRequest request
     ){
-        //평가 유형 조회
-        EvaluationType evaluationType = evaluationTypeRepository.findById(evalTypeId)
-                .orElseThrow(() ->
-                        new BusinessException(EvaluationErrorCode.EVALUATION_TYPE_NOT_FOUND));
-
-        //회차 조회
-        Long cycleId = evaluationType.getCycleId();
-        Cycle cycle = cycleRepository.findById(cycleId)
-                .orElseThrow(() -> new BusinessException(EvaluationErrorCode.CYCLE_NOT_FOUND));
-
-        //회차 상태 검증 (DRAFT 시에만 가능)
-        cycleStatusService.validateCanConfigureCycle(cycle);
+        //회차별 평가 타입 조회
+        CycleEvaluationType cycleEvalType =
+                cycleEvaluationTypeRepository.findById(cycleEvalTypeId)
+                        .orElseThrow(() -> new BusinessException(EvaluationErrorCode.CYCLE_EVAL_TYPE_NOT_FOUND));
 
         Long evaluatorId = request.getEvaluatorId();
+        List<Long> assignmentIds = new ArrayList<>();
 
         for (Long evaluateeId : request.getEvaluateeIds()) {
             //자신 평가 방지
@@ -53,10 +45,11 @@ public class EvaluationAssignmentCommandService {
 
             //중복 배정 방지
             boolean exists =
-                    assignmentRepository.existsByEvaluationTypeAndEvaluatorIdAndEvaluateeId(
-                            evaluationType,
+                    assignmentRepository.existsByCycleEvaluationTypeAndEvaluatorIdAndEvaluateeIdAndIsDeleted(
+                            cycleEvalType,
                             evaluatorId,
-                            evaluateeId
+                            evaluateeId,
+                            'N'
                     );
             if (exists) {
                 throw new BusinessException(
@@ -67,19 +60,22 @@ public class EvaluationAssignmentCommandService {
             //저장
             EvaluationAssignment assignment =
                     EvaluationAssignment.builder()
-                            .evaluationType(evaluationType)
+                            .cycleEvaluationType(cycleEvalType)
                             .evaluatorId(evaluatorId)
                             .evaluateeId(evaluateeId)
                             .build();
 
             assignmentRepository.save(assignment);
+            assignmentIds.add(assignment.getAssignmentId());
         }
+
+        return assignmentIds;
 
     }
 
     //평가 배정 삭제
     @Transactional
-    public void deleteAssignments(
+    public void deleteAssignment(
             Long assignmentId
     ){
         EvaluationAssignment assignment = assignmentRepository.findById(assignmentId)

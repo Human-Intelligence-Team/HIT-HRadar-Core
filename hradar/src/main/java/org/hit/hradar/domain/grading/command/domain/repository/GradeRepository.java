@@ -32,4 +32,5 @@ public interface GradeRepository {
             Long companyId,
             Character isDeleted
     );
+
 }

@@ -1,3 +1,8 @@
+auth:
+  internal:
+    base-url: http://localhost:8081
+    token: DEV_INTERNAL_TOKEN_1234567890
+
 spring:
   ai:
     openai:
@@ -26,7 +31,7 @@ spring:
       connection-timeout: 30000
   jpa:
     hibernate:
-      ddl-auto: update    # create, create-drop, update, validate, none
+      ddl-auto: update   # create, create-drop, update, validate, none
     properties:
       hibernate:
         format_sql: true

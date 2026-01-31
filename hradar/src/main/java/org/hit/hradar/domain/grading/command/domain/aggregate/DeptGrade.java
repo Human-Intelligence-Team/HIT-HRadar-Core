@@ -9,15 +9,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
 @Entity
-@Table(
-        name = "dept_grade",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_cycle_dept",
-                        columnNames = {"cycle_id", "dept_id"}
-                )
-        }
-)
+@Table
 @Getter
 @NoArgsConstructor
 public class DeptGrade extends BaseTimeEntity {
@@ -52,6 +44,7 @@ public class DeptGrade extends BaseTimeEntity {
     private Long approverId;
 
     @Column(name = "grade_status", nullable = false)
+    @Enumerated(EnumType.STRING)
     private GradeApproveStatus status =  GradeApproveStatus.DRAFT;
 
     //삭제여부

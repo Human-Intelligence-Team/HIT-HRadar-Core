@@ -1,8 +1,10 @@
 package org.hit.hradar.domain.grading.command.aplication.sevice;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hit.hradar.domain.grading.GradingErrorCode;
 import org.hit.hradar.domain.grading.command.aplication.dto.request.AssignIndividualGradeRequestDto;
+import org.hit.hradar.domain.grading.command.aplication.dto.request.IndividualGradeObjectionApproveRequestDto;
 import org.hit.hradar.domain.grading.command.aplication.dto.request.IndividualGradeUpdateRequestDto;
 import org.hit.hradar.domain.grading.command.domain.aggregate.IndividualGrade;
 import org.hit.hradar.domain.grading.command.domain.repository.GradeRepository;
@@ -12,6 +14,7 @@ import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -23,11 +26,12 @@ public class IndividualGradeCommandService {
 
     //개인 등급 등록
     public void assignIndividualGrade(
+            Long compId,
             AssignIndividualGradeRequestDto request
     ){
         //평가 진행 중 여부
         if (!evaluationCycleStatusProvider.existsInProgressCycle(
-                request.getCompanyId()
+                compId
         )) {
             throw new BusinessException(
                     GradingErrorCode.CYCLE_NOT_IN_PROGRESS
@@ -79,5 +83,18 @@ public class IndividualGradeCommandService {
                                 GradingErrorCode.INDIVIDUAL_GRADE_NOT_FOUND
                         )
                 );
+    }
+
+    //이의제기 시 승인
+    public void approveByObjection(
+            Long individualGradeId,
+            IndividualGradeObjectionApproveRequestDto request
+    ) {
+        IndividualGrade grade = getIndividualGrade(individualGradeId);
+        // 1. 이의제기 승인으로 등급/사유 수정
+        grade.reviseByObjection(
+                request.getGradeId(),
+                request.getGradeReason()
+        );
     }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.EvaluationQuestionMapper">
+
+    <select id="findBySectionIds"
+            parameterType="list"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.row.EvaluationQuestionRow">
+
+        SELECT
+        question_id      AS questionId,
+        section_id       AS sectionId,
+        question_type    AS questionType,
+        question_content AS questionContent,
+        required_status  AS requiredStatus,
+        rating_scale     AS ratingScale
+        FROM evaluation_question
+        WHERE section_id IN
+        <foreach collection="sectionIds"
+                 item="sectionId"
+                 open="("
+                 close=")"
+                 separator=",">
+            #{sectionId}
+        </foreach>
+        ORDER BY question_id ASC
+
+    </select>
+
+</mapper>

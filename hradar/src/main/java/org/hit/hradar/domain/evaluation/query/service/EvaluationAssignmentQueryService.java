@@ -1,8 +1,9 @@
 package org.hit.hradar.domain.evaluation.query.service;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentListResponseDto;
-import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentResponseDto;
+import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentAdminResponse;
+import org.hit.hradar.domain.evaluation.query.dto.response.EvaluationAssignmentResponse;
+import org.hit.hradar.domain.evaluation.query.mapper.EvaluationAssignmentAdminMapper;
 import org.hit.hradar.domain.evaluation.query.mapper.EvaluationAssignmentMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,26 +16,15 @@ import java.util.List;
 public class EvaluationAssignmentQueryService {
 
     private final EvaluationAssignmentMapper assignmentMapper;
+    private final EvaluationAssignmentAdminMapper assignmentAdminMapper;
 
-    //내가 평가해야할 목록 조회
-    public List<EvaluationAssignmentResponseDto> getMyAssignments(Long employeeId) {
-        return assignmentMapper.selectAssignmentsByEvaluator(employeeId);
+    //평가자 기준 조회
+    public List<EvaluationAssignmentResponse> getAssignmentsByEvaluator(Long evaluatorId) {
+        return assignmentMapper.findByEvaluatorId(evaluatorId);
     }
 
-    //평가 배정 상태 보기
-    public List<EvaluationAssignmentListResponseDto> getAssignments(
-            Long cycleId,
-            String evalTypeCode,
-            String status,
-            Long evaluatorId,
-            Long evaluateeId
-    ) {
-        return assignmentMapper.selectAssignments(
-                cycleId,
-                evalTypeCode,
-                status,
-                evaluatorId,
-                evaluateeId
-        );
+    //전체 조회
+    public List<EvaluationAssignmentAdminResponse> getAssignments(Long cycleEvalTypeId) {
+        return assignmentAdminMapper.findAssignmentsByCycleEvalType(cycleEvalTypeId);
     }
 }

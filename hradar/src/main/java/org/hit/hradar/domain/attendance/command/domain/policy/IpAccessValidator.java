@@ -3,8 +3,9 @@ package org.hit.hradar.domain.attendance.command.domain.policy;
 import java.net.InetAddress;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.attendance.command.domain.aggregate.IpPolicyType;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.IpRangePolicy;
-import org.hit.hradar.domain.attendance.command.domain.repository.IpRangePolicyRepository;
+import org.hit.hradar.domain.attendance.command.infrastructure.IpRangePolicyJpaRepository;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,18 +13,20 @@ import org.springframework.stereotype.Component;
 public class IpAccessValidator {
 
   //IP 정책 조회용 레포
-  private final IpRangePolicyRepository ipRangePolicyRepository;
+  private final IpRangePolicyJpaRepository ipRangePolicyJpaRepository;
 
   //회사 활성 ip 목록 조회
-  public boolean validate(Long comId, String clinetIp) {
+  public boolean validate(Long comId, String clientIp) {
     List<IpRangePolicy> policies =
-        ipRangePolicyRepository.findByComIdAndIsActiveTrue(comId);
-
+        ipRangePolicyJpaRepository
+            .findByComIdAndIpPolicyTypeAndIsActiveTrueAndIsDeletedFalse(
+                comId, IpPolicyType.ATTENDANCE
+            );
     //CIDR에 clientIp 포함 여부 판단
     for (IpRangePolicy policy : policies) {
 
       //CIDR 범위에 포함되면 출퇴근 허용
-      if (inRange(policy.getCidr(), clinetIp)) {
+      if (inRange(policy.getCidr(), clientIp)) {
         return true;
       }
     }
@@ -41,7 +44,7 @@ public class IpAccessValidator {
       int prefix = Integer.parseInt(parts[1]);
 
       // prefix 길이만큼 네트워크 마스크 생성
-      int mask = ~((1 << (32 - prefix)) - 1);
+      int mask = prefix == 0 ? 0 : -1 << (32 - prefix);
       int baseInt = toInt(base.getAddress());
       int clientInt = toInt(InetAddress.getByName(clientIp).getAddress());
 

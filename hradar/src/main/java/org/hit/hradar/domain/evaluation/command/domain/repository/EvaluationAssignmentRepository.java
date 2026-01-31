@@ -1,5 +1,7 @@
 package org.hit.hradar.domain.evaluation.command.domain.repository;
 
+import org.hit.hradar.domain.evaluation.command.domain.aggregate.Cycle;
+import org.hit.hradar.domain.evaluation.command.domain.aggregate.CycleEvaluationType;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.EvaluationAssignment;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.EvaluationType;
 
@@ -12,9 +14,10 @@ public interface EvaluationAssignmentRepository {
 
     Optional<EvaluationAssignment> findById(Long assignmentId);
 
-    boolean existsByEvaluationTypeAndEvaluatorIdAndEvaluateeId(
-            EvaluationType evaluationType,
+    boolean existsByCycleEvaluationTypeAndEvaluatorIdAndEvaluateeIdAndIsDeleted(
+            CycleEvaluationType cycleEvaluationType,
             Long evaluatorId,
-            Long evaluateeId
+            Long evaluateeId,
+            Character isDeleted
     );
 }

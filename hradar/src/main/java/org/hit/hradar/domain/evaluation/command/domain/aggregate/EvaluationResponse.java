@@ -1,24 +1,16 @@
 package org.hit.hradar.domain.evaluation.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(
-        name = "evaluation_response",
-        //같은 문항에 한번만 응답
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_assignment_question",
-                        columnNames = {"assignment_id", "question_id"}
-                )
-        }
-)
+@Table(name = "evaluation_response")
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EvaluationResponse extends BaseTimeEntity {
 
     @Id
@@ -26,57 +18,61 @@ public class EvaluationResponse extends BaseTimeEntity {
     @Column(name = "response_id")
     private Long responseId;
 
-    //평가 배정 id
+    // 어떤 평가 배정에 대한 응답인지
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_id", nullable = false)
     private EvaluationAssignment assignment;
 
-    //문항 id
+    //어떤 문항인지
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
     private EvaluationQuestion question;
 
+    //응답 유형
+    @Enumerated(EnumType.STRING)
+    @Column(name = "response_type", nullable = false)
+    private QuestionType responseType;
 
-    //객관식 선택지
+    // 평점형
+    @Column(name = "score")
+    private Integer score;
+
+    // 주관식
+    @Column(name = "text_answer", length = 2000)
+    private String textAnswer;
+
+    // 객관식
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_id")
     private ObjectiveOption selectedOption;
 
-    //점수형 응답
-    @Column(name = "response_score")
-    private Integer responseScore;
-
-    //주관식 응답
-    @Column(name = "response_text")
-    private String responseText;
-
-    //created_at, updated_at
 
     @Builder
     private EvaluationResponse(
             EvaluationAssignment assignment,
-            EvaluationQuestion question
-    ){
-        this.assignment=assignment;
-        this.question=question;
+            EvaluationQuestion question,
+            QuestionType responseType,
+            Integer score,
+            String textAnswer,
+            ObjectiveOption selectedOption
+    ) {
+        this.assignment = assignment;
+        this.question = question;
+        this.responseType = responseType;
+        this.score = score;
+        this.textAnswer = textAnswer;
+        this.selectedOption = selectedOption;
     }
 
-    public void updateObjective(ObjectiveOption option) {
-        this.selectedOption = option;
-        this.responseScore = null;
-        this.responseText = null;
+    public void updateAnswer(
+            QuestionType responseType,
+            Integer score,
+            String textAnswer,
+            ObjectiveOption selectedOption
+    ) {
+        this.responseType = responseType;
+        this.score = score;
+        this.textAnswer = textAnswer;
+        this.selectedOption = selectedOption;
     }
-
-    public void updateRating(Integer score) {
-        this.responseScore = score;
-        this.selectedOption = null;
-        this.responseText = null;
-    }
-
-    public void updateText(String text) {
-        this.responseText = text;
-        this.selectedOption = null;
-        this.responseScore = null;
-    }
-
 }

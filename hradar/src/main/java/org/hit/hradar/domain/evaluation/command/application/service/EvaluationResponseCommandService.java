@@ -1,168 +1,95 @@
 package org.hit.hradar.domain.evaluation.command.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.binding.BindingException;
 import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
-import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationResponseDraftRequest;
-import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationResponseSaveRequest;
+import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationResponseItemRequest;
+import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationResponseUpsertRequest;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.*;
-import org.hit.hradar.domain.evaluation.command.domain.repository.*;
-import org.hit.hradar.domain.evaluation.command.infrastructure.CycleJpaRepository;
+import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationAssignmentRepository;
+import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationQuestionRepository;
+import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationResponseRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class EvaluationResponseCommandService {
+    private final EvaluationResponseRepository evaluationResponseRepository;
+    private final EvaluationAssignmentRepository evaluationAssignmentRepository;
+    private final EvaluationQuestionRepository evaluationQuestionRepository;
 
-    private final EvaluationAssignmentRepository  assignmentRepository;
-    private final EvaluationResponseRepository responseRepository;
-    private final EvaluationQuestionRepository  questionRepository;
-    private final CycleStatusService cycleStatusService;
-    private final CycleRepository cycleRepository;
-    private final ObjectiveOptionRepository optionRepository;
-
-    //임시 저장
+    //임시저장
     @Transactional
-    public void saveDraft(
-            EvaluationResponseDraftRequest request,
-            Long employeeId
-    ){
-        //할당 조회
-        EvaluationAssignment assignment =
-                assignmentRepository.findById(request.getAssignmentId())
-                        .orElseThrow(() ->
-                                new BusinessException(EvaluationErrorCode.EVALUATION_ASSIGNMENT_NOT_FOUND));
+    public void saveDraft(EvaluationResponseUpsertRequest request) {
+        EvaluationAssignment assignment = evaluationAssignmentRepository.findById(request.getAssignmentId())
+                .orElseThrow(() -> new BusinessException(EvaluationErrorCode.EVALUATION_ASSIGNMENT_NOT_FOUND));
 
-        //삭제, 제출 여부 검증
-        if (assignment.isDeleted()) {
-            throw new BusinessException(EvaluationErrorCode.EVALUATION_ASSIGNMENT_DELETED);
-        }
 
+        //제출된 평가인지 검증
         if (assignment.getStatus() == AssignmentStatus.SUBMITTED) {
             throw new BusinessException(EvaluationErrorCode.EVALUATION_ASSIGNMENT_ALREADY_SUBMITTED);
         }
 
-        //본인 평가 여부 검증
-        if (!assignment.getEvaluatorId().equals(employeeId)) {
-            throw new BusinessException(EvaluationErrorCode.EVALUATION_ASSIGNMENT_FORBIDDEN);
+        for (EvaluationResponseItemRequest item : request.getResponses()) {
+            upsertSingleResponse(assignment, item);
         }
+    }
 
-        //회차 OPEN 검증
-        Long cycleId = assignment.getEvaluationType().getCycleId();
-        Cycle cycle = cycleRepository.findById(cycleId).orElseThrow(() -> new BusinessException(EvaluationErrorCode.CYCLE_NOT_FOUND));
-        if(cycleStatusService.calculateStatus(cycle) != CycleStatus.IN_PROGRESS) {
-            throw new BusinessException(EvaluationErrorCode.CYCLE_NOT_OPEN);
-        }
+    //질문 1개에 대한 응답 upsert
+    private void upsertSingleResponse(EvaluationAssignment assignment, EvaluationResponseItemRequest item) {
+        EvaluationQuestion question = evaluationQuestionRepository.findById(item.getQuestionId())
+                .orElseThrow(()-> new BusinessException(EvaluationErrorCode.EVALUATION_QUESTION_NOT_FOUND));
 
-        //응답 저장
-        for (EvaluationResponseSaveRequest r : request.getResponse()) {
+        QuestionType responseType = QuestionType.valueOf(item.getResponseType());
 
-            EvaluationQuestion question =
-                    questionRepository.findById(r.getQuestionId())
-                            .orElseThrow(() ->
-                                    new BusinessException(
-                                            EvaluationErrorCode.EVALUATION_QUESTION_NOT_FOUND
-                                    )
-                            );
+        Integer score = null;
+        String textAnswer = null;
+        ObjectiveOption selectedOption = null;
 
-            EvaluationResponse response =
-                    responseRepository
-                            .findByAssignmentIdAndQuestionId(
-                                    assignment.getAssignmentId(),
-                                    question.getQuestionId()
+        // 타입별 값 세팅
+        switch (responseType) {
+            case RATING -> score = item.getScore();
+
+            case SUBJECTIVE -> textAnswer = item.getTextAnswer();
+
+            case OBJECTIVE -> {
+                if (item.getOptionId() != null) {
+                    selectedOption = evaluationQuestionRepository
+                            .findOptionByQuestionIdAndOptionId(
+                                    question.getQuestionId(),
+                                    item.getOptionId()
                             )
-                            .orElseGet(() ->
-                                    EvaluationResponse.builder()
-                                            .assignment(assignment)
-                                            .question(question)
-                                            .build()
-                            );
-
-            //문항별 값 세팅
-            switch (question.getQuestionType()) {
-                case OBJECTIVE -> {
-                    if (r.getOptionId() == null) {
-                        throw new BusinessException(
-                                EvaluationErrorCode.EVALUATION_QUESTION_OPTIONS_REQUIRED
-                        );
-                    }
-
-                    ObjectiveOption option =
-                            optionRepository.findById(r.getOptionId())
-                                    .orElseThrow(() ->
-                                            new BusinessException(
-                                                    EvaluationErrorCode.EVALUATION_OPTION_NOT_FOUND
-                                            )
-                                    );
-
-                    response.updateObjective(option);
+                            .orElseThrow(() ->
+                                    new BusinessException(EvaluationErrorCode.EVALUATION_QUESTION_NOT_FOUND));
                 }
-                case RATING -> {
-                    response.updateRating(r.getScore());
-                }
-                case SUBJECTIVE -> {
-                    response.updateText(r.getText());
-                }
-                default -> throw new BusinessException(
-                        EvaluationErrorCode.EVALUATION_QUESTION_INVALID_TYPE
-                );
             }
-
-            responseRepository.save(response);
         }
-    }
 
-    /*평가 제출*/
-    @Transactional
-    public void submit(
-            EvaluationResponseDraftRequest request,
-            Long employeeId
-    ) {
-        // 임시저장 로직 재사용
-        saveDraft(request, employeeId);
+        //기존 응답 조회
+        EvaluationResponse response = evaluationResponseRepository.findByAssignment_AssignmentIdAndQuestion_QuestionId(
+                assignment.getAssignmentId(),
+                question.getQuestionId()
+        ).orElse(null);
 
-        // 배정 조회
-        EvaluationAssignment assignment =
-                assignmentRepository.findById(request.getAssignmentId())
-                        .orElseThrow(() ->
-                                new BusinessException(
-                                        EvaluationErrorCode.EVALUATION_ASSIGNMENT_NOT_FOUND
-                                )
-                        );
 
-        //필수 문항 응답 여부 검증
-        validateAllRequiredAnswered(assignment);
+        //없으면 신규 생성
+        if (response == null) {
+            // 신규 생성
+            EvaluationResponse newResponse = EvaluationResponse.builder()
+                    .assignment(assignment)
+                    .question(question)
+                    .responseType(responseType)
+                    .score(score)
+                    .textAnswer(textAnswer)
+                    .selectedOption(selectedOption)
+                    .build();
 
-        //제출 처리
-        assignment.submit();
-    }
-
-    private void validateAllRequiredAnswered(EvaluationAssignment assignment) {
-
-        Long evalTypeId = assignment.getEvaluationType().getEvalTypeId();
-
-        // 전체 문항
-        List<EvaluationQuestion> questions =
-                questionRepository.findAllByEvalTypeId(evalTypeId);
-
-        // 필수 문항 수
-        long requiredCount = questions.stream()
-                .filter(q -> q.getRequiredStatus() == RequiredStatus.REQUIRED)
-                .count();
-
-        // 응답 수
-        long answeredCount =
-                responseRepository.countByAssignment_AssignmentId(
-                        assignment.getAssignmentId()
-                );
-
-        if (answeredCount < requiredCount) {
-            throw new BusinessException(
-                    EvaluationErrorCode.EVALUATION_ASSIGNMENT_INCOMPLETE
-            );
+            evaluationResponseRepository.save(newResponse);
+        } else {
+            // 기존 응답 덮어쓰기
+            response.updateAnswer(responseType, score, textAnswer, selectedOption);
         }
     }
 

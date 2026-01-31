@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.approval.query.mapper.ApprovalAdminQueryMapper">
+
+  <select id="selectAll"
+    parameterType="org.hit.hradar.domain.approval.query.dto.request.ApprovalAdminSearchRequest"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalAdminDocumentResponse">
+
+    SELECT
+    d.doc_id        AS docId,
+    d.title         AS title,
+    d.doc_type      AS docType,
+    d.status        AS status,
+    d.writer_id     AS writerId,
+    e.dept_id       AS deptId,
+    dept.name       AS deptName,
+    e.name          AS writerName,
+    d.submitted_at  AS submittedAt
+    FROM approval_document d
+    JOIN employee e ON d.writer_id = e.emp_id
+    JOIN department dept ON e.dept_id = dept.dept_id
+    WHERE d.is_deleted = 'N'
+
+    <if test="docType != null">
+      AND d.doc_type = #{docType}
+    </if>
+
+    <if test="status != null">
+      AND d.status = #{status}
+    </if>
+
+    <if test="deptId != null">
+      AND e.dept_id = #{deptId}
+    </if>
+
+    <if test="empId != null">
+      AND e.emp_id = #{empId}
+    </if>
+
+    ORDER BY d.created_at
+    <choose>
+      <when test="sort != null">
+        ${sort}
+      </when>
+      <otherwise>
+        DESC
+      </otherwise>
+    </choose>
+
+  </select>
+
+  <select id="selectApprovalDetailByAdmin"
+    parameterType="long"
+    resultMap="approvalDetailResultMap">
+    SELECT
+      d.doc_id,
+      d.title,
+      d.content,
+      d.doc_type,
+      d.status,
+      d.submitted_at
+    FROM approval_document d
+    WHERE d.doc_id = #{docId}
+      AND d.is_deleted = 'N'
+  </select>
+
+</mapper>

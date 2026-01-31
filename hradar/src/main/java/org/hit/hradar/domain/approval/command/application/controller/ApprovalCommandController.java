@@ -1,7 +1,7 @@
 package org.hit.hradar.domain.approval.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalCreateRequest;
+import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalDraftCreateRequest;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalApproveCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalRejectCommandService;
 import org.hit.hradar.domain.approval.command.application.service.ApprovalWithdrawCommandService;
@@ -23,93 +23,85 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ApprovalCommandController {
 
-  private final ApprovalApproveCommandService approvalCommandService;
-  private final ApprovalWithdrawCommandService approvalWithdrawCommandService;
   private final ApprovalProviderService approvalProviderService;
+  private final ApprovalApproveCommandService approvalApproveCommandService;
   private final ApprovalRejectCommandService approvalRejectCommandService;
+  private final ApprovalWithdrawCommandService approvalWithdrawCommandService;
 
-  //결재 문서 임시저장
+  //임시저장
   @PostMapping("/draft")
-  public ResponseEntity<ApiResponse<Long>> saveDraft(
+  public ResponseEntity<ApiResponse<Long>> draft(
       @CurrentUser AuthUser authUser,
-      @RequestBody ApprovalCreateRequest request
+      @RequestBody ApprovalDraftCreateRequest request
   ) {
     Long docId = approvalProviderService.save(
-        null,               //최초 저장
+        null,
         authUser.employeeId(),
         authUser.companyId(),
         request,
         ApprovalSaveMode.DRAFT
     );
-
     return ResponseEntity.ok(
-        ApiResponse.success(docId));
-  }
-
-  //결재 상신 요청
-  @PostMapping("/{docId}/submit")
-  public ResponseEntity<ApiResponse<String>> submit(
-      @PathVariable Long docId,
-      @CurrentUser AuthUser authUser
-  ) {
-    approvalProviderService.save(
-        docId,
-        authUser.employeeId(),
-        authUser.companyId(),
-        null,
-        ApprovalSaveMode.SUBMIT
+        ApiResponse.success(docId)
     );
-    return ResponseEntity.ok(ApiResponse.success("submitted"));
   }
 
-
-  //결재 승인 처리
-  @PostMapping("/{docId}/approve")
-  public ResponseEntity<ApiResponse<String>> approve(
+  //상신
+  @PostMapping("/{docId}/submit")
+  public ResponseEntity<ApiResponse<Void>> submit(
       @CurrentUser AuthUser authUser,
       @PathVariable Long docId
   ) {
-    approvalCommandService.approve(
+    approvalApproveCommandService.approve(
         docId,
         authUser.employeeId(),
         authUser.companyId()
     );
-
-    // 성공 시 공통 응답 포맷으로 OK 반환
     return ResponseEntity.ok(
-        ApiResponse.success("approved")
+        ApiResponse.success(null)
     );
   }
 
-  // 결재 반려 처리
+  //승인
+  @PostMapping("/{docId}/approve")
+  public ResponseEntity<ApiResponse<Void>> approve(
+      @CurrentUser AuthUser authUser,
+      @PathVariable Long docId
+  ) {
+    approvalApproveCommandService.approve(
+        docId,
+        authUser.employeeId(),
+        authUser.companyId()
+    );
+    return ResponseEntity.ok(
+        ApiResponse.success(null)
+    );
+  }
+
+  //반려
   @PostMapping("/{docId}/reject")
-  public ResponseEntity<ApiResponse<String>> reject(
+  public ResponseEntity<ApiResponse<Void>> reject(
       @CurrentUser AuthUser authUser,
       @PathVariable Long docId,
       @RequestParam String reason
   ) {
-
     approvalRejectCommandService.reject(
         docId,
         authUser.employeeId(),
         reason
     );
-
     return ResponseEntity.ok(
-        ApiResponse.success("rejected")
+        ApiResponse.success(null)
     );
   }
 
-  // 결재 문서 회수 (기안자)
+  //회수
   @PostMapping("/{docId}/withdraw")
-  public ResponseEntity<ApiResponse<String>> withdraw(
+  public ResponseEntity<ApiResponse<Void>> withdraw(
       @PathVariable Long docId,
       @CurrentUser AuthUser authUser
   ) {
-    approvalWithdrawCommandService.withdraw(
-        docId,
-        authUser.employeeId()
-    );
-    return ResponseEntity.ok(ApiResponse.success("withdrawn"));
+    approvalWithdrawCommandService.withdraw(docId, authUser.employeeId());
+    return ResponseEntity.ok(ApiResponse.success(null));
   }
 }

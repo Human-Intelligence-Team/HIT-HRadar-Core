@@ -26,6 +26,8 @@
         SELECT
             c.cycle_id   AS cycleId,
             c.cycle_name AS cycleName,
+            c.quarter    AS quarter,
+            c.is_comp_report_generated AS isCompReportGenerated,
             c.start_date AS startDate,
             c.end_date   AS endDate,
             c.status     AS status,
@@ -33,19 +35,6 @@
         FROM cycle c
         WHERE c.cycle_id = #{cycleId}
           AND c.is_deleted = 'N'
-
-    </select>
-
-    <select id="selectEvaluationTypesByCycleId"
-            parameterType="long"
-            resultType="string">
-
-        SELECT
-            et.eval_type_code
-        FROM evaluation_type et
-        WHERE et.cycle_id = #{cycleId}
-          AND et.is_deleted = 'N'
-        ORDER BY et.eval_type_code
 
     </select>
 

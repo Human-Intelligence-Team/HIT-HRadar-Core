@@ -2,7 +2,6 @@ package org.hit.hradar.domain.leave.query.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.angus.mail.iap.Response;
 import org.hit.hradar.domain.leave.query.dto.response.LeaveDetailDto;
 import org.hit.hradar.domain.leave.query.dto.response.LeaveGrantDto;
 import org.hit.hradar.domain.leave.query.dto.response.LeaveListDto;

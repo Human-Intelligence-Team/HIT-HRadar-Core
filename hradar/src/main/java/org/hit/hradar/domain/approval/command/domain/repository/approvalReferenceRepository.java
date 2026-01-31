@@ -1,5 +1,0 @@
-package org.hit.hradar.domain.approval.command.domain.repository;
-
-public class approvalReferenceRepository {
-
-}
