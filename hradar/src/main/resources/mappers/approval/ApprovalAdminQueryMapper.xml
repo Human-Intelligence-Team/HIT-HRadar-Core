@@ -5,10 +5,20 @@
 
 <mapper namespace="org.hit.hradar.domain.approval.query.mapper.ApprovalAdminQueryMapper">
 
+  <!-- 🔥 이거 없어서 터진 거 -->
+  <resultMap id="approvalDetailResultMap"
+    type="org.hit.hradar.domain.approval.query.dto.response.ApprovalDetailResponse">
+    <id     property="docId"       column="doc_id"/>
+    <result property="title"       column="title"/>
+    <result property="content"     column="content"/>
+    <result property="docType"     column="doc_type"/>
+    <result property="status"      column="status"/>
+    <result property="submittedAt" column="submitted_at"/>
+  </resultMap>
+
   <select id="selectAll"
     parameterType="org.hit.hradar.domain.approval.query.dto.request.ApprovalAdminSearchRequest"
     resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalAdminDocumentResponse">
-
     SELECT
     d.doc_id        AS docId,
     d.title         AS title,
@@ -16,7 +26,7 @@
     d.status        AS status,
     d.writer_id     AS writerId,
     e.dept_id       AS deptId,
-    dept.name       AS deptName,
+    dept.dept_name       AS deptName,
     e.name          AS writerName,
     d.submitted_at  AS submittedAt
     FROM approval_document d
@@ -42,14 +52,9 @@
 
     ORDER BY d.created_at
     <choose>
-      <when test="sort == 'ASC'">
-        ASC
-      </when>
-      <otherwise>
-        DESC
-      </otherwise>
+      <when test="sort == 'ASC'">ASC</when>
+      <otherwise>DESC</otherwise>
     </choose>
-
   </select>
 
   <select id="selectApprovalDetailByAdmin"
