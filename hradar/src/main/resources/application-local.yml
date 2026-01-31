@@ -1,4 +1,13 @@
 spring:
+  ai:
+    openai:
+      api-key: ${GEMINI_API_KEY}
+      chat:
+        base-url: "https://generativelanguage.googleapis.com/v1beta/openai/"
+        options:
+          model: "gemini-2.5-flash-lite"
+          temperature: 0.0
+        completions-path: "/chat/completions"
   main:
     web-application-type: servlet
   data:
@@ -46,6 +55,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
+
 jwt:
   secret-key: Q8b83bmIq4KI2lvE+bViXYvo9SyODg1g0Q0dPyG9VNutj0GgBG8SxhWwL3oexDlWtq5uxFZs+k+NWXHYXKLjYg==
   expiration: 3600000  # 1시간
@@ -68,3 +78,8 @@ external:
     timeout:
       connect: 3s
       read: 10s
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
+  model:
+    name: "gemini-2.5-flash-lite-preview-06-17"

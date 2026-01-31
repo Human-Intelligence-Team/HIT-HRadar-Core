@@ -9,22 +9,26 @@
     resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
 
     SELECT t.tag_id
-    , t.tag_name
-    FROM tag t
-    WHERE t.is_deleted = 'N'
+         , t.tag_name
+         , count(ct.TAG_ID) as TagCount
+      FROM tag t
+      LEFT JOIN CONTENT_TAG ct ON t.TAG_ID = ct.TAG_ID
+     WHERE t.is_deleted = 'N'
     <if test="tagName != null and tagName != ''">
-      AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
+       AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
     </if>
+    GROUP BY t.tag_id, t.tag_name
+    ORDER BY t.created_at DESC
   </select>
 
   <select id="findAllTagsByContentId"
     parameterType="Long"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
     SELECT ctt.TAG_ID
-    , tg.TAG_NAME
-    FROM CONTENT_TAG  ctt
-    JOIN TAG tg USING(TAG_ID)
-    WHERE tg.IS_DELETED = 'N'
-    AND ctt.CONTENT_ID = #{contentId}
+         , tg.TAG_NAME
+      FROM CONTENT_TAG  ctt
+      JOIN TAG tg USING(TAG_ID)
+     WHERE tg.IS_DELETED = 'N'
+       AND ctt.CONTENT_ID = #{contentId}
   </select>
 </mapper>

@@ -77,4 +77,26 @@ public class ContentsCommandService {
     }
   }
 
+  @Transactional
+  public void deleteContent(Long contentId) {
+
+    if (contentId == null) {
+      throw new BusinessException(CompetencyReportErrorCode.CONTENT_ID_REQUIRED);
+    }
+
+    Content content = contentRepository.findById(contentId)
+        .orElseThrow(() ->
+            new BusinessException(CompetencyReportErrorCode.CONTENT_NOT_FOUND)
+        );
+
+    // 이미 삭제된 컨텐츠 방어 로직 (선택)
+    if ("Y".equals(content.getIsDeleted())) {
+      throw new BusinessException(CompetencyReportErrorCode.CONTENT_ALREADY_DELETED);
+    }
+
+    // soft delete
+    content.delete('Y');
+    contentRepository.save(content);
+  }
+
 }

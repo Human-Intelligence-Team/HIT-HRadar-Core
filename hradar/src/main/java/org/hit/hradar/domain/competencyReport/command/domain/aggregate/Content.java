@@ -2,8 +2,6 @@ package org.hit.hradar.domain.competencyReport.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,13 +29,11 @@ public class Content extends BaseTimeEntity {
   @Column(name = "title", nullable = false, length = 100)
   private String title;
 
-  @Enumerated(EnumType.STRING)
   @Column(name = "type", nullable = false)
-  private ContentType type;
+  private String type;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "level", nullable = false )
-  private Level level;
+  @Column(name = "level")
+  private String level;
 
   @Column(name = "learning_time")
   private Integer learningTime;
@@ -58,7 +54,7 @@ public class Content extends BaseTimeEntity {
     }
   }
 
-  public Content(String title, ContentType type, Level level, Integer learningTime, String resourcePath, String notes) {
+  public Content(String title, String type, String level, Integer learningTime, String resourcePath, String notes) {
     this.title = title;
     this.type = type;
     this.level = level;
@@ -68,7 +64,7 @@ public class Content extends BaseTimeEntity {
   }
 
   // 유효성
-  private static void validate(String title, ContentType type, Level level) {
+  private static void validate(String title, String type) {
     if (title == null) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_TITLE_REQUIRED);
     }
@@ -77,16 +73,13 @@ public class Content extends BaseTimeEntity {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_TYPE_REQUIRED);
     }
 
-    if(level == null) {
-      throw new BusinessException(CompetencyReportErrorCode.CONTENT_LEVEL_REQUIRED);
-    }
   }
 
   // 등록
   public static Content create(ContentCreateRequest request) {
 
     // validation
-    validate(request.getTitle(), request.getType(), request.getLevel());
+    validate(request.getTitle(), request.getType());
 
     String normalizedTitle = request.getTitle().trim();
     String normalizedResourcePath = request.getResourcePath().trim();
@@ -105,7 +98,7 @@ public class Content extends BaseTimeEntity {
   public void update(ContentUpdateRequest request) {
 
     // validation
-    validate(request.getTitle(), request.getType(), request.getLevel());
+    validate(request.getTitle(), request.getType());
 
     // trim
     String normalizedTitle = request.getTitle().trim();
@@ -120,6 +113,10 @@ public class Content extends BaseTimeEntity {
     this.resourcePath = normalizedResourcePath;
     this.notes = normalizedNotes;
     this.isDeleted = request.getIsDeleted();
+  }
+
+  public void delete(Character isDeleted) {
+    this.isDeleted = isDeleted;
   }
 
 }

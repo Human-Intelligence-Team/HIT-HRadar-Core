@@ -1,7 +1,6 @@
 package org.hit.hradar.domain.competencyReport.query.dto.request;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Quarter;
 

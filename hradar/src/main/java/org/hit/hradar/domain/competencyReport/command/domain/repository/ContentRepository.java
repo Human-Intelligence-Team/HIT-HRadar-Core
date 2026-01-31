@@ -8,4 +8,5 @@ public interface ContentRepository {
   Content save(Content content);
   Optional<Content> findById(Long contentId);
 
+  void delete(Content content);
 }

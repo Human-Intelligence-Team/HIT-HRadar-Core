@@ -1,6 +1,8 @@
 package org.hit.hradar.domain.competencyReport.command.application.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagCreateRequest;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagDeleteRequest;
 import org.hit.hradar.domain.competencyReport.command.application.service.TagCommandService;
 import org.hit.hradar.global.dto.ApiResponse;
@@ -21,15 +23,15 @@ public class TagCommandController {
 
   /**
    * 태그 등록
-   * @param tagName
+   * @param request
    * @return
    */
   @PostMapping
   public ResponseEntity<ApiResponse<Void>> createTag(
-     @RequestParam String tagName
+      @RequestBody  @Valid TagCreateRequest request
   )  {
 
-    tagCommandService.createTag(tagName);
+    tagCommandService.createTag(request);
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 
@@ -38,7 +40,7 @@ public class TagCommandController {
    * @param tagDeleteRequest
    * @return
    */
-  @DeleteMapping
+  @PostMapping("/delete")
   public ResponseEntity<ApiResponse<Void>> deleteTag(
       @RequestBody TagDeleteRequest tagDeleteRequest
   ) {

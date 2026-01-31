@@ -22,15 +22,20 @@ public class CommonQueryService {
 
           // tag List
           List<TagDTO> tags = entry.getValue().stream()
-              .map(f -> new TagDTO(f.getTagId(), f.getTagName()))
+              .map(f -> new TagDTO(f.getTagId(), f.getTagName(), null))
               .toList();
+
 
           ContentRowDTO first = entry.getValue().get(0);
           ContentDTO dto = new ContentDTO(
               first.getContentId()
               , first.getTitle()
               , first.getType()
+              , first.getTypeCode()
+              , first.getTypeName()
               , first.getLevel()
+              , first.getLevelCode()
+              , first.getLevelName()
               , first.getLearningTime()
               , first.getResourcePath()
               , first.getIsDeleted()

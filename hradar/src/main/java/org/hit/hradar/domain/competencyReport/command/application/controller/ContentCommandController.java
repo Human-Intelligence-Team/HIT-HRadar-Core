@@ -8,6 +8,8 @@ import org.hit.hradar.domain.competencyReport.command.application.dto.response.C
 import org.hit.hradar.domain.competencyReport.command.application.service.ContentsCommandService;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,5 +50,18 @@ public class ContentCommandController {
     ContentUpdateResponse response = contentsCommandService.updateContent(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
+
+  /**
+   * 학습 컨텐츠 삭제
+   */
+  @DeleteMapping("/{contentId}")
+  public ResponseEntity<ApiResponse<Void>> deleteContent(
+      @PathVariable Long contentId
+  ) {
+
+    contentsCommandService.deleteContent(contentId);
+    return ResponseEntity.ok(ApiResponse.success(null));
+  }
+
 
 }
