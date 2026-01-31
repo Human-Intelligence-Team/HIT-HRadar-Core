@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hit.hradar.domain.attendance.IpPolicyErrorCode;
 import org.hit.hradar.domain.attendance.command.application.dto.response.AttendanceCheckResponse;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.*;
@@ -16,6 +17,7 @@ import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -33,17 +35,24 @@ public class AttendanceCommandService {
       String clientIp
   ) {
     // 1. IP 검증
+    log.info("clientIp={}", clientIp);
+
     if (!ipAccessValidator.validate(comId, clientIp)) {
       throw new BusinessException(IpPolicyErrorCode.IpRange_NOT_FOUND);
     }
+    log.info("clientIp={}", clientIp);
+
 
     LocalDate today = LocalDate.now();
     LocalDateTime now = LocalDateTime.now();
 
+    log.info("clientIp={}", clientIp);
+
     // 2. 오늘 근태 조회 or 생성
     Attendance attendance = attendanceRepository
         .findByEmpIdAndWorkDate(empId, today)
-        .orElseGet(() -> attendanceRepository.save(new Attendance(empId, today)));
+        .orElseGet(() ->
+            attendanceRepository.save(new Attendance(empId, today)));
 
     // 3. 승인된 근무계획 조회
     Optional<AttendanceWorkPlan> approvedPlan =
@@ -66,13 +75,22 @@ public class AttendanceCommandService {
     String workLocation;
     LocalDateTime checkInTime;
 
+    AttendanceWorkPlan plan = approvedPlan.orElse(null);
+
     if (openedLog.isEmpty()) {
       // ===== 출근 =====
       attendanceStatusType = "CHECK_IN";
 
-      AttendanceWorkPlan plan = approvedPlan.orElse(null);
-      workType = (plan != null) ? plan.getWorkType() : attendance.getWorkType();
-      workLocation = (plan != null) ? plan.getLocation() : "OFFICE";
+      workType =
+          (plan != null && plan.getWorkType() != null)
+              ? plan.getWorkType()
+              : attendance.getWorkType();
+
+      workLocation =
+          (plan != null && plan.getLocation() != null)
+              ? plan.getLocation()
+              : "OFFICE";
+
 
       AttendanceWorkLog log = new AttendanceWorkLog(
           attendance.getAttendanceId(),
