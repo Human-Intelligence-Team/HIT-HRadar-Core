@@ -24,11 +24,11 @@
     JOIN department dept ON e.dept_id = dept.dept_id
     WHERE d.is_deleted = 'N'
 
-    <if test="docType != null">
+    <if test="docType != null and docType != ''">
       AND d.doc_type = #{docType}
     </if>
 
-    <if test="status != null">
+    <if test="status != null and status != ''">
       AND d.status = #{status}
     </if>
 
@@ -42,8 +42,8 @@
 
     ORDER BY d.created_at
     <choose>
-      <when test="sort != null">
-        ${sort}
+      <when test="sort == 'ASC'">
+        ASC
       </when>
       <otherwise>
         DESC

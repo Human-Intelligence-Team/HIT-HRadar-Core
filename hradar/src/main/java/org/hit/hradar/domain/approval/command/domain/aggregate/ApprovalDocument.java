@@ -45,6 +45,15 @@ public class ApprovalDocument extends BaseTimeEntity {
   @Column(name = "title", nullable = false, length = 200)
   private String title;
 
+  @Column(name = "is_template", nullable = false)
+  private boolean isTemplate;
+
+  @Column(name = "name", nullable = false)
+  private String name; // 화면 표시용
+
+  @Column(name = "active", nullable = false)
+  private boolean active = true;
+
   //본문
   @Column(name = "content", nullable = false)
   private String content;
@@ -196,5 +205,17 @@ public class ApprovalDocument extends BaseTimeEntity {
     this.content = content;
     this.docType = docType;
   }
+  public ApprovalDocument(String docType, String name, boolean isActive) {
+    this.docType = docType;
+    this.name = name;
+    this.active = isActive;
+    this.isTemplate = true;
 
+    this.title = name;
+    this.content = "";
+  }
+
+  public void updateName(String name) {
+    this.name = name;
+  }
 }
