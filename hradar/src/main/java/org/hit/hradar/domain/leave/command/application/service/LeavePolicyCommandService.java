@@ -38,6 +38,7 @@ public class LeavePolicyCommandService {
         .unitCode(request.getUnitCode())
         .unitDays(request.getUnitDays())
         .isActive('Y')
+        .isDeleted('N')
         .build();
     leavePolicyJpaRepository.save(policy);
   }

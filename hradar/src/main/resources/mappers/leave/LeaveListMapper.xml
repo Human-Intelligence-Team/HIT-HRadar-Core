@@ -21,10 +21,14 @@
     SELECT
       leave_id        AS leaveId,
       leave_type      AS leaveType,
+      doc_id          AS docId,
+      reason          AS reason,
       leave_unit_type AS leaveUnitType,
       start_date      AS startDate,
       end_date        AS endDate,
-      leave_days      AS leaveDays
+      leave_days      AS leaveDays,
+      requested_at    AS requestedAt,
+      NULL            AS approvalStatus
     FROM emp_leave
     WHERE emp_id = #{empId}
       AND is_deleted = 'N'
