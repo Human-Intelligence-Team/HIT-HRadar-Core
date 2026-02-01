@@ -15,5 +15,10 @@ public class AttendanceCalendarItemDto {
   private String workType;
   private String status;
 
+  private String departmentName;
+  private String jobTitle;
+  private Long totalWorkMinutes;
+  private String location;
+
 
 }

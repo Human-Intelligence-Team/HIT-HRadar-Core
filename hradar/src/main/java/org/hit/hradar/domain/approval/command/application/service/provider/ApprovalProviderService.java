@@ -35,15 +35,14 @@ public class ApprovalProviderService {
       ApprovalSaveMode mode
   ) {
 
+    ApprovalDocument document;
+
+    // 1. 문서 생성 또는 조회
     if (docId == null) {
-
-      if (mode != ApprovalSaveMode.DRAFT) {
-        throw new BusinessException(ApprovalErrorCode.CANNOT_SUBMIT_NOT_DRAFT);
-      }
-
+      // 신규 생성
       validateDraftRequest(request);
 
-      ApprovalDocument document = ApprovalDocument.createDraft(
+      document = ApprovalDocument.createDraft(
           writerId,
           companyId,
           request.getDocType(),
@@ -51,28 +50,25 @@ public class ApprovalProviderService {
           request.getContent()
       );
       approvalDocumentJpaRepository.save(document);
+      docId = document.getDocId();
 
-      savePayload(document.getDocId(), request.getPayload());
+      savePayload(docId, request.getPayload());
 
-      ApprovalLine line = ApprovalLine.create(document.getDocId());
+      ApprovalLine line = ApprovalLine.create(docId);
       approvalLineJpaRepository.save(line);
 
       saveSteps(line.getLineId(), request.getApproverIds());
-      saveReferences(document.getDocId(), request.getReferenceIds());
+      saveReferences(docId, request.getReferenceIds());
 
-      return document.getDocId();
-    }
+    } else {
+      // 기존 문서 조회 및 수정
+      document = approvalDocumentJpaRepository.findById(docId)
+          .orElseThrow(() ->
+              new BusinessException(ApprovalErrorCode.DOCUMENT_NOT_FOUND));
 
-    ApprovalDocument document =
-        approvalDocumentJpaRepository.findById(docId)
-            .orElseThrow(() ->
-                new BusinessException(ApprovalErrorCode.DOCUMENT_NOT_FOUND));
-
-    if (!document.isOwner(writerId)) {
-      throw new BusinessException(ApprovalErrorCode.NOT_ALLOWED_EDIT);
-    }
-
-    if (mode == ApprovalSaveMode.DRAFT) {
+      if (!document.isOwner(writerId)) {
+        throw new BusinessException(ApprovalErrorCode.NOT_ALLOWED_EDIT);
+      }
 
       if (!document.isDraft()) {
         throw new BusinessException(ApprovalErrorCode.CANNOT_EDIT_AFTER_SUBMIT);
@@ -98,16 +94,12 @@ public class ApprovalProviderService {
 
       saveSteps(line.getLineId(), request.getApproverIds());
       saveReferences(docId, request.getReferenceIds());
-
-      return docId;
     }
 
+    // 2. 모드별 처리 (DRAFT는 이미 저장되었으므로 통과, SUBMIT은 상신 처리)
     if (mode == ApprovalSaveMode.SUBMIT) {
-
-      if (!document.isDraft()) {
-        throw new BusinessException(ApprovalErrorCode.ALREADY_SUBMITTED);
-      }
-
+      
+      // 이미 위에서 isDraft 체크나 신규 생성을 했으므로 바로 상신 로직 진행
       document.submit(writerId);
 
       ApprovalLine line =
@@ -129,11 +121,9 @@ public class ApprovalProviderService {
       approvalHistoryJpaRepository.save(
           ApprovalHistory.submit(docId, writerId)
       );
-
-      return docId;
     }
-
-    throw new BusinessException(ApprovalErrorCode.INVALID_SAVE_MODE);
+    
+    return docId;
   }
 
   /* ===== private ===== */

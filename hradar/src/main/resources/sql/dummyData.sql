@@ -15,7 +15,7 @@ DELETE FROM department          WHERE com_id = 1;
 DELETE FROM company_position    WHERE com_id = 1;
 
 -- (선택) 예전에 쓰던 positions가 남아있다면 같이 삭제
-DELETE FROM positions           WHERE company_id = 1;
+-- DELETE FROM positions           WHERE company_id = 1;
 
 -- company는 application_id를 들고 있으므로 company 먼저 삭제하면 안됨(보통)
 DELETE FROM company             WHERE com_id = 1;
@@ -253,5 +253,39 @@ VALUES
     (58, 1018, 2026, 15, 15.0, '2026-01-01', '2026-12-31', 'N', NOW(6), 1),
     (59, 1019, 2026, 15, 15.0, '2026-01-01', '2026-12-31', 'N', NOW(6), 1),
     (60, 1020, 2026, 15, 15.0, '2026-01-01', '2026-12-31', 'N', NOW(6), 1);
+
+
+-- 8) 추가 결재자/참조자 더미 데이터 (각 5명)
+-- 비밀번호는 모두 동일: $2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP. (1234)
+
+-- 결재자 (Approvers)
+INSERT INTO user_account (user_id, com_id, created_by, employee_id, login_id, email, name, password, role, status, is_deleted) VALUES
+(1021, 1, 1, 1021, 'approver01', 'approver01@comp001.com', '결재자1', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N'),
+(1022, 1, 1, 1022, 'approver02', 'approver02@comp001.com', '결재자2', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N'),
+(1023, 1, 1, 1023, 'approver03', 'approver03@comp001.com', '결재자3', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N'),
+(1024, 1, 1, 1024, 'approver04', 'approver04@comp001.com', '결재자4', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N'),
+(1025, 1, 1, 1025, 'approver05', 'approver05@comp001.com', '결재자5', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N');
+
+INSERT INTO employee (emp_id, com_id, user_id, department_id, position_id, name, email, phone, entered_date, status, is_deleted) VALUES
+(1021, 1, 1021, 3012, 5, '결재자1', 'approver01@comp001.com', '010-0000-1021', '2024-01-01', 'WORKING', 'N'),
+(1022, 1, 1022, 3012, 5, '결재자2', 'approver02@comp001.com', '010-0000-1022', '2024-01-01', 'WORKING', 'N'),
+(1023, 1, 1023, 3013, 5, '결재자3', 'approver03@comp001.com', '010-0000-1023', '2024-01-01', 'WORKING', 'N'),
+(1024, 1, 1024, 3014, 5, '결재자4', 'approver04@comp001.com', '010-0000-1024', '2024-01-01', 'WORKING', 'N'),
+(1025, 1, 1025, 3015, 6, '결재자5', 'approver05@comp001.com', '010-0000-1025', '2024-01-01', 'WORKING', 'N');
+
+-- 참조자 (Referrers)
+INSERT INTO user_account (user_id, com_id, created_by, employee_id, login_id, email, name, password, role, status, is_deleted) VALUES
+(1026, 1, 1, 1026, 'referrer01', 'referrer01@comp001.com', '참조자1', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N'),
+(1027, 1, 1, 1027, 'referrer02', 'referrer02@comp001.com', '참조자2', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N'),
+(1028, 1, 1, 1028, 'referrer03', 'referrer03@comp001.com', '참조자3', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N'),
+(1029, 1, 1, 1029, 'referrer04', 'referrer04@comp001.com', '참조자4', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N'),
+(1030, 1, 1, 1030, 'referrer05', 'referrer05@comp001.com', '참조자5', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'user', 'ACTIVE', 'N');
+
+INSERT INTO employee (emp_id, com_id, user_id, department_id, position_id, name, email, phone, entered_date, status, is_deleted) VALUES
+(1026, 1, 1026, 3012, 3, '참조자1', 'referrer01@comp001.com', '010-0000-1026', '2024-01-01', 'WORKING', 'N'),
+(1027, 1, 1027, 3013, 3, '참조자2', 'referrer02@comp001.com', '010-0000-1027', '2024-01-01', 'WORKING', 'N'),
+(1028, 1, 1028, 3014, 3, '참조자3', 'referrer03@comp001.com', '010-0000-1028', '2024-01-01', 'WORKING', 'N'),
+(1029, 1, 1029, 3015, 3, '참조자4', 'referrer04@comp001.com', '010-0000-1029', '2024-01-01', 'WORKING', 'N'),
+(1030, 1, 1030, 3016, 3, '참조자5', 'referrer05@comp001.com', '010-0000-1030', '2024-01-01', 'WORKING', 'N');
 
 COMMIT;

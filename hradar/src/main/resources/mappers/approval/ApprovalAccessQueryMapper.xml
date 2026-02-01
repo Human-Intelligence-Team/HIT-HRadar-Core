@@ -45,7 +45,7 @@
       SELECT 1
       FROM approval_reference r
       WHERE r.doc_id = #{docId}
-        AND r.reference_id = #{userId}
+        AND r.ref_emp_id = #{userId}
         AND r.is_deleted = 'N'
     )
 

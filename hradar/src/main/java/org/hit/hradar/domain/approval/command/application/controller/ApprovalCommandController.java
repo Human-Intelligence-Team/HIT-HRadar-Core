@@ -49,6 +49,24 @@ public class ApprovalCommandController {
     );
   }
 
+  //바로 상신 (신규 생성 + 상신)
+  @PostMapping("/submit")
+  public ResponseEntity<ApiResponse<Long>> submitNew(
+      @CurrentUser AuthUser authUser,
+      @RequestBody ApprovalDraftCreateRequest request
+  ) {
+    Long docId = approvalProviderService.save(
+        null,
+        authUser.employeeId(),
+        authUser.companyId(),
+        request,
+        ApprovalSaveMode.SUBMIT
+    );
+    return ResponseEntity.ok(
+        ApiResponse.success(docId)
+    );
+  }
+
   //상신
   @PostMapping("/{docId}/submit")
   public ResponseEntity<ApiResponse<Void>> submit(

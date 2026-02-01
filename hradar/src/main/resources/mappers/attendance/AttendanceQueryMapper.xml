@@ -83,7 +83,10 @@
     , w.start_at
     , w.location
     , MIN(w.start_at) OVER () AS check_in_time
-    , MAX(w.end_at) OVER () AS check_out_time
+    , CASE
+        WHEN SUM(CASE WHEN w.end_at IS NULL THEN 1 ELSE 0 END) OVER () > 0 THEN NULL
+        ELSE MAX(w.end_at) OVER ()
+      END AS check_out_time
     , COALESCE(
     SUM(TIMESTAMPDIFF(MINUTE, w.start_at, w.end_at)) OVER (), 0
     ) AS total_work_minutes
@@ -105,12 +108,44 @@
     SELECT
       a.attendance_id AS attendanceId,
       a.emp_id        AS empId,
-      a.name          AS empName,
+      e.name          AS empName,
       a.work_date     AS workDate,
       a.work_type     AS workType,
-      a.status        AS status
+      CASE
+        WHEN a.status = 'LEAVE' THEN '휴가'
+        WHEN EXISTS (
+          SELECT 1 FROM attendance_work_log w
+          WHERE w.attendance_id = a.attendance_id AND w.end_at IS NULL AND w.is_deleted = 'N'
+        ) THEN
+          CASE
+            WHEN a.work_type = 'REMOTE' THEN '재택'
+            WHEN a.work_type = 'OUTSIDE' THEN '외근'
+            ELSE '출근'
+          END
+        WHEN EXISTS (
+          SELECT 1 FROM attendance_work_log w
+          WHERE w.attendance_id = a.attendance_id AND w.is_deleted = 'N'
+        ) THEN '퇴근'
+        ELSE '미출근'
+      END AS status,
+      d.dept_name     AS departmentName,
+      p.name          AS jobTitle,
+      (
+        SELECT COALESCE(SUM(TIMESTAMPDIFF(MINUTE, w.start_at, IFNULL(w.end_at, NOW()))), 0)
+        FROM attendance_work_log w
+        WHERE w.attendance_id = a.attendance_id AND w.is_deleted = 'N'
+      ) AS totalWorkMinutes,
+      (
+        SELECT w.location
+        FROM attendance_work_log w
+        WHERE w.attendance_id = a.attendance_id AND w.is_deleted = 'N'
+        ORDER BY w.start_at DESC
+        LIMIT 1
+      ) AS location
     FROM attendance a
     JOIN employee e ON a.emp_id = e.emp_id
+    LEFT JOIN department d ON e.dept_id = d.dept_id
+    LEFT JOIN company_position p ON e.position_id = p.position_id
    WHERE a.is_deleted = 'N'
    <if test="targetEmpId != null">
      AND a.emp_id = #{targetEmpId}
