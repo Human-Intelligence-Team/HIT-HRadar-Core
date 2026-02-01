@@ -6,5 +6,7 @@ import lombok.Getter;
 public class CompetencyReportCreateRequest {
 
   private Long cycleId; // 회차 ID
+  private String startDate; // 시작일
+  private String endDate; // 종료일
 
 }

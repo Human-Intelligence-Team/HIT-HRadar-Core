@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
@@ -28,6 +30,14 @@ public class CompetencyReport extends BaseTimeEntity {
   @Column(name = "cycle_id", nullable = false)
   private Long cycleId;
 
+  // 시작일
+  @Column(name = "start_date", nullable = false)
+  private LocalDate startDate;
+
+  // 종료일
+  @Column(name = "end_date", nullable = false)
+  private LocalDate endDate;
+
   @Column(name = "kpi_okr_result_summary", nullable = false)
   private String kpiOkrResultSummary;
 
@@ -44,7 +54,19 @@ public class CompetencyReport extends BaseTimeEntity {
     }
   }
 
+  public CompetencyReport(Long empId, Long cycleId, LocalDate startDate, LocalDate endDate,  String kpiOkrResultSummary, String goalFailureAnalysis, Character isDeleted) {
+    this.empId = empId;
+    this.cycleId = cycleId;
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.kpiOkrResultSummary = kpiOkrResultSummary;
+    this.goalFailureAnalysis = goalFailureAnalysis;
+    this.isDeleted = isDeleted;
+  }
 
-
+  public static void create(Long empId, Long cycleId, LocalDate startDate, LocalDate endDate,
+      String kpiOkrResultSummary, String goalFailureAnalysis) {
+    new CompetencyReport(empId,  cycleId, startDate, endDate, kpiOkrResultSummary, goalFailureAnalysis, 'N');
+  }
 
 }

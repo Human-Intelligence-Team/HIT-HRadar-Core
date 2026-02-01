@@ -27,4 +27,18 @@ public class ReportContent extends BaseTimeEntity {
   @Column(name = "content_id", nullable = false)
   private Long contentId;
 
+  @Column(name="reason" )
+  private String reason;
+
+  public ReportContent(Long competencyReportId, Long contentId, String reason) {
+    this.competencyReportId = competencyReportId;
+    this.contentId = contentId;
+    this.reason = reason;
+  }
+
+  public static void create(Long competencyReportId, Long contentId, String reason) {
+    new  ReportContent(competencyReportId, contentId, reason);
+  }
+
+
 }

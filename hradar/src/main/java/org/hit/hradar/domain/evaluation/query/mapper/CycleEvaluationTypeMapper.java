@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.hit.hradar.domain.evaluation.query.dto.response.CycleEvaluationTypeResponse;
 
 import java.util.List;
+import org.hit.hradar.domain.evaluation.query.dto.response.CycleListResponseDto;
 
 @Mapper
 public interface CycleEvaluationTypeMapper {
@@ -16,4 +17,6 @@ public interface CycleEvaluationTypeMapper {
             @Param("cycleId") Long cycleId,
             @Param("evalTypeId") Long evalTypeId
     );
+
+  CycleListResponseDto findCycleByCycleId(Long cycleId);
 }

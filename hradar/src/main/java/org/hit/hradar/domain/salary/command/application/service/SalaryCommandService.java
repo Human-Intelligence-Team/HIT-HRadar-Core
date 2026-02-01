@@ -2,7 +2,6 @@ package org.hit.hradar.domain.salary.command.application.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocumentType;
 import org.hit.hradar.domain.salary.command.application.dto.SalaryDTO;
 import org.hit.hradar.domain.salary.command.application.dto.request.CommonApprovalRequest;
 import org.hit.hradar.domain.salary.command.domain.aggregate.BasicSalary;
@@ -28,12 +27,11 @@ public class SalaryCommandService {
     Long docId = 1L; // 문서 결과
 
     // 기본급/ 변동 보상 등록
-    ApprovalDocumentType approvalDocumentType = commonApprovalRequest.getApprovalDocumentType();
+    String approvalDocumentType = commonApprovalRequest.getApprovalDocumentType();
 
     // 기본급
     List<SalaryDTO> salaries = commonApprovalRequest.getSalaries();
-    if (approvalDocumentType == ApprovalDocumentType.BASIC_SALARY) {
-
+    if (approvalDocumentType.equals("BASIC_SALARY")) {
       // 임시저장된 기본급 확인
       List<BasicSalary> basicSalaries = basicSalaryCommandService.getBasicSalariesByDocId(docId);
       if(!basicSalaries.isEmpty()){
@@ -45,7 +43,7 @@ public class SalaryCommandService {
     }
 
     // 변동 보상
-    if (approvalDocumentType == ApprovalDocumentType.COMPENSATION_SALARY) {
+    if (approvalDocumentType.equals("COMPENSATION_SALARY")) {
 
       // 임시저장된 변동 보상 확인
       List<CompensationSalary> compensationSalaries = compensationCommandService.getCompensationSalariesByDocId(docId);

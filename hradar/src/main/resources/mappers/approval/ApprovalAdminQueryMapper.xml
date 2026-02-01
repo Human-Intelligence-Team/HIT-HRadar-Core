@@ -52,7 +52,7 @@
 
   </select>
 
-  <select id="selectApprovalDetailByAdmin"
+  <!--<select id="selectApprovalDetailByAdmin"
     parameterType="long"
     resultMap="approvalDetailResultMap">
     SELECT
@@ -65,6 +65,6 @@
     FROM approval_document d
     WHERE d.doc_id = #{docId}
       AND d.is_deleted = 'N'
-  </select>
+  </select>-->
 
 </mapper>

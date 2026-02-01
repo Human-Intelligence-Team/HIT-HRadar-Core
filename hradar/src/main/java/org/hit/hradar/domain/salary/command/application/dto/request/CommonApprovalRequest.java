@@ -1,10 +1,8 @@
 package org.hit.hradar.domain.salary.command.application.dto.request;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
-import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocumentType;
 import org.hit.hradar.domain.salary.command.application.dto.SalaryDTO;
 
 @Getter
@@ -15,7 +13,7 @@ public class CommonApprovalRequest {
   private Long deptId;
   private Long writerId;
   private Long comId;
-  private ApprovalDocumentType approvalDocumentType;
+  private String approvalDocumentType;
   private String title;
   private String content;
   private LocalDateTime submittedDate;
