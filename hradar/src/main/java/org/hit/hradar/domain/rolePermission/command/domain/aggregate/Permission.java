@@ -13,7 +13,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 public class Permission extends BaseTimeEntity {
 
   @Id
-  @GeneratedValue(strategy=GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "perm_id", nullable = false)
   private Long permId;
 
@@ -26,19 +26,22 @@ public class Permission extends BaseTimeEntity {
   @Column(name = "name", nullable = false, length = 255)
   private String name;
 
-//  @Enumerated(EnumType.STRING)
-//  @Column(name = "perm_type", nullable = false, length = 20)
-//  private PermissionType type;
-
   @Column(name = "route_path", length = 255)
   private String routePath;
 
   @Column(name = "description", length = 255)
   private String description;
 
-  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  @Column(name = "is_deleted", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isDeleted;
+
+  public void updateInfo(String name, String routePath, String description) {
+    this.name = name;
+    this.routePath = routePath;
+    this.description = description;
+  }
+
+  public void delete() {
+    this.isDeleted = 'Y';
+  }
 }
-
-
-

@@ -21,6 +21,7 @@ public class EmployeeCommandService {
 
   private final EmployeeRepository employeeRepository;
   private final AccountRepository accountRepository;
+  private final org.hit.hradar.domain.rolePermission.command.application.service.EmployeeRoleAssignmentApplicationService roleAssignmentService;
 
   /**
    * 회사 생성자(첫 사원)
@@ -40,6 +41,9 @@ public class EmployeeCommandService {
         .build();
 
     Employee saved = employeeRepository.save(emp);
+
+    // 역할 부여 (최고관리자 + 사원)
+    roleAssignmentService.assignForFirstEmployee(saved.getComId(), saved.getEmpId());
 
     return CreateFirstEmpResponse.builder()
         .empId(saved.getEmpId())
@@ -80,7 +84,8 @@ public class EmployeeCommandService {
         req.getExitDate(),
         req.getImage(),
         req.getExtNo(),
-        req.getPhoneNo());
+        req.getPhoneNo(),
+        req.getNote());
 
     return UpdateEmployeeProfileResponse.builder()
         .empId(emp.getEmpId())

@@ -32,6 +32,7 @@ public class EmployeeAccountCommandService {
   private final AccountJpaRepository userJpaRepository;
   private final CompanyRepository companyRepository;
   private final PasswordEncoder passwordEncoder;
+  private final org.hit.hradar.domain.rolePermission.command.application.service.EmployeeRoleAssignmentApplicationService roleAssignmentService;
 
   /**
    * 사원 + 계정 생성
@@ -104,7 +105,10 @@ public class EmployeeAccountCommandService {
             .isDeleted('N')
             .build());
 
-    // 7) 응답(비밀번호는 반환하지 않음)
+    // 7) 역할 자동 부여 (사원)
+    roleAssignmentService.assignForNormalEmployee(comId, savedEmployee.getEmpId());
+
+    // 8) 응답(비밀번호는 반환하지 않음)
     return CreateEmployeeWithAccountResponse.builder()
         .empId(savedEmployee.getEmpId())
         .accId(savedAccount.getAccId())

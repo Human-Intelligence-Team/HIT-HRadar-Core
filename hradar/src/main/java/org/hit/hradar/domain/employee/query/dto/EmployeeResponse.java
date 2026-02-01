@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import lombok.*;
 import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 import org.hit.hradar.domain.employee.command.domain.aggregate.Gender;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -38,6 +39,6 @@ public class EmployeeResponse {
 
   private Long accId;
   private String loginId;
-  private String role;
+  private List<String> roles;
   private String status;
 }

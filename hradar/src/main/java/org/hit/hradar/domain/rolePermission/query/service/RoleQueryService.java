@@ -3,8 +3,9 @@ package org.hit.hradar.domain.rolePermission.query.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.rolePermission.RoleErrorCode;
-import org.hit.hradar.domain.rolePermission.query.dto.RoleListRequest;
 import org.hit.hradar.domain.rolePermission.query.dto.PermissionResponse;
+import org.hit.hradar.domain.rolePermission.query.dto.RoleAssignedMember;
+import org.hit.hradar.domain.rolePermission.query.dto.RoleListRequest;
 import org.hit.hradar.domain.rolePermission.query.dto.RoleResponse;
 import org.hit.hradar.domain.rolePermission.query.mapper.RoleMapper;
 import org.hit.hradar.global.exception.BusinessException;
@@ -23,8 +24,9 @@ public class RoleQueryService {
 
     for (RoleResponse role : roles) {
       role.setPermissions(
-          roleMapper.selectRolePermissions(role.getRoleId())
-      );
+          roleMapper.selectRolePermissions(role.getRoleId()));
+      role.setAssignedUsers(
+          roleMapper.selectAssignedMembers(role.getRoleId()));
     }
     return roles;
   }
@@ -37,13 +39,22 @@ public class RoleQueryService {
     }
 
     role.setPermissions(
-        roleMapper.selectRolePermissions(roleId)
-    );
+        roleMapper.selectRolePermissions(roleId));
+    role.setAssignedUsers(
+        roleMapper.selectAssignedMembers(roleId));
     return role;
   }
 
   @Transactional(readOnly = true)
   public List<PermissionResponse> getAllPermissions() {
     return roleMapper.selectAllPermissions();
+  }
+
+  @Transactional(readOnly = true)
+  public List<String> getMyPermissions(org.hit.hradar.global.dto.AuthUser authUser) {
+    if (authUser.employeeId() == null) {
+      return java.util.Collections.emptyList();
+    }
+    return roleMapper.selectPermissionKeysByEmpId(authUser.employeeId());
   }
 }
