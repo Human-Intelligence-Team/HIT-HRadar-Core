@@ -24,7 +24,7 @@ public class PermissionCommandController {
     public ResponseEntity<ApiResponse<Long>> createPermission(
             @CurrentUser AuthUser authUser,
             @RequestBody CreatePermissionRequest request) {
-        if (!"ADMIN".equals(authUser.role())) {
+        if (!"admin".equals(authUser.role())) {
             throw new BusinessException(RoleErrorCode.PERMISSION_DENIED);
         }
         Long permId = permissionCommandService.createPermission(request);
@@ -36,7 +36,7 @@ public class PermissionCommandController {
             @CurrentUser AuthUser authUser,
             @PathVariable Long permId,
             @RequestBody UpdatePermissionRequest request) {
-        if (!"ADMIN".equals(authUser.role())) {
+        if (!"admin".equals(authUser.role())) {
             throw new BusinessException(RoleErrorCode.PERMISSION_DENIED);
         }
         permissionCommandService.updatePermission(permId, request);
@@ -47,7 +47,7 @@ public class PermissionCommandController {
     public ResponseEntity<ApiResponse<Void>> deletePermission(
             @CurrentUser AuthUser authUser,
             @PathVariable Long permId) {
-        if (!"ADMIN".equals(authUser.role())) {
+        if (!"admin".equals(authUser.role())) {
             throw new BusinessException(RoleErrorCode.PERMISSION_DENIED);
         }
         permissionCommandService.deletePermission(permId);
