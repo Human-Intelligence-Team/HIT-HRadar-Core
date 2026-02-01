@@ -27,7 +27,8 @@ public enum ApprovalErrorCode implements ErrorCode {
   DOMAIN_PAYLOAD_INVALID("APP_018", "결재 문서 유형에 대한 입력 정보가 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
   INVALID_SAVE_MODE("APP_020","지원하지 않는 결재 저장 모드입니다.",HttpStatus.BAD_REQUEST),
   INVALID_DOC_TYPE_FORMAT("APP_021","결재 문서 유형은 필수입니다.",HttpStatus.BAD_REQUEST),
-  INVALID_REQUEST("APP_000", "요청 값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);
+  INVALID_REQUEST("APP_022", "요청 값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+  NOT_ALLOWED_COMMENT("APP_023", "결재 문서에 댓글을 작성할 수 없습니다.", HttpStatus.FORBIDDEN);
 
 
 

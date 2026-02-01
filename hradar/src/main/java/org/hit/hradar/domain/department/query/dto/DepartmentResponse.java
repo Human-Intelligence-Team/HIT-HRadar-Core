@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Getter
@@ -18,6 +17,6 @@ public class DepartmentResponse extends BaseTimeEntity {
     private Long parentDeptId;
     private Long managerEmpId;
     private String deptName;
-    private String deptPhoneNo;
-    private char isDeleted;
+    private String deptPhone;
+
 }

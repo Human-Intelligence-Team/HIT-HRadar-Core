@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SalaryCommandService {
 
-   private final BasicSalaryCommandService basicSalaryCommandService;
-   private final CompensationCommandService compensationCommandService;
+  private final BasicSalaryCommandService basicSalaryCommandService;
+  private final CompensationCommandService compensationCommandService;
   /**
    * 결재 연봉 등록( 임시 저장 / 등록 )
    * @param commonApprovalRequest
@@ -35,7 +35,7 @@ public class SalaryCommandService {
       // 임시저장된 기본급 확인
       List<BasicSalary> basicSalaries = basicSalaryCommandService.getBasicSalariesByDocId(docId);
       if(!basicSalaries.isEmpty()){
-         basicSalaryCommandService.deleteBasicSalariesByDocId(docId);
+        basicSalaryCommandService.deleteBasicSalariesByDocId(docId);
       }
 
       // 등록

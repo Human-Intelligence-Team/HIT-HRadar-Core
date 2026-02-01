@@ -29,6 +29,10 @@ public class CompanyResponse {
   // 상태(승인/반려 등) - 문자열로 내려주면 enum 변경에도 유연
   private String status;
 
+
+
   // 소프트 삭제 여부(Y/N)
   private Character isDeleted;
+
+
 }

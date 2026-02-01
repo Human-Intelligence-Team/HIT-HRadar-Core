@@ -4,6 +4,29 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.hit.hradar.domain.notice.query.mapper.NoticeMapper">
+    <resultMap id="noticeDetailMap"
+               type="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse">
+
+        <id property="noticeId" column="noticeId"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+
+        <result property="categoryId" column="categoryId"/>
+        <result property="categoryName" column="categoryName"/>
+
+        <result property="createdByName" column="createdByName"/>
+        <result property="updatedByName" column="updatedByName"/>
+
+        <result property="createdAt" column="createdAt"/>
+        <result property="updatedAt" column="updatedAt"/>
+
+        <!-- 첨부파일 -->
+        <collection property="attachments"
+                    ofType="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse$AttachmentResponse"
+                    select="findAttachments"
+                    column="noticeId"/>
+    </resultMap>
+
     <select id="search"
             resultType="org.hit.hradar.domain.notice.query.dto.response.NoticeListItemResponse">
 
@@ -23,7 +46,7 @@
         ON n.category_id = c.category_id
         AND c.is_deleted = 'N'
         WHERE n.com_id = #{cond.companyId}
-        AND n.is_deleted = false
+        AND n.is_deleted = 'N'
 
         <if test="cond.categoryId != null">
             AND n.category_id = #{cond.categoryId}
@@ -62,7 +85,7 @@
         SELECT COUNT(*)
         FROM notice n
         WHERE n.com_id = #{cond.companyId}
-        AND n.is_deleted = false
+        AND n.is_deleted = 'N'
 
         <if test="cond.categoryId != null">
             AND n.category_id = #{cond.categoryId}
@@ -76,8 +99,7 @@
         </if>
     </select>
 
-    <select id="findDetail"
-            resultType="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse">
+    <select id="findDetail" resultMap="noticeDetailMap">
 
         SELECT
             n.notice_id      AS noticeId,
@@ -114,6 +136,17 @@
         WHERE n.notice_id = #{noticeId}
           AND n.com_id = #{companyId}
           AND n.is_deleted = 'N'
+
+    </select>
+
+    <select id="findAttachments"
+            resultType="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse$AttachmentResponse">
+
+        SELECT
+            url,
+            original_name AS originalName
+        FROM notice_attachment
+        WHERE notice_id = #{noticeId}
 
     </select>
 

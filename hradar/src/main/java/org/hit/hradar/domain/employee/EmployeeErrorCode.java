@@ -11,11 +11,14 @@ public enum EmployeeErrorCode implements ErrorCode {
   DUPLICATE_EMPLOYEE_NO_OR_EMAIL("EMP_002", "이미 사용중인 사원번호 또는 이메일입니다.", HttpStatus.CONFLICT),
   INVALID_DEPARTMENT("EMP_003", "유효하지 않은 부서입니다.", HttpStatus.BAD_REQUEST),
   INVALID_POSITION("EMP_004", "유효하지 않은 직책입니다.", HttpStatus.BAD_REQUEST),
-  INVALID_CSV_FORMAT("CSV_001","기본 정보 누락", HttpStatus.BAD_REQUEST),
-  INVALID_CSV_ROW_REQUIRED("CSV_002","사원 정보 누락",  HttpStatus.BAD_REQUEST),
+  INVALID_CSV_FORMAT("CSV_001", "기본 정보 누락", HttpStatus.BAD_REQUEST),
+  INVALID_CSV_ROW_REQUIRED("CSV_002", "사원 정보 누락", HttpStatus.BAD_REQUEST),
   INVALID_CSV_ROW_ACCOUNT_REQUIRED("CSV_003", "계정 정보 누락", HttpStatus.BAD_REQUEST),
-  INVALID_CSV_FILE("CSV_004","존재하지 않는 csv 파일 입니다.", HttpStatus.NOT_FOUND),
-;
+  INVALID_CSV_FILE("CSV_004", "존재하지 않는 csv 파일 입니다.", HttpStatus.NOT_FOUND),
+  CSV_MISSING_REQUIRED_FIELD("CSV_005", "필수 입력 항목이 누락되었습니다.", HttpStatus.BAD_REQUEST),
+  CSV_INVALID_FORMAT("CSV_006", "입력 형식이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
+  ;
+
   private final String errorCode;
   private final String message;
   private final HttpStatus httpStatus;
@@ -30,10 +33,12 @@ public enum EmployeeErrorCode implements ErrorCode {
   public String getErrorCode() {
     return errorCode;
   }
+
   @Override
   public String getMessage() {
     return message;
   }
+
   @Override
   public HttpStatusCode getHttpStatusCode() {
     return httpStatus;

@@ -11,6 +11,7 @@ import lombok.*;
 public class EmployeeMovementHistoryResponse {
   private Long movementId;
   private Long empId;
+  private String empName;
 
   private Long fromDeptId;
   private Long toDeptId;

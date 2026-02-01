@@ -21,4 +21,13 @@ public class EmployeeMovementHistoryQueryService {
 
     return EmployeeMovementHistoryListResponse.of(list);
   }
+
+  @Transactional(readOnly = true)
+  public EmployeeMovementHistoryListResponse getAllHistories(Long companyId) {
+    // Mapper의 메서드명과 일치하게 호출
+    List<EmployeeMovementHistoryResponse> histories =
+        mapper.findAllByCompanyId(companyId);
+
+    return EmployeeMovementHistoryListResponse.of(histories);
+  }
 }

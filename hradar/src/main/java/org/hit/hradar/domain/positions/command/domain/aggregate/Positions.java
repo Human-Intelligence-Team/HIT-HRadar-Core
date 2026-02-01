@@ -13,7 +13,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class  Positions extends BaseTimeEntity {
+public class Positions extends BaseTimeEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
