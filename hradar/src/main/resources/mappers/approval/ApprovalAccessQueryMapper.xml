@@ -17,7 +17,7 @@
     parameterType="map"
     resultType="boolean">
 
-    SELECT EXISTS (
+    SELECT (
       EXISTS(
       SELECT 1
       FROM approval_document
