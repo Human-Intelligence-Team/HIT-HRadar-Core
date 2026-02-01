@@ -33,6 +33,9 @@ public class ApprovalDocumentType extends BaseTimeEntity {
   @Column(name = "is_active", nullable = false)
   private boolean active = true;
 
+  @Column(name = "is_deleted", nullable = false)
+  private Character isDeleted = 'N';
+
   public ApprovalDocumentType(Long companyId, String docType, String name, boolean active) {
     this.companyId = companyId;
     this.docType = docType;
