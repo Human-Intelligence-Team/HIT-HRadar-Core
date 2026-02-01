@@ -143,6 +143,7 @@
             resultType="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse$AttachmentResponse">
 
         SELECT
+            attachment_id AS id,
             url,
             original_name AS originalName
         FROM notice_attachment
