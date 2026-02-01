@@ -1,6 +1,7 @@
 package org.hit.hradar.domain.company.command.domain.aggregate;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import lombok.*;
 import org.hit.hradar.domain.company.CompanyErrorCode;
 import org.hit.hradar.domain.companyApplication.command.domain.aggregate.CompanyApplicationStatus;
@@ -43,7 +44,7 @@ public class Company extends BaseTimeEntity {
   private String comTel;
 
   @Column(name = "founded_date")
-  private String foundedDate;
+  private LocalDate foundedDate;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 15)
@@ -52,13 +53,17 @@ public class Company extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isDeleted;
 
-  public void updateInfo(String comName, String comTel, String address) {
+  public void updateInfo(String comName, String comTel, String address, String comEmail, String ceoName,
+      LocalDate foundedDate) {
     if (comName == null || comName.isBlank()) {
       throw new BusinessException(CompanyErrorCode.COMPANY_NAME_NOT_BLANK);
     }
     this.companyName = comName;
     this.comTel = comTel;
     this.address = address;
+    this.comEmail = comEmail;
+    this.ceoName = ceoName;
+    this.foundedDate = foundedDate;
   }
 
   public void isDeleted() {

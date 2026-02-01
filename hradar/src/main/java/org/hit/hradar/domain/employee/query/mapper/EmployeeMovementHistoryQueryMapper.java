@@ -11,4 +11,7 @@ public interface EmployeeMovementHistoryQueryMapper {
       @Param("comId") Long comId,
       @Param("empId") Long empId
   );
+
+  List<EmployeeMovementHistoryResponse> findAllByCompanyId(@Param("comId") Long comId);
 }
+

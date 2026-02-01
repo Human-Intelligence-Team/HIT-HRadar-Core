@@ -30,7 +30,10 @@ public class CreateEmployeeWithAccountRequest {
   @NotBlank
   private String password;
 
-
-
+  private Long deptId;
+  private Long positionId;
+  private String gender;
+  private String birth;
+  private String hireDate;
 
 }

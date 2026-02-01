@@ -17,4 +17,6 @@ public interface DepartmentRepository {
   boolean existsByDeptIdAndComIdAndIsDeleted(Long deptId, Long comId, Character isDeleted);
 
   boolean existsByDeptNameAndComIdAndIsDeleted(String deptName, Long comId, char isDeleted);
+
+  Optional<Department> findByDeptNameAndComIdAndIsDeleted(String deptName, Long comId, char isDeleted);
 }
