@@ -4,7 +4,9 @@ import org.hit.hradar.domain.rolePermission.command.domain.aggregate.EmployeeRol
 import org.hit.hradar.domain.rolePermission.command.domain.repository.RoleEmpRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoleEmpJpaRepository extends JpaRepository<EmployeeRole, Long> ,
+public interface RoleEmpJpaRepository extends JpaRepository<EmployeeRole, Long>,
     RoleEmpRepository {
   boolean existsByEmpIdAndRoleId(Long empId, Long roleId);
+
+  void deleteByEmpId(Long empId);
 }

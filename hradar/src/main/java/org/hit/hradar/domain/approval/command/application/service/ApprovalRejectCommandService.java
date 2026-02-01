@@ -7,6 +7,9 @@ import org.hit.hradar.domain.approval.command.infrastructure.*;
 import org.hit.hradar.domain.approval.event.ApprovalEvent;
 import org.hit.hradar.domain.approval.event.ApprovalEventPublisher;
 import org.hit.hradar.domain.approval.event.ApprovalEventType;
+import org.hit.hradar.domain.document.command.domain.aggregate.Document;
+import org.hit.hradar.domain.evaluation.command.domain.aggregate.RejectionEvent;
+import org.hit.hradar.domain.evaluation.command.infrastructure.RejectionEventJpaRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +24,7 @@ public class ApprovalRejectCommandService {
   private final ApprovalLineStepJpaRepository approvalLineStepRepository;
   private final ApprovalHistoryJpaRepository approvalHistoryRepository;
   private final ApprovalEventPublisher approvalEventPublisher;
-
+  private final RejectionEventJpaRepository  rejectionEventRepository;
   // 결재 반려
   public void reject(Long docId, Long actorId, String reason) {
 
@@ -69,6 +72,13 @@ public class ApprovalRejectCommandService {
     // 5. 반려 히스토리 기록
     approvalHistoryRepository.save(
         ApprovalHistory.rejected(docId, actorId, currentStep, reason)
+    );
+
+    //반려 횟수 증가 로직
+    ApprovalDocument document = approvalDocumentRepository.findById(docId).orElseThrow(null);
+    Long targetEmpId = document.getWriterId();
+    rejectionEventRepository.save(
+              RejectionEvent.create(targetEmpId)
     );
 
     // 6. 문서 상태 즉시 반려

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/roles")
+@RequestMapping("/roles")
 public class RoleQueryController {
 
   private final RoleQueryService roleQueryService;
@@ -22,31 +22,31 @@ public class RoleQueryController {
   @GetMapping
   public ResponseEntity<ApiResponse<List<RoleResponse>>> list(
       RoleListRequest req,
-      @CurrentUser AuthUser authUser
-  ) {
+      @CurrentUser AuthUser authUser) {
     return ResponseEntity.ok(
         ApiResponse.success(
-            roleQueryService.getRoles(authUser.companyId(), req)
-        )
-    );
+            roleQueryService.getRoles(authUser.companyId(), req)));
   }
 
   @GetMapping("/{roleId}")
   public ResponseEntity<ApiResponse<RoleResponse>> detail(
       @PathVariable Long roleId,
-      @CurrentUser AuthUser authUser
-  ) {
+      @CurrentUser AuthUser authUser) {
     return ResponseEntity.ok(
         ApiResponse.success(
-            roleQueryService.getRole(authUser.companyId(), roleId)
-        )
-    );
+            roleQueryService.getRole(authUser.companyId(), roleId)));
   }
 
   @GetMapping("/permissions")
   public ResponseEntity<ApiResponse<List<PermissionResponse>>> permissions() {
     return ResponseEntity.ok(
-        ApiResponse.success(roleQueryService.getAllPermissions())
-    );
+        ApiResponse.success(roleQueryService.getAllPermissions()));
+  }
+
+  @GetMapping("/my-permissions")
+  public ResponseEntity<ApiResponse<List<String>>> getMyPermissions(
+      @CurrentUser AuthUser authUser) {
+    return ResponseEntity.ok(
+        ApiResponse.success(roleQueryService.getMyPermissions(authUser)));
   }
 }

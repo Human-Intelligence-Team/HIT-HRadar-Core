@@ -39,7 +39,12 @@ public class LeavePolicy extends BaseTimeEntity {
   private double unitDays;
 
   @Column(name = "is_active", nullable = false)
-  private Character isActive = 'N';
+  @Builder.Default
+  private Character isActive = 'Y';
+
+  @Column(name = "is_deleted", nullable = false)
+  @Builder.Default
+  private Character isDeleted = 'N';
 
   protected LeavePolicy() {}
 }

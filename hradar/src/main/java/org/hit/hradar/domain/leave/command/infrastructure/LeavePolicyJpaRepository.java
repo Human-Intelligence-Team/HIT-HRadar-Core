@@ -15,6 +15,6 @@ public interface LeavePolicyJpaRepository
       String typeName
   );
 
-  List<LeavePolicy> findByCompanyId(Long companyId);
+  List<LeavePolicy> findByCompanyIdAndIsDeleted(Long companyId, Character isDeleted);
 
 }

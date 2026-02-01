@@ -41,7 +41,7 @@ public class LeaveCommandController {
     );
 
     return ResponseEntity.ok(
-        ApiResponse.success("Draft"));
+        ApiResponse.success("docId"));
   }
 
 
@@ -54,7 +54,7 @@ public class LeaveCommandController {
   ) {
     leaveCommandService.applyLeave(
         docId,
-        authUser.companyId(),
+        authUser.employeeId(),
         request
     );
     return ResponseEntity.ok(

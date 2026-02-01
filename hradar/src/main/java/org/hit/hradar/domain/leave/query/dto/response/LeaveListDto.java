@@ -1,6 +1,7 @@
 package org.hit.hradar.domain.leave.query.dto.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
@@ -11,6 +12,10 @@ public class LeaveListDto {
 
   /** 휴가 유형 (연차, 병가 등) */
   private String leaveType;
+
+  private Long docId;
+
+  private String reason;
 
   /** 휴가 단위 (FULL, HALF_AM, HALF_PM 등) */
   private String leaveUnitType;
@@ -23,5 +28,9 @@ public class LeaveListDto {
 
   /** 사용 휴가 일수 */
   private double leaveDays;
+
+  private LocalDateTime requestedAt;
+
+  private String approvalStatus;
 
 }

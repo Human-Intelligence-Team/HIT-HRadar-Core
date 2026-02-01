@@ -17,7 +17,7 @@ public class LeavePolicyQueryService {
 
   public List<LeavePolicy> getPolicies(Long companyId) {
     List<LeavePolicy> list =
-        leavePolicyJpaRepository.findByCompanyId(companyId);
+        leavePolicyJpaRepository.findByCompanyIdAndIsDeleted(companyId, 'N');
 
     return list == null ? Collections.emptyList() : list;
   }

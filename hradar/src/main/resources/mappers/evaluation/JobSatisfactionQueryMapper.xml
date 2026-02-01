@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.evaluation.query.mapper.JobSatisfactionChartMapper">
+
+    <select id="selectMyJobSatisfactionBars"
+            resultType="org.hit.hradar.domain.evaluation.query.dto.response.row.JobSatisfactionRow">
+
+        SELECT
+            q.question_id AS questionId,
+            q.question_content AS label,
+
+            /* -------------------------------------------------------
+               문항별 평균 점수(AVG(score))를 rating_scale 기준으로 0~100 정규화
+               - rating_scale이 0이면 분모 0이므로 NULLIF로 방어
+               - 소수 1자리 반올림
+               ------------------------------------------------------- */
+            ROUND( (AVG(er.score) / NULLIF(q.rating_scale, 0)) * 100, 1 ) AS value
+
+        FROM evaluation_assignment a
+                 JOIN cycle_evaluation_type cet
+                      ON cet.cycle_eval_type_id = a.cycle_eval_type_id
+                          AND cet.is_deleted = 'N'
+
+                 JOIN cycle c
+                      ON c.cycle_id = cet.cycle_id
+                          AND c.is_deleted = 'N'
+
+                 JOIN evaluation_section s
+                      ON s.cycle_eval_type_id = cet.cycle_eval_type_id
+                          AND s.is_deleted = 'N'
+                          AND s.section_title = '직무만족도'
+
+                 JOIN evaluation_question q
+                      ON q.section_id = s.section_id
+                          AND q.question_type = 'RATING'
+
+                 JOIN evaluation_response er
+                      ON er.assignment_id = a.assignment_id
+                          AND er.question_id = q.question_id
+                          AND er.response_type = 'RATING'
+                          AND er.score IS NOT NULL
+
+        WHERE a.is_deleted = 'N'
+          AND a.assignment_status = 'SUBMITTED'
+          AND a.evaluatee_id = #{evaluateeId}
+
+        GROUP BY q.question_id, q.question_content, q.rating_scale
+        ORDER BY q.question_id ASC
+
+    </select>
+
+</mapper>
