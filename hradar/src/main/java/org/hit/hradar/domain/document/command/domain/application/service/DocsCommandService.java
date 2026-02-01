@@ -6,7 +6,6 @@ import org.hit.hradar.domain.document.command.domain.aggregate.Document;
 import org.hit.hradar.domain.document.command.domain.aggregate.DocumentChunk;
 import org.hit.hradar.domain.document.command.domain.application.csv.CsvParseResult;
 import org.hit.hradar.domain.document.command.domain.application.csv.CsvParser;
-import org.hit.hradar.domain.document.command.domain.application.dto.request.DocumentIndexEvent;
 import org.hit.hradar.domain.document.command.domain.application.dto.request.DocumentCreateRequest;
 import org.hit.hradar.domain.document.command.domain.application.dto.request.DocumentIndexEventType;
 import org.hit.hradar.domain.document.command.domain.application.dto.request.VectorChunkRequest;
@@ -14,7 +13,6 @@ import org.hit.hradar.domain.document.command.domain.application.dto.response.Do
 import org.hit.hradar.domain.document.command.domain.application.event.DocumentIndexInternalEvent;
 import org.hit.hradar.domain.document.command.domain.repository.DocumentChunkRepository;
 import org.hit.hradar.domain.document.command.domain.repository.DocumentRepository;
-import org.hit.hradar.domain.document.command.infrastructure.vector.DocumentIndexProducer;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -64,8 +61,10 @@ public class DocsCommandService {
             String section = get(row, result, "section");
             String content = get(row, result, "content");
 
-            if (content == null || content.isBlank()) continue;
-            if (docTitle == null) docTitle = title;
+            if (content == null || content.isBlank())
+                continue;
+            if (docTitle == null)
+                docTitle = title;
 
             chunks.add(new DocumentPreviewResponse.ChunkPreview(i++, section, content));
         }
@@ -85,8 +84,7 @@ public class DocsCommandService {
     public void create(DocumentCreateRequest request, Long companyId) {
 
         Document document = documentRepository.save(
-                Document.create(companyId, request.getDocTitle(), request.getCategory())
-        );
+                Document.create(companyId, request.getDocTitle(), request.getCategory()));
 
         List<DocumentChunk> chunks = saveChunks(companyId, document.getId(), request);
 
@@ -94,10 +92,9 @@ public class DocsCommandService {
                 new DocumentIndexInternalEvent(
                         companyId,
                         document.getId(),
+                        document.getTitle(),
                         DocumentIndexEventType.CREATE,
-                        toVectorChunks(chunks)
-                )
-        );
+                        toVectorChunks(document.getTitle(), chunks)));
     }
 
     public void update(Long documentId, DocumentCreateRequest request, Long companyId) {
@@ -114,10 +111,9 @@ public class DocsCommandService {
                 new DocumentIndexInternalEvent(
                         companyId,
                         documentId,
+                        document.getTitle(),
                         DocumentIndexEventType.UPDATE,
-                        toVectorChunks(chunks)
-                )
-        );
+                        toVectorChunks(document.getTitle(), chunks)));
     }
 
     public void delete(Long documentId, Long companyId) {
@@ -129,17 +125,15 @@ public class DocsCommandService {
                 new DocumentIndexInternalEvent(
                         companyId,
                         documentId,
+                        null,
                         DocumentIndexEventType.DELETE,
-                        null
-                )
-        );
+                        null));
     }
 
     private List<DocumentChunk> saveChunks(
             Long companyId,
             Long documentId,
-            DocumentCreateRequest request
-    ) {
+            DocumentCreateRequest request) {
         List<DocumentChunk> chunks = new ArrayList<>();
         int idx = 1;
 
@@ -150,21 +144,18 @@ public class DocsCommandService {
                             documentId,
                             idx++,
                             c.getSection(),
-                            c.getContent()
-                    )
-            );
+                            c.getContent()));
         }
 
         return chunkRepository.saveAll(chunks);
     }
 
-    private List<VectorChunkRequest> toVectorChunks(List<DocumentChunk> chunks) {
+    private List<VectorChunkRequest> toVectorChunks(String title, List<DocumentChunk> chunks) {
         return chunks.stream()
                 .map(c -> new VectorChunkRequest(
                         c.getChunkIndex(),
-                        c.getContent()
-                ))
+                        title,
+                        c.getContent()))
                 .toList();
     }
 }
-

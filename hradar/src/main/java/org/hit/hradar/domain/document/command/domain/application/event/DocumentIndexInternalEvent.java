@@ -6,8 +6,9 @@ import org.hit.hradar.domain.document.command.domain.application.dto.request.Vec
 import java.util.List;
 
 public record DocumentIndexInternalEvent(
-        Long companyId,
-        Long documentId,
-        DocumentIndexEventType type,
-        List<VectorChunkRequest> chunks
-) {}
+                Long companyId,
+                Long documentId,
+                String title,
+                DocumentIndexEventType type,
+                List<VectorChunkRequest> chunks) {
+}

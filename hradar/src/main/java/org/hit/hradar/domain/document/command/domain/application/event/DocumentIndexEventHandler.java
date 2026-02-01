@@ -23,9 +23,8 @@ public class DocumentIndexEventHandler {
                         UUID.randomUUID().toString(),
                         event.companyId(),
                         event.documentId(),
+                        event.title(),
                         event.type(),
-                        event.chunks()
-                )
-        );
+                        event.chunks()));
     }
 }

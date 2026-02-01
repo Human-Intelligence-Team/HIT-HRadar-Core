@@ -29,174 +29,172 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class DocsCommandServiceTest {
 
-    @InjectMocks
-    private DocsCommandService docsCommandService;
+        @InjectMocks
+        private DocsCommandService docsCommandService;
 
-    @Mock
-    private CsvParser csvParser;
+        @Mock
+        private CsvParser csvParser;
 
-    @Mock
-    private DocumentRepository documentRepository;
+        @Mock
+        private DocumentRepository documentRepository;
 
-    @Mock
-    private DocumentChunkRepository chunkRepository;
+        @Mock
+        private DocumentChunkRepository chunkRepository;
 
-    @Mock
-    private VectorIndexClient vectorIndexClient;
+        @Mock
+        private VectorIndexClient vectorIndexClient;
 
-    /**
-     * 문서 미리보기 유닛 테스트
-     */
-    @Test
-    void preview_success() {
-        // given
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.isEmpty()).thenReturn(false);
+        @Mock
+        private org.springframework.context.ApplicationEventPublisher publisher;
 
-        Map<String, Integer> header = Map.of(
-                "category", 0,
-                "doc_title", 1,
-                "section", 2,
-                "content", 3
-        );
+        /**
+         * 문서 미리보기 유닛 테스트
+         */
+        @Test
+        void preview_success() {
+                // given
+                MultipartFile file = mock(MultipartFile.class);
+                when(file.isEmpty()).thenReturn(false);
 
-        List<String[]> rows = List.of(
-                new String[]{"HR", "연차 규정", "연차 발생", "연차는 1년에 15일"},
-                new String[]{"HR", "연차 규정", "미사용", "미사용 연차는 소멸"}
-        );
+                Map<String, Integer> header = Map.of(
+                                "category", 0,
+                                "doc_title", 1,
+                                "section", 2,
+                                "content", 3);
 
-        CsvParseResult result = new CsvParseResult(header, rows);
-        when(csvParser.parse(file)).thenReturn(result);
+                List<String[]> rows = List.of(
+                                new String[] { "HR", "연차 규정", "연차 발생", "연차는 1년에 15일" },
+                                new String[] { "HR", "연차 규정", "미사용", "미사용 연차는 소멸" });
 
-        // when
-        DocumentPreviewResponse response = docsCommandService.preview(file);
+                CsvParseResult result = new CsvParseResult(header, rows);
+                when(csvParser.parse(file)).thenReturn(result);
 
-        // then
-        assertThat(response.getDocTitle()).isEqualTo("연차 규정");
-        assertThat(response.getTotalChunks()).isEqualTo(2);
-        assertThat(response.getChunks().size()).isEqualTo(2);
-    }
+                // when
+                DocumentPreviewResponse response = docsCommandService.preview(file);
 
-    @Test
-    void preview_emptyFile_throwException() {
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.isEmpty()).thenReturn(true);
+                // then
+                assertThat(response.getDocTitle()).isEqualTo("연차 규정");
+                assertThat(response.getTotalChunks()).isEqualTo(2);
+                assertThat(response.getChunks().size()).isEqualTo(2);
+        }
 
-        assertThatThrownBy(() -> docsCommandService.preview(file))
-                .isInstanceOf(BusinessException.class)
-                .extracting("errorCode")
-                .isEqualTo(DocsErrorCode.EMPTY_FILE);
-    }
+        @Test
+        void preview_emptyFile_throwException() {
+                MultipartFile file = mock(MultipartFile.class);
+                when(file.isEmpty()).thenReturn(true);
 
-    @Test
-    void preview_invalidHeader_throwException() {
-        MultipartFile file = mock(MultipartFile.class);
-        when(file.isEmpty()).thenReturn(false);
+                assertThatThrownBy(() -> docsCommandService.preview(file))
+                                .isInstanceOf(BusinessException.class)
+                                .extracting("errorCode")
+                                .isEqualTo(DocsErrorCode.EMPTY_FILE);
+        }
 
-        CsvParseResult result = new CsvParseResult(
-                Map.of("doc_title", 0),
-                List.of()
-        );
+        @Test
+        void preview_invalidHeader_throwException() {
+                MultipartFile file = mock(MultipartFile.class);
+                when(file.isEmpty()).thenReturn(false);
 
-        when(csvParser.parse(file)).thenReturn(result);
+                CsvParseResult result = new CsvParseResult(
+                                Map.of("doc_title", 0),
+                                List.of());
 
-        assertThatThrownBy(() -> docsCommandService.preview(file))
-                .isInstanceOf(BusinessException.class)
-                .extracting("errorCode")
-                .isEqualTo(DocsErrorCode.INVALID_HEADER);
-    }
+                when(csvParser.parse(file)).thenReturn(result);
 
-    /**
-     * 문서 생성 유닛 테스트
-     */
-    @Test
-    void create_success() {
-        // given
-        Long companyId = 1L;
+                assertThatThrownBy(() -> docsCommandService.preview(file))
+                                .isInstanceOf(BusinessException.class)
+                                .extracting("errorCode")
+                                .isEqualTo(DocsErrorCode.INVALID_HEADER);
+        }
 
-        DocumentCreateRequest request = mock(DocumentCreateRequest.class);
+        /**
+         * 문서 생성 유닛 테스트
+         */
+        @Test
+        void create_success() {
+                // given
+                Long companyId = 1L;
 
-        DocumentCreateRequest.ChunkRequest chunk1 =
-                mock(DocumentCreateRequest.ChunkRequest.class);
-        when(chunk1.getSection()).thenReturn("연차 발생");
-        when(chunk1.getContent()).thenReturn("내용1");
+                DocumentCreateRequest request = mock(DocumentCreateRequest.class);
 
-        DocumentCreateRequest.ChunkRequest chunk2 =
-                mock(DocumentCreateRequest.ChunkRequest.class);
-        when(chunk2.getSection()).thenReturn("미사용");
-        when(chunk2.getContent()).thenReturn("내용2");
+                DocumentCreateRequest.ChunkRequest chunk1 = mock(DocumentCreateRequest.ChunkRequest.class);
+                when(chunk1.getSection()).thenReturn("연차 발생");
+                when(chunk1.getContent()).thenReturn("내용1");
 
-        when(request.getDocTitle()).thenReturn("연차 규정");
-        when(request.getCategory()).thenReturn("HR");
-        when(request.getChunks()).thenReturn(List.of(chunk1, chunk2));
+                DocumentCreateRequest.ChunkRequest chunk2 = mock(DocumentCreateRequest.ChunkRequest.class);
+                when(chunk2.getSection()).thenReturn("미사용");
+                when(chunk2.getContent()).thenReturn("내용2");
 
-        Document savedDoc = mock(Document.class);
-        when(savedDoc.getId()).thenReturn(100L);
+                when(request.getDocTitle()).thenReturn("연차 규정");
+                when(request.getCategory()).thenReturn("HR");
+                when(request.getChunks()).thenReturn(List.of(chunk1, chunk2));
 
-        when(documentRepository.save(any(Document.class)))
-                .thenReturn(savedDoc);
+                Document savedDoc = mock(Document.class);
+                when(savedDoc.getId()).thenReturn(100L);
+                when(savedDoc.getTitle()).thenReturn("연차 규정");
 
-        // when
-        docsCommandService.create(request, companyId);
+                when(documentRepository.save(any(Document.class)))
+                                .thenReturn(savedDoc);
 
-        // then
-        verify(documentRepository).save(any(Document.class));
-        verify(chunkRepository).saveAll(anyList());
-        verify(vectorIndexClient)
-                .indexAsync(eq(companyId), eq(100L), anyList());
-    }
+                // when
+                docsCommandService.create(request, companyId);
 
-    /**
-     * 문서 수정 유닛 테스트
-     */
-    @Test
-    void update_success() {
-        Long companyId = 1L;
-        Long documentId = 100L;
+                // then
+                verify(documentRepository).save(any(Document.class));
+                verify(chunkRepository).saveAll(anyList());
+                verify(publisher).publishEvent(any(
+                                org.hit.hradar.domain.document.command.domain.application.event.DocumentIndexInternalEvent.class));
+        }
 
-        Document document = mock(Document.class);
-        when(document.getId()).thenReturn(documentId);
+        /**
+         * 문서 수정 유닛 테스트
+         */
+        @Test
+        void update_success() {
+                Long companyId = 1L;
+                Long documentId = 100L;
 
-        when(documentRepository.findByIdAndCompanyId(documentId, companyId))
-                .thenReturn(Optional.of(document));
+                Document document = mock(Document.class);
+                when(document.getTitle()).thenReturn("연차 규정");
 
-        DocumentCreateRequest request = mock(DocumentCreateRequest.class);
+                when(documentRepository.findByIdAndCompanyId(documentId, companyId))
+                                .thenReturn(Optional.of(document));
 
-        DocumentCreateRequest.ChunkRequest chunk =
-                mock(DocumentCreateRequest.ChunkRequest.class);
-        when(chunk.getSection()).thenReturn("섹션");
-        when(chunk.getContent()).thenReturn("내용");
+                DocumentCreateRequest request = mock(DocumentCreateRequest.class);
 
-        when(request.getDocTitle()).thenReturn("수정된 제목");
-        when(request.getCategory()).thenReturn("HR");
-        when(request.getChunks()).thenReturn(List.of(chunk));
+                DocumentCreateRequest.ChunkRequest chunk = mock(DocumentCreateRequest.ChunkRequest.class);
+                when(chunk.getSection()).thenReturn("섹션");
+                when(chunk.getContent()).thenReturn("내용");
 
-        // when
-        docsCommandService.update(documentId, request, companyId);
+                when(request.getDocTitle()).thenReturn("수정된 제목");
+                when(request.getCategory()).thenReturn("HR");
+                when(request.getChunks()).thenReturn(List.of(chunk));
 
-        // then
-        verify(document).updateDocument("수정된 제목", "HR"); // ✅ 파라미터 맞춤
-        verify(chunkRepository).deleteByDocumentId(documentId);
-        verify(chunkRepository).saveAll(anyList());
-        verify(vectorIndexClient).deleteIndex(companyId, documentId);
-        verify(vectorIndexClient)
-                .indexAsync(eq(companyId), eq(documentId), anyList());
-    }
+                // when
+                docsCommandService.update(documentId, request, companyId);
 
-    /**
-     * 문서 삭제 유닛 테스트
-     */
-    @Test
-    void delete_success() {
-        Long companyId = 1L;
-        Long documentId = 100L;
+                // then
+                verify(document).updateDocument("수정된 제목", "HR"); // ✅ 파라미터 맞춤
+                verify(chunkRepository).deleteByDocumentId(documentId);
+                verify(chunkRepository).saveAll(anyList());
+                verify(publisher).publishEvent(any(
+                                org.hit.hradar.domain.document.command.domain.application.event.DocumentIndexInternalEvent.class));
+        }
 
-        // when
-        docsCommandService.delete(documentId, companyId);
+        /**
+         * 문서 삭제 유닛 테스트
+         */
+        @Test
+        void delete_success() {
+                Long companyId = 1L;
+                Long documentId = 100L;
 
-        // then
-        verify(chunkRepository).deleteByDocumentId(documentId);
-        verify(documentRepository).deleteByIdAndCompanyId(documentId, companyId);
-        verify(vectorIndexClient).deleteIndex(companyId, documentId);
-    }
+                // when
+                docsCommandService.delete(documentId, companyId);
+
+                // then
+                verify(chunkRepository).deleteByDocumentId(documentId);
+                verify(documentRepository).deleteByIdAndCompanyId(documentId, companyId);
+                verify(publisher).publishEvent(any(
+                                org.hit.hradar.domain.document.command.domain.application.event.DocumentIndexInternalEvent.class));
+        }
 }

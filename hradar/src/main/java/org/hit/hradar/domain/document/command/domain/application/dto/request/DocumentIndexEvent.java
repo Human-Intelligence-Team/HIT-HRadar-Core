@@ -14,6 +14,7 @@ public class DocumentIndexEvent {
     private String eventId;
     private Long companyId;
     private Long documentId;
+    private String title;
     private DocumentIndexEventType type;
     private List<VectorChunkRequest> chunks;
 }
