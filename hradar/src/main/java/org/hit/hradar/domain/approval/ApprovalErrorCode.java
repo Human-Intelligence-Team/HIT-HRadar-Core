@@ -20,7 +20,17 @@ public enum ApprovalErrorCode implements ErrorCode {
   CANNOT_EDIT_AFTER_SUBMIT("APP_011", "상신 이후에는 문서를 수정할 수 없습니다.", HttpStatus.BAD_REQUEST),
   NOT_ALLOWED_EDIT("APP_012", "해당 결재 문서를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN),
   ALREADY_SUBMITTED("APP_013", "이미 상신된 결재 문서입니다.", HttpStatus.BAD_REQUEST),
-  APPROVER_REQUIRED("APP_014", "결재자는 최소 1명 이상 지정되어야 합니다.", HttpStatus.BAD_REQUEST);
+  APPROVER_REQUIRED("APP_014", "결재자는 최소 1명 이상 지정되어야 합니다.", HttpStatus.BAD_REQUEST),
+  INVALID_DOCUMENT_TYPE("APP_015", "지원하지 않는 결재 문서 유형입니다.", HttpStatus.BAD_REQUEST),
+  DOMAIN_HANDLER_NOT_FOUND("APP_016", "결재 문서 유형에 대한 처리기를 찾을 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+  DOMAIN_PAYLOAD_REQUIRED("APP_017", "결재 문서 유형에 필요한 추가 정보가 누락되었습니다.", HttpStatus.BAD_REQUEST),
+  DOMAIN_PAYLOAD_INVALID("APP_018", "결재 문서 유형에 대한 입력 정보가 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+  INVALID_SAVE_MODE("APP_020","지원하지 않는 결재 저장 모드입니다.",HttpStatus.BAD_REQUEST),
+  INVALID_DOC_TYPE_FORMAT("APP_021","결재 문서 유형은 필수입니다.",HttpStatus.BAD_REQUEST),
+  INVALID_REQUEST("APP_022", "요청 값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+  NOT_ALLOWED_COMMENT("APP_023", "결재 문서에 댓글을 작성할 수 없습니다.", HttpStatus.FORBIDDEN);
+
+
 
   private final String errorCode;
   private final String message;

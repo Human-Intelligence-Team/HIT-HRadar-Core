@@ -7,31 +7,32 @@ import org.hit.hradar.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/types")
+@RequestMapping("/cycle-evaluation-types")
 public class EvaluationAssignmentCommandController {
 
     private final EvaluationAssignmentCommandService assignmentCommandService;
 
     //평가 배정 생성
-    @PostMapping("/{evalTypeId}/assignments")
-    public ResponseEntity<ApiResponse<String>> createAssignments(
-            @PathVariable Long evalTypeId,
+    @PostMapping("/{cycleEvalTypeId}/assignments")
+    public ResponseEntity<ApiResponse<List<Long>>> createAssignments(
+            @PathVariable Long cycleEvalTypeId,
             @RequestBody EvaluationAssignmentCreateRequest request
-    ) {
-        assignmentCommandService.createAssignments(evalTypeId, request);
-        return ResponseEntity.ok(ApiResponse.success(null));
+    ){
+        List<Long> assignmentIds =
+                assignmentCommandService.createAssignments(cycleEvalTypeId, request);
+        return ResponseEntity.ok(ApiResponse.success(assignmentIds));
     }
 
-    // 평가 배정은 수정 없이 재배정으로
-
-    // 평가 배정 취소
-    @PostMapping("/assignments/{assignmentId}/delete")
-    public ResponseEntity<ApiResponse<String>> deleteAssignments(
+    //평가 배정 삭제
+    @DeleteMapping("/assignments/{assignmentId}")
+    public ResponseEntity<Void> deleteAssignment(
             @PathVariable Long assignmentId
-    ){
-        assignmentCommandService.deleteAssignments(assignmentId);
-        return ResponseEntity.ok(ApiResponse.success(null));
+    ) {
+        assignmentCommandService.deleteAssignment(assignmentId);
+        return ResponseEntity.ok().build();
     }
 }

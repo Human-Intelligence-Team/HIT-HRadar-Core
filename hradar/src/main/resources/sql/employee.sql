@@ -1,43 +1,91 @@
+-- =========================
+-- Department Dummy Data
+-- =========================
+INSERT INTO department (
+    dept_id,
+    com_id,
+    parent_dept_id,
+    manager_employee_id,
+    dept_name,
+    dept_phone,
+    is_deleted,
+    created_at,
+    created_by,
+    updated_at,
+    updated_by
+) VALUES (
+             1,
+             1,
+             NULL,
+             1001,
+             '개발팀',
+             '02-1234-5678',
+             'N',
+             NOW(),
+             1,
+             NOW(),
+             1
+         );
+
+-- =========================
+-- Employee Dummy Data
+-- Dept: 개발팀 (dept_id = 1)
+-- =========================
+
 INSERT INTO employee (
     emp_id,
     com_id,
     dept_id,
     position_id,
-    employee_no,
     name,
+    employee_no,
     email,
     gender,
     birth,
     hire_date,
     exit_date,
     image,
-    cellphone_no,
-    telephone_no,
+    extension_number,
+    phone_number,
     note,
     type,
     is_deleted,
     created_at,
-    updated_at
+    created_by,
+    updated_at,
+    updated_by
 ) VALUES
-      (1001, 1, 10, 1, 'EMP-1001', '김민수', 'minsu.kim@company.com', 'MALE',   '19900115', '2018-03-01', NULL, NULL, '01012341234', NULL, '백엔드 개발자', 'WORKING', 'N', NOW(), NOW()),
-      (1002, 1, 10, 2, 'EMP-1002', '이서연', 'seoyeon.lee@company.com', 'FEMALE', '19920322', '2019-06-10', NULL, NULL, '01023452345', NULL, '프론트엔드 개발자', 'WORKING', 'N', NOW(), NOW()),
-      (1003, 1, 10, 3, 'EMP-1003', '박준호', 'junho.park@company.com', 'MALE',   '19881203', '2017-01-15', NULL, NULL, '01034563456', NULL, '팀장', 'WORKING', 'N', NOW(), NOW()),
-      (1004, 1, 10, 4, 'EMP-1004', '최유진', 'yujin.choi@company.com', 'FEMALE', '19950708', '2020-09-01', NULL, NULL, '01045674567', NULL, 'HR 담당', 'WORKING', 'N', NOW(), NOW()),
-      (1005, 1, 20, 4, 'EMP-1005', '정우성', 'woosung.jung@company.com', 'MALE',   '19850511', '2015-11-20', NULL, NULL, '01056785678', NULL, 'HR 팀장', 'WORKING', 'N', NOW(), NOW()),
+-- 1001 : 개발팀 팀장
+(1001, 1, 1, 1, '김개발', 'DEV1001', 'dev1001@company.com', 'MALE', '19850101',
+ '2010-03-01', NULL, NULL, '101', '010-1000-1001', '개발팀 팀장', 'WORKING', 'N',
+ NOW(), 1, NOW(), 1),
 
-      (1006, 1, 10, 5, 'EMP-1006', '한지민', 'jimin.han@company.com', 'FEMALE', '19941130', '2021-02-01', NULL, NULL, '01067896789', NULL, '마케팅 매니저', 'WORKING', 'N', NOW(), NOW()),
-      (1007, 1, 30, 6, 'EMP-1007', '오세훈', 'sehun.oh@company.com', 'MALE',   '19900219', '2019-08-12', NULL, NULL, '01078907890', NULL, '마케팅 사원', 'WORKING', 'N', NOW(), NOW()),
-      (1008, 1, 40, 7, 'EMP-1008', '윤아름', 'areum.yoon@company.com', 'FEMALE', '19960914', '2022-01-03', NULL, NULL, '01089018901', NULL, '디자이너', 'WORKING', 'N', NOW(), NOW()),
-      (1009, 1, 40, 7, 'EMP-1009', '장동건', 'donggun.jang@company.com', 'MALE',   '19871225', '2016-04-18', NULL, NULL, '01090129012', NULL, 'UX 리드', 'WORKING', 'N', NOW(), NOW()),
+-- 1002
+(1002, 1, 1, 2, '이백엔드', 'DEV1002', 'dev1002@company.com', 'MALE', '19890214',
+ '2015-06-01', NULL, NULL, '102', '010-1000-1002', '백엔드 개발자', 'WORKING', 'N',
+ NOW(), 1, NOW(), 1),
 
-      (1010, 1, 50, 8, 'EMP-1010', '서지혜', 'jihye.seo@company.com', 'FEMALE', '19930309', '2023-07-01', NULL, NULL, '01001230123', NULL, 'QA 엔지니어', 'WORKING', 'N', NOW(), NOW()),
-      (1011, 1, 50, 8, 'EMP-1011', '임재현', 'jaehyun.lim@company.com', 'MALE',   '19911001', '2014-02-10', NULL, NULL, '01012340123', NULL, 'QA 팀장', 'WORKING', 'N', NOW(), NOW()),
+-- 1003
+(1003, 1, 1, 2, '박프론트', 'DEV1003', 'dev1003@company.com', 'FEMALE', '19910421',
+ '2016-09-01', NULL, NULL, '103', '010-1000-1003', '프론트엔드 개발자', 'WORKING', 'N',
+ NOW(), 1, NOW(), 1),
 
--- 휴직
-      (1012, 1, 10, 1, 'EMP-1012', '문수빈', 'subin.moon@company.com', 'FEMALE', '19951217', '2020-05-01', NULL, NULL, '01023450123', NULL, '육아 휴직', 'LEAVE', 'N', NOW(), NOW()),
+-- 1004
+(1004, 1, 1, 3, '최인프라', 'DEV1004', 'dev1004@company.com', 'MALE', '19871230',
+ '2014-01-10', NULL, NULL, '104', '010-1000-1004', '인프라 담당', 'WORKING', 'N',
+ NOW(), 1, NOW(), 1),
 
--- 퇴사
-      (1013, 1, 20, 4, 'EMP-1013', '강동원', 'dongwon.kang@company.com', 'MALE',   '19840612', '2012-03-01', '2024-12-31', NULL, '01034560123', NULL, '퇴사자', 'RESIGNED', 'N', NOW(), NOW()),
+-- 1005
+(1005, 1, 1, 2, '정모바일', 'DEV1005', 'dev1005@company.com', 'FEMALE', '19930519',
+ '2018-07-02', NULL, NULL, '105', '010-1000-1005', '모바일 개발자', 'WORKING', 'N',
+ NOW(), 1, NOW(), 1),
 
-      (1014, 1, 30, 6, 'EMP-1014', '배수지', 'suzy.bae@company.com', 'FEMALE', '19941010', '2018-10-15', NULL, NULL, '01045670123', NULL, '콘텐츠 마케터', 'WORKING', 'N', NOW(), NOW()),
-      (1015, 1, 40, 7, 'EMP-1015', '유재석', 'jaeseok.yoo@company.com', 'MALE',   '19720814', '2008-01-01', NULL, NULL, '01056780123', NULL, '조직 문화 리더', 'WORKING', 'N', NOW(), NOW());
+-- 1006
+(1006, 1, 1, 4, '윤신입', 'DEV1006', 'dev1006@company.com', 'MALE', '19981211',
+ '2022-03-02', NULL, NULL, '106', '010-1000-1006', '주니어 개발자', 'WORKING', 'N',
+ NOW(), 1, NOW(), 1),
+
+-- 1007
+(1007, 1, 1, 4, '한테스트', 'DEV1007', 'dev1007@company.com', 'FEMALE', '19990505',
+ '2023-01-02', NULL, NULL, '107', '010-1000-1007', 'QA / 테스트', 'WORKING', 'N',
+ NOW(), 1, NOW(), 1);

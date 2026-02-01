@@ -1,10 +1,12 @@
 package org.hit.hradar.domain.approval.command.application.service.provider;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.ApprovalErrorCode;
-import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalCreateRequest;
+import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalDraftCreateRequest;
 import org.hit.hradar.domain.approval.command.domain.aggregate.*;
 import org.hit.hradar.domain.approval.command.infrastructure.*;
 import org.hit.hradar.global.exception.BusinessException;
@@ -21,30 +23,25 @@ public class ApprovalProviderService {
   private final ApprovalLineStepJpaRepository approvalLineStepJpaRepository;
   private final ApprovalHistoryJpaRepository approvalHistoryJpaRepository;
   private final ApprovalReferenceJpaRepository approvalReferenceJpaRepository;
+  private final ApprovalPayloadJpaRepository approvalPayloadJpaRepository;
 
-  //결재 문서 저장 진입점
-  //DRAFT : 문서 내용/결재선/참조자 수정 가능
-  //SUBMIT: 상태 전이만 수행 (데이터 변경 X)
+  private final ObjectMapper objectMapper;
+
   public Long save(
       Long docId,
       Long writerId,
       Long companyId,
-      ApprovalCreateRequest request,
+      ApprovalDraftCreateRequest request,
       ApprovalSaveMode mode
   ) {
 
-    // 최초 임시저장 (docId == null)
     if (docId == null) {
 
       if (mode != ApprovalSaveMode.DRAFT) {
-        throw new BusinessException(
-            ApprovalErrorCode.CANNOT_SUBMIT_NOT_DRAFT
-        );
+        throw new BusinessException(ApprovalErrorCode.CANNOT_SUBMIT_NOT_DRAFT);
       }
 
-      if (request == null) {
-        throw new IllegalArgumentException("임시저장은 request가 필수입니다.");
-      }
+      validateDraftRequest(request);
 
       ApprovalDocument document = ApprovalDocument.createDraft(
           writerId,
@@ -55,43 +52,33 @@ public class ApprovalProviderService {
       );
       approvalDocumentJpaRepository.save(document);
 
-      // 결재선 생성
+      savePayload(document.getDocId(), request.getPayload());
+
       ApprovalLine line = ApprovalLine.create(document.getDocId());
       approvalLineJpaRepository.save(line);
 
-      // 결재 단계 생성
       saveSteps(line.getLineId(), request.getApproverIds());
-
-      // 참조자 생성
       saveReferences(document.getDocId(), request.getReferenceIds());
 
       return document.getDocId();
     }
 
-    // 기존 문서 조회
-    ApprovalDocument document = approvalDocumentJpaRepository.findById(docId)
-        .orElseThrow(() -> new BusinessException(
-            ApprovalErrorCode.DOCUMENT_NOT_FOUND
-        ));
+    ApprovalDocument document =
+        approvalDocumentJpaRepository.findById(docId)
+            .orElseThrow(() ->
+                new BusinessException(ApprovalErrorCode.DOCUMENT_NOT_FOUND));
 
     if (!document.isOwner(writerId)) {
-      throw new BusinessException(
-          ApprovalErrorCode.NOT_ALLOWED_EDIT
-      );
+      throw new BusinessException(ApprovalErrorCode.NOT_ALLOWED_EDIT);
     }
 
-    // 임시저장 수정
     if (mode == ApprovalSaveMode.DRAFT) {
 
-      if (request == null) {
-        throw new IllegalArgumentException("임시저장 수정은 request가 필수입니다.");
+      if (!document.isDraft()) {
+        throw new BusinessException(ApprovalErrorCode.CANNOT_EDIT_AFTER_SUBMIT);
       }
 
-      if (!document.isDraft()) {
-        throw new BusinessException(
-            ApprovalErrorCode.CANNOT_SUBMIT_NOT_DRAFT
-        );
-      }
+      validateDraftRequest(request);
 
       document.update(
           request.getTitle(),
@@ -99,37 +86,34 @@ public class ApprovalProviderService {
           request.getDocType()
       );
 
-      ApprovalLine line = approvalLineJpaRepository.findByDocId(docId)
-          .orElseThrow(() -> new BusinessException(
-              ApprovalErrorCode.LINE_NOT_FOUND
-          ));
+      updatePayload(docId, request.getPayload());
 
-      // 기존 결재 단계 / 참조자 제거
+      ApprovalLine line =
+          approvalLineJpaRepository.findByDocId(docId)
+              .orElseThrow(() ->
+                  new BusinessException(ApprovalErrorCode.LINE_NOT_FOUND));
+
       approvalLineStepJpaRepository.deleteByLineId(line.getLineId());
       approvalReferenceJpaRepository.deleteByDocId(docId);
 
-      // 새 결재 단계 / 참조자 등록
       saveSteps(line.getLineId(), request.getApproverIds());
       saveReferences(docId, request.getReferenceIds());
 
-      return document.getDocId();
+      return docId;
     }
 
-    //상신 처리 (핵심)
     if (mode == ApprovalSaveMode.SUBMIT) {
 
       if (!document.isDraft()) {
-        throw new BusinessException(
-            ApprovalErrorCode.CANNOT_SUBMIT_NOT_DRAFT
-        );
+        throw new BusinessException(ApprovalErrorCode.ALREADY_SUBMITTED);
       }
 
       document.submit(writerId);
 
-      ApprovalLine line = approvalLineJpaRepository.findByDocId(docId)
-          .orElseThrow(() -> new BusinessException(
-              ApprovalErrorCode.LINE_NOT_FOUND
-          ));
+      ApprovalLine line =
+          approvalLineJpaRepository.findByDocId(docId)
+              .orElseThrow(() ->
+                  new BusinessException(ApprovalErrorCode.LINE_NOT_FOUND));
 
       ApprovalLineStep firstStep =
           approvalLineStepJpaRepository
@@ -137,9 +121,8 @@ public class ApprovalProviderService {
                   line.getLineId(),
                   ApprovalStepStatus.WAITING
               )
-              .orElseThrow(() -> new BusinessException(
-                  ApprovalErrorCode.NO_PENDING_STEP
-              ));
+              .orElseThrow(() ->
+                  new BusinessException(ApprovalErrorCode.NO_PENDING_STEP));
 
       firstStep.changeToPending();
 
@@ -150,18 +133,45 @@ public class ApprovalProviderService {
       return docId;
     }
 
-    throw new IllegalArgumentException("지원하지 않는 ApprovalSaveMode 입니다.");
+    throw new BusinessException(ApprovalErrorCode.INVALID_SAVE_MODE);
   }
 
-  // 결재 단계 생성
-  private void saveSteps(Long lineId, List<Long> approverIds) {
+  /* ===== private ===== */
 
-    if (approverIds == null || approverIds.isEmpty()) {
-      throw new BusinessException(
-          ApprovalErrorCode.NO_PENDING_STEP
-      );
+  private void validateDraftRequest(ApprovalDraftCreateRequest request) {
+    if (request == null) {
+      throw new BusinessException(ApprovalErrorCode.INVALID_REQUEST);
+    }
+    if (request.getDocType() == null || request.getDocType().isBlank()) {
+      throw new BusinessException(ApprovalErrorCode.INVALID_DOC_TYPE_FORMAT);
+    }
+    if (request.getApproverIds() == null || request.getApproverIds().isEmpty()) {
+      throw new BusinessException(ApprovalErrorCode.APPROVER_REQUIRED);
+    }
+  }
+
+  private void savePayload(Long docId, JsonNode payload) {
+    if (payload == null) {
+      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_REQUIRED);
     }
 
+    String json = writeJson(payload);
+    approvalPayloadJpaRepository.save(
+        ApprovalPayload.create(docId, json)
+    );
+  }
+
+  private void updatePayload(Long docId, JsonNode payload) {
+    if (payload == null) {
+      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_REQUIRED);
+    }
+
+    String json = writeJson(payload);
+    approvalPayloadJpaRepository.findByDocId(docId)
+        .ifPresent(p -> p.update(json));
+  }
+
+  private void saveSteps(Long lineId, List<Long> approverIds) {
     List<ApprovalLineStep> steps =
         IntStream.range(0, approverIds.size())
             .mapToObj(i ->
@@ -172,20 +182,21 @@ public class ApprovalProviderService {
                 )
             )
             .toList();
-
     approvalLineStepJpaRepository.saveAll(steps);
   }
 
-  // 참조자 생성
   private void saveReferences(Long docId, List<Long> referenceIds) {
-
-    if (referenceIds == null || referenceIds.isEmpty()) {
-      return;
-    }
-
+    if (referenceIds == null || referenceIds.isEmpty()) return;
     approvalReferenceJpaRepository.saveAll(
         ApprovalReference.createAll(docId, referenceIds)
     );
   }
 
+  private String writeJson(JsonNode payload) {
+    try {
+      return payload.toString();
+    } catch (Exception e) {
+      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_INVALID);
+    }
+  }
 }

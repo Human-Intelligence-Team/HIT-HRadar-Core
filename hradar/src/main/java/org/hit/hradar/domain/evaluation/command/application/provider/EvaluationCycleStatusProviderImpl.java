@@ -5,7 +5,6 @@ import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.Cycle;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.CycleStatus;
 import org.hit.hradar.domain.evaluation.command.domain.repository.CycleRepository;
-import org.hit.hradar.domain.evaluation.command.infrastructure.CycleJpaRepository;
 import org.hit.hradar.domain.grading.port.EvaluationCycleStatusProvider;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Component;

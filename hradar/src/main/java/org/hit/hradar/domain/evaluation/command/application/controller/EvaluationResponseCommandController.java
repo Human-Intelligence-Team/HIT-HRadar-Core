@@ -1,46 +1,34 @@
 package org.hit.hradar.domain.evaluation.command.application.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationResponseDraftRequest;
+import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationResponseUpsertRequest;
 import org.hit.hradar.domain.evaluation.command.application.service.EvaluationResponseCommandService;
-import org.hit.hradar.global.aop.CurrentUser;
-import org.hit.hradar.global.dto.ApiResponse;
-import org.hit.hradar.global.dto.AuthUser;
+import org.hit.hradar.domain.evaluation.command.application.service.EvaluationSubmissionService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/evaluation/responses")
+@RequestMapping("/evaluation-responses")
 public class EvaluationResponseCommandController {
-
     private final EvaluationResponseCommandService responseCommandService;
+    private final EvaluationSubmissionService submissionService;
 
-    /*임시 저장*/
-    @PostMapping("/draft")
-    public ResponseEntity<ApiResponse<Void>> saveDraft(
-            @RequestBody EvaluationResponseDraftRequest request,
-            @CurrentUser AuthUser authUser
+    @PutMapping("/draft")
+    public ResponseEntity<Void> saveDraft(
+            @RequestBody EvaluationResponseUpsertRequest request
     ) {
-        responseCommandService.saveDraft(
-                request,
-                authUser.employeeId()
-        );
-
-        return ResponseEntity.ok(ApiResponse.success(null));
+        responseCommandService.saveDraft(request);
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/submit")
-    public void submit(
-            @RequestBody EvaluationResponseDraftRequest request,
-            @CurrentUser AuthUser authUser
+
+    @PostMapping("/{assignmentId}/submit")
+    public ResponseEntity<Void> submit(
+            @PathVariable Long assignmentId
     ) {
-        responseCommandService.submit(
-                request,
-                authUser.employeeId()
-        );
+        submissionService.submit(assignmentId);
+        return ResponseEntity.ok().build();
     }
 }

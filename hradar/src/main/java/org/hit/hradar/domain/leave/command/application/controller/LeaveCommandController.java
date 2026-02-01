@@ -2,7 +2,7 @@ package org.hit.hradar.domain.leave.command.application.controller;
 
 import lombok.RequiredArgsConstructor;
 
-import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalCreateRequest;
+import org.hit.hradar.domain.approval.command.application.dto.request.ApprovalDraftCreateRequest;
 import org.hit.hradar.domain.approval.command.application.service.provider.ApprovalProviderService;
 
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalSaveMode;
@@ -30,7 +30,7 @@ public class LeaveCommandController {
   @PostMapping("/draft")
   public ResponseEntity<ApiResponse<String>> createLeaveDraft(
       @CurrentUser AuthUser authUser,
-      @RequestBody ApprovalCreateRequest request
+      @RequestBody ApprovalDraftCreateRequest request
   ) {
     Long docId = approvalProviderService.save(
         null,
@@ -62,3 +62,4 @@ public class LeaveCommandController {
     );
   }
 }
+

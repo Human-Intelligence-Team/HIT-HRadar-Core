@@ -5,8 +5,10 @@ import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
 import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationSectionCreateRequest;
 import org.hit.hradar.domain.evaluation.command.application.dto.request.EvaluationSectionUpdateRequest;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.Cycle;
+import org.hit.hradar.domain.evaluation.command.domain.aggregate.CycleEvaluationType;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.EvaluationSection;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.EvaluationType;
+import org.hit.hradar.domain.evaluation.command.domain.repository.CycleEvaluationTypeRepository;
 import org.hit.hradar.domain.evaluation.command.domain.repository.CycleRepository;
 import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationSectionRepository;
 import org.hit.hradar.domain.evaluation.command.domain.repository.EvaluationTypeRepository;
@@ -16,56 +18,45 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EvaluationSectionCommandService {
 
-    private final EvaluationSectionRepository sectionRepository;
-    private final EvaluationTypeRepository evaluationTypeRepository;
-    private final CycleRepository cycleRepository;
-    private final CycleStatusService cycleStatusService;
+    private final EvaluationSectionRepository evaluationSectionRepository;
+    private final CycleEvaluationTypeRepository cycleEvaluationTypeRepository;
+
 
     /*섹션 생성*/
-    @Transactional
-    public void createSection(Long typeId, EvaluationSectionCreateRequest request) {
-
-        // 회차 조회
-        Long cycleId = evaluationTypeRepository.findById(typeId).get().getCycleId();
-
-        Cycle cycle = cycleRepository.findById(cycleId)
-                .orElseThrow(() -> new BusinessException(EvaluationErrorCode.CYCLE_NOT_FOUND));
-
-        // 회차 상태 검증 (DRAFT만 허용)
-        cycleStatusService.validateCanConfigureCycle(cycle);
-
-        // 평가 유형 조회
-        EvaluationType evaluationType = evaluationTypeRepository.findById(request.getEvalTypeId())
-                .orElseThrow(() -> new BusinessException(EvaluationErrorCode.EVALUATION_TYPE_NOT_FOUND));
-
-
-        // 섹션 생성
+    public Long create(Long cycleEvalTypeId, EvaluationSectionCreateRequest request) {
+        CycleEvaluationType cycleEvalType =
+                cycleEvaluationTypeRepository.findById(cycleEvalTypeId)
+                        .orElseThrow(() ->
+                                new BusinessException(EvaluationErrorCode.CYCLE_EVAL_TYPE_NOT_FOUND)
+                        );
+        // EvaluationSection 생성
         EvaluationSection section = EvaluationSection.builder()
-                .evaluationType(evaluationType)
+                .cycleEvaluationType(cycleEvalType)
                 .sectionTitle(request.getSectionTitle())
                 .sectionDescription(request.getSectionDescription())
                 .sectionOrder(request.getSectionOrder())
                 .build();
 
-        sectionRepository.save(section);
+        EvaluationSection saved = evaluationSectionRepository.save(section);
+
+        //생성된 sectionId 반환
+        return saved.getSectionId();
     }
 
-    /*섹션 수정*/
-    @Transactional
-    public void updateSection(Long sectionId, EvaluationSectionUpdateRequest request) {
+    //섹션 수정
+    public void update(Long sectionId, EvaluationSectionUpdateRequest request) {
 
-        EvaluationSection section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new BusinessException(EvaluationErrorCode.EVALUATION_SECTION_NOT_FOUND));
+        //기존 섹션 조회
+        EvaluationSection section =
+                evaluationSectionRepository.findById(sectionId)
+                        .orElseThrow(() ->
+                                new BusinessException(EvaluationErrorCode.EVALUATION_SECTION_NOT_FOUND)
+                        );
 
-        Long cycleId = section.getEvaluationType().getCycleId();
-
-        Cycle cycle = cycleRepository.findById(cycleId)
-                .orElseThrow(() -> new BusinessException(EvaluationErrorCode.CYCLE_NOT_FOUND));
-
-        cycleStatusService.validateCanConfigureCycle(cycle);
-
+        //변경
         section.update(
                 request.getSectionTitle(),
                 request.getSectionDescription(),
@@ -73,20 +64,17 @@ public class EvaluationSectionCommandService {
         );
     }
 
-    @Transactional
-    public void deleteSection(Long sectionId) {
+    //섹션 삭제
+    public void delete(Long sectionId) {
 
-        EvaluationSection section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new BusinessException(EvaluationErrorCode.EVALUATION_SECTION_NOT_FOUND));
-
-        Long cycleId = section.getEvaluationType().getCycleId();
-
-        Cycle cycle = cycleRepository.findById(cycleId)
-                .orElseThrow(() -> new BusinessException(EvaluationErrorCode.CYCLE_NOT_FOUND));
-
-        cycleStatusService.validateCanConfigureCycle(cycle);
+        EvaluationSection section =
+                evaluationSectionRepository.findById(sectionId)
+                        .orElseThrow(() ->
+                                new BusinessException(EvaluationErrorCode.EVALUATION_SECTION_NOT_FOUND)
+                        );
 
         section.delete();
     }
+
 
 }

@@ -7,13 +7,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IpRangePolicyJpaRepository extends JpaRepository<IpRangePolicy, Long>{
+public interface IpRangePolicyJpaRepository
+    extends JpaRepository<IpRangePolicy, Long> {
 
   List<IpRangePolicy> findByComId(Long comId);
 
-  List<IpRangePolicy> findByComIdAndIsActiveTrue(Long comId);
+  List<IpRangePolicy> findByComIdAndIsActiveTrueAndIsDeletedFalse(Long comId);
 
-  List<IpRangePolicy> findByComIdAndIpPolicyTypeAndIsActiveTrue(
+  List<IpRangePolicy> findByComIdAndIsDeletedFalse(Long comId);
+
+  List<IpRangePolicy>
+  findByComIdAndIpPolicyTypeAndIsActiveTrueAndIsDeletedFalse(
       Long comId,
       IpPolicyType ipPolicyType
   );

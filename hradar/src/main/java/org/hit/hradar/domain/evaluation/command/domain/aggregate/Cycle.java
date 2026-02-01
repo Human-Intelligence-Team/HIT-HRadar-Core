@@ -10,7 +10,6 @@ import org.hit.hradar.domain.evaluation.EvaluationErrorCode;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 import org.hit.hradar.global.exception.BusinessException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
