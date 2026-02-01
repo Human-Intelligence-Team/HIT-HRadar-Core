@@ -76,6 +76,7 @@ public class ApprovalCommandController {
     approvalApproveCommandService.approve(
         docId,
         authUser.employeeId(),
+        authUser.userId(),
         authUser.companyId()
     );
     return ResponseEntity.ok(
@@ -92,6 +93,7 @@ public class ApprovalCommandController {
     approvalApproveCommandService.approve(
         docId,
         authUser.employeeId(),
+        authUser.userId(),
         authUser.companyId()
     );
     return ResponseEntity.ok(
@@ -108,7 +110,8 @@ public class ApprovalCommandController {
   ) {
     approvalRejectCommandService.reject(
         docId,
-        authUser.employeeId(),
+        authUser.employeeId(), // History/Log (EmpID)
+        authUser.userId(),     // Permission/Step Match (AccountID)
         reason
     );
     return ResponseEntity.ok(
