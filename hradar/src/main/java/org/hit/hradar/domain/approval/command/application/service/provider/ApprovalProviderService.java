@@ -151,8 +151,10 @@ public class ApprovalProviderService {
   }
 
   private void savePayload(Long docId, JsonNode payload) {
-    if (payload == null) {
-      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_REQUIRED);
+    // 일반 결재 문서의 경우 payload가 없을 수 있음 (null 또는 빈 객체)
+    if (payload == null || payload.isNull() || payload.isEmpty()) {
+      // payload가 없는 경우 저장하지 않음 (선택적)
+      return;
     }
 
     String json = writeJson(payload);
@@ -162,8 +164,10 @@ public class ApprovalProviderService {
   }
 
   private void updatePayload(Long docId, JsonNode payload) {
-    if (payload == null) {
-      throw new BusinessException(ApprovalErrorCode.DOMAIN_PAYLOAD_REQUIRED);
+    // 일반 결재 문서의 경우 payload가 없을 수 있음
+    if (payload == null || payload.isNull() || payload.isEmpty()) {
+      // payload가 없는 경우 업데이트하지 않음
+      return;
     }
 
     String json = writeJson(payload);

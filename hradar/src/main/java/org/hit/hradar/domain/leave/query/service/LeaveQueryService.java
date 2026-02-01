@@ -35,7 +35,10 @@ public class LeaveQueryService {
     return leaveGrantMapper.findByGrantId(grantId);
   }
 
-
+  //사원 연차 지급 목록 조회
+  public List<LeaveGrantDto> getMyLeaveGrants(Long employeeId) {
+    return leaveGrantMapper.findByEmpId(employeeId);
+  }
 
 
 }

@@ -16,7 +16,7 @@ public enum ApprovalErrorCode implements ErrorCode {
   CANNOT_APPROVE_NON_PENDING_STEP("APP_002", "현재 결재 차례가 아닌 단계는 승인할 수 없습니다.", HttpStatus.BAD_REQUEST),
   CANNOT_REJECT_NON_PENDING_STEP("APP_003", "현재 결재 차례가 아닌 단계는 반려할 수 없습니다.", HttpStatus.BAD_REQUEST),
   REJECT_REASON_REQUIRED("APP_005", "반려 사유는 필수 입력 항목입니다.", HttpStatus.BAD_REQUEST),
-  CANNOT_WITHDRAW_AFTER_APPROVAL_STARTED("APP_006", "결재가 이미 시작된 문서는 회수할 수 없습니다.", HttpStatus.BAD_REQUEST),
+  CANNOT_WITHDRAW_AFTER_APPROVAL_STARTED("APP_006", "회수된 문서는 다시 회수할 수 없습니다.", HttpStatus.BAD_REQUEST),
   CANNOT_EDIT_AFTER_SUBMIT("APP_011", "상신 이후에는 문서를 수정할 수 없습니다.", HttpStatus.BAD_REQUEST),
   NOT_ALLOWED_EDIT("APP_012", "해당 결재 문서를 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN),
   ALREADY_SUBMITTED("APP_013", "이미 상신된 결재 문서입니다.", HttpStatus.BAD_REQUEST),
