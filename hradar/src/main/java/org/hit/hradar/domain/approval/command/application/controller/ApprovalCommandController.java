@@ -136,7 +136,8 @@ public class ApprovalCommandController {
         docId,
         authUser.employeeId(),
         request.getContent(),
-        request.getParentCommentId()
+        request.getParentCommentId(),
+        authUser.userId()
     );
     return ResponseEntity.ok(ApiResponse.success(null));
   }

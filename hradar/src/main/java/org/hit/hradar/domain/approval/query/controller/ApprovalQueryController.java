@@ -40,7 +40,7 @@ public class ApprovalQueryController {
   ) {
     return ResponseEntity.ok(ApiResponse.success(
         approvalQueryService.findApprovalTasks(
-            authUser.employeeId()
+            authUser.userId()
         ))
     );
   }
@@ -61,7 +61,7 @@ public class ApprovalQueryController {
       @CurrentUser AuthUser authUser
   ) {
     return ResponseEntity.ok(ApiResponse.success(
-        approvalQueryService.findReferenceDocuments(authUser.employeeId()))
+        approvalQueryService.findReferenceDocuments(authUser.userId()))
     );
   }
 }
