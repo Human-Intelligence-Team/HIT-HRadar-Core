@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.goal.query.mapper.ContributionMapper">
+
+    <!-- =========================================================
+         개인 업무 기여도 조회
+         - 기준 기간 : 팀 목표(Level1)의 시작일 ~ 종료일
+         - KPI : 기간 내 log_value SUM / target (1 초과 허용)
+         - OKR : 기간 내 최신 current_progress (%)
+         - 기여도 : 개인 기여값 / 팀 전체 기여값 * 100
+       ========================================================= -->
+
+    <select id="selectMyContributionByTeamGoals"
+            resultType="org.hit.hradar.domain.goal.query.dto.response.row.ContributionByTeamGoalRow">
+
+        SELECT
+            tg.goal_id    AS teamGoalId,
+            tg.goal_title AS teamGoalTitle,
+
+            CASE
+                WHEN team_total.team_value = 0 THEN 0
+                ELSE ROUND(my_value.my_value / team_total.team_value * 100, 1)
+                END AS myContributionPercent,
+
+            my_value.my_value     AS myContributionValue,
+            team_total.team_value AS teamTotalContributionValue
+
+        FROM goal tg
+
+                 /* =========================
+                    (A) 개인 기여값
+                    ========================= */
+                 LEFT JOIN (
+            SELECT
+                parent.goal_id AS team_goal_id,
+                SUM(
+                        CASE
+                            WHEN g.goal_type = 'KPI' THEN kpi_rate.kpi_rate
+                            WHEN g.goal_type = 'OKR' THEN okr_rate.okr_rate
+                            ELSE 0
+                            END
+                ) AS my_value
+            FROM goal g
+                     JOIN goal parent
+                          ON parent.goal_id = g.parent_goal_id
+
+                /* KPI 달성률 */
+                     LEFT JOIN (
+                SELECT
+                    kd.goal_id,
+                    SUM(kpl.log_value) / kd.kpi_target_value AS kpi_rate
+                FROM kpi_detail kd
+                         JOIN kpi_progress_log kpl
+                              ON kpl.kpi_id = kd.kpi_id
+                                  AND kpl.is_deleted = 'N'
+                         JOIN goal g2 ON g2.goal_id = kd.goal_id
+                         JOIN goal p2 ON p2.goal_id = g2.parent_goal_id
+                WHERE kd.is_deleted = 'N'
+                  AND kpl.log_date BETWEEN p2.goal_start_date AND p2.goal_end_date
+                GROUP BY kd.goal_id, kd.kpi_target_value
+            ) kpi_rate
+                               ON kpi_rate.goal_id = g.goal_id
+
+                /* OKR 달성률 */
+                     LEFT JOIN (
+                SELECT
+                    kr.goal_id,
+                    opl.current_progress / 100 AS okr_rate
+                FROM okr_key_result kr
+                         JOIN okr_progress_log opl
+                              ON opl.key_result_id = kr.key_result_id
+                                  AND opl.is_deleted = 'N'
+                         JOIN goal g2 ON g2.goal_id = kr.goal_id
+                         JOIN goal p2 ON p2.goal_id = g2.parent_goal_id
+                WHERE kr.is_deleted = 'N'
+                  AND opl.log_date = (
+                    SELECT MAX(p.log_date)
+                    FROM okr_progress_log p
+                    WHERE p.key_result_id = kr.key_result_id
+                      AND p.log_date BETWEEN p2.goal_start_date AND p2.goal_end_date
+                )
+            ) okr_rate
+                               ON okr_rate.goal_id = g.goal_id
+
+            WHERE g.goal_scope = 'PERSONAL'
+              AND g.owner_id = #{empId}
+              AND g.is_deleted = 'N'
+
+            GROUP BY parent.goal_id
+        ) my_value
+                           ON my_value.team_goal_id = tg.goal_id
+
+            /* =========================
+               (B) 팀 전체 기여값
+               ========================= */
+                 LEFT JOIN (
+            SELECT
+                parent.goal_id AS team_goal_id,
+                SUM(
+                        CASE
+                            WHEN g.goal_type = 'KPI' THEN kpi_rate.kpi_rate
+                            WHEN g.goal_type = 'OKR' THEN okr_rate.okr_rate
+                            ELSE 0
+                            END
+                ) AS team_value
+            FROM goal g
+                     JOIN goal parent
+                          ON parent.goal_id = g.parent_goal_id
+
+                     LEFT JOIN (
+                SELECT
+                    kd.goal_id,
+                    SUM(kpl.log_value) / kd.kpi_target_value AS kpi_rate
+                FROM kpi_detail kd
+                         JOIN kpi_progress_log kpl
+                              ON kpl.kpi_id = kd.kpi_id
+                                  AND kpl.is_deleted = 'N'
+                         JOIN goal g2 ON g2.goal_id = kd.goal_id
+                         JOIN goal p2 ON p2.goal_id = g2.parent_goal_id
+                WHERE kd.is_deleted = 'N'
+                  AND kpl.log_date BETWEEN p2.goal_start_date AND p2.goal_end_date
+                GROUP BY kd.goal_id, kd.kpi_target_value
+            ) kpi_rate
+                               ON kpi_rate.goal_id = g.goal_id
+
+                     LEFT JOIN (
+                SELECT
+                    kr.goal_id,
+                    opl.current_progress / 100 AS okr_rate
+                FROM okr_key_result kr
+                         JOIN okr_progress_log opl
+                              ON opl.key_result_id = kr.key_result_id
+                                  AND opl.is_deleted = 'N'
+                         JOIN goal g2 ON g2.goal_id = kr.goal_id
+                         JOIN goal p2 ON p2.goal_id = g2.parent_goal_id
+                WHERE kr.is_deleted = 'N'
+                  AND opl.log_date = (
+                    SELECT MAX(p.log_date)
+                    FROM okr_progress_log p
+                    WHERE p.key_result_id = kr.key_result_id
+                      AND p.log_date BETWEEN p2.goal_start_date AND p2.goal_end_date
+                )
+            ) okr_rate
+                               ON okr_rate.goal_id = g.goal_id
+
+            WHERE g.goal_scope = 'PERSONAL'
+              AND g.is_deleted = 'N'
+
+            GROUP BY parent.goal_id
+        ) team_total
+                           ON team_total.team_goal_id = tg.goal_id
+
+        WHERE tg.goal_depth = 'LEVEL_1'
+          AND tg.goal_scope = 'TEAM'
+          AND tg.is_deleted = 'N'
+
+        ORDER BY myContributionPercent DESC;
+
+    </select>
+
+</mapper>
