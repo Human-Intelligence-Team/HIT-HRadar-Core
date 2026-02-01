@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/departments")
+@RequestMapping("/departments/query")
 public class DepartmentQueryController {
 
   private final DepartmentQueryService departmentQueryService;

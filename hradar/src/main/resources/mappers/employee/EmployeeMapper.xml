@@ -35,8 +35,11 @@
 
     <result property="accId"          column="account_id"/>
     <result property="loginId"        column="login_id"/>
-    <result property="role"           column="role"/>
     <result property="status"         column="status"/>
+    
+    <collection property="roles" ofType="java.lang.String">
+        <result column="role_name"/>
+    </collection>
   </resultMap>
 
   <sql id="SelectColumns">
@@ -44,7 +47,8 @@
     e.com_id,
     e.dept_id,
     e.position_id,
-    dept_name        AS dept_name,
+    e.position_id,
+    d.dept_name   AS dept_name,
     p.name        AS position_name,
     e.name,
     e.employee_no,
@@ -61,8 +65,8 @@
     e.is_deleted,
     a.account_id,
     a.login_id,
-    a.role,
-    a.status
+    a.status,
+    r.name AS role_name
   </sql>
 
   <sql id="BaseFromJoin">
@@ -75,6 +79,11 @@
     ON d.dept_id = e.dept_id
     LEFT JOIN company_position p
     ON p.position_id = e.position_id
+    LEFT JOIN role_employee re
+    ON re.emp_id = e.emp_id
+    LEFT JOIN role r
+    ON re.role_id = r.role_id
+    AND r.is_deleted = 'N'
   </sql>
 
   <sql id="BaseWhere">
@@ -88,7 +97,6 @@
     <include refid="BaseFromJoin"/>
     <include refid="BaseWhere"/>
     AND e.emp_id = #{empId}
-    LIMIT 1
   </select>
 
   <select id="findList" resultMap="EmployeeResponseMap">

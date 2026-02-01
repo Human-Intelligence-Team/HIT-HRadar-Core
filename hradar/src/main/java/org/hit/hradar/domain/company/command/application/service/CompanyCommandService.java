@@ -17,11 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanyCommandService {
 
   private final CompanyRepository companyRepository;
+  private final org.hit.hradar.domain.rolePermission.command.application.service.DefaultRoleCommandService defaultRoleCommandService;
 
   // 회사 승인
   @Transactional
   public Company createFromApplication(CompanyApplication app, String companyCode) {
-    return companyRepository.save(
+    Company company = companyRepository.save(
         Company.builder()
             .appId(app.getAppId())
             .comCode(companyCode)
@@ -31,8 +32,12 @@ public class CompanyCommandService {
             .address(app.getAddress())
             .status(CompanyApplicationStatus.APPROVED)
             .isDeleted('N')
-            .build()
-    );
+            .build());
+
+    // 기본 역할 생성
+    defaultRoleCommandService.ensureDefaults(company.getCompanyId());
+
+    return company;
   }
 
   // 회사 정보 수정
@@ -57,8 +62,7 @@ public class CompanyCommandService {
         request.getAddress(),
         request.getCeoName(),
         request.getComEmail(),
-        request.getFoundDate()
-    );
+        request.getFoundDate());
 
     return UpdateCompanyResponse.builder()
         .companyId(company.getCompanyId())

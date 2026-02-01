@@ -41,8 +41,20 @@
   <select id="findAllDepartmentsByCompany"
     resultType="org.hit.hradar.domain.department.query.dto.DepartmentResponse">
     SELECT
-    <include refid="deptColumns"/>
+    d.dept_id             AS deptId,
+    d.com_id              AS companyId,
+    d.parent_dept_id      AS parentDeptId,
+    p.dept_name           AS parentDeptName,
+    d.manager_employee_id AS managerEmpId,
+    e.name                AS managerName,
+    d.dept_name           AS deptName,
+    d.dept_phone          AS deptPhone,
+    d.is_deleted          AS isDeleted,
+    d.created_at          AS createdAt,
+    d.updated_at          AS updatedAt
     FROM department d
+    LEFT JOIN department p ON d.parent_dept_id = p.dept_id
+    LEFT JOIN employee e   ON d.manager_employee_id = e.emp_id
     WHERE d.com_id = #{comId}
     AND d.is_deleted = 'N'
     ORDER BY d.dept_id

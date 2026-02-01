@@ -19,4 +19,5 @@ public class UpdateEmployeeProfileResponse {
   private String image;
   private String extNo;
   private String phoneNo;
+  private String note;
 }
