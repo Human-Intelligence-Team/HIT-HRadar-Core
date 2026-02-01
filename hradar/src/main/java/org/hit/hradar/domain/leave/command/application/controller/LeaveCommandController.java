@@ -41,7 +41,7 @@ public class LeaveCommandController {
     );
 
     return ResponseEntity.ok(
-        ApiResponse.success("docId"));
+        ApiResponse.success(docId.toString()));
   }
 
 

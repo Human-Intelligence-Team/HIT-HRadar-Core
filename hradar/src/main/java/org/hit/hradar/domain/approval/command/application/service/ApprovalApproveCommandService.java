@@ -23,7 +23,7 @@ public class ApprovalApproveCommandService {
   private final ApprovalEventPublisher approvalEventPublisher;
 
   // 문서 승인
-  public void approve(Long docId, Long actorId, Long companyId) {
+  public void approve(Long docId, Long employeeId, Long accountId, Long companyId) {
 
     // 1. 문서 조회 (회사 스코프 포함)
     ApprovalDocument doc =
@@ -39,28 +39,31 @@ public class ApprovalApproveCommandService {
     ApprovalLine line = approvalLineRepository.findByDocId(docId)
         .orElseThrow(() -> new BusinessException(ApprovalErrorCode.LINE_NOT_FOUND));
 
-    // 3. 현재 차례(PENDING) + 결재자/대리결재자 조회 (핵심)
+    System.out.println("DEBUG: Approve Request - DocId: " + docId + ", EmpId: " + employeeId + ", AccId: " + accountId);
+    System.out.println("DEBUG: LineId: " + line.getLineId());
+
+    // 3. 현재 차례(PENDING) + 결재자/대리결재자 조회 (핵심 - AccountID 사용)
     ApprovalLineStep currentStep =
         approvalLineStepRepository
             .findFirstByLineIdAndApprovalStepStatusAndApproverIdOrderByStepOrderAsc(
                 line.getLineId(),
                 ApprovalStepStatus.PENDING,
-                actorId
+                accountId
             )
             .orElseGet(() ->
                 approvalLineStepRepository
                     .findFirstByLineIdAndApprovalStepStatusAndProxyApproverIdOrderByStepOrderAsc(
                         line.getLineId(),
                         ApprovalStepStatus.PENDING,
-                        actorId
+                        accountId
                     )
                     .orElseThrow(() ->
                         new BusinessException(ApprovalErrorCode.NOT_ALLOWED_APPROVER)
                     )
             );
 
-    // 4. 승인 처리
-    currentStep.approve(actorId);
+    // 4. 승인 처리 (Validation requires AccountID)
+    currentStep.approve(accountId);
 
     // 5. 다음 WAITING 결재자를 PENDING으로 전환
     approvalLineStepRepository
@@ -70,9 +73,9 @@ public class ApprovalApproveCommandService {
         )
         .ifPresent(ApprovalLineStep::changeToPending);
 
-    // 6. 승인 히스토리 기록
+    // 6. 승인 히스토리 기록 (EmployeeID 사용)
     approvalHistoryRepository.save(
-        ApprovalHistory.approved(docId, actorId, currentStep)
+        ApprovalHistory.approved(docId, employeeId, currentStep)
     );
 
     // 7. 더 이상 PENDING 없으면 문서 최종 승인
@@ -91,7 +94,7 @@ public class ApprovalApproveCommandService {
             ApprovalEventType.APPROVED,
             docId,
             doc.getCompanyId(),
-            actorId
+            employeeId
         )
     );
 

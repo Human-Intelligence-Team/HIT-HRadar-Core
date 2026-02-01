@@ -7,7 +7,6 @@ import org.hit.hradar.domain.approval.command.infrastructure.*;
 import org.hit.hradar.domain.approval.event.ApprovalEvent;
 import org.hit.hradar.domain.approval.event.ApprovalEventPublisher;
 import org.hit.hradar.domain.approval.event.ApprovalEventType;
-import org.hit.hradar.domain.document.command.domain.aggregate.Document;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.RejectionEvent;
 import org.hit.hradar.domain.evaluation.command.infrastructure.RejectionEventJpaRepository;
 import org.hit.hradar.global.exception.BusinessException;
@@ -26,7 +25,7 @@ public class ApprovalRejectCommandService {
   private final ApprovalEventPublisher approvalEventPublisher;
   private final RejectionEventJpaRepository  rejectionEventRepository;
   // 결재 반려
-  public void reject(Long docId, Long actorId, String reason) {
+  public void reject(Long docId, Long employeeId, Long accountId, String reason) {
 
     // 0. 반려 사유 필수
     if (reason == null || reason.isBlank()) {
@@ -46,32 +45,32 @@ public class ApprovalRejectCommandService {
     ApprovalLine line = approvalLineRepository.findByDocId(docId)
         .orElseThrow(() -> new BusinessException(ApprovalErrorCode.LINE_NOT_FOUND));
 
-    // 3. 현재 차례(PENDING) + 결재자/대리결재자 조회 (핵심)
+    // 3. 현재 차례(PENDING) + 결재자/대리결재자 조회 (핵심 - AccountID 사용)
     ApprovalLineStep currentStep =
         approvalLineStepRepository
             .findFirstByLineIdAndApprovalStepStatusAndApproverIdOrderByStepOrderAsc(
                 line.getLineId(),
                 ApprovalStepStatus.PENDING,
-                actorId
+                accountId
             )
             .orElseGet(() ->
                 approvalLineStepRepository
                     .findFirstByLineIdAndApprovalStepStatusAndProxyApproverIdOrderByStepOrderAsc(
                         line.getLineId(),
                         ApprovalStepStatus.PENDING,
-                        actorId
+                        accountId
                     )
                     .orElseThrow(() ->
                         new BusinessException(ApprovalErrorCode.NOT_ALLOWED_APPROVER)
                     )
             );
 
-    // 4. 반려 처리
-    currentStep.reject(actorId, reason);
+    // 4. 반려 처리 (Validation requires AccountID)
+    currentStep.reject(accountId, reason);
 
-    // 5. 반려 히스토리 기록
+    // 5. 반려 히스토리 기록 (EmployeeID 사용)
     approvalHistoryRepository.save(
-        ApprovalHistory.rejected(docId, actorId, currentStep, reason)
+        ApprovalHistory.rejected(docId, employeeId, currentStep, reason)
     );
 
     //반려 횟수 증가 로직
@@ -88,7 +87,7 @@ public class ApprovalRejectCommandService {
         new ApprovalEvent(
             ApprovalEventType.REJECTED,
             docId,
-            actorId,
+            employeeId,
             doc.getCompanyId()
         )
     );
