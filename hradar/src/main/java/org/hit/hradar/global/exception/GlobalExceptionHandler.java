@@ -18,6 +18,7 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.failure(ex.getErrorCode().getErrorCode(), ex.getMessage()));
     }
 
+
 /*  @ExceptionHandler(AuthorizationDeniedException.class)
   public ResponseEntity<ApiResponse<?>> handleAuthorizationDenied(AuthorizationDeniedException ex) {
     log.error("[ACCESS DENIED ERROR] message={}", ex.getMessage());
@@ -31,4 +32,5 @@ public class GlobalExceptionHandler {
         return ResponseEntity.internalServerError()
                 .body(ApiResponse.failure("SYSTEM_ERROR", "서버 오류입니다."));
     }
+
 }

@@ -19,35 +19,33 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class EmployeeCommandService {
 
-    private final EmployeeRepository employeeRepository;
-    private final AccountRepository accountRepository;
+  private final EmployeeRepository employeeRepository;
+  private final AccountRepository accountRepository;
 
-    /**
-     * 회사 생성자(첫 사원)
-     * - defaultRoleId는 상위 서비스에서 결정해서 전달
-     * - additionalRoleId(OWNER)도 상위 서비스에서 결정해서 전달
-     */
-    @Transactional
-    public CreateFirstEmpResponse  createFirstEmployee(CreateFirstEmpRequest req) {
+  /**
+   * 회사 생성자(첫 사원)
+   * - defaultRoleId는 상위 서비스에서 결정해서 전달
+   * - additionalRoleId(OWNER)도 상위 서비스에서 결정해서 전달
+   */
+  @Transactional
+  public CreateFirstEmpResponse createFirstEmployee(CreateFirstEmpRequest req) {
 
-        Employee emp = Employee.builder()
-                .comId(req.getComId())
-                .deptId(null)
-                .positionId(null)
-                .name(req.getName())
-                .email(req.getEmail())
-                .employeeNo(null)
-                .build();
+    Employee emp = Employee.builder()
+        .comId(req.getComId())
+        .deptId(null)
+        .positionId(null)
+        .name(req.getName())
+        .email(req.getEmail())
+        .employeeNo(null)
+        .build();
 
-        Employee saved = employeeRepository.save(emp);
+    Employee saved = employeeRepository.save(emp);
 
-
-
-        return CreateFirstEmpResponse.builder()
-                .empId(saved.getEmpId())
-                .comId(saved.getComId())
-                .build();
-    }
+    return CreateFirstEmpResponse.builder()
+        .empId(saved.getEmpId())
+        .comId(saved.getComId())
+        .build();
+  }
 
   @Transactional
   public UpdateEmployeeProfileResponse updateProfile(Long comId, Long empId, UpdateEmployeeProfileRequest req) {
@@ -71,17 +69,18 @@ public class EmployeeCommandService {
       }
     }
 
+    String birth = (req.getBirth() != null && !req.getBirth().isBlank()) ? req.getBirth().replace("-", "") : null;
+
     emp.updateEmployee(
         name,
         email,
         req.getGender(),
-        req.getBirth(),
+        birth,
         req.getHireDate(),
         req.getExitDate(),
         req.getImage(),
         req.getExtNo(),
-        req.getPhoneNo()
-    );
+        req.getPhoneNo());
 
     return UpdateEmployeeProfileResponse.builder()
         .empId(emp.getEmpId())
@@ -96,7 +95,6 @@ public class EmployeeCommandService {
         .phoneNo(emp.getPhoneNo())
         .build();
   }
-
 
   @Transactional
   public void deleteEmployee(Long empId, Long comId) {

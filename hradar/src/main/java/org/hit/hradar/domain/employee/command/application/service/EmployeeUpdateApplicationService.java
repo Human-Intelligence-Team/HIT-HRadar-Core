@@ -21,7 +21,7 @@ public class EmployeeUpdateApplicationService {
   private final EmployeeMovementHistoryJpaRepository movementHistoryRepo;
 
 
-  // 사원 인사기록
+  // 사원 인사변경
   @Transactional
   public UpdateEmployeeAssignmentResponse updateAssignment(Long comId, Long changerAccId, Long empId,
       UpdateEmployeeAssignmentRequest req) {

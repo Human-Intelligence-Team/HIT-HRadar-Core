@@ -2,7 +2,6 @@ package org.hit.hradar.domain.employee.query.dto;
 
 import java.util.List;
 import lombok.Getter;
-import org.hit.hradar.domain.employee.query.dto.EmployeeMovementHistoryResponse;
 
 @Getter
 public class EmployeeMovementHistoryListResponse {

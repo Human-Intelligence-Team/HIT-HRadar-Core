@@ -54,7 +54,10 @@ public class CompanyCommandService {
     company.updateInfo(
         request.getComName(),
         request.getComTel(),
-        request.getAddress()
+        request.getAddress(),
+        request.getCeoName(),
+        request.getComEmail(),
+        request.getFoundDate()
     );
 
     return UpdateCompanyResponse.builder()

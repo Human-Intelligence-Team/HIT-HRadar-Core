@@ -2,6 +2,7 @@ package org.hit.hradar.domain.company.command.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import lombok.*;
 
 //회사 수정 dto
@@ -15,10 +16,6 @@ public class UpdateCompanyRequest {
   @Size(max = 100)
   private String comName;
 
-  @NotBlank(message = "사업자 등록번호는 필수 입니다.")
-  @Size(max = 30)
-  private String bizNo;
-
   @Size(max = 255)
   private String address;
 
@@ -26,5 +23,8 @@ public class UpdateCompanyRequest {
   private String comTel;
 
   @Size(max = 10)
-  private String foundDate;
+  private LocalDate foundDate;
+
+  private String comEmail;
+  private String ceoName;
 }

@@ -10,6 +10,8 @@ import org.hit.hradar.domain.department.query.dto.OrganizationChartResponse;
 import org.hit.hradar.domain.department.query.mapper.DepartmentQueryMapper;
 import org.hit.hradar.domain.department.query.dto.EmployeeForOrgChartResponse;
 import org.hit.hradar.domain.department.query.dto.EmployeeNode;
+import org.hit.hradar.domain.employee.query.dto.EmployeeListResponse;
+import org.hit.hradar.domain.employee.query.dto.EmployeeResponse;
 import org.hit.hradar.domain.employee.query.mapper.EmployeeQueryMapper;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
@@ -34,38 +36,36 @@ public class DepartmentQueryService {
   }
 
   public DepartmentListResponse getAllDepartmentsByCompany(Long companyId) {
-    List<DepartmentResponse> departments =
-        departmentQueryMapper.findAllDepartmentsByCompany(companyId);
+    List<DepartmentResponse> departments = departmentQueryMapper.findAllDepartmentsByCompany(companyId);
 
     return DepartmentListResponse.of(departments);
+  }
+
+  public EmployeeListResponse getDepartmentMembers(Long companyId, Long deptId) {
+    List<EmployeeResponse> members = employeeQueryMapper.findList(companyId, deptId, null);
+    return EmployeeListResponse.of(members);
   }
 
   public OrganizationChartResponse getOrganizationChart(Long companyId) {
 
     // 1) 부서 전체 조회
-    List<DepartmentResponse> allDepartments =
-        departmentQueryMapper.findAllDepartmentsByCompany(companyId);
+    List<DepartmentResponse> allDepartments = departmentQueryMapper.findAllDepartmentsByCompany(companyId);
 
     // 2) 조직도용 사원 조회 (부서별로 묶기)
-    List<EmployeeForOrgChartResponse> allEmployees =
-        employeeQueryMapper.findEmployeesForOrgChart(companyId);
+    List<EmployeeForOrgChartResponse> allEmployees = employeeQueryMapper.findEmployeesForOrgChart(companyId);
 
-    Map<Long, List<EmployeeNode>> employeesByDept =
-        allEmployees.stream()
-            .filter(e -> e.getDeptId() != null)
-            .collect(Collectors.groupingBy(
-                EmployeeForOrgChartResponse::getDeptId,
-                Collectors.mapping(
-                    e -> new EmployeeNode(e.getEmpId(), e.getName(), e.getPositionName()),
-                    Collectors.toList()
-                )
-            ));
+    Map<Long, List<EmployeeNode>> employeesByDept = allEmployees.stream()
+        .filter(e -> e.getDeptId() != null)
+        .collect(Collectors.groupingBy(
+            EmployeeForOrgChartResponse::getDeptId,
+            Collectors.mapping(
+                e -> new EmployeeNode(e.getEmpId(), e.getName(), e.getPositionName()),
+                Collectors.toList())));
 
     // 3) 부서 노드 생성 + 사원 세팅
     Map<Long, DepartmentNode> departmentMap = new HashMap<>();
     for (DepartmentResponse dept : allDepartments) {
-      DepartmentNode node =
-          new DepartmentNode(dept.getDeptId(), dept.getDeptName(), dept.getParentDeptId());
+      DepartmentNode node = new DepartmentNode(dept.getDeptId(), dept.getDeptName(), dept.getParentDeptId());
 
       node.setEmployees(employeesByDept.getOrDefault(dept.getDeptId(), new ArrayList<>()));
       departmentMap.put(dept.getDeptId(), node);
@@ -76,8 +76,10 @@ public class DepartmentQueryService {
     for (DepartmentNode node : departmentMap.values()) {
       if (node.getParentDeptId() != null) {
         DepartmentNode parent = departmentMap.get(node.getParentDeptId());
-        if (parent != null) parent.getChildren().add(node);
-        else rootNodes.add(node);
+        if (parent != null)
+          parent.getChildren().add(node);
+        else
+          rootNodes.add(node);
       } else {
         rootNodes.add(node);
       }
@@ -85,5 +87,6 @@ public class DepartmentQueryService {
 
     return OrganizationChartResponse.of(rootNodes);
   }
-}
 
+
+}

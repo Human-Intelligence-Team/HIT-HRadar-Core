@@ -13,6 +13,9 @@
     <result property="deptId"         column="dept_id"/>
     <result property="positionId"     column="position_id"/>
 
+    <result property="deptName"       column="dept_name"/>
+    <result property="positionName"   column="position_name"/>
+
     <result property="name"           column="name"/>
     <result property="employeeNo"     column="employee_no"/>
     <result property="email"          column="email"/>
@@ -41,6 +44,8 @@
     e.com_id,
     e.dept_id,
     e.position_id,
+    dept_name        AS dept_name,
+    p.name        AS position_name,
     e.name,
     e.employee_no,
     e.email,
@@ -66,6 +71,10 @@
     ON a.com_id = e.com_id
     AND a.employee_id = e.emp_id
     AND a.is_deleted = 'N'
+    LEFT JOIN department d
+    ON d.dept_id = e.dept_id
+    LEFT JOIN company_position p
+    ON p.position_id = e.position_id
   </sql>
 
   <sql id="BaseWhere">
@@ -73,7 +82,6 @@
     AND e.is_deleted = 'N'
   </sql>
 
-  <!-- 단건 -->
   <select id="findById" resultMap="EmployeeResponseMap">
     SELECT
     <include refid="SelectColumns"/>
@@ -83,7 +91,6 @@
     LIMIT 1
   </select>
 
-  <!-- 통합 목록 (deptId/positionId 옵션) -->
   <select id="findList" resultMap="EmployeeResponseMap">
     SELECT
     <include refid="SelectColumns"/>
@@ -99,6 +106,22 @@
     </if>
 
     ORDER BY e.emp_id DESC
+  </select>
+
+  <select id="findEmployeesForOrgChart"
+    resultType="org.hit.hradar.domain.department.query.dto.EmployeeForOrgChartResponse">
+    SELECT
+    e.emp_id      AS empId,
+    e.dept_id     AS deptId,
+    e.name        AS name,
+    e.position_id AS positionId,
+    p.name        AS positionName
+    FROM employee e
+    LEFT JOIN company_position p
+    ON p.position_id = e.position_id
+    WHERE e.com_id = #{comId}
+    AND e.is_deleted = 'N'
+    ORDER BY e.dept_id, e.emp_id
   </select>
 
 </mapper>

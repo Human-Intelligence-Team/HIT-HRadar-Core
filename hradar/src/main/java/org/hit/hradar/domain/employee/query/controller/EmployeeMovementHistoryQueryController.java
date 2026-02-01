@@ -28,4 +28,14 @@ public class EmployeeMovementHistoryQueryController {
 
     return ResponseEntity.ok(ApiResponse.success(response));
   }
+
+  @GetMapping("/movement-histories")
+  public ResponseEntity<ApiResponse<EmployeeMovementHistoryListResponse>> getAllHistories(
+      @CurrentUser AuthUser authUser
+  ) {
+    EmployeeMovementHistoryListResponse response =
+        historyQueryService.getAllHistories(authUser.companyId());
+
+    return ResponseEntity.ok(ApiResponse.success(response));
+  }
 }

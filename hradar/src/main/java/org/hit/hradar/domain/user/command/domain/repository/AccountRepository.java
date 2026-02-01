@@ -18,4 +18,6 @@ public interface AccountRepository {
 
   Optional<Account> findByEmpIdAndComIdAndIsDeleted(Long empId, Long comId, char isDeleted);
 
+  boolean existsByLoginIdAndComIdAndIsDeleted(String loginId, Long comId, Character isDeleted);
+
 }

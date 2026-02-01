@@ -10,13 +10,20 @@
     resultType="org.hit.hradar.domain.companyApplication.query.dto.ComAppListItemResponse">
 
     SELECT
-    application_id    AS appId,
-    company_name      AS companyName,
-    biz_no            AS bizNo,
-    creater_name      AS createrName,
-    creater_email     AS createrEmail,
-    creater_login_id  AS createrLoginId,
-    status            AS status
+    application_id      AS appId,
+    company_name        AS companyName,
+    biz_no              AS bizNo,
+    company_telephone   AS comTel,
+    address             AS address,
+
+    creater_name        AS createrName,
+    creater_email       AS createrEmail,
+    creater_login_id    AS createrLoginId,
+
+    status              AS status,
+    reviewed_at         AS reviewedAt,
+    reviewed_by         AS reviewedBy,
+    reject_reason       AS rejectReason
     FROM company_application
     WHERE 1=1
 
@@ -37,7 +44,6 @@
 
   <!-- 회사 신청 상세 조회 -->
   <select id="findDetail"
-    parameterType="long"
     resultType="org.hit.hradar.domain.companyApplication.query.dto.ComAppDetailResponse">
 
     SELECT
@@ -55,7 +61,10 @@
     creater_login_id    AS comAdminLoginId,
 
     reviewed_at         AS reviewedAt,
+    reviewed_by         AS reviewedBy,
     reject_reason       AS rejectReason
+
+
     FROM company_application
     WHERE application_id = #{applicationId}
   </select>
