@@ -1,144 +1,138 @@
 INSERT INTO goal (
-    goal_id,
-    parent_goal_id,
-    goal_depth,
-    goal_scope,
-    goal_type,
-    goal_title,
-    goal_description,
-    goal_start_date,
-    goal_end_date,
-    goal_dept_id,
-    owner_id,
-    goal_status,
-    goal_approve_status,
+    goal_id, parent_goal_id,
+    goal_depth, goal_scope, goal_type,
+    goal_title, goal_description,
+    goal_start_date, goal_end_date,
+    goal_dept_id, owner_id,
+    goal_status, goal_approve_status,
     reject_reason,
     is_deleted,
-    created_at,
-    updated_at
+    created_at, updated_at, created_by, updated_by
 ) VALUES
--- LEVEL 1 : TEAM / KPI (승인됨)
-(
-    1,
-    NULL,
-    'LEVEL_1',
-    'TEAM',
-    'KPI',
-    '2026 상반기 조직 성과 목표',
-    '회사 전체 KPI 달성을 위한 상위 목표',
-    '2026-01-01',
-    '2026-06-30',
-    10,
-    1001,
-    'WAIT',
-    'APPROVED',
+    (100, NULL,
+     'LEVEL_1', 'TEAM', 'KPI',
+     'Q1 팀 매출 성장', '팀 전체 매출 목표',
+     '2026-01-01', '2026-03-31',
+     10, 1,
+     'WAIT', 'APPROVED',
+     NULL,
+     'N',
+     '2026-01-01 09:00:00', '2026-01-01 09:00:00', 1, 1);
+INSERT INTO goal (
+    goal_id, parent_goal_id,
+    goal_depth, goal_scope, goal_type,
+    goal_title, goal_description,
+    goal_start_date, goal_end_date,
+    goal_dept_id, owner_id,
+    goal_status, goal_approve_status,
+    reject_reason,
+    is_deleted,
+    created_at, updated_at, created_by, updated_by
+) VALUES
+    (200, NULL,
+     'LEVEL_1', 'TEAM', 'OKR',
+     'Q1 서비스 안정화', '서비스 품질 향상',
+     '2026-01-01', '2026-03-31',
+     10, 1,
+     'WAIT', 'APPROVED',
+     NULL,
+     'N',
+     '2026-01-01 09:00:00', '2026-01-01 09:00:00', 1, 1);
+INSERT INTO goal (
+    goal_id, parent_goal_id,
+    goal_depth, goal_scope, goal_type,
+    goal_title, goal_description,
+    goal_start_date, goal_end_date,
+    goal_dept_id, owner_id,
+    goal_status, goal_approve_status,
+    reject_reason,
+    is_deleted,
+    created_at, updated_at, created_by, updated_by
+) VALUES
+    (101, 100, 'LEVEL_2', 'PERSONAL', 'KPI',
+     'A 사원 - 신규 고객 매출', NULL,
+     '2026-01-01', '2026-03-31',
+     10, 1,
+     'WAIT', 'APPROVED',
+     NULL,
+     'N',
+     '2026-01-01 09:00:00', '2026-01-01 09:00:00', 1, 1);
+
+INSERT INTO goal (
+    goal_id, parent_goal_id,
+    goal_depth, goal_scope, goal_type,
+    goal_title, goal_description,
+    goal_start_date, goal_end_date,
+    goal_dept_id, owner_id,
+    goal_status, goal_approve_status,
+    reject_reason,
+    is_deleted,
+    created_at, updated_at, created_by, updated_by
+)  VALUES
+    (102, 100, 'LEVEL_2', 'PERSONAL', 'KPI',
+     'B 사원 - 기존 고객 유지', NULL,
+     '2026-01-01', '2026-03-31',
+     10, 2,
+     'WAIT', 'APPROVED',
+     NULL,
+     'N',
+     '2026-01-01 09:00:00', '2026-01-01 09:00:00', 1, 1);
+
+INSERT INTO goal (
+    goal_id, parent_goal_id,
+    goal_depth, goal_scope, goal_type,
+    goal_title, goal_description,
+    goal_start_date, goal_end_date,
+    goal_dept_id, owner_id,
+    goal_status, goal_approve_status,
+    reject_reason,
+    is_deleted,
+    created_at, updated_at, created_by, updated_by
+)  VALUES
+    (103, 100, 'LEVEL_2', 'PERSONAL', 'KPI',
+     'C 사원 - 파트너 매출', NULL,
+     '2026-01-01', '2026-03-31',
+     10, 3,
+     'WAIT', 'APPROVED',
+     NULL,
+     'N',
+     '2026-01-01 09:00:00', '2026-01-01 09:00:00', 1, 1);
+INSERT INTO goal (
+    goal_id, parent_goal_id,
+    goal_depth, goal_scope, goal_type,
+    goal_title, goal_description,
+    goal_start_date, goal_end_date,
+    goal_dept_id, owner_id,
+    goal_status, goal_approve_status,
+    reject_reason,
+    is_deleted,
+    created_at, updated_at, created_by, updated_by
+) VALUES
+    (201, 200, 'LEVEL_2', 'PERSONAL', 'OKR',
+    'A 사원 - 장애 감소', NULL,
+    '2026-01-01', '2026-03-31',
+    10, 1,
+    'WAIT', 'APPROVED',
     NULL,
     'N',
-    NOW(),
-    NOW()
-),
+    '2026-01-01 09:00:00', '2026-01-01 09:00:00', 1, 1);
 
--- LEVEL 2 : TEAM / KPI (제출됨)
-(
-    2,
-    1,
-    'LEVEL_2',
-    'TEAM',
-    'KPI',
-    '개발팀 생산성 향상',
-    '개발 속도 및 품질 개선',
-    '2026-01-01',
-    '2026-06-30',
-    10,
-    1002,
-    'WAIT',
-    'SUBMITTED',
-    NULL,
-    'N',
-    NOW(),
-    NOW()
-),
-
--- LEVEL 3 : PERSONAL / KPI (작성중)
-(
-    3,
-    2,
-    'LEVEL_3',
-    'PERSONAL',
-    'KPI',
-    'API 응답 속도 개선',
-    '주요 API 평균 응답 속도 20% 개선',
-    '2026-02-01',
-    '2026-06-30',
-    10,
-    2001,
-    'WAIT',
-    'DRAFT',
-    NULL,
-    'N',
-    NOW(),
-    NOW()
-),
-
--- LEVEL 1 : TEAM / OKR (승인됨)
-(
-    4,
-    NULL,
-    'LEVEL_1',
-    'TEAM',
-    'OKR',
-    '2026 상반기 서비스 품질 OKR',
-    '서비스 안정성과 고객 만족도 향상',
-    '2026-01-01',
-    '2026-06-30',
-    10,
-    1100,
-    'WAIT',
-    'APPROVED',
-    NULL,
-    'N',
-    NOW(),
-    NOW()
-),
-
--- LEVEL 2 : PERSONAL / OKR (반려됨)
-(
-    5,
-    4,
-    'LEVEL_2',
-    'PERSONAL',
-    'OKR',
-    '장애 대응 프로세스 개선',
-    '장애 대응 시간 단축',
-    '2026-01-15',
-    '2026-06-30',
-    10,
-    2100,
-    'WAIT',
-    'REJECTED',
-    '목표가 너무 포괄적입니다.',
-    'N',
-    NOW(),
-    NOW()
-),
-
--- 삭제된 목표 (소프트 삭제 테스트용)
-(
-    6,
-    NULL,
-    'LEVEL_1',
-    'TEAM',
-    'KPI',
-    '삭제된 목표 예시',
-    '삭제 테스트용 목표',
-    '2026-01-01',
-    '2026-03-31',
-    10,
-    3000,
-    'WAIT',
-    'DRAFT',
-    NULL,
-    'Y',
-    NOW(),
-    NOW()
-);
+INSERT INTO goal (
+    goal_id, parent_goal_id,
+    goal_depth, goal_scope, goal_type,
+    goal_title, goal_description,
+    goal_start_date, goal_end_date,
+    goal_dept_id, owner_id,
+    goal_status, goal_approve_status,
+    reject_reason,
+    is_deleted,
+    created_at, updated_at, created_by, updated_by
+)VALUES
+    (202, 200, 'LEVEL_2', 'PERSONAL', 'OKR',
+     'B 사원 - 배포 안정성 향상', NULL,
+     '2026-01-01', '2026-03-31',
+     10, 2,
+     'WAIT', 'APPROVED',
+     NULL,
+     'N',
+     '2026-01-01 09:00:00', '2026-01-01 09:00:00', 1, 1);
