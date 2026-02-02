@@ -1,77 +1,113 @@
 package org.hit.hradar.global.file;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hit.hradar.global.exception.BusinessException;
-import org.springframework.context.annotation.Profile;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.util.Set;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.UUID;
 
+@Slf4j
 @Component
-@Profile("prod")
+@RequiredArgsConstructor
+@ConditionalOnProperty(name = "file.storage.type", havingValue = "s3")
 public class S3FileStorageClient implements FileStorageClient {
 
-    private static final String BUCKET_NAME = "bucket";
-    private static final String BUCKET_URL = "https://s3.amazonaws.com/bucket";
+    private final S3Client s3Client;
 
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
-            "jpg", "jpeg", "png", "gif", "webp",
-            "pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx"
-    );
-//
-//    private final AmazonS3 amazonS3;
-//
-//    public S3FileStorageClient(AmazonS3 amazonS3) {
-//        this.amazonS3 = amazonS3;
-//    }
+    @Value("${file.s3.bucket}")
+    private String bucket;
+
+    @Value("${file.s3.prefix:}")
+    private String prefix;
 
     @Override
-    public StoredFile upload(MultipartFile file) {
-
+    public StoredFile upload(MultipartFile file, FileType type) {
         String originalName = file.getOriginalFilename();
         String extension = extractExtension(originalName);
-
-        String storedName = UUID.randomUUID() + "." + extension;
+        String savedFileName = UUID.randomUUID() + "." + extension;
+        String key = prefix + savedFileName;
 
         try {
-//            ObjectMetadata metadata = new ObjectMetadata();
-//            metadata.setContentLength(file.getSize());
-//            metadata.setContentType(file.getContentType());
-//
-//            amazonS3.putObject(
-//                    BUCKET_NAME,
-//                    storedName,
-//                    file.getInputStream(),
-//                    metadata
-//            );
-        } catch (Exception e) {
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .contentType(file.getContentType())
+                    .build();
+
+            s3Client.putObject(putObjectRequest,
+                    RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+
+        } catch (IOException e) {
             throw new BusinessException(FileErrorCode.FAIL_UPLOAD, e);
         }
 
-        String url = BUCKET_URL + "/" + storedName;
-        return new StoredFile(url, storedName);
+        // Return Proxy URL: /api/v1/files/{type}/{storedName}
+        String typePath = (type == FileType.IMAGE) ? "images" : "attachments";
+        String proxyUrl = "/api/v1/files/" + typePath + "/" + savedFileName;
+        return new StoredFile(proxyUrl, savedFileName);
     }
 
     @Override
     public void delete(String storedName) {
-//        try {
-//            // 이미 없으면 그냥 통과 (idempotent)
-//            if (!amazonS3.doesObjectExist(BUCKET_NAME, storedName)) {
-//                return;
-//            }
-//
-//            amazonS3.deleteObject(BUCKET_NAME, storedName);
-//
-//        } catch (Exception e) {
-//            throw new BusinessException(FileErrorCode.FAIL_DELETE, e);
-//        }
+        String key = prefix + storedName;
+        try {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(key)
+                    .build();
+
+            s3Client.deleteObject(deleteObjectRequest);
+        } catch (Exception e) {
+            throw new BusinessException(FileErrorCode.FAIL_DELETE, e);
+        }
     }
 
-    /* ---------- private ---------- */
+    @Override
+    public String extractStoredName(String urlOrName) {
+        if (urlOrName == null)
+            return null;
+        if (urlOrName.contains("/")) {
+            String lastPart = urlOrName.substring(urlOrName.lastIndexOf("/") + 1);
+            if (lastPart.contains("?")) {
+                lastPart = lastPart.substring(0, lastPart.indexOf("?"));
+            }
+            return lastPart;
+        }
+        return urlOrName;
+    }
+
+    @Override
+    public InputStream download(String storedName) {
+        // Fallback or internal use only
+        String key = prefix + storedName;
+        return s3Client.getObject(GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build());
+    }
+
+    @Override
+    public String generatePresignedUrl(String storedName) {
+        // Disabled due to dependency resolution issues with s3-presigner
+        // Returning null triggers the generic streaming fallback in FileProxyController
+        log.warn("Presigned URL generation requested but S3Presigner is disabled. Falling back to stream.");
+        return null;
+    }
 
     private String extractExtension(String filename) {
-        if (filename == null) return "";
+        if (filename == null)
+            return "";
         int idx = filename.lastIndexOf('.');
         return (idx > -1) ? filename.substring(idx + 1).toLowerCase() : "";
     }

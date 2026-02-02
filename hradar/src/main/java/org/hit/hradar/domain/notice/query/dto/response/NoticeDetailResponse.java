@@ -30,8 +30,8 @@ public class NoticeDetailResponse {
     private List<AttachmentResponse> attachments;
 
     @Getter
+    @Setter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class AttachmentResponse {
         private Long id;
         private String url;

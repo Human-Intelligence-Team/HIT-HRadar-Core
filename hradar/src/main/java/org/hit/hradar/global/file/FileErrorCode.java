@@ -11,7 +11,8 @@ public enum FileErrorCode implements ErrorCode {
     FAIL_UPLOAD("FILE_002", "파일 업로드에 실패했습니다.", HttpStatus.BAD_REQUEST),
     INVALID_EXTENSION("FILE_003", "유효한 확장자명이 아닙니다.", HttpStatus.BAD_REQUEST),
     FILE_SIZE_EXCEEDED("FILE_004", "허용된 용량을 초과했습니다. (이미지 5MB, 첨부 파일 20MB)", HttpStatus.BAD_REQUEST),
-    FAIL_DELETE("FILE_005", "파일 삭제에 실패했습니다.", HttpStatus.BAD_REQUEST),;
+    FAIL_DELETE("FILE_005", "파일 삭제에 실패했습니다.", HttpStatus.BAD_REQUEST),
+    NOT_FOUND_FILE("FILE_006", "파일을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String errorCode;
     private final String message;

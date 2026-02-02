@@ -16,12 +16,10 @@ public class FileUploadService {
         // 정책 검증
         validator.validate(file, type);
 
-        // 실제 저장
-        return storageClient.upload(file);
+        return storageClient.upload(file, type);
     }
 
     public void delete(String storedName) {
         storageClient.delete(storedName);
     }
 }
-

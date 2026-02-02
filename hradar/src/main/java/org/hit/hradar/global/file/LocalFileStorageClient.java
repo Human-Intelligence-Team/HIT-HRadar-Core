@@ -2,7 +2,7 @@ package org.hit.hradar.global.file;
 
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,11 +10,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Set;
 import java.util.UUID;
 
 @Component
-@Profile("local")
+@ConditionalOnProperty(name = "file.storage.type", havingValue = "local")
 public class LocalFileStorageClient implements FileStorageClient {
 
     @Value("${file.local.base-dir}")
@@ -24,7 +23,7 @@ public class LocalFileStorageClient implements FileStorageClient {
     private String baseUrl;
 
     @Override
-    public StoredFile upload(MultipartFile file) {
+    public StoredFile upload(MultipartFile file, FileType type) {
 
         String originalName = file.getOriginalFilename();
         String extension = extractExtension(originalName);
@@ -46,7 +45,8 @@ public class LocalFileStorageClient implements FileStorageClient {
         }
 
         // 접근 URL
-        String url = baseUrl + "/" + storedName;
+        String typePath = (type == FileType.IMAGE) ? "images" : "attachments";
+        String url = "/api/v1/files/" + typePath + "/" + storedName;
 
         return new StoredFile(url, storedName);
     }
@@ -64,6 +64,30 @@ public class LocalFileStorageClient implements FileStorageClient {
             Files.delete(target);
         } catch (IOException e) {
             throw new BusinessException(FileErrorCode.FAIL_DELETE, e);
+        }
+    }
+
+    @Override
+    public String generatePresignedUrl(String storedName) {
+        return baseUrl + "/" + storedName;
+    }
+
+    @Override
+    public String extractStoredName(String urlOrName) {
+        if (urlOrName == null)
+            return null;
+        if (urlOrName.contains("/")) {
+            return urlOrName.substring(urlOrName.lastIndexOf("/") + 1);
+        }
+        return urlOrName;
+    }
+
+    @Override
+    public java.io.InputStream download(String storedName) {
+        try {
+            return java.nio.file.Files.newInputStream(java.nio.file.Paths.get(baseDir, storedName));
+        } catch (java.io.IOException e) {
+            throw new org.hit.hradar.global.exception.BusinessException(FileErrorCode.NOT_FOUND_FILE, e);
         }
     }
 

@@ -1,5 +1,7 @@
 package org.hit.hradar.domain.salary.query.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.salary.query.dto.request.CompensationSearchRequest;
 import org.hit.hradar.domain.salary.query.dto.request.CompensationHistorySearchRequest;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Compensation Salary Query", description = "변동 보상(성과급 등) 정보 조회 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/compensation-salaries")
@@ -25,13 +28,14 @@ public class CompensationSalaryQueryController {
 
   /**
    * 변동 보상 히스토리 (본인)
+   * 
    * @return
    */
+  @Operation(summary = "변동 보상 히스토리(본인)", description = "현재 로그인한 사용자의 변동 보상(인센티브 등) 지급 이력을 조회합니다.")
   @GetMapping("/me/history")
   public ResponseEntity<ApiResponse<CompensationHistorySearchResponse>> getCompensationHistory(
       @CurrentUser AuthUser authUser,
-      CompensationHistorySearchRequest request
-  )  {
+      CompensationHistorySearchRequest request) {
 
     Long empId = authUser.employeeId();
     CompensationHistorySearchResponse response = compensationSalaryQueryService.getCompensationHistory(empId, request);
@@ -40,13 +44,14 @@ public class CompensationSalaryQueryController {
 
   /**
    * 사원의 변동 보상 히스토리 (전체)
+   * 
    * @return
    */
+  @Operation(summary = "사원 변동 보상 히스토리(전체)", description = "특정 사원의 변동 보상 지급 이력을 조회합니다.")
   @GetMapping("/{empId}/history")
   public ResponseEntity<ApiResponse<CompensationHistorySearchResponse>> getEmployeeCompensationHistory(
       CompensationHistorySearchRequest request,
-      @PathVariable Long empId
-  )  {
+      @PathVariable Long empId) {
 
     CompensationHistorySearchResponse response = compensationSalaryQueryService.getCompensationHistory(empId, request);
     return ResponseEntity.ok(ApiResponse.success(response));
@@ -54,12 +59,13 @@ public class CompensationSalaryQueryController {
 
   /**
    * 변동 보상 내역 조회 (전체)
+   * 
    * @return
    */
+  @Operation(summary = "변동 보상 내역 조회(전체)", description = "전체 사원의 변동 보상 지급 내역을 조건에 따라 검색합니다.")
   @GetMapping("/all")
   public ResponseEntity<ApiResponse<CompensationSearchResponse>> compensationSalaries(
-      CompensationSearchRequest request
-  )  {
+      CompensationSearchRequest request) {
 
     CompensationSearchResponse response = compensationSalaryQueryService.compensationSalaries(request);
     return ResponseEntity.ok(ApiResponse.success(response));
@@ -67,12 +73,13 @@ public class CompensationSalaryQueryController {
 
   /**
    * 변동 보상 총 금액 요약
+   * 
    * @return
    */
+  @Operation(summary = "변동 보상 총 금액 요약", description = "조건에 해당하는 변동 보상의 총 금액 합계를 조회합니다.")
   @GetMapping("/summary")
   public ResponseEntity<ApiResponse<CompensationSummaryResponse>> getCompensationSalariesSummary(
-      CompensationSearchRequest request
-  )  {
+      CompensationSearchRequest request) {
 
     CompensationSummaryResponse response = compensationSalaryQueryService.getCompensationSalariesSummary(request);
     return ResponseEntity.ok(ApiResponse.success(response));

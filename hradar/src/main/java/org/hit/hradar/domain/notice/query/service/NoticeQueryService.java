@@ -8,10 +8,16 @@ import org.hit.hradar.domain.notice.query.dto.response.NoticeListItemResponse;
 import org.hit.hradar.domain.notice.query.dto.request.NoticeSearchRequest;
 import org.hit.hradar.domain.notice.query.mapper.NoticeMapper;
 import org.hit.hradar.global.exception.BusinessException;
+import org.hit.hradar.global.file.FileStorageClient;
 import org.hit.hradar.global.query.paging.PageResponse;
 import org.hit.hradar.global.query.search.KeywordCondition;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +29,16 @@ import java.util.List;
 public class NoticeQueryService {
 
         private final NoticeMapper mapper;
+        private final FileStorageClient storageClient;
+
+        @Value("${file.storage.type}")
+        private String storageType;
+
+        @Value("${file.local.base-url:}")
+        private String localBaseUrl;
+
+        @Value("${file.s3.base-url:}")
+        private String s3BaseUrl;
 
         private static final Logger bizLog = LoggerFactory.getLogger("business");
 
@@ -66,13 +82,27 @@ public class NoticeQueryService {
                         throw new BusinessException(NoticeErrorCode.NOT_FOUND_NOTICE);
                 }
 
-                // 로컬 환경에서 에디터 이미지가 게이트웨이를 타지 않고 직접 코어로 붙도록 변환
-                if (result.getContent() != null) {
-                        String transformedContent = result.getContent()
-                                        .replace("http://localhost:8080/api/v1/files/", "http://localhost:8082/files/")
-                                        .replace("http://localhost:8080/files/", "http://localhost:8082/files/");
+                // 1. 본문 이미지 프록시 URL 변환
+                if (result.getContent() != null && !result.getContent().isBlank()) {
+                        Document doc = Jsoup.parseBodyFragment(result.getContent());
+                        Elements imgs = doc.select("img");
+                        for (Element img : imgs) {
+                                String storedName = storageClient.extractStoredName(img.attr("src"));
+                                if (storedName != null && !storedName.isBlank()) {
+                                        img.attr("src", "/api/v1/files/images/" + storedName);
+                                }
+                        }
+                        result.setContent(doc.body().html());
+                }
 
-                        result.setContent(transformedContent);
+                // 2. 첨부파일 프록시 URL 변환
+                if (result.getAttachments() != null) {
+                        for (NoticeDetailResponse.AttachmentResponse att : result.getAttachments()) {
+                                String storedName = storageClient.extractStoredName(att.getUrl());
+                                if (storedName != null && !storedName.isBlank()) {
+                                        att.setUrl("/api/v1/files/attachments/" + storedName);
+                                }
+                        }
                 }
 
                 return result;

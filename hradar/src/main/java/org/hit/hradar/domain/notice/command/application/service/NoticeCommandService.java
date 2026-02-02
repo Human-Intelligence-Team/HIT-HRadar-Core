@@ -13,8 +13,13 @@ import org.hit.hradar.domain.notice.command.domain.repository.NoticeImageReposit
 import org.hit.hradar.domain.notice.command.domain.repository.NoticeRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.hit.hradar.global.file.FileType;
+import org.hit.hradar.global.file.FileStorageClient;
 import org.hit.hradar.global.file.FileUploadService;
 import org.hit.hradar.global.file.StoredFile;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Set;
 
-import static org.hit.hradar.domain.notice.command.application.service.NoticeContentParser.extractImageUrls;
+import static org.hit.hradar.domain.notice.command.application.service.NoticeContentParser.extractStoredNames;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +39,7 @@ public class NoticeCommandService {
         private final NoticeImageRepository imageRepository;
         private final NoticeAttachmentRepository attachmentRepository;
         private final FileUploadService fileUploadService;
+        private final FileStorageClient storageClient;
 
         /**
          * 본문 이미지 업로드
@@ -61,12 +67,14 @@ public class NoticeCommandService {
                                 req.getCategoryId(), req.getCompanyId(), 'Y')
                                 .orElseThrow(() -> new BusinessException(NoticeErrorCode.NOT_FOUND_CATEGORY));
 
+                String sanitizedContent = sanitizeContent(req.getContent());
+
                 Notice notice = noticeRepository.save(
                                 Notice.create(
                                                 req.getCompanyId(),
                                                 category,
                                                 req.getTitle(),
-                                                req.getContent()));
+                                                sanitizedContent));
 
                 List<NoticeImage> images = extractImages(req.getContent(), req.getCompanyId());
                 images.forEach(img -> img.attachToNotice(notice.getId()));
@@ -85,16 +93,31 @@ public class NoticeCommandService {
                 }
 
                 // 본문에 포함된 이미지 used 처리
-                imageRepository.findAll().stream()
-                                .filter(img -> req.getContent().contains(img.getUrl()))
+                Set<String> contentStoredNames = extractStoredNames(req.getContent());
+                imageRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
+                                .filter(img -> contentStoredNames.contains(img.getStoredName()))
                                 .forEach(NoticeImage::markUsed);
 
                 return notice.getId();
         }
 
+        private String sanitizeContent(String content) {
+                if (content == null || content.isBlank()) {
+                        return content;
+                }
+                Document doc = Jsoup.parseBodyFragment(content);
+                Elements imgs = doc.select("img");
+                for (Element img : imgs) {
+                        String src = img.attr("src");
+                        img.attr("src", storageClient.extractStoredName(src));
+                }
+                return doc.body().html();
+        }
+
         private List<NoticeImage> extractImages(String content, Long companyId) {
+                Set<String> contentStoredNames = extractStoredNames(content);
                 return imageRepository.findAllByCompanyIdAndUsedFalse(companyId).stream()
-                                .filter(img -> content.contains(img.getUrl()))
+                                .filter(img -> contentStoredNames.contains(img.getStoredName()))
                                 .toList();
         }
 
@@ -121,10 +144,10 @@ public class NoticeCommandService {
 
                 List<NoticeImage> existingImages = imageRepository.findAllByNoticeId(noticeId);
 
-                Set<String> usedUrls = extractImageUrls(req.getContent());
+                Set<String> usedStoredNames = extractStoredNames(req.getContent());
 
                 existingImages.stream()
-                                .filter(img -> !usedUrls.contains(img.getUrl()))
+                                .filter(img -> !usedStoredNames.contains(img.getStoredName()))
                                 .forEach(img -> {
                                         fileUploadService.delete(img.getStoredName());
                                         imageRepository.delete(img);
@@ -132,7 +155,7 @@ public class NoticeCommandService {
 
                 // 새로 추가된 이미지 (임시 → 연결)
                 imageRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
-                                .filter(img -> usedUrls.contains(img.getUrl()))
+                                .filter(img -> usedStoredNames.contains(img.getStoredName()))
                                 .forEach(img -> img.attachToNotice(noticeId));
 
                 // 첨부파일 삭제 처리
@@ -157,10 +180,12 @@ public class NoticeCommandService {
                         }
                 }
 
+                String sanitizedContent = sanitizeContent(req.getContent());
+
                 notice.update(
                                 category,
                                 req.getTitle(),
-                                req.getContent());
+                                sanitizedContent);
         }
 
         @Transactional
