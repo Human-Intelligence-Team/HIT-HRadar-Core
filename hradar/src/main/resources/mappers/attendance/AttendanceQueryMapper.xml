@@ -58,6 +58,8 @@
     <result property="deptId" column="dept_id"/>
     <result property="workDate" column="work_date"/>
     <result property="status" column="status"/>
+    <result property="workType" column="work_type"/>
+    <result property="workPlace" column="work_place"/>
     <result property="checkInTime" column="check_in_time"/>
     <result property="checkOutTime" column="check_out_time"/>
     <result property="totalWorkMinutes" column="total_work_minutes"/>
@@ -76,9 +78,11 @@
     a.attendance_id
     , a.work_date
     , a.status
-    , e.emp_id
-    , e.name AS emp_name
     , e.dept_id
+    , a.work_type
+    , (SELECT location FROM attendance_work_log
+       WHERE attendance_id = a.attendance_id AND is_deleted = 'N'
+       ORDER BY start_at DESC LIMIT 1) AS work_place
     , w.work_log_type
     , w.start_at
     , w.location

@@ -7,6 +7,9 @@ import lombok.Getter;
 //결재 문서 임시저장(DRAFT)요청 DTO
 //모든 업무 도메인이 공통 사용
 @Getter
+@lombok.Builder
+@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
 public class ApprovalDraftCreateRequest {
 
   private String docType;
