@@ -25,7 +25,8 @@ public class ApprovalCommentCommandService {
       Long docId,
       Long writerId,
       String content,
-      Long parentCommentId
+      Long parentCommentId,
+      Long accountId
   ) {
     if (content == null || content.isBlank()) {
       throw new BusinessException(ApprovalErrorCode.INVALID_REQUEST);
@@ -40,7 +41,7 @@ public class ApprovalCommentCommandService {
       throw new BusinessException(ApprovalErrorCode.NOT_ALLOWED_COMMENT);
     }
 
-    if (!approvalAccessQueryMapper.existsAccessibleUser(docId, writerId)) {
+    if (!approvalAccessQueryMapper.existsAccessibleUser(docId, writerId, accountId)) {
       throw new BusinessException(ApprovalErrorCode.NOT_ALLOWED_APPROVER);
     }
 

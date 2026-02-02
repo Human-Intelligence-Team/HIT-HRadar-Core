@@ -14,10 +14,14 @@ public class ApprovalDetailResponse {
   private String docType;
   private String status;
   private LocalDateTime submittedAt;
+  private Long writerId; // 작성자 ID 추가
 
   // 결재선
 
   private List<ApprovalLineStepResponse> approvalSteps;
+  
+  // 참조
+  private List<ApprovalReferenceResponse> references;
 
   // 히스토리
   private List<ApprovalHistoryResponse> histories;

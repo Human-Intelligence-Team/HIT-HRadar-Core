@@ -8,6 +8,7 @@ public class ApprovalLineStepResponse {
 
   private int stepOrder;
   private Long approverId;
+  private String approverName; // 결재자 이름 추가
   private String status;
   private LocalDateTime actedAt;
 

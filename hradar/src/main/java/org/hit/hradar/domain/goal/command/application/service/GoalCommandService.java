@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.department.DepartmentErrorCode;
 import org.hit.hradar.domain.department.command.domain.aggregate.Department;
 import org.hit.hradar.domain.department.command.domain.repository.DepartmentRepository;
+import org.hit.hradar.domain.evaluation.command.domain.aggregate.RejectionEvent;
+import org.hit.hradar.domain.evaluation.command.infrastructure.RejectionEventJpaRepository;
 import org.hit.hradar.domain.goal.GoalErrorCode;
 import org.hit.hradar.domain.goal.command.application.dto.request.CreateGoalRequest;
 import org.hit.hradar.domain.goal.command.application.dto.request.RejectGoalRequest;
@@ -38,7 +40,7 @@ public class GoalCommandService {
     //모든 등록 == 임시저장 상태
     private final GoalRepository goalRepository;
     private final DepartmentRepository departmentRepository;
-
+    private final RejectionEventJpaRepository rejectionEventJpaRepository;
     //팀 목표 생성
     public Long createRootGoal(CreateGoalRequest request, Long actorId) {
 
@@ -303,6 +305,10 @@ public class GoalCommandService {
         if(request.getRejectReason() == null || request.getRejectReason().isBlank()) {
             throw new BusinessException(GoalErrorCode.GOAL_REJECT_REASON_REQUIRED);
         }
+
+        rejectionEventJpaRepository.save(
+                RejectionEvent.create(goal.getOwnerId())
+        );
 
         goal.reject(request.getRejectReason());
     }

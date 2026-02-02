@@ -22,59 +22,59 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class NoticeQueryService {
 
-    private final NoticeMapper mapper;
+        private final NoticeMapper mapper;
 
-    private static final Logger bizLog =
-            LoggerFactory.getLogger("business");
+        private static final Logger bizLog = LoggerFactory.getLogger("business");
 
-    public PageResponse<NoticeListItemResponse> search(
-            NoticeSearchRequest req
-    ) {
+        public PageResponse<NoticeListItemResponse> search(
+                        NoticeSearchRequest req) {
 
-        NoticeSearchCondition cond = req.getCond();
-        KeywordCondition keywordCond =
-                KeywordCondition.of(cond.getKeyword());
+                NoticeSearchCondition cond = req.getCond();
+                KeywordCondition keywordCond = KeywordCondition.of(cond.getKeyword());
 
-        int page = req.getPage().safePage();
-        int size = req.getPage().safeSize();
-        int offset = req.getPage().offset();
+                int page = req.getPage().safePage();
+                int size = req.getPage().safeSize();
+                int offset = req.getPage().offset();
 
-        bizLog.info(
-                "[NOTICE SEARCH PAGE] page={}, size={}, offset={}",
-                page,
-                size,
-                req.getPage().offset()
-        );
+                bizLog.info(
+                                "[NOTICE SEARCH PAGE] page={}, size={}, offset={}",
+                                page,
+                                size,
+                                req.getPage().offset());
 
-        bizLog.info(
-                "[NOTICE SEARCH QUERY] cond={}, offset={}, size={}",
-                req.getCond(),
-                req.getPage().offset(),
-                size
-        );
+                bizLog.info(
+                                "[NOTICE SEARCH QUERY] cond={}, offset={}, size={}",
+                                req.getCond(),
+                                req.getPage().offset(),
+                                size);
 
-        String keywordLike =
-                keywordCond != null ? keywordCond.like() : null;
+                String keywordLike = keywordCond != null ? keywordCond.like() : null;
 
-        List<NoticeListItemResponse> items =
-                mapper.search(cond, keywordLike, offset, size);
+                List<NoticeListItemResponse> items = mapper.search(cond, keywordLike, offset, size);
 
-        long total = mapper.count(cond, keywordLike);
+                long total = mapper.count(cond, keywordLike);
 
-        return PageResponse.of(items, page, size, total);
-    }
-
-    public NoticeDetailResponse getDetail(
-            Long noticeId,
-            Long companyId
-    ) {
-        NoticeDetailResponse result =
-                mapper.findDetail(noticeId, companyId);
-
-        if (result == null) {
-            throw new BusinessException(NoticeErrorCode.NOT_FOUND_NOTICE);
+                return PageResponse.of(items, page, size, total);
         }
 
-        return result;
-    }
+        public NoticeDetailResponse getDetail(
+                        Long noticeId,
+                        Long companyId) {
+                NoticeDetailResponse result = mapper.findDetail(noticeId, companyId);
+
+                if (result == null) {
+                        throw new BusinessException(NoticeErrorCode.NOT_FOUND_NOTICE);
+                }
+
+                // 로컬 환경에서 에디터 이미지가 게이트웨이를 타지 않고 직접 코어로 붙도록 변환
+                if (result.getContent() != null) {
+                        String transformedContent = result.getContent()
+                                        .replace("http://localhost:8080/api/v1/files/", "http://localhost:8082/files/")
+                                        .replace("http://localhost:8080/files/", "http://localhost:8082/files/");
+
+                        result.setContent(transformedContent);
+                }
+
+                return result;
+        }
 }

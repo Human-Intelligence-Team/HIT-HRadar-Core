@@ -20,9 +20,11 @@ public class StaticResourceConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String location = "file:" + Path.of(
                 System.getProperty("user.dir"),
-                baseDir
-        ).toAbsolutePath() + "/";
+                baseDir).toAbsolutePath() + "/";
         System.out.println(location);
+        registry.addResourceHandler("/files/**")
+                .addResourceLocations(location);
+
         registry.addResourceHandler(baseUrl + "/**")
                 .addResourceLocations(location);
     }

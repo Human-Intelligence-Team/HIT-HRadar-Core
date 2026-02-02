@@ -49,6 +49,24 @@ public class ApprovalCommandController {
     );
   }
 
+  //바로 상신 (신규 생성 + 상신)
+  @PostMapping("/submit")
+  public ResponseEntity<ApiResponse<Long>> submitNew(
+      @CurrentUser AuthUser authUser,
+      @RequestBody ApprovalDraftCreateRequest request
+  ) {
+    Long docId = approvalProviderService.save(
+        null,
+        authUser.employeeId(),
+        authUser.companyId(),
+        request,
+        ApprovalSaveMode.SUBMIT
+    );
+    return ResponseEntity.ok(
+        ApiResponse.success(docId)
+    );
+  }
+
   //상신
   @PostMapping("/{docId}/submit")
   public ResponseEntity<ApiResponse<Void>> submit(
@@ -58,6 +76,7 @@ public class ApprovalCommandController {
     approvalApproveCommandService.approve(
         docId,
         authUser.employeeId(),
+        authUser.userId(),
         authUser.companyId()
     );
     return ResponseEntity.ok(
@@ -74,6 +93,7 @@ public class ApprovalCommandController {
     approvalApproveCommandService.approve(
         docId,
         authUser.employeeId(),
+        authUser.userId(),
         authUser.companyId()
     );
     return ResponseEntity.ok(
@@ -90,7 +110,8 @@ public class ApprovalCommandController {
   ) {
     approvalRejectCommandService.reject(
         docId,
-        authUser.employeeId(),
+        authUser.employeeId(), // History/Log (EmpID)
+        authUser.userId(),     // Permission/Step Match (AccountID)
         reason
     );
     return ResponseEntity.ok(
@@ -118,7 +139,8 @@ public class ApprovalCommandController {
         docId,
         authUser.employeeId(),
         request.getContent(),
-        request.getParentCommentId()
+        request.getParentCommentId(),
+        authUser.userId()
     );
     return ResponseEntity.ok(ApiResponse.success(null));
   }
