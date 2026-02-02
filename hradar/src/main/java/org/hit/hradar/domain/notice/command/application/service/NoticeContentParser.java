@@ -8,27 +8,33 @@ import java.util.regex.Pattern;
 
 public final class NoticeContentParser {
 
-    private NoticeContentParser() {}
+    private NoticeContentParser() {
+    }
 
     // <img src="..."> 또는 <img src='...'>
-    private static final Pattern IMG_SRC_PATTERN =
-            Pattern.compile("<img[^>]*\\s+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>",
-                    Pattern.CASE_INSENSITIVE);
+    private static final Pattern IMG_SRC_PATTERN = Pattern.compile("<img[^>]*\\s+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>",
+            Pattern.CASE_INSENSITIVE);
 
-    public static Set<String> extractImageUrls(String content) {
+    public static Set<String> extractStoredNames(String content) {
         if (content == null || content.isBlank()) {
             return Collections.emptySet();
         }
 
-        Set<String> urls = new HashSet<>();
+        Set<String> names = new HashSet<>();
         Matcher m = IMG_SRC_PATTERN.matcher(content);
         while (m.find()) {
             String url = m.group(1);
             if (url != null && !url.isBlank()) {
-                urls.add(url.trim());
+                String name = url.trim();
+                if (name.contains("/")) {
+                    name = name.substring(name.lastIndexOf("/") + 1);
+                }
+                if (name.contains("?")) {
+                    name = name.substring(0, name.indexOf("?"));
+                }
+                names.add(name);
             }
         }
-        return urls;
+        return names;
     }
 }
-

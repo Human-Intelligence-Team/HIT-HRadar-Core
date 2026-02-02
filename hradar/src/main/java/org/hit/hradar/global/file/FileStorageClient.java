@@ -4,7 +4,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileStorageClient {
 
-    StoredFile upload(MultipartFile file);
-    void delete(String storedName);
-}
+    StoredFile upload(org.springframework.web.multipart.MultipartFile file, FileType type);
 
+    void delete(String storedName);
+
+    String generatePresignedUrl(String storedName);
+
+    String extractStoredName(String urlOrName);
+
+    java.io.InputStream download(String storedName);
+}

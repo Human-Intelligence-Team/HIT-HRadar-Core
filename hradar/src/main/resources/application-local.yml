@@ -60,9 +60,18 @@ server:
   port: 8082
 
 file:
+  storage:
+    type: s3  # local, s3
   local:
     base-dir: uploads
     base-url: http://localhost:8082/files
+  s3:
+    bucket: s3-hradar-bucket
+    region: ap-northeast-2
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+    prefix: test/
+    base-url: https://s3.ap-northeast-2.amazonaws.com/s3-hradar-bucket/test
 
 mybatis:
   configuration:
@@ -75,3 +84,4 @@ external:
     timeout:
       connect: 3s
       read: 10s
+

@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.9'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.5'
 }
 
 group = 'org.hit'
@@ -18,15 +18,22 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
 }
 
 repositories {
     mavenCentral()
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "software.amazon.awssdk:bom:2.17.295"
+    }
+}
+
 ext {
     jjwtVersion = '0.12.6'
-    springCloudVersion = "2025.0.0"
+    springCloudVersion = "2023.0.1"
 }
 
 dependencies {
@@ -57,14 +64,19 @@ dependencies {
     // Local 전용 env
     implementation 'me.paulschwarz:spring-dotenv:3.0.0'
 
+    // HTML Parsing
+    implementation 'org.jsoup:jsoup:1.18.1'
+
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.security:spring-security-crypto'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'software.amazon.awssdk:s3'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
