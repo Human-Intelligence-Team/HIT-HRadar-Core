@@ -422,6 +422,11 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 
   </details>
 
+- ###  📚 Api명세서
+  	 <details> <summary> api명세서 </summary>
+		 
+  	</details>
+
 - ### 🗺️ ERD **(Entity Relationship Diagram)**
   ERD를 자세히 보려면 [여기](https://www.erdcloud.com/d/MqC3NnbQPPk2KW7j5)를 클릭하세요 <br>
 
@@ -429,10 +434,18 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	  <img width="6030" height="3612" alt="Image" src="https://github.com/user-attachments/assets/a094fc11-8186-4863-9f31-37cae464925d" />
 	  
   </details>
-  
+
+
+- ### 🧪 백엔드 단위 테스트
+   <details> <summary> 백엔드 단위 테스트 </summary>
+   </details>
+	
 - ### 🖼️ 화면 설계서
 	화면설계서 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
-	
+
+
+- ### 🦴 깃 형상관리
+  깃 형상 관 자세히 보려면 [여기](https://github.com/orgs/Human-Intelligence-Team/projects/1/views/4)를 클릭하세요 <br>
   
 ---
 
