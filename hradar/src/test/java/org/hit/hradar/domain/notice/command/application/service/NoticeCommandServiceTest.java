@@ -42,6 +42,8 @@ class NoticeCommandServiceTest {
         private NoticeAttachmentRepository attachmentRepository;
         @Mock
         private FileUploadService fileUploadService;
+        @Mock
+        private org.hit.hradar.global.file.FileStorageClient storageClient;
 
         /* ===================== 이미지 업로드 ===================== */
 
@@ -50,7 +52,7 @@ class NoticeCommandServiceTest {
                 MultipartFile file = mock(MultipartFile.class);
                 StoredFile stored = new StoredFile("/files/a.png", "a.png");
 
-                when(fileUploadService.upload(file, FileType.IMAGE)).thenReturn(stored);
+                lenient().when(fileUploadService.upload(file, FileType.IMAGE)).thenReturn(stored);
 
                 String url = noticeCommandService.uploadImage(1L, file);
 
@@ -72,16 +74,19 @@ class NoticeCommandServiceTest {
                                 1L,
                                 null);
 
-                when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
+                lenient().when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
                                 .thenReturn(Optional.of(category));
 
-                when(noticeRepository.save(any(Notice.class))).thenReturn(notice);
-                when(notice.getId()).thenReturn(10L);
+                lenient().when(noticeRepository.save(any(Notice.class))).thenReturn(notice);
+                lenient().when(notice.getId()).thenReturn(10L);
 
                 NoticeImage image = mock(NoticeImage.class);
-                when(image.getUrl()).thenReturn("/files/a.png");
+                lenient().when(image.getUrl()).thenReturn("/files/a.png");
+                lenient().when(image.getStoredName()).thenReturn("a.png");
 
-                when(imageRepository.findAllByCompanyIdAndUsedFalse(1L))
+                lenient().when(storageClient.extractStoredName("/files/a.png")).thenReturn("a.png");
+
+                lenient().when(imageRepository.findAllByCompanyIdAndUsedFalse(1L))
                                 .thenReturn(List.of(image));
 
                 Long id = noticeCommandService.create(dto, null);
@@ -94,7 +99,7 @@ class NoticeCommandServiceTest {
         void create_fail_categoryNotFound() {
                 NoticeDto dto = new NoticeDto(1L, "t", "c", 1L, null);
 
-                when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
+                lenient().when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
                                 .thenReturn(Optional.empty());
 
                 assertThatThrownBy(() -> noticeCommandService.create(dto, null))
@@ -108,10 +113,10 @@ class NoticeCommandServiceTest {
         void deleteImage_success() {
                 NoticeImage image = mock(NoticeImage.class);
 
-                when(imageRepository.findByCompanyIdAndUrlAndUsedFalse(1L, "/files/a.png"))
+                lenient().when(imageRepository.findByCompanyIdAndUrlAndUsedFalse(1L, "/files/a.png"))
                                 .thenReturn(Optional.of(image));
 
-                when(image.getStoredName()).thenReturn("a.png");
+                lenient().when(image.getStoredName()).thenReturn("a.png");
 
                 noticeCommandService.deleteImage(1L, "/files/a.png");
 
@@ -127,16 +132,16 @@ class NoticeCommandServiceTest {
                 NoticeCategory category = mock(NoticeCategory.class);
 
                 NoticeImage oldImage = mock(NoticeImage.class);
-                when(oldImage.getUrl()).thenReturn("/files/old.png");
-                when(oldImage.getStoredName()).thenReturn("old.png");
+                lenient().when(oldImage.getUrl()).thenReturn("/files/old.png");
+                lenient().when(oldImage.getStoredName()).thenReturn("old.png");
 
-                when(noticeRepository.findById(10L))
+                lenient().when(noticeRepository.findById(10L))
                                 .thenReturn(Optional.of(notice));
 
-                when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
+                lenient().when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
                                 .thenReturn(Optional.of(category));
 
-                when(imageRepository.findAllByNoticeId(10L))
+                lenient().when(imageRepository.findAllByNoticeId(10L))
                                 .thenReturn(List.of(oldImage));
 
                 NoticeDto dto = new NoticeDto(
@@ -145,6 +150,9 @@ class NoticeCommandServiceTest {
                                 "<p>no image</p>",
                                 1L,
                                 null);
+
+                lenient().when(imageRepository.findAllByCompanyIdAndUsedFalse(1L))
+                                .thenReturn(List.of());
 
                 noticeCommandService.updateNotice(10L, dto, null);
 
@@ -161,17 +169,17 @@ class NoticeCommandServiceTest {
                 NoticeImage image = mock(NoticeImage.class);
                 NoticeAttachment attachment = mock(NoticeAttachment.class);
 
-                when(noticeRepository.findByIdAndCompanyId(10L, 1L))
+                lenient().when(noticeRepository.findByIdAndCompanyId(10L, 1L))
                                 .thenReturn(Optional.of(notice));
 
-                when(imageRepository.findAllByNoticeId(10L))
+                lenient().when(imageRepository.findAllByNoticeId(10L))
                                 .thenReturn(List.of(image));
 
-                when(attachmentRepository.findAllByNoticeId(10L))
+                lenient().when(attachmentRepository.findAllByNoticeId(10L))
                                 .thenReturn(List.of(attachment));
 
-                when(image.getStoredName()).thenReturn("img.png");
-                when(attachment.getStoredName()).thenReturn("file.pdf");
+                lenient().when(image.getStoredName()).thenReturn("img.png");
+                lenient().when(attachment.getStoredName()).thenReturn("file.pdf");
 
                 noticeCommandService.deleteNotice(10L, 1L);
 
