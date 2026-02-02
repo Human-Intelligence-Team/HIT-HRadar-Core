@@ -7,8 +7,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentType;
-import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Level;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -19,10 +18,9 @@ public class ContentCreateRequest {
   private String title;
 
   @NotNull(message = "컨텐츠 타입은 필수입니다.")
-  private ContentType type;
+  private String type;
 
-  @NotNull(message = "컨텐츠 타입은 필수입니다.")
-  private Level level;
+  private String level;
 
   private Integer learningTime;
 
@@ -34,4 +32,13 @@ public class ContentCreateRequest {
 
    private List<Long> tags; // 태그 id 리스트
 
+  public ContentCreateRequest(String title, String type, String level, Integer learningTime, String resourcePath, String notes, List<Long> tags) {
+    this.title = title;
+    this.type = type;
+    this.level = level;
+    this.learningTime = learningTime;
+    this.resourcePath = resourcePath;
+    this.notes = notes;
+    this.tags = tags;
+  }
 }

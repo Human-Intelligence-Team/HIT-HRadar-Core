@@ -8,19 +8,28 @@
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO">
     <!-- 학습 컨텐츠 목록 조회 -->
-    SELECT ct.CONTENT_ID      AS contentId
-         , ct.LEARNING_TIME   AS learningTime
-         , ct.LEVEL           AS level
-         , ct.RESOURCE_PATH   AS resourcePath
-         , ct.TITLE           AS title
-         , ct.TYPE            AS type
-         , ctt.TAG_ID         AS tagId
-         , tg.TAG_NAME        AS tagName
-         , ct.IS_DELETED      AS isDeleted
+    SELECT ct.CONTENT_ID        AS contentId
+         , ct.LEARNING_TIME     AS learningTime
+         , ct.LEVEL             AS LEVEL
+         , levelCode.CUSTOM_CODE AS levelCode
+         , levelCode.CUSTOM_NAME  AS levelName
+         , ct.RESOURCE_PATH     AS resourcePath
+         , ct.TITLE             AS title
+         , ct.TYPE              AS type
+         , typeCode.CUSTOM_CODE AS typeCode
+         , typeCode.CUSTOM_NAME  AS typeName
+         , ctt.TAG_ID           AS tagId
+         , ct.IS_DELETED        AS isDeleted
       FROM CONTENT ct
-      JOIN CONTENT_TAG ctt USING (CONTENT_ID)
-      JOIN TAG tg USING (TAG_ID)
-     WHERE tg.IS_DELETED = 'N'
+      JOIN CONTENT_TAG ctt
+        ON ct.CONTENT_ID = ctt.CONTENT_ID
+      JOIN COMPETENCY_REPORT_CUSTOM_CODE typeCode
+        ON ct.TYPE = typeCode.CUSTOM_CODE_ID
+       AND typeCode.IS_DELETED = 'N'
+      JOIN COMPETENCY_REPORT_CUSTOM_CODE levelCode
+        ON ct.LEVEL = levelCode.CUSTOM_CODE_ID
+       AND levelCode.IS_DELETED = 'N'
+     WHERE ct.IS_DELETED = 'N'
     <if test="level != null">
        AND ct.LEVEL = #{level}
     </if>
@@ -29,9 +38,6 @@
     </if>
     <if test="type != null">
        AND ct.TYPE = #{type}
-    </if>
-    <if test="isDeleted != null">
-       AND ct.IS_DELETED = #{isDeleted}
     </if>
     <if test="learningTime != null">
       AND ct.LEARNING_TIME &lt;= #{learningTime}
@@ -51,7 +57,11 @@
     SELECT ct.CONTENT_ID      AS contentId
          , ct.TITLE           AS title
          , ct.TYPE            AS type
+         , typeCode.CUSTOM_CODE AS typeCode
+         , typeCode.CUSTOM_NAME  AS typeName
          , ct.LEVEL           AS level
+         , levelCode.CUSTOM_CODE AS levelCode
+         , levelCode.CUSTOM_NAME  AS levelName
          , ct.LEARNING_TIME   AS learningTime
          , ct.RESOURCE_PATH   AS resourcePath
          , ct.NOTES		        AS notes
@@ -59,7 +69,14 @@
          , ct.CREATED_AT 	    AS createdAt
          , ct.UPDATED_AT 	    AS updatedAt
       FROM CONTENT ct
+      JOIN COMPETENCY_REPORT_CUSTOM_CODE typeCode
+        ON ct.TYPE = typeCode.CUSTOM_CODE_ID
+       AND typeCode.IS_DELETED = 'N'
+      JOIN COMPETENCY_REPORT_CUSTOM_CODE levelCode
+        ON ct.LEVEL = levelCode.CUSTOM_CODE_ID
+       AND levelCode.IS_DELETED = 'N'
      WHERE ct.CONTENT_ID = #{contentId}
+
   </select>
 
   <select id="findContentByCompetencyReportId"

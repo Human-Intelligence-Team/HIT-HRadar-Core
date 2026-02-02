@@ -3,6 +3,7 @@ package org.hit.hradar.domain.competencyReport.command.application.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagCreateRequest;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagDeleteRequest;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Tag;
 import org.hit.hradar.domain.competencyReport.command.domain.repository.TagRepository;
@@ -20,17 +21,12 @@ public class TagCommandService {
 
   /**
    * 태그 등록
-   * @param tagName
+   * @param request
    */
   @Transactional
-  public void createTag(String tagName) {
+  public void createTag(TagCreateRequest request) {
 
-    // validation check
-    if  (tagName == null || tagName.isBlank()) {
-      throw new BusinessException(CompetencyReportErrorCode.TAG_NAME_REQUIRED);
-    }
-
-    String normalizedTagName = tagName.trim();
+    String normalizedTagName = request.getTagName().trim();
 
     if (tagRepository.existsByTagName(normalizedTagName)) {
       throw new BusinessException(CompetencyReportErrorCode.TAG_NAME_ALREADY_EXISTS);

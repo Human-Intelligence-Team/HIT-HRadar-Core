@@ -150,5 +150,48 @@
         ORDER BY g.goal_depth, g.goal_id
     </select>
 
+  <select id="findAllByCyclePeriod"
+    resultType="org.hit.hradar.domain.goal.query.dto.response.CyclePeriodGoalsRow">
 
+    SELECT gl.goal_id
+         , gl.goal_dept_id
+         , gl.goal_depth
+         , gl.goal_scope
+         , gl.goal_type
+         , gl.goal_title
+         , gl.goal_description
+         , gl.goal_start_date
+         , gl.goal_end_date
+         , gl.owner_id
+         , emp.NAME AS employeeName
+         , dep.DEPT_NAME as deptName
+         , cp.NAME AS positionName
+         , gl.goal_approve_status AS approveStatus
+         , gl.goal_status AS progressStatus
+         , kd.kpi_metric_name
+         , kd.kpi_start_value
+         , kd.kpi_target_value
+         , okr.key_result_content
+         , okr.is_achieved
+         , okr.okr_metric_name
+         , okr.key_target_value
+      FROM goal gl
+      LEFT JOIN kpi_detail kd ON gl.goal_id = kd.goal_id
+       AND kd.is_deleted = 'N'
+      LEFT JOIN okr_key_result okr ON gl.goal_id = okr.goal_id
+       AND okr.is_deleted = 'N'
+      JOIN EMPLOYEE emp ON gl.OWNER_ID = emp.EMP_ID
+       AND emp.IS_DELETED = 'N'
+       AND emp.TYPE = 'WORKING'
+      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
+       AND dep.IS_DELETED = 'N'
+      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.POSITION_ID
+       AND cp.IS_DELETED = 'N'
+     WHERE gl.is_deleted = 'N'
+       AND gl.GOAL_SCOPE = 'PERSONAL'
+       AND gl.goal_approve_status = 'APPROVED'
+       AND gl.goal_depth IN ('LEVEL_2', 'LEVEL_3')
+       AND gl.goal_start_date &gt;= #{startDate}
+       AND gl.goal_end_date   &lt;= #{endDate}
+  </select>
 </mapper>

@@ -18,6 +18,7 @@ public interface EmployeeQueryMapper {
     List<EmployeeResponse> findList(
       @Param("comId") Long comId,
       @Param("deptId") Long deptId,
-      @Param("positionId") Long positionId
+      @Param("positionId") Long positionId,
+      @Param("employeeName") String employeeName
     );
 }

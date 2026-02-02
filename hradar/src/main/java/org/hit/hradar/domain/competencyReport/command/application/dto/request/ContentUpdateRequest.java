@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.Getter;
-import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentType;
-import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Level;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ContentUpdateRequest {
 
   private Long contentId;
@@ -17,10 +17,9 @@ public class ContentUpdateRequest {
   private String title;
 
   @NotNull(message = "컨텐츠 타입은 필수입니다.")
-  private ContentType type;
+  private String type;
 
-  @NotNull(message = "컨텐츠 타입은 필수입니다.")
-  private Level level;
+  private String level;
 
   private Integer learningTime;
 
@@ -35,4 +34,10 @@ public class ContentUpdateRequest {
   private List<Long> tags; // 태그 id 리스트
 
 
+  public ContentUpdateRequest(Long contentId, String title, String type, List<Long> tags) {
+    this.contentId = contentId;
+    this.title = title;
+    this.type = type;
+    this.tags = tags;
+  }
 }

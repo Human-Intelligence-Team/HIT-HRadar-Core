@@ -31,7 +31,7 @@ public class CompensationCommandService {
                     , compensation.getRemark()
                     )).toList();
 
-//    compensationSalaryRepository.saveAll(compensationSalaries);
+     compensationSalaryRepository.saveAll(compensationSalaries);
 
   }
 

@@ -15,6 +15,9 @@ public enum CompetencyReportErrorCode implements ErrorCode {
   CONTENT_TYPE_REQUIRED("CR-002", "컨텐츠 타입은 필수 입력 값입니다.", HttpStatus.BAD_REQUEST),
   CONTENT_LEVEL_REQUIRED("CR-003", "컨텐츠 난이도는 필수 입력 값입니다.", HttpStatus.BAD_REQUEST),
   CONTENT_NOT_FOUND("CR-004", "존재하지 않는 컨텐츠입니다.",  HttpStatus.NOT_FOUND),
+  CONTENT_ID_REQUIRED("CR-005", "컨텐츠 ID는 필수 입력 값입니다.", HttpStatus.BAD_REQUEST),
+  CONTENT_ALREADY_DELETED("CR-005", "이미 삭제된 컨텐츠입니다.", HttpStatus.BAD_REQUEST),
+
   // Contents Tag 관련 ErrorCode
 
 
@@ -26,8 +29,13 @@ public enum CompetencyReportErrorCode implements ErrorCode {
   TAG_NOT_FOUND("TAG-004" , "존재하지 않는 태그입니다.", HttpStatus.NOT_FOUND),
 
 
+  // 커스텀 코드 관련 ErrorCode
+  CUSTOM_CODE_ID_REQUIRED("CODE-003", "삭제할 코드를 1개 이상 선택해주세요.", HttpStatus.BAD_REQUEST),
 
-  ;
+;
+
+
+
   private final String errorCode;
   private final String message;
   private final HttpStatus httpStatus;

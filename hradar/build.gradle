@@ -33,12 +33,21 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "software.amazon.awssdk:bom:2.17.295"
+
     }
 }
 
 ext {
     jjwtVersion = '0.12.6'
+    springCloudVersion = "2025.0.0"
+    set('springAiVersion', "1.0.0-M6")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+        mavenBom "software.amazon.awssdk:bom:2.17.295"
+    }
     springCloudVersion = "2023.0.1"
 }
 
@@ -64,6 +73,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.kafka:spring-kafka'
 //    implementation 'org.springframework.boot:spring-boot-starter-batch'
@@ -93,6 +103,11 @@ dependencies {
 //    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation "org.wiremock:wiremock-standalone:3.2.0"
+
 }
 tasks.named('test') {
     useJUnitPlatform()

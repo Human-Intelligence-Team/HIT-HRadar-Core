@@ -1,5 +1,6 @@
 package org.hit.hradar.domain.goal.query.mapper;
 
+import java.time.LocalDate;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.hit.hradar.domain.goal.query.dto.response.*;
@@ -30,5 +31,10 @@ public interface GoalMapper {
 
     List<GoalNodeResponseDto> selectMyGoals(
             @Param("ownerId") Long ownerId
-    );}
+    );
+
+  List<CyclePeriodGoalsRow> findAllByCyclePeriod(
+      @Param("startDate") LocalDate startDate,
+      @Param("endDate") LocalDate endDate);
+}
 

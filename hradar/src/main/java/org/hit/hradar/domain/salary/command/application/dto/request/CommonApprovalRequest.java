@@ -28,4 +28,21 @@ public class CommonApprovalRequest {
   private List<SalaryDTO> salaries;
 
 
+  // 모든 필드를 파라미터로 받는 생성자
+  public CommonApprovalRequest(Long docId, Long deptId, Long writerId, Long comId,
+      String approvalDocumentType, String title, String content,
+      LocalDateTime submittedDate, List<Long> referenceIds,
+      List<ApprovalLineStepDTO> approvalLineSteps, List<SalaryDTO> salaries) {
+    this.docId = docId;
+    this.deptId = deptId;
+    this.writerId = writerId;
+    this.comId = comId;
+    this.approvalDocumentType = approvalDocumentType;
+    this.title = title;
+    this.content = content;
+    this.submittedDate = submittedDate;
+    this.referenceIds = referenceIds;
+    this.approvalLineSteps = approvalLineSteps;
+    this.salaries = salaries;
+  }
 }

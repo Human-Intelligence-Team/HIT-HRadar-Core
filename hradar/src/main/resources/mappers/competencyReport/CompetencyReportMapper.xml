@@ -22,7 +22,7 @@
       FROM COMPETENCY_REPORT cr
       JOIN EMPLOYEE emp ON cr.EMP_ID = emp.EMP_ID
       JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
-      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.COM_POSITION_ID
+      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.POSITION_ID
       JOIN CYCLE cc ON cr.CYCLE_ID = cc.CYCLE_ID
      WHERE cr.COMPETENCY_REPORT_ID = #{competencyReportId};
   </select>
@@ -44,7 +44,7 @@
       JOIN CYCLE cc ON cc.CYCLE_ID = cr.CYCLE_ID
       JOIN EMPLOYEE emp ON cr.EMP_ID = emp.EMP_ID
       JOIN DEPARTMENT dp ON emp.DEPT_ID = dp.DEPT_ID
-      JOIN COMPANY_POSITION cmp ON emp.POSITION_ID = cmp.COM_POSITION_ID
+      JOIN COMPANY_POSITION cmp ON emp.POSITION_ID = cmp.POSITION_ID
      WHERE cr.IS_DELETED = 'N'
        AND emp.TYPE = 'WORKING' -- 재직 중
        AND cc.YEAR = #{year}
@@ -54,7 +54,7 @@
        AND dp.DEPT_ID = #{deptId}
     </if>
     <if test="comPositionId != null">
-       AND cmp.COM_POSITION_ID  = #{comPositionId}
+       AND cmp.POSITION_ID  = #{comPositionId}
     </if>
     <if test="employeeNo != null and employeeNo != ''">
        AND emp.EMPLOYEE_NO LIKE CONCAT('%', #{employeeNo}, '%')
@@ -107,7 +107,7 @@
       JOIN CYCLE cc ON cc.CYCLE_ID = cr.CYCLE_ID
       JOIN EMPLOYEE emp ON cr.EMP_ID = emp.EMP_ID
       JOIN DEPARTMENT dp ON emp.DEPT_ID = dp.DEPT_ID
-      JOIN COMPANY_POSITION cmp ON emp.POSITION_ID = cmp.COM_POSITION_ID
+      JOIN COMPANY_POSITION cmp ON emp.POSITION_ID = cmp.POSITION_ID
      WHERE cr.IS_DELETED = 'N'
        AND emp.TYPE = 'WORKING' -- 재직 중
        AND dp.DEPT_ID = #{deptId}
@@ -118,7 +118,7 @@
        AND cc.QUARTER = #{quarter}
     </if>
     <if test="comPositionId != null">
-       AND cmp.COM_POSITION_ID  = #{comPositionId}
+       AND cmp.POSITION_ID  = #{comPositionId}
     </if>
     <if test="employeeNo != null and employeeNo != ''">
       AND emp.EMPLOYEE_NO LIKE CONCAT('%', #{employeeNo}, '%')

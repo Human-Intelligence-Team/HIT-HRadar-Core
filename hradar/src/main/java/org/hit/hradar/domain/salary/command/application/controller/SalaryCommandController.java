@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.salary.command.application.dto.request.CommonApprovalRequest;
-//import org.hit.hradar.domain.salary.command.application.dto.request.SalaryApprovalRequest;
-//import org.hit.hradar.domain.salary.command.application.dto.request.SalaryCreateRequest;
 import org.hit.hradar.domain.salary.command.application.service.SalaryCommandService;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;

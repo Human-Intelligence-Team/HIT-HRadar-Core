@@ -2,6 +2,7 @@ package org.hit.hradar.domain.salary.command.infrastructure.repository;
 
 
 import java.util.List;
+import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ContentTag;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Tag;
 import org.hit.hradar.domain.competencyReport.command.domain.repository.TagRepository;
 import org.hit.hradar.domain.salary.command.domain.aggregate.BasicSalary;
@@ -12,6 +13,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BasicSalaryJpaRepository extends BasicSalaryRepository, JpaRepository<BasicSalary, Long> {
 
-
+  default void saveAll(List<BasicSalary> basicSalaries) {
+    if (basicSalaries == null || basicSalaries.isEmpty()) {
+      return;
+    }
+    saveAll(basicSalaries);
+  }
 
 }
