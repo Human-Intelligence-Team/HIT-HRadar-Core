@@ -95,7 +95,7 @@
            JOIN approval_document d
                 ON r.doc_id = d.doc_id
                   AND d.is_deleted = 'N'
-    WHERE r.reference_id = #{userId}
+    WHERE r.ref_emp_id = #{userId}
       AND r.is_deleted = 'N'
     ORDER BY d.submitted_at DESC
 

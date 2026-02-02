@@ -58,6 +58,17 @@ public class LeaveQueryController {
     );
   }
 
+  //내 연차 지급 목록 조회
+  @GetMapping("/grants")
+  public ResponseEntity<ApiResponse<List<LeaveGrantDto>>> getMyLeaveGrants(
+      @CurrentUser AuthUser authUser
+  ) {
+    return ResponseEntity.ok(
+        ApiResponse.success(
+            leaveQueryService.getMyLeaveGrants(authUser.employeeId())
+        )
+    );
+  }
 
 
 }
