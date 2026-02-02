@@ -29,6 +29,12 @@ spring:
               filters:
                 - StripPrefix=2
 
+            - id: hr-files
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/v1/files/**
+              filters:
+
             # =========================
             # HR API (JWT 필요)
             # =========================
