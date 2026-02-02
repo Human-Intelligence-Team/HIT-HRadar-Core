@@ -24,4 +24,20 @@ public class SalaryDTO {
   private CompensationType compensationType;
   private Long amount;
   private BigDecimal rate;
+
+  public SalaryDTO(Long empId, String remark,
+      Long basicSalaryId, SalaryIncreaseType salaryIncreaseType, Long basicSalary, BigDecimal increaseRate, Integer increaseAmount,
+      Long compensationSalaryId, CompensationType compensationType, Long amount, BigDecimal rate) {
+    this.empId = empId;
+    this.remark = remark;
+    this.basicSalaryId = basicSalaryId;
+    this.salaryIncreaseType = salaryIncreaseType;
+    this.basicSalary = basicSalary;
+    this.increaseRate = increaseRate;
+    this.increaseAmount = increaseAmount;
+    this.compensationSalaryId = compensationSalaryId;
+    this.compensationType = compensationType;
+    this.amount = amount;
+    this.rate = rate;
+  }
 }

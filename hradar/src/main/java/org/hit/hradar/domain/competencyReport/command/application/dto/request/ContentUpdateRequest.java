@@ -34,4 +34,10 @@ public class ContentUpdateRequest {
   private List<Long> tags; // 태그 id 리스트
 
 
+  public ContentUpdateRequest(Long contentId, String title, String type, List<Long> tags) {
+    this.contentId = contentId;
+    this.title = title;
+    this.type = type;
+    this.tags = tags;
+  }
 }

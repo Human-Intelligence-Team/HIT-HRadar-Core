@@ -32,7 +32,7 @@ public class BasicSalaryCommandService {
                     , salary.getRemark()
                 )).toList();
 
-    // basicSalaryRepository.saveAll(basicSalaries);
+     basicSalaryRepository.saveAll(basicSalaries);
 
   }
 

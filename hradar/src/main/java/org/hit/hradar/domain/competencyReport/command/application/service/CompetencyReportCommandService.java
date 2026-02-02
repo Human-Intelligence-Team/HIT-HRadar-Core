@@ -47,7 +47,6 @@ public class CompetencyReportCommandService {
     // 시작일 종료일에 맞춰  okr/ kpi의 종료일에 맞춰서 가져오기!
     List<CyclePeriodGoalsRow> rows = goalProviderService.getGoalsForCyclePeriod(start, end);
 
-    System.out.println("CompetencyReportCommandService.createReport orw " +  rows.size());
     // 사원에 맞춰 가공
     List<PersonalCompetencySourceDTO> sources =
         rows.stream()

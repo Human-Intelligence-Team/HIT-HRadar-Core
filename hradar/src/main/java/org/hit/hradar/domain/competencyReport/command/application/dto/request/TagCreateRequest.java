@@ -12,4 +12,9 @@ public class TagCreateRequest {
   private String tagName;
 
 
+  public TagCreateRequest(String tagName) {
+    this.tagName = tagName;
+  }
+
+
 }

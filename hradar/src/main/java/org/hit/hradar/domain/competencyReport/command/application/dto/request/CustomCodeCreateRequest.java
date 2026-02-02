@@ -26,4 +26,12 @@ public class CustomCodeCreateRequest {
 
   @NotNull(message = "사용 여부는 필수입니다.")
   private Character isDeleted;
+
+  public CustomCodeCreateRequest(Long customCodeId, String customCode, String customName, String customDesc, Character isDeleted) {
+    this.customCodeId = customCodeId;
+    this.customCode = customCode;
+    this.customName = customName;
+    this.customDesc = customDesc;
+    this.isDeleted = isDeleted;
+  }
 }

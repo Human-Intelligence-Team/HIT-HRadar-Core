@@ -6,7 +6,6 @@ import lombok.Getter;
 import org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO;
 
 @Getter
-@AllArgsConstructor
 public class OutputResultDTO {
 
   private Long ownerId;
@@ -15,4 +14,24 @@ public class OutputResultDTO {
   private String goalFailureAnalysis; // 미달성 목표 원인 분석 (역량 관점)
   private List<ContentResultDTO> contentRow; // 학습컨텐츠-태그
 
+
+  public OutputResultDTO(Long ownerId, Long cycleId, String kpiOkrResultSummary,
+      String goalFailureAnalysis, List<ContentResultDTO> contentRow) {
+    this.ownerId = ownerId;
+    this.cycleId = cycleId;
+    this.kpiOkrResultSummary = kpiOkrResultSummary;
+    this.goalFailureAnalysis = goalFailureAnalysis;
+    this.contentRow = contentRow;
+  }
+
+  @Getter
+    public static class ContentResultDTO {
+      private Long contentId;
+      private String reason;
+
+      public ContentResultDTO(Long contentId, String reason) {
+        this.contentId = contentId;
+        this.reason = reason;
+      }
+    }
 }

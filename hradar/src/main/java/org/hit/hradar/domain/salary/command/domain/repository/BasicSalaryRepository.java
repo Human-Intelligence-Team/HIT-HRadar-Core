@@ -6,9 +6,10 @@ import org.hit.hradar.domain.salary.command.domain.aggregate.BasicSalary;
 
 public interface BasicSalaryRepository {
 
-  //void saveAll(List<BasicSalary> basicSalaries);
+  void saveAll(List<BasicSalary> basicSalaries);
 
   List<BasicSalary> findAllByDocId(Long docId);
 
   void deleteAllByDocId(Long docId);
+
 }

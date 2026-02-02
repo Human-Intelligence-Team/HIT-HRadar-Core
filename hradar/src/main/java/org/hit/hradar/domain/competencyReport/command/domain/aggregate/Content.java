@@ -81,16 +81,12 @@ public class Content extends BaseTimeEntity {
     // validation
     validate(request.getTitle(), request.getType());
 
-    String normalizedTitle = request.getTitle().trim();
-    String normalizedResourcePath = request.getResourcePath().trim();
-    String normalizedNotes = request.getNotes().trim();
-
-    return new Content(normalizedTitle
+    return new Content(request.getTitle()
                     , request.getType()
                     , request.getLevel()
                     , request.getLearningTime()
-                    , normalizedResourcePath
-                    , normalizedNotes);
+                    , request.getResourcePath()
+                    , request.getNotes());
 
   }
 
