@@ -400,7 +400,7 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
   산출물계획을 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1Ka1EDLKefRIke4mxDdVm6wlhyBp4_J1skyuc-2MV8lc/edit?gid=0#gid=0)를 클릭하세요 <br>
 
   <details> <summary> WBS</summary>
-  	<img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/032d4b6b-e0ec-4dd2-b42d-2cc05043e322" />
+	  <img width="2684" height="1362" alt="wbs" src="https://github.com/user-attachments/assets/573d1764-128a-42cc-b37f-19ad057d338a" />
   </details>
   <details> <summary> 산출물 계획</summary>
 	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/2e0548aa-e8a2-4ec3-b325-962f2c28e0b6" />
@@ -422,6 +422,20 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 
   </details>
 
+- ###  📚 Api명세서
+  	 <details> <summary> api명세서 </summary>
+		<img width="980" height="852" alt="s1" src="https://github.com/user-attachments/assets/ec717320-1b0e-4861-a17a-bf81cfec89f3" />
+		<img width="976" height="996" alt="s2" src="https://github.com/user-attachments/assets/f1c314d4-af1c-4e21-8a85-712d1c23c9ed" />
+		<img width="978" height="938" alt="s3" src="https://github.com/user-attachments/assets/5a9ba85a-0427-4741-bff0-323217401a71" />
+		<img width="972" height="1032" alt="s4" src="https://github.com/user-attachments/assets/ed1582dc-5163-4386-9aa3-363538d5e751" />
+		<img width="976" height="978" alt="s5" src="https://github.com/user-attachments/assets/cbff33e0-1c1f-42be-aaf4-2af69889d00b" />
+		<img width="968" height="898" alt="s6" src="https://github.com/user-attachments/assets/e0fe706a-8302-4fe5-92e7-1e8500baa0a2" />
+	    <img width="976" height="1020" alt="s7" src="https://github.com/user-attachments/assets/7ce82eb0-18ec-4134-98aa-719a658c7660" />
+	    <img width="972" height="960" alt="s8" src="https://github.com/user-attachments/assets/904281b3-47f5-414e-9d0c-d8d3cab47d32" />
+	    <img width="970" height="900" alt="s9" src="https://github.com/user-attachments/assets/72d79700-fd31-42cf-b5a8-a04e923d05ea" />
+	    <img width="1074" height="734" alt="s10" src="https://github.com/user-attachments/assets/5b4d3746-3489-469d-bf01-bc81f9a7a711" />
+  	</details>
+
 - ### 🗺️ ERD **(Entity Relationship Diagram)**
   ERD를 자세히 보려면 [여기](https://www.erdcloud.com/d/MqC3NnbQPPk2KW7j5)를 클릭하세요 <br>
 
@@ -429,10 +443,18 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	  <img width="6030" height="3612" alt="Image" src="https://github.com/user-attachments/assets/a094fc11-8186-4863-9f31-37cae464925d" />
 	  
   </details>
-  
+
+
+- ### 🧪 백엔드 단위 테스트
+   <details> <summary> 백엔드 단위 테스트 </summary>
+   </details>
+	
 - ### 🖼️ 화면 설계서
 	화면설계서 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
-	
+
+
+- ### 🦴 깃 형상관리
+  깃 형상 관리 자세히 보려면 [여기](https://github.com/orgs/Human-Intelligence-Team/projects/1/views/4)를 클릭하세요 <br>
   
 ---
 
