@@ -1,4 +1,7 @@
 package org.hit.hradar.domain.grading.query.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.grading.query.dto.response.TeamGradeDistributionPolicyDto;
 import org.hit.hradar.domain.grading.query.service.TeamGradeDistributionPolicyQueryService;
@@ -13,42 +16,39 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Tag(name = "Grading - Distribution Policy", description = "팀 등급 배분 정책 조회 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/distribution-policies")
 public class TeamGradeDistributionPolicyQueryController {
-    private final TeamGradeDistributionPolicyQueryService queryService;
+        private final TeamGradeDistributionPolicyQueryService queryService;
 
-    /**
-     * 팀 등급 기준 정책 목록 조회
-     */
-    @GetMapping("/team-grades/{teamGradeId}")
-    public ResponseEntity<ApiResponse<List<TeamGradeDistributionPolicyDto>>> getPolicies(
-            @CurrentUser AuthUser authUser,
-            @PathVariable Long teamGradeId
-    ) {
-        List<TeamGradeDistributionPolicyDto> result =
-                queryService.getPolicies(authUser.companyId(), teamGradeId);
+        /**
+         * 팀 등급 기준 정책 목록 조회
+         */
+        @GetMapping("/team-grades/{teamGradeId}")
+        public ResponseEntity<ApiResponse<List<TeamGradeDistributionPolicyDto>>> getPolicies(
+                        @CurrentUser AuthUser authUser,
+                        @PathVariable Long teamGradeId) {
+                List<TeamGradeDistributionPolicyDto> result = queryService.getPolicies(authUser.companyId(),
+                                teamGradeId);
 
-        return ResponseEntity.ok(ApiResponse.success(result));
-    }
+                return ResponseEntity.ok(ApiResponse.success(result));
+        }
 
-    /**
-     * 단건 정책 조회
-     */
-    @GetMapping("/team-grades/{teamGradeId}/member-grades/{memberGradeId}")
-    public ResponseEntity<ApiResponse<TeamGradeDistributionPolicyDto>> getPolicy(
-            @CurrentUser AuthUser authUser,
-            @PathVariable Long teamGradeId,
-            @PathVariable Long memberGradeId
-    ) {
-        TeamGradeDistributionPolicyDto result =
-                queryService.getPolicy(
-                        authUser.companyId(),
-                        teamGradeId,
-                        memberGradeId
-                );
+        /**
+         * 단건 정책 조회
+         */
+        @GetMapping("/team-grades/{teamGradeId}/member-grades/{memberGradeId}")
+        public ResponseEntity<ApiResponse<TeamGradeDistributionPolicyDto>> getPolicy(
+                        @CurrentUser AuthUser authUser,
+                        @PathVariable Long teamGradeId,
+                        @PathVariable Long memberGradeId) {
+                TeamGradeDistributionPolicyDto result = queryService.getPolicy(
+                                authUser.companyId(),
+                                teamGradeId,
+                                memberGradeId);
 
-        return ResponseEntity.ok(ApiResponse.success(result));
-    }
+                return ResponseEntity.ok(ApiResponse.success(result));
+        }
 }

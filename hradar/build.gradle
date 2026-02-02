@@ -2,7 +2,13 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
     id 'io.spring.dependency-management' version '1.1.5'
+    id 'jacoco' // 1. 자코코 플러그인 추가
 }
+
+jacoco {
+    toolVersion = "0.8.11" // 자코코 버전 설정
+}
+
 
 group = 'org.hit'
 version = '1.0'
@@ -35,6 +41,7 @@ ext {
     jjwtVersion = '0.12.6'
     springCloudVersion = "2023.0.1"
 }
+
 
 dependencies {
     // WebClient (권장)
@@ -89,4 +96,47 @@ dependencies {
 }
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport // test 작업이 끝나면 자동으로 jacocoTestReport 실행
+}
+
+// 자코코 리포트 생성 설정
+jacocoTestReport {
+    dependsOn test // 리포트 생성을 위해 테스트가 먼저 실행되어야 함
+    reports {
+        html.required = true // 사람이 보는 HTML 리포트 생성
+        xml.required = true  // 시스템 연동용 XML 생성
+    }
+
+    // 리포트 결과에서 제외할 항목들 (커버리지 수치 정확도를 위해)
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/*Application*",       // 메인 애플리케이션 클래스
+                    "**/*Request*",           // DTO
+                    "**/*Response*",          // DTO
+                    "**/*Dto*",               // DTO
+                    "**/entity/**",           // JPA 엔티티
+                    "**/config/**",           // 설정 파일
+                    "**/global/**",           // 공통 예외 처리 등
+                    "**/*Interceptor*",       // 인터셉터
+                    "**/*Filter*",            // 필터
+                    "**/*Mapper*",            // MyBatis 매퍼 인터페이스 (로직 없음)
+                    "**/*Q*",                 // Querydsl 생성 파일 (사용 시)
+            ])
+        }))
+    }
+}
+
+//  특정 커버리지 미달 시 빌드 실패 처리
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.70 // 70% 미만이면 빌드 실패 (팀원들과 상의해서 조정하세요!)
+            }
+        }
+    }
 }

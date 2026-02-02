@@ -1,5 +1,7 @@
 package org.hit.hradar.domain.me.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.me.dto.MeResponse;
 import org.hit.hradar.domain.me.service.EmployeeMeQueryService;
@@ -9,6 +11,7 @@ import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Employee Self Query", description = "내 프로필 및 기본 정보 조회 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/me")
@@ -16,17 +19,16 @@ public class EmployeeMeQueryController {
 
   private final EmployeeMeQueryService employeeMeQueryService;
 
+  @Operation(summary = "내 정보 조회", description = "현재 로그인한 사원의 통합 프로필 정보(계정, 인사정보, 권한 등)를 조회합니다.")
   @GetMapping
   public ResponseEntity<ApiResponse<MeResponse>> getMe(
-      @CurrentUser AuthUser authUser
-  ) {
+      @CurrentUser AuthUser authUser) {
     Long userId = authUser.userId();
     String role = authUser.role();
     Long comId = authUser.companyId();
     Long empId = authUser.employeeId();
 
-    MeResponse res =
-        employeeMeQueryService.getMe(userId, role, comId, empId);
+    MeResponse res = employeeMeQueryService.getMe(userId, role, comId, empId);
 
     return ResponseEntity.ok(ApiResponse.success(res));
   }
