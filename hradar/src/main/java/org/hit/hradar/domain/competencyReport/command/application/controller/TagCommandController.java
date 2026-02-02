@@ -1,6 +1,10 @@
 package org.hit.hradar.domain.competencyReport.command.application.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagCreateRequest;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagDeleteRequest;
 import org.hit.hradar.domain.competencyReport.command.application.service.TagCommandService;
 import org.hit.hradar.global.dto.ApiResponse;
