@@ -42,7 +42,7 @@ public class DepartmentQueryService {
   }
 
   public EmployeeListResponse getDepartmentMembers(Long companyId, Long deptId) {
-    List<EmployeeResponse> members = employeeQueryMapper.findList(companyId, deptId, null);
+    List<EmployeeResponse> members = employeeQueryMapper.findList(companyId, deptId, null, null);
     return EmployeeListResponse.of(members);
   }
 

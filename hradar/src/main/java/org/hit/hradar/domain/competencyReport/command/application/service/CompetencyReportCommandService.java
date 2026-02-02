@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hit.hradar.domain.competencyReport.command.application.dto.KpiDataDTO;
 import org.hit.hradar.domain.competencyReport.command.application.dto.OkrDataDTO;
 import org.hit.hradar.domain.competencyReport.command.application.dto.PersonalCompetencySourceDTO;
@@ -21,7 +22,7 @@ import org.hit.hradar.domain.goal.query.dto.response.CyclePeriodGoalsRow;
 import org.hit.hradar.domain.goal.query.service.provider.GoalProviderService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CompetencyReportCommandService {
@@ -37,7 +38,7 @@ public class CompetencyReportCommandService {
    */
   @Transactional
   public void createReport(Long comId, CompetencyReportCreateRequest request) {
-
+    System.out.println("CompetencyReportCommandService.createReport");
     // setting
     Long cycleId = request.getCycleId(); // 회차
     LocalDate start = LocalDate.parse(request.getStartDate()); // 시작일
@@ -46,6 +47,7 @@ public class CompetencyReportCommandService {
     // 시작일 종료일에 맞춰  okr/ kpi의 종료일에 맞춰서 가져오기!
     List<CyclePeriodGoalsRow> rows = goalProviderService.getGoalsForCyclePeriod(start, end);
 
+    System.out.println("CompetencyReportCommandService.createReport orw " +  rows.size());
     // 사원에 맞춰 가공
     List<PersonalCompetencySourceDTO> sources =
         rows.stream()

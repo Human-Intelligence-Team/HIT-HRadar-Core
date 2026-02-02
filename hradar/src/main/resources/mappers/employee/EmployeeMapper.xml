@@ -104,6 +104,10 @@
     <if test="positionId != null">
       AND e.position_id = #{positionId}
     </if>
+    <if test="employeeName != null and employeeName != ''">
+      AND e.NAME LIKE CONCAT('%', #{employeeName}, '%')
+    </if>
+
 
     ORDER BY e.emp_id DESC
   </select>
