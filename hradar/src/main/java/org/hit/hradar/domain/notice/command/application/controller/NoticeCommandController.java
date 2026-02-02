@@ -20,62 +20,58 @@ import java.util.List;
 @RequestMapping("/notices")
 public class NoticeCommandController {
 
-    private final NoticeCommandService noticeCommandService;
+        private final NoticeCommandService noticeCommandService;
 
-    /** 이미지 드래그 업로드 */
-    @PostMapping("/images")
-    public ApiResponse<String> uploadImage(
-            @CurrentUser AuthUser authUser,
-            @RequestPart MultipartFile image
-    ) {
-        return ApiResponse.success(
-                noticeCommandService.uploadImage(authUser.companyId(), image)
-        );
-    }
+        /** 이미지 드래그 업로드 */
+        @PostMapping("/images")
+        public ApiResponse<String> uploadImage(
+                        @CurrentUser AuthUser authUser,
+                        @RequestPart MultipartFile image) {
+                return ApiResponse.success(
+                                noticeCommandService.uploadImage(authUser.companyId(), image));
+        }
 
-    @DeleteMapping("/images")
-    public ApiResponse<Void> deleteImage(
-            @RequestParam String imageUrl,
-            @CurrentUser AuthUser authUser
-    ) {
-        noticeCommandService.deleteImage(authUser.companyId(), imageUrl);
-        return ApiResponse.success(null);
-    }
+        @DeleteMapping("/images")
+        public ApiResponse<Void> deleteImage(
+                        @RequestParam String imageUrl,
+                        @CurrentUser AuthUser authUser) {
+                noticeCommandService.deleteImage(authUser.companyId(), imageUrl);
+                return ApiResponse.success(null);
+        }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<Void> create(
-            @RequestPart NoticeRequest request,
-            @RequestPart(required = false) List<MultipartFile> files,
-            @CurrentUser AuthUser authUser
-    ) {
-        NoticeDto dto = new NoticeDto(request.getCategoryId(), request.getTitle(), request.getContent(), authUser.companyId());
-        noticeCommandService.create(dto, files);
-        return ApiResponse.success(null);
-    }
+        @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ApiResponse<Void> create(
+                        @RequestPart NoticeRequest request,
+                        @RequestPart(required = false) List<MultipartFile> files,
+                        @CurrentUser AuthUser authUser) {
+                NoticeDto dto = new NoticeDto(request.getCategoryId(), request.getTitle(), request.getContent(),
+                                authUser.companyId());
+                noticeCommandService.create(dto, files);
+                return ApiResponse.success(null);
+        }
 
-    @PutMapping("/{noticeId}")
-    public ApiResponse<Void> update(
-            @PathVariable Long noticeId,
-            @RequestBody NoticeRequest request,
-            @CurrentUser AuthUser authUser
-    ) {
-        NoticeDto dto = new NoticeDto(
-                request.getCategoryId(),
-                request.getTitle(),
-                request.getContent(),
-                authUser.companyId()
-        );
+        @PutMapping(value = "/{noticeId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+        public ApiResponse<Void> update(
+                        @PathVariable Long noticeId,
+                        @RequestPart NoticeRequest request,
+                        @RequestPart(required = false) List<MultipartFile> files,
+                        @CurrentUser AuthUser authUser) {
+                NoticeDto dto = new NoticeDto(
+                                request.getCategoryId(),
+                                request.getTitle(),
+                                request.getContent(),
+                                authUser.companyId(),
+                                request.getDeletedAttachmentIds());
 
-        noticeCommandService.updateNotice(noticeId, dto);
-        return ApiResponse.success(null);
-    }
+                noticeCommandService.updateNotice(noticeId, dto, files);
+                return ApiResponse.success(null);
+        }
 
-    @DeleteMapping("/{noticeId}")
-    public ApiResponse<Void> delete(
-            @PathVariable Long noticeId,
-            @CurrentUser AuthUser authUser
-    ) {
-        noticeCommandService.deleteNotice(noticeId, authUser.companyId());
-        return ApiResponse.success(null);
-    }
+        @DeleteMapping("/{noticeId}")
+        public ApiResponse<Void> delete(
+                        @PathVariable Long noticeId,
+                        @CurrentUser AuthUser authUser) {
+                noticeCommandService.deleteNotice(noticeId, authUser.companyId());
+                return ApiResponse.success(null);
+        }
 }

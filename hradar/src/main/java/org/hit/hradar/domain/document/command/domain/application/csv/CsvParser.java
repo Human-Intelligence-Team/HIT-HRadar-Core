@@ -18,10 +18,7 @@ public class CsvParser {
                 CSVReader reader = new CSVReader(
                         new InputStreamReader(
                                 new BOMInputStream(file.getInputStream()),
-                                StandardCharsets.UTF_8
-                        )
-                )
-        ) {
+                                StandardCharsets.UTF_8))) {
             List<String[]> all = reader.readAll();
 
             if (all.isEmpty()) {
@@ -42,7 +39,8 @@ public class CsvParser {
             return new CsvParseResult(headerIndex, rows);
 
         } catch (Exception e) {
-            throw new IllegalStateException("CSV 파싱 중 오류가 발생했습니다.", e);
+            throw new org.hit.hradar.global.exception.BusinessException(
+                    org.hit.hradar.domain.document.DocsErrorCode.INVALID_CSV_FORMAT);
         }
     }
 }
