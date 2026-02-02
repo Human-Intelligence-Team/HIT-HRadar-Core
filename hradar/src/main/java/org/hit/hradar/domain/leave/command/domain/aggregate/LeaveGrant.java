@@ -26,10 +26,10 @@ public class LeaveGrant extends BaseTimeEntity {
   @Column(name = "year", nullable = false)
   private Integer year;
 
-  @Column(name = "tatal_days", nullable = false)
+  @Column(name = "total_days", nullable = false)
   private double totalDays;
 
-  @Column(name = "reamaining_Days", nullable = false)
+  @Column(name = "remaining_days", nullable = false)
   private double remainingDays;
 
   //연차 발생일

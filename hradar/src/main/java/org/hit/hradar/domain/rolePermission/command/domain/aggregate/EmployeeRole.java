@@ -9,12 +9,11 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Entity
-@Table(
-    name = "role_employee",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "UK_ROLE_EMP", columnNames = {"role_id", "emp_id"})
-    }
-)
+@Table(name = "role_employee", uniqueConstraints = {
+    @UniqueConstraint(name = "UK_ROLE_EMP", columnNames = { "role_id", "emp_id" })
+}, indexes = {
+    @Index(name = "IDX_ROLE_EMP_EMP_ID", columnList = "emp_id")
+})
 public class EmployeeRole extends BaseTimeEntity {
 
   @Id
@@ -28,8 +27,3 @@ public class EmployeeRole extends BaseTimeEntity {
   @Column(name = "emp_id", nullable = false)
   private Long empId;
 }
-
-
-
-
-

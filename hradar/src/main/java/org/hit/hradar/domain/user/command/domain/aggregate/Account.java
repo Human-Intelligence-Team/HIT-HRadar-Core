@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
@@ -18,7 +19,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "user_account", uniqueConstraints = {
     @UniqueConstraint(name = "UK_COMPANY_LOGINID", columnNames = { "com_id", "login_id" }),
-    @UniqueConstraint(name = "UK_ACCOUNT_COMPANY_EMAIL", columnNames = { "com_id", "email" }) })
+    @UniqueConstraint(name = "UK_ACCOUNT_COMPANY_EMAIL", columnNames = { "com_id", "email" }) }, indexes = {
+        @Index(name = "IDX_ACCOUNT_EMP_ID", columnList = "com_id, employee_id")
+    })
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account {

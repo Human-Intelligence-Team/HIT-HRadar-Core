@@ -25,7 +25,7 @@ spring:
             - id: hr-public
               uri: http://localhost:8082
               predicates:
-                - Path=/api/v1/company-applications/submit,/api/v1/health, /api/v1/file/**
+                - Path=/api/v1/company-applications/submit,/api/v1/health
               filters:
                 - StripPrefix=2
 

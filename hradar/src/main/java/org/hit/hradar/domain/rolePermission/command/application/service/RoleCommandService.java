@@ -42,8 +42,7 @@ public class RoleCommandService {
     return saved.getRoleId();
   }
 
-  //역할 수정, company 격리 필수, userRole=USER는 기본 역할(isSystem=true) 수정 불가
-
+  // 역할 수정, company 격리 필수, userRole=USER는 기본 역할(isSystem=true) 수정 불가
   @Transactional
   public void updateRole(AuthUser authUser, Long roleId, UpdateRoleRequest req) {
     Long comId = authUser.companyId();
@@ -58,17 +57,17 @@ public class RoleCommandService {
       throw new BusinessException(RoleErrorCode.ROLE_NOT_FOUND);
     }
 
-   // userRole=USER는 기본 역할 수정 불가
-    if (role.getIsSystem() == 'Y') {
-    throw new BusinessException(RoleErrorCode.SYSTEM_ROLE_CANNOT_UPDATE);
-    }
+    // userRole=USER는 기본 역할 수정 불가 (정책 변경: 권한 매핑을 위해 수정 허용)
+    // if (role.getIsSystem() == 'Y') {
+    // throw new BusinessException(RoleErrorCode.SYSTEM_ROLE_CANNOT_UPDATE);
+    // }
 
     // 권한 매핑은 replace 방식: 전체 삭제 후 재삽입
     rolePermissionJpaRepository.deleteByIdRoleId(roleId);
     replaceRolePermissions(roleId, req.getPermIds());
   }
 
-  //역할 삭제(soft delete) - userRole=USER는 기본 역할(isSystem=true) 삭제 불가
+  // 역할 삭제(soft delete) - userRole=USER는 기본 역할(isSystem=true) 삭제 불가
   @Transactional
   public void deleteRole(AuthUser authUser, Long roleId) {
     Long comId = authUser.companyId();
@@ -89,7 +88,8 @@ public class RoleCommandService {
   }
 
   private void replaceRolePermissions(Long roleId, List<Long> permIds) {
-    if (permIds == null || permIds.isEmpty()) return;
+    if (permIds == null || permIds.isEmpty())
+      return;
 
     Set<Long> unique = new HashSet<>(permIds);
 
@@ -101,7 +101,8 @@ public class RoleCommandService {
   }
 
   private void validatePermIds(List<Long> permIds) {
-    if (permIds == null || permIds.isEmpty()) return;
+    if (permIds == null || permIds.isEmpty())
+      return;
 
     List<Permission> perms = permissionJpaRepository.findAllByPermIdIn(permIds);
     if (perms.size() != new HashSet<>(permIds).size()) {
