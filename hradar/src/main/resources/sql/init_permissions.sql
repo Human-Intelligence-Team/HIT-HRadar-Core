@@ -118,3 +118,27 @@ INSERT IGNORE INTO role_employee (role_id, emp_id, created_at, created_by)
 SELECT r.role_id, 1001 AS emp_id, NOW(), 1
 FROM role r
 WHERE r.com_id = 1 AND r.role_key = 'OWNER';
+
+INSERT INTO role_employee (
+    emp_id,
+    role_id,
+    created_at,
+    created_by,
+    updated_by
+)
+SELECT
+    u.employee_id,      -- 사원 ID
+    r.role_id,          -- 역할 ID (OWNER)
+    NOW(),              -- 생성일시
+    u.employee_id,      -- 생성자 (본인 ID로 설정)
+    u.employee_id       -- 수정자 (본인 ID로 설정)
+FROM user_account u
+         INNER JOIN role r
+                    ON r.com_id = u.com_id
+                        AND r.role_key = 'OWNER'
+WHERE u.login_id = 'user1002'
+  AND NOT EXISTS (
+    SELECT 1 FROM role_employee re
+    WHERE re.emp_id = u.employee_id
+      AND re.role_id = r.role_id
+);
