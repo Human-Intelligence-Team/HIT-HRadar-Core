@@ -19,7 +19,8 @@ import lombok.NoArgsConstructor;
 @Table(
     name = "user_account",
     uniqueConstraints = {
-        @UniqueConstraint(name = "UK_COMPANY_LOGINID", columnNames = {"com_id", "login_id"}),
+        @UniqueConstraint(name = "UK_COMPANY_LOGINID", columnNames = {"com"
+            + "_id", "login_id"}),
         @UniqueConstraint(name = "UK_ACCOUNT_COMPANY_EMAIL", columnNames = {"com_id", "email"})
     }
 )
