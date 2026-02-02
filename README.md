@@ -391,8 +391,23 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 </div>
 
 ---
+##  ⚒️4. 형상 관리
+- ### 🪢깃 브랜치 전략
+  <img width="976" height="488" alt="브랜치 전략" src="https://github.com/user-attachments/assets/7db836c1-e264-4f77-8dc3-fbf4546babd1" />
 
-## 🗂️ 4. 설계 문서
+- ### 📌 이슈 관리
+	<details> <summary>기능 이슈 템플릿</summary>
+	  <img width="2590" height="1310" alt="기능 이슈 템플릿" src="https://github.com/user-attachments/assets/06de04df-7921-4495-a24a-fd4b8f2dace1" />
+  	</details>
+	<details> <summary>버그 이슈 템플릿</summary>
+	  <img width="2712" height="1314" alt="버그 이슈 템플릿" src="https://github.com/user-attachments/assets/bebf0f99-f399-4542-a99a-15b23cbccfd2" />
+  	</details>
+	
+- ### 🗓️ 작업 트래킹
+   작업 트래킹을 자세히 보려면 [여기](https://github.com/orgs/Human-Intelligence-Team/projects/1/views/4)를 클릭하세요 <br>
+   
+---
+## 🗂️ 5. 설계 문서
 
 - ### 🕖 WBS 및 산출물계획 **(Work Breakdown Structure)**
 
@@ -453,8 +468,6 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	화면설계서 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
 
 
-- ### 🦴 깃 형상관리
-  깃 형상 관리 자세히 보려면 [여기](https://github.com/orgs/Human-Intelligence-Team/projects/1/views/4)를 클릭하세요 <br>
   
 ---
 
