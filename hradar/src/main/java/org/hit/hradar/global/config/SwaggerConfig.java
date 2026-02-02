@@ -12,11 +12,10 @@ public class SwaggerConfig {
   public OpenAPI openAPI() {
     return new OpenAPI()
         .info(new Info()
-                  .title("HRadar")
-                  .description("""
+            .title("HRadar")
+            .description("""
                 HRadar API 명세서
                 """)
-                  .version("v1.0.0")
-        );
+            .version("v1.0.0"));
   }
 }

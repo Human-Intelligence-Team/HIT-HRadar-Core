@@ -1,5 +1,7 @@
 package org.hit.hradar.domain.employee.command.application.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.employee.command.application.dto.reponse.EmployeeCsvPreviewResponse;
 import org.hit.hradar.domain.employee.command.application.dto.reponse.EmployeeCsvUploadResponse;
@@ -29,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * 사원 CSV 업로드 및 등록 관련 컨트롤러
  */
+@Tag(name = "Employee CSV", description = "사원 일괄 등록(CSV) 관리 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/employees/csv")
@@ -43,6 +46,7 @@ public class EmployeeCsvCommandController {
      *
      * @return CSV 파일 리소스
      */
+    @Operation(summary = "사원 일괄 등록 템플릿 다운로드", description = "사원 일괄 등록을 위한 CSV 템플릿 파일을 다운로드합니다.")
     @GetMapping("/template")
     public ResponseEntity<ByteArrayResource> downloadTemplate() {
         byte[] data = employeeCsvTemplateService.getTemplateBytes();
@@ -68,6 +72,7 @@ public class EmployeeCsvCommandController {
      * @param file     업로드할 CSV 파일
      * @return 각 행별 유효성 검사 결과 및 전체 요약
      */
+    @Operation(summary = "CSV 파일 미리보기", description = "업로드한 CSV 파일의 내용을 파싱하여 사원 정보 및 유효성 검사 결과를 보여줍니다.")
     @PostMapping(value = "/preview", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<EmployeeCsvPreviewResponse>> previewCsv(
             @CurrentUser AuthUser authUser,
@@ -82,6 +87,7 @@ public class EmployeeCsvCommandController {
      * 재검증 후 유효한 경우에만 일괄 등록 처리됩니다.
      * </p>
      */
+    @Operation(summary = "사원 일괄 등록 실행", description = "미리보기에서 확인된 사원 정보들을 최종적으로 시스템에 일괄 등록합니다.")
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<EmployeeCsvUploadResponse>> registerCsv(
             @CurrentUser AuthUser authUser,
