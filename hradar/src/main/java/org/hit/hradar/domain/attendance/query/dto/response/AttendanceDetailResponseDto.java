@@ -20,6 +20,8 @@ public class AttendanceDetailResponseDto {
 
   private LocalDate workDate;
   private AttendanceStatus status;
+  private String workType;
+  private String workPlace;
 
   private LocalDateTime checkInTime;
   private LocalDateTime checkOutTime;
