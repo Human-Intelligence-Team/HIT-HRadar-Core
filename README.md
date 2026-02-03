@@ -468,6 +468,7 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	화면설계서 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
 
 - ### 🧪 프론트 단위 테스트
+  	프론트 단위 테스트 결과서를 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1M08fqH1nXOL5BNbKlYSQnGuuSC2kXnJKZOFM52vHlOI/edit?gid=1870006995#gid=1870006995)를 클릭하세요 
    
 ---
 
