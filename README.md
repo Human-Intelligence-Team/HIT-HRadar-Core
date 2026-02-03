@@ -459,7 +459,9 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 
 
 - ### 🧪 백엔드 단위 테스트
-   <details> <summary> 백엔드 단위 테스트 </summary>
+  <details> <summary> 백엔드 단위 테스트 </summary>
+	   <img width="1920" height="1456" alt="Image" src="https://github.com/user-attachments/assets/cab9f43f-322a-4572-976d-7462e489e14d" />
+	   <img width="1920" height="1472" alt="Image" src="https://github.com/user-attachments/assets/b2ca8e7d-c3e5-4205-804d-d1dd672b83ec" />
    </details>
 	
 - ### 🖼️ 화면 설계서
