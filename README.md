@@ -465,8 +465,21 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 - ### 🖼️ 화면 설계서
 	화면설계서 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
 
-
-  
+- ### 🧪 프론트 단위 테스트
+   <details> <summary> 로그인/회사 신청 </summary>
+   </details>
+   <details> <summary> 인사관리 </summary>
+   </details>
+			 <details> <summary> 근태관리 </summary>
+   </details>
+			 <details> <summary> 결재 </summary>
+   </details>
+				 <details> <summary> 성과관리 </summary>
+   </details>
+				 <details> <summary> 연봉 </summary>
+   </details>
+				 <details> <summary> 기타기능 </summary>
+   </details>
 ---
 
 ## 🔁 5. 배포 문서
