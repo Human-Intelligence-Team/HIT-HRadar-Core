@@ -473,6 +473,12 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 			 <details> <summary> 근태관리 </summary>
    </details>
 			 <details> <summary> 결재 </summary>
+				    <strong> 결재문서 유형등록 </strong>
+	<p>
+	  <img  https://drive.google.com/file/d/1z5j-pwC2A29soloOWpG-gJ3rqwx6fUyt/view?usp=drive_link
+	    
+	  />
+	</p>
    </details>
 				 <details> <summary> 성과관리 </summary>
    </details>
