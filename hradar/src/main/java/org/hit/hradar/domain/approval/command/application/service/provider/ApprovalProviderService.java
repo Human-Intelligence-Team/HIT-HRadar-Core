@@ -126,6 +126,39 @@ public class ApprovalProviderService {
     return docId;
   }
 
+  // 기존 문서 상신 (Draft -> Submit)
+  public void submitExisting(Long docId, Long writerId) {
+    ApprovalDocument document = approvalDocumentJpaRepository.findById(docId)
+        .orElseThrow(() -> new BusinessException(ApprovalErrorCode.DOCUMENT_NOT_FOUND));
+
+    if (!document.isOwner(writerId)) {
+        throw new BusinessException(ApprovalErrorCode.NOT_ALLOWED_EDIT);
+    }
+
+    // 이미 상신된 상태인지 체크 (Optional, domain logic might handle it)
+    if (!document.isDraft()) {
+        throw new BusinessException(ApprovalErrorCode.CANNOT_EDIT_AFTER_SUBMIT);
+    }
+
+    document.submit(writerId);
+
+    ApprovalLine line = approvalLineJpaRepository.findByDocId(docId)
+        .orElseThrow(() -> new BusinessException(ApprovalErrorCode.LINE_NOT_FOUND));
+
+    ApprovalLineStep firstStep = approvalLineStepJpaRepository
+        .findFirstByLineIdAndApprovalStepStatusOrderByStepOrderAsc(
+            line.getLineId(),
+            ApprovalStepStatus.WAITING
+        )
+        .orElseThrow(() -> new BusinessException(ApprovalErrorCode.NO_PENDING_STEP));
+
+    firstStep.changeToPending();
+
+    approvalHistoryJpaRepository.save(
+        ApprovalHistory.submit(docId, writerId)
+    );
+  }
+
   /* ===== private ===== */
 
   private void validateDraftRequest(ApprovalDraftCreateRequest request) {
