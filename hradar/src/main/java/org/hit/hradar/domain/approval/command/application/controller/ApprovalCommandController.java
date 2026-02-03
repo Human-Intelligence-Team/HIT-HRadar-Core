@@ -72,11 +72,9 @@ public class ApprovalCommandController {
     public ResponseEntity<ApiResponse<Void>> submit(
             @CurrentUser AuthUser authUser,
             @PathVariable Long docId) {
-        approvalApproveCommandService.approve(
+        approvalProviderService.submitExisting(
                 docId,
-                authUser.employeeId(),
-                authUser.userId(),
-                authUser.companyId());
+                authUser.employeeId());
         return ResponseEntity.ok(
                 ApiResponse.success(null));
     }

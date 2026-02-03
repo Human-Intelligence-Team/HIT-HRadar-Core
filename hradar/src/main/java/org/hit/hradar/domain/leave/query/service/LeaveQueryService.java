@@ -25,6 +25,11 @@ public class LeaveQueryService {
     return leaveListMapper.findByEmpId(employeeId);
   }
 
+  //부서 휴가 목록 조회
+  public List<LeaveListDto> getDepartmentLeaveList(Long employeeId) {
+    return leaveListMapper.findByRequestorDept(employeeId);
+  }
+
   //휴가 상세 조회
   public LeaveDetailDto getLeaveDetail(Long leaveId) {
     return leaveDetailMapper.findDetail(leaveId);

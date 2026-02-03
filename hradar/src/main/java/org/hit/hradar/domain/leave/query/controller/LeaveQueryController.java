@@ -35,6 +35,16 @@ public class LeaveQueryController {
                         leaveQueryService.getMyLeaveList(authUser.employeeId())));
     }
 
+    // 부서 휴가 목록 조회
+    @Operation(summary = "부서 휴가 목록 조회", description = "로그인한 사용자의 부서 휴가 목록을 조회합니다.")
+    @GetMapping("/department")
+    public ResponseEntity<ApiResponse<List<LeaveListDto>>> getDepartmentLeaves(
+            @CurrentUser AuthUser authUser) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        leaveQueryService.getDepartmentLeaveList(authUser.employeeId()))); 
+    }
+
     // 휴가 상세 조회
     @Operation(summary = "휴가 상세 정보 조회", description = "특정 휴가 신청 건의 상세 정보(사유, 일시, 상태 등)를 조회합니다.")
     @GetMapping("/{leaveId}")
