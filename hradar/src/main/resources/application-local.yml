@@ -1,10 +1,26 @@
+auth:
+  internal:
+    base-url: http://localhost:8081
+    token: DEV_INTERNAL_TOKEN_1234567890
+
 spring:
+  ai:
+    openai:
+      api-key: ${GEMINI_API_KEY}
+      chat:
+        base-url: "https://generativelanguage.googleapis.com/v1beta/openai/"
+        options:
+          model: "gemini-2.5-flash-lite"
+          temperature: 0.0
+        completions-path: "/chat/completions"
+  main:
+    web-application-type: servlet
   data:
     redis:
       host: localhost
       port: 6379
   datasource:
-    url: jdbc:mariadb://localhost:3306/hit?serverTimezone=Asia
+    url: jdbc:mariadb://localhost:3306/hit?serverTimezone=Asia&useSSL=false&allowPublicKeyRetrieval=true
     username: hit
     password: hradar
     hikari:
@@ -13,10 +29,9 @@ spring:
       idle-timeout: 30000
       max-lifetime: 1800000
       connection-timeout: 30000
-
   jpa:
     hibernate:
-      ddl-auto: update    # create, create-drop, update, validate, none
+      ddl-auto: update   # create, create-drop, update, validate, none
     properties:
       hibernate:
         format_sql: true
@@ -45,13 +60,38 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
+
 jwt:
   secret-key: Q8b83bmIq4KI2lvE+bViXYvo9SyODg1g0Q0dPyG9VNutj0GgBG8SxhWwL3oexDlWtq5uxFZs+k+NWXHYXKLjYg==
   expiration: 3600000  # 1시간
   refresh-expiration: 1209600000 # 2주
 
 server:
-  port: 8080
+  port: 8082
 
 file:
-  root-dir: ./uploads
+  storage:
+    type: s3  # local, s3
+  local:
+    base-dir: uploads
+    base-url: http://localhost:8082/files
+  s3:
+    bucket: s3-hradar-bucket
+    region: ap-northeast-2
+    access-key: ${AWS_ACCESS_KEY_ID}
+    secret-key: ${AWS_SECRET_ACCESS_KEY}
+    prefix: test/
+    base-url: https://s3.ap-northeast-2.amazonaws.com/s3-hradar-bucket/test
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mappers/**/*.xml
+
+external:
+  vector-index:
+    base-url: ${VECTOR_INDEX_BASE_URL}
+    timeout:
+      connect: 3s
+      read: 10s
+

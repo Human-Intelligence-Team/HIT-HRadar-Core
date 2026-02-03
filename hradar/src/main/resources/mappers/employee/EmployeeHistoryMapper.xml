@@ -1,0 +1,49 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.employee.query.mapper.EmployeeMovementHistoryQueryMapper">
+
+  <select id="findByCompanyAndEmpId"
+    resultType="org.hit.hradar.domain.employee.query.dto.EmployeeMovementHistoryResponse">
+    SELECT
+      mh.movement_id        AS movementId,
+      mh.emp_id             AS empId,
+      e.name                AS empName,
+      mh.from_dept_id       AS fromDeptId,
+      mh.to_dept_id         AS toDeptId,
+      mh.from_position_id   AS fromPositionId,
+      mh.to_position_id     AS toPositionId,
+      mh.event_reason       AS eventReason,
+      mh.effective_date     AS effectiveDate,
+      mh.created_at         AS createdAt
+    FROM employee_movement_history mh
+           JOIN employee e ON e.emp_id = mh.emp_id
+    WHERE e.com_id = #{comId}
+      AND e.is_deleted = 'N'
+      AND mh.emp_id = #{empId}
+    ORDER BY mh.effective_date DESC, mh.movement_id DESC
+  </select>
+
+  <!-- [NEW] 회사 전체 직원 이력 조회 -->
+  <select id="findAllByCompanyId"
+    resultType="org.hit.hradar.domain.employee.query.dto.EmployeeMovementHistoryResponse">
+    SELECT
+      mh.movement_id        AS movementId,
+      mh.emp_id             AS empId,
+      e.name                AS empName,
+      mh.from_dept_id       AS fromDeptId,
+      mh.to_dept_id         AS toDeptId,
+      mh.from_position_id   AS fromPositionId,
+      mh.to_position_id     AS toPositionId,
+      mh.event_reason       AS eventReason,
+      mh.effective_date     AS effectiveDate,
+      mh.created_at         AS createdAt
+    FROM employee_movement_history mh
+           JOIN employee e ON e.emp_id = mh.emp_id
+    WHERE e.com_id = #{comId}
+      AND e.is_deleted = 'N'
+    ORDER BY mh.effective_date DESC, mh.movement_id DESC
+  </select>
+
+</mapper>

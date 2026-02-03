@@ -1,0 +1,48 @@
+package org.hit.hradar.domain.leave.command.application.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hit.hradar.domain.leave.LeaveErrorCode;
+import org.hit.hradar.domain.leave.command.application.dto.request.LeavePolicyCreateRequest;
+import org.hit.hradar.domain.leave.command.domain.aggregate.LeavePolicy;
+import org.hit.hradar.domain.leave.command.infrastructure.LeavePolicyJpaRepository;
+import org.hit.hradar.global.exception.BusinessException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class LeavePolicyCommandService {
+
+  private final LeavePolicyJpaRepository leavePolicyJpaRepository;
+
+
+  public void create(
+
+      Long companyId,
+      LeavePolicyCreateRequest request
+  ) {
+    log.info("LeavePolicy create request = {}", request);
+    if (leavePolicyJpaRepository.existsByCompanyIdAndTypeName(
+        companyId,
+        request.getTypeName()
+    )) {
+      throw new BusinessException(LeaveErrorCode.LEAVE_POLICY_DUPLICATE);
+    }
+    LeavePolicy policy = LeavePolicy.builder()
+        .companyId(companyId)
+        .typeCode(request.getTypeCode())
+        .typeName(request.getTypeName())
+        .unitCode(request.getUnitCode())
+        .unitDays(request.getUnitDays())
+        .isActive('Y')
+        .isDeleted('N')
+        .build();
+    leavePolicyJpaRepository.save(policy);
+  }
+
+}
+
+

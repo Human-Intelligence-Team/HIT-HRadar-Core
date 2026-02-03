@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.approval.query.mapper.ApprovalAccessQueryMapper">
+
+  <!--
+    결재 문서 접근 권한 확인
+    접근 가능 대상:
+    1. 기안자
+    2. 결재자 / 대리결재자
+    3. 참조자
+  -->
+  <select
+    id="existsAccessibleUser"
+    parameterType="map"
+    resultType="boolean">
+
+    SELECT (
+      EXISTS(
+      SELECT 1
+      FROM approval_document
+      WHERE doc_id = #{docId}
+        AND writer_id = #{employeeId}
+        AND is_deleted = 'N'
+    )
+       OR EXISTS(
+      SELECT 1
+      FROM approval_line_step s
+             JOIN approval_line l ON s.line_id = l.line_id
+      WHERE l.doc_id = #{docId}
+        AND (s.approver_id = #{accountId} OR s.proxy_approver_id = #{accountId})
+        AND s.is_deleted = 'N'
+    )
+       OR EXISTS(
+      SELECT 1
+      FROM approval_reference r
+      WHERE r.doc_id = #{docId}
+        AND r.ref_emp_id = #{accountId}
+        AND r.is_deleted = 'N'
+    )
+    )
+
+  </select>
+
+</mapper>

@@ -1,0 +1,44 @@
+package org.hit.hradar.domain.competencyReport.command.domain.aggregate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hit.hradar.global.dto.BaseTimeEntity;
+
+@Entity
+@Getter
+@Table(name="report_content")
+@NoArgsConstructor
+public class ReportContent extends BaseTimeEntity {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "report_content_id")
+  private Long reportContentId;
+
+  @Column(name = "competency_report_id", nullable = false)
+  private Long competencyReportId;
+
+  @Column(name = "content_id", nullable = false)
+  private Long contentId;
+
+  @Column(name="reason" )
+  private String reason;
+
+  public ReportContent(Long competencyReportId, Long contentId, String reason) {
+    this.competencyReportId = competencyReportId;
+    this.contentId = contentId;
+    this.reason = reason;
+  }
+
+  public static void create(Long competencyReportId, Long contentId, String reason) {
+    new  ReportContent(competencyReportId, contentId, reason);
+  }
+
+
+}

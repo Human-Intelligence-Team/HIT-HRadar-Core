@@ -1,68 +1,157 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.5.9'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.5'
+    id 'jacoco' // 1. 자코코 플러그인 추가
 }
+
+jacoco {
+    toolVersion = "0.8.11" // 자코코 버전 설정
+}
+
 
 group = 'org.hit'
 version = '1.0'
 description = 'HR project for Spring Boot'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    all*.exclude group: 'commons-logging', module: 'commons-logging'
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+
+    }
 }
 
 ext {
     jjwtVersion = '0.12.6'
     springCloudVersion = "2025.0.0"
+    set('springAiVersion', "1.0.0-M6")
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+        mavenBom "software.amazon.awssdk:bom:2.17.295"
+    }
+    springCloudVersion = "2023.0.1"
+}
+
+
 dependencies {
+    // WebClient (권장)
+//    implementation 'org.springframework:spring-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    // CSV 파싱
+    implementation 'com.opencsv:opencsv:5.9'
+
+    // BOM 처리 (한글 깨짐 방지)
+    implementation 'commons-io:commons-io:2.15.1'
+
     // JWT
     implementation "io.jsonwebtoken:jjwt-api:${jjwtVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
     implementation "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
 
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    //  implementation 'org.springframework.boot:spring-boot-starter-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.kafka:spring-kafka'
 //    implementation 'org.springframework.boot:spring-boot-starter-batch'
 
     // Local 전용 env
     implementation 'me.paulschwarz:spring-dotenv:3.0.0'
 
+    // HTML Parsing
+    implementation 'org.jsoup:jsoup:1.18.1'
+
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.security:spring-security-crypto'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'software.amazon.awssdk:s3'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.5'
-    testImplementation 'org.springframework.security:spring-security-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation "org.wiremock:wiremock-standalone:3.2.0"
+
 }
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport // test 작업이 끝나면 자동으로 jacocoTestReport 실행
+}
+
+// 자코코 리포트 생성 설정
+jacocoTestReport {
+    dependsOn test // 리포트 생성을 위해 테스트가 먼저 실행되어야 함
+    reports {
+        html.required = true // 사람이 보는 HTML 리포트 생성
+        xml.required = true  // 시스템 연동용 XML 생성
+    }
+
+    // 리포트 결과에서 제외할 항목들 (커버리지 수치 정확도를 위해)
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/*Application*",       // 메인 애플리케이션 클래스
+                    "**/*Request*",           // DTO
+                    "**/*Response*",          // DTO
+                    "**/*Dto*",               // DTO
+                    "**/entity/**",           // JPA 엔티티
+                    "**/config/**",           // 설정 파일
+                    "**/global/**",           // 공통 예외 처리 등
+                    "**/*Interceptor*",       // 인터셉터
+                    "**/*Filter*",            // 필터
+                    "**/*Mapper*",            // MyBatis 매퍼 인터페이스 (로직 없음)
+                    "**/*Q*",                 // Querydsl 생성 파일 (사용 시)
+            ])
+        }))
+    }
+}
+
+//  특정 커버리지 미달 시 빌드 실패 처리
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = 'CLASS'
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.70 // 70% 미만이면 빌드 실패 (팀원들과 상의해서 조정하세요!)
+            }
+        }
+    }
 }

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.company.query.mapper.CompanyQueryMapper">
+
+  <!-- =========================
+   * 공통(목록) 컬럼: CompanyResponse용
+   * ========================= -->
+  <sql id="companyListColumns">
+    c.com_id            AS companyId,
+    c.company_code      AS comCode,
+    c.name              AS companyName,
+    c.biz_no            AS bizNo,
+    c.company_telephone AS comTel,
+    c.address           AS address,
+    c.status            AS status,
+    c.is_deleted        AS isDeleted
+  </sql>
+
+  <!-- =========================
+   * 상세 컬럼: CompanyDetailResponse용
+   * DTO 필드명(foundDate)에 맞춤
+   * + DTO에 있는 ceoName, comEmail도 포함
+   * ========================= -->
+  <sql id="companyDetailColumns">
+    c.com_id            AS companyId,
+    c.application_id    AS appId,
+    c.company_code      AS comCode,
+    c.ceo_name          AS ceoName,
+    c.company_email     AS comEmail,
+    c.name              AS companyName,
+    c.biz_no            AS bizNo,
+    c.company_telephone AS comTel,
+    c.address           AS address,
+    c.founded_date      AS foundDate,
+    c.status            AS status,
+    c.is_deleted        AS isDeleted,
+    c.created_at        AS createdAt,
+    c.updated_at        AS updatedAt
+  </sql>
+
+  <!-- 단건 조회 (detail) -->
+  <select id="findById"
+    parameterType="long"
+    resultType="org.hit.hradar.domain.company.query.dto.CompanyDetailResponse">
+    SELECT
+    <include refid="companyDetailColumns"/>
+    FROM company c
+    WHERE c.com_id = #{companyId}
+  </select>
+
+  <!-- 목록 조회 (list) -->
+  <select id="findAll"
+    resultType="org.hit.hradar.domain.company.query.dto.CompanyResponse">
+    SELECT
+    <include refid="companyListColumns"/>
+    FROM company c
+    WHERE 1=1
+
+    <if test="includeDeleted == null or includeDeleted == false">
+      AND c.is_deleted = 'N'
+    </if>
+
+    <if test="keyword != null and keyword != ''">
+      AND (
+      c.name LIKE CONCAT('%', #{keyword}, '%')
+      OR c.biz_no LIKE CONCAT('%', #{keyword}, '%')
+      OR c.company_code LIKE CONCAT('%', #{keyword}, '%')
+      )
+    </if>
+
+    ORDER BY c.com_id DESC
+  </select>
+
+</mapper>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.notice.query.mapper.NoticeMapper">
+    <resultMap id="noticeDetailMap"
+               type="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse">
+
+        <id property="noticeId" column="noticeId"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+
+        <result property="categoryId" column="categoryId"/>
+        <result property="categoryName" column="categoryName"/>
+
+        <result property="createdByName" column="createdByName"/>
+        <result property="updatedByName" column="updatedByName"/>
+
+        <result property="createdAt" column="createdAt"/>
+        <result property="updatedAt" column="updatedAt"/>
+
+        <!-- 첨부파일 -->
+        <collection property="attachments"
+                    ofType="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse$AttachmentResponse"
+                    select="findAttachments"
+                    column="noticeId"/>
+    </resultMap>
+
+    <select id="search"
+            resultType="org.hit.hradar.domain.notice.query.dto.response.NoticeListItemResponse">
+
+        SELECT
+            n.notice_id AS id,
+            n.title,
+            COALESCE(c.name, '미분류') AS categoryName,
+            n.created_at AS createdAt,
+            CASE
+            WHEN ua.account_id IS NULL THEN '탈퇴한 사용자'
+            ELSE ua.name
+            END AS createdByName
+        FROM notice n
+        LEFT JOIN user_account ua
+        ON n.created_by = ua.account_id
+        LEFT JOIN notice_category c
+        ON n.category_id = c.category_id
+        AND c.is_deleted = 'N'
+        WHERE n.com_id = #{cond.companyId}
+        AND n.is_deleted = 'N'
+
+        <if test="cond.categoryId != null">
+            AND n.category_id = #{cond.categoryId}
+        </if>
+
+        <if test="keywordLike != null">
+            AND (
+            n.title   LIKE #{keywordLike}
+            OR n.content LIKE #{keywordLike}
+            )
+        </if>
+
+        ORDER BY
+        <choose>
+            <when test="'CREATED_AT'.equals(cond.sortKey.name())">
+                n.created_at
+            </when>
+            <otherwise>
+                n.created_at
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="'ASC'.equals(cond.sortDir.name())">
+                ASC
+            </when>
+            <otherwise>
+                DESC
+            </otherwise>
+        </choose>
+
+        LIMIT #{size}
+        OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        FROM notice n
+        WHERE n.com_id = #{cond.companyId}
+        AND n.is_deleted = 'N'
+
+        <if test="cond.categoryId != null">
+            AND n.category_id = #{cond.categoryId}
+        </if>
+
+        <if test="keywordLike != null">
+            AND (
+            n.title   LIKE #{keywordLike}
+            OR n.content LIKE #{keywordLike}
+            )
+        </if>
+    </select>
+
+    <select id="findDetail" resultMap="noticeDetailMap">
+
+        SELECT
+            n.notice_id      AS noticeId,
+            n.title          AS title,
+            n.content        AS content,
+
+            c.category_id    AS categoryId,
+            c.name           AS categoryName,
+
+            n.created_by     AS createdBy,
+            CASE
+                WHEN cua.account_id IS NULL THEN '탈퇴한 사용자'
+                ELSE cua.name
+                END          AS createdByName,
+
+            n.updated_by     AS updatedBy,
+            CASE
+                WHEN uua.account_id IS NULL THEN '탈퇴한 사용자'
+                ELSE uua.name
+                END          AS updatedByName,
+            n.created_at     AS createdAt,
+            n.updated_at     AS updatedAt
+
+        FROM notice n
+                 LEFT JOIN notice_category c
+                           ON n.category_id = c.category_id
+
+                 LEFT JOIN user_account cua
+                           ON n.created_by = cua.account_id
+
+                 LEFT JOIN user_account uua
+                           ON n.updated_by = uua.account_id
+
+        WHERE n.notice_id = #{noticeId}
+          AND n.com_id = #{companyId}
+          AND n.is_deleted = 'N'
+
+    </select>
+
+    <select id="findAttachments"
+            resultType="org.hit.hradar.domain.notice.query.dto.response.NoticeDetailResponse$AttachmentResponse">
+
+        SELECT
+            attachment_id AS id,
+            url,
+            original_name AS originalName
+        FROM notice_attachment
+        WHERE notice_id = #{noticeId}
+
+    </select>
+
+</mapper>

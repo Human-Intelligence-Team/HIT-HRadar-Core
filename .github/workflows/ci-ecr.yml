@@ -1,0 +1,56 @@
+name: CI - Core Build & Push to ECR
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPOSITORY: hradar-core
+  SERVICE_DIR: hradar
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          set -e
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          REGISTRY=$ACCOUNT_ID.dkr.ecr.${AWS_REGION}.amazonaws.com
+
+          echo "SERVICE_DIR=${SERVICE_DIR}"
+          ls -al "${SERVICE_DIR}"
+
+          docker build -f "${SERVICE_DIR}/Dockerfile" -t ${ECR_REPOSITORY}:${IMAGE_TAG} "${SERVICE_DIR}"
+          docker tag ${ECR_REPOSITORY}:${IMAGE_TAG} ${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+          docker push ${REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+
+      - name: Notify Discord
+        if: always()
+        run: |
+          STATUS="SUCCESS"; [ "${{ job.status }}" != "success" ] && STATUS="FAILED"
+          curl -H "Content-Type: application/json" \
+            -d "{
+              \"content\": \"🧩 **Core CI 결과**\n서비스: \`${ECR_REPOSITORY}\`\n태그: \`${{ github.sha }}\`\n상태: **${STATUS}**\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+            }" \
+            ${{ secrets.DISCORD_WEBHOOK_URL }}

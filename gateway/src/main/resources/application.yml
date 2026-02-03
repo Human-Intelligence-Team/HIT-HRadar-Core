@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: api-gateway
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: INFO
+
+cors:
+  allowed-origins: ""

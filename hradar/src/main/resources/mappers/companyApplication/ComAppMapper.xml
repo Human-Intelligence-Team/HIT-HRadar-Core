@@ -1,0 +1,72 @@
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.companyApplication.query.mapper.ComAppQueryMapper">
+
+  <!-- 회사 신청 목록 조회 -->
+  <select id="findList"
+    parameterType="org.hit.hradar.domain.companyApplication.query.dto.ComAppSearchRequest"
+    resultType="org.hit.hradar.domain.companyApplication.query.dto.ComAppListItemResponse">
+
+    SELECT
+    application_id      AS appId,
+    company_name        AS companyName,
+    biz_no              AS bizNo,
+    company_telephone   AS comTel,
+    address             AS address,
+
+    creater_name        AS createrName,
+    creater_email       AS createrEmail,
+    creater_login_id    AS createrLoginId,
+
+    status              AS status,
+    reviewed_at         AS reviewedAt,
+    reviewed_by         AS reviewedBy,
+    reject_reason       AS rejectReason
+    FROM company_application
+    WHERE 1=1
+
+    <if test="status != null and status != ''">
+      AND status = #{status}
+    </if>
+
+    <if test="companyName != null and companyName != ''">
+      AND company_name LIKE CONCAT('%', #{companyName}, '%')
+    </if>
+
+    <if test="bizNo != null and bizNo != ''">
+      AND biz_no = #{bizNo}
+    </if>
+
+    ORDER BY application_id DESC
+  </select>
+
+  <!-- 회사 신청 상세 조회 -->
+  <select id="findDetail"
+    resultType="org.hit.hradar.domain.companyApplication.query.dto.ComAppDetailResponse">
+
+    SELECT
+    application_id      AS applicationId,
+
+    company_name        AS comName,
+    biz_no              AS bizNo,
+    company_telephone   AS comTel,
+    address             AS address,
+
+    status              AS status,
+
+    creater_name        AS comAdminName,
+    creater_email       AS comAdminEmail,
+    creater_login_id    AS comAdminLoginId,
+
+    reviewed_at         AS reviewedAt,
+    reviewed_by         AS reviewedBy,
+    reject_reason       AS rejectReason
+
+
+    FROM company_application
+    WHERE application_id = #{applicationId}
+  </select>
+
+</mapper>

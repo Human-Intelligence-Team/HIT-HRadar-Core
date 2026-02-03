@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.employee.query.mapper.EmployeeQueryMapper">
+
+  <resultMap id="EmployeeResponseMap"
+    type="org.hit.hradar.domain.employee.query.dto.EmployeeResponse">
+
+    <id     property="empId"          column="emp_id"/>
+    <result property="comId"          column="com_id"/>
+    <result property="deptId"         column="dept_id"/>
+    <result property="positionId"     column="position_id"/>
+
+    <result property="deptName"       column="dept_name"/>
+    <result property="positionName"   column="position_name"/>
+
+    <result property="name"           column="name"/>
+    <result property="employeeNo"     column="employee_no"/>
+    <result property="email"          column="email"/>
+
+    <result property="gender"         column="gender"/>
+    <result property="birth"          column="birth"/>
+    <result property="hireDate"       column="hire_date"/>
+    <result property="exitDate"       column="exit_date"/>
+
+    <result property="image"          column="image"/>
+    <result property="extNo"          column="extension_number"/>
+    <result property="phoneNo"        column="phone_number"/>
+    <result property="note"           column="note"/>
+
+    <result property="employmentType" column="type"/>
+    <result property="isDeleted"      column="is_deleted"/>
+
+    <result property="accId"          column="account_id"/>
+    <result property="loginId"        column="login_id"/>
+    <result property="status"         column="status"/>
+    
+    <collection property="roles" ofType="java.lang.String">
+        <result column="role_name"/>
+    </collection>
+  </resultMap>
+
+  <sql id="SelectColumns">
+    e.emp_id,
+    e.com_id,
+    e.dept_id,
+    e.position_id,
+    e.position_id,
+    d.dept_name   AS dept_name,
+    p.name        AS position_name,
+    e.name,
+    e.employee_no,
+    e.email,
+    e.gender,
+    e.birth,
+    e.hire_date,
+    e.exit_date,
+    e.image,
+    e.extension_number,
+    e.phone_number,
+    e.note,
+    e.type,
+    e.is_deleted,
+    a.account_id,
+    a.login_id,
+    a.status,
+    r.name AS role_name
+  </sql>
+
+  <sql id="BaseFromJoin">
+    FROM employee e
+    LEFT JOIN user_account a
+    ON a.com_id = e.com_id
+    AND a.employee_id = e.emp_id
+    AND a.is_deleted = 'N'
+    LEFT JOIN department d
+    ON d.dept_id = e.dept_id
+    LEFT JOIN company_position p
+    ON p.position_id = e.position_id
+    LEFT JOIN role_employee re
+    ON re.emp_id = e.emp_id
+    LEFT JOIN role r
+    ON re.role_id = r.role_id
+    AND r.is_deleted = 'N'
+  </sql>
+
+  <sql id="BaseWhere">
+    WHERE e.com_id = #{comId}
+    AND e.is_deleted = 'N'
+  </sql>
+
+  <select id="findById" resultMap="EmployeeResponseMap">
+    SELECT
+    <include refid="SelectColumns"/>
+    <include refid="BaseFromJoin"/>
+    <include refid="BaseWhere"/>
+    AND e.emp_id = #{empId}
+  </select>
+
+  <select id="findList" resultMap="EmployeeResponseMap">
+    SELECT
+    <include refid="SelectColumns"/>
+    <include refid="BaseFromJoin"/>
+    <include refid="BaseWhere"/>
+
+    <if test="deptId != null">
+      AND e.dept_id = #{deptId}
+    </if>
+
+    <if test="positionId != null">
+      AND e.position_id = #{positionId}
+    </if>
+    <if test="employeeName != null and employeeName != ''">
+      AND e.NAME LIKE CONCAT('%', #{employeeName}, '%')
+    </if>
+
+
+    ORDER BY e.emp_id DESC
+  </select>
+
+  <select id="findEmployeesForOrgChart"
+    resultType="org.hit.hradar.domain.department.query.dto.EmployeeForOrgChartResponse">
+    SELECT
+    e.emp_id      AS empId,
+    e.dept_id     AS deptId,
+    e.name        AS name,
+    e.position_id AS positionId,
+    p.name        AS positionName
+    FROM employee e
+    LEFT JOIN company_position p
+    ON p.position_id = e.position_id
+    WHERE e.com_id = #{comId}
+    AND e.is_deleted = 'N'
+    ORDER BY e.dept_id, e.emp_id
+  </select>
+
+</mapper>

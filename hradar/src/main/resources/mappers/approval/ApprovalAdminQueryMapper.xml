@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.approval.query.mapper.ApprovalAdminQueryMapper">
+
+  <!-- 관리자 상세 조회용 ResultMap -->
+  <resultMap id="approvalDetailResultMap"
+    type="org.hit.hradar.domain.approval.query.dto.response.ApprovalDetailResponse">
+    <id     property="docId"       column="doc_id"/>
+    <result property="title"       column="title"/>
+    <result property="content"     column="content"/>
+    <result property="docType"     column="doc_type"/>
+    <result property="status"      column="status"/>
+    <result property="submittedAt" column="submitted_at"/>
+  </resultMap>
+
+  <!-- 관리자 문서 전체 조회 -->
+  <select id="selectAll"
+    parameterType="org.hit.hradar.domain.approval.query.dto.request.ApprovalAdminSearchRequest"
+    resultType="org.hit.hradar.domain.approval.query.dto.response.ApprovalAdminDocumentResponse">
+
+    SELECT
+    d.doc_id        AS docId,
+    d.title         AS title,
+    d.doc_type      AS docType,
+    d.status        AS status,
+    d.writer_id     AS writerId,
+    e.dept_id       AS deptId,
+    dept.dept_name  AS deptName,
+    e.name          AS writerName,
+    d.submitted_at  AS submittedAt
+    FROM approval_document d
+    JOIN employee e
+    ON d.writer_id = e.emp_id
+    JOIN department dept
+    ON e.dept_id = dept.dept_id
+    WHERE d.is_deleted = 'N'
+
+    <if test="docType != null and docType != ''">
+      AND d.doc_type = #{docType}
+    </if>
+
+    <if test="status != null and status != ''">
+      AND d.status = #{status}
+    </if>
+
+    <if test="deptId != null">
+      AND e.dept_id = #{deptId}
+    </if>
+
+    <if test="empId != null">
+      AND e.emp_id = #{empId}
+    </if>
+
+    ORDER BY d.created_at
+    <choose>
+      <when test="sort == 'ASC'">ASC</when>
+      <otherwise>DESC</otherwise>
+    </choose>
+
+  </select>
+
+  <!-- 관리자 문서 상세 조회 -->
+  <select id="selectApprovalDetailByAdmin"
+    parameterType="long"
+    resultMap="approvalDetailResultMap">
+
+    SELECT
+      d.doc_id,
+      d.title,
+      d.content,
+      d.doc_type,
+      d.status,
+      d.submitted_at
+    FROM approval_document d
+    WHERE d.doc_id = #{docId}
+      AND d.is_deleted = 'N'
+
+  </select>
+
+</mapper>

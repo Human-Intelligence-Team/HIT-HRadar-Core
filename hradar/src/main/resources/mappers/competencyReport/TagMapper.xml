@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.competencyReport.query.mapper.TagMapper">
+
+  <select id="findAllTags"
+    parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.TagSearchRequest"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
+
+    SELECT t.tag_id
+         , t.tag_name
+         , count(ct.TAG_ID) as TagCount
+      FROM tag t
+      LEFT JOIN CONTENT_TAG ct ON t.TAG_ID = ct.TAG_ID
+     WHERE t.is_deleted = 'N'
+    <if test="tagName != null and tagName != ''">
+       AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
+    </if>
+    GROUP BY t.tag_id, t.tag_name
+    ORDER BY t.created_at DESC
+  </select>
+
+  <select id="findAllTagsByContentId"
+    parameterType="Long"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
+    SELECT ctt.TAG_ID
+         , tg.TAG_NAME
+      FROM CONTENT_TAG  ctt
+      JOIN TAG tg USING(TAG_ID)
+     WHERE tg.IS_DELETED = 'N'
+       AND ctt.CONTENT_ID = #{contentId}
+  </select>
+</mapper>

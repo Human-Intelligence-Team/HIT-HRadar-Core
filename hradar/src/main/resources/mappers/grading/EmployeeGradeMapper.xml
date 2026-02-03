@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hit.hradar.domain.grading.query.mapper.EmployeeGradeMapper">
+
+    <select id="findEmployeeGradeStatusList"
+            resultType="org.hit.hradar.domain.grading.query.dto.response.EmployeeGradeStatusResponseDto">
+
+        SELECT
+            e.emp_id               AS empId,
+            e.employee_no          AS employeeNo,
+            e.name                 AS employeeName,
+            e.dept_id              AS departmentId,
+
+            ig.individual_grade_id AS individualGradeId,
+            ig.grade_id            AS gradeId,
+            g.grade_name           AS gradeName,
+            ig.grade_reason        AS gradeReason,
+            ig.grade_status        AS gradeStatus
+
+        FROM employee e
+
+                 LEFT JOIN individual_grade ig
+                           ON e.emp_id = ig.emp_id
+                               AND ig.cycle_id = #{cycleId}
+                               AND ig.is_deleted = 'N'
+
+                 LEFT JOIN grade g
+                           ON ig.grade_id = g.grade_id
+                               AND g.is_deleted = 'N'
+
+        WHERE e.com_id = #{companyId}
+          AND e.dept_id = #{deptId}
+          AND e.is_deleted = 'N'
+
+        ORDER BY e.emp_id ASC
+
+    </select>
+
+</mapper>
