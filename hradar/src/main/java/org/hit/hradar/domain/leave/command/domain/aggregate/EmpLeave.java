@@ -26,7 +26,7 @@ public class EmpLeave extends BaseTimeEntity {
   @Column(name = "leave_id")
   private Long leaveId;
 
-  @Column(name = "docId", nullable = false)
+  @Column(name = "doc_id", nullable = false)
   private Long docId;
 
   //사원 ID
