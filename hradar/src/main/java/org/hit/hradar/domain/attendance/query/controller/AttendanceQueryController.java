@@ -52,7 +52,7 @@ public class AttendanceQueryController {
       @RequestParam Long targetEmpId,
       @RequestParam LocalDate workDate) {
     AttendanceDetailQueryRequest request = new AttendanceDetailQueryRequest(
-        authUser.userId(),
+        authUser.employeeId(),
         targetEmpId,
         workDate);
 

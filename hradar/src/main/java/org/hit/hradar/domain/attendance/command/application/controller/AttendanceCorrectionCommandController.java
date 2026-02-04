@@ -35,7 +35,7 @@ public class AttendanceCorrectionCommandController {
       @CurrentUser AuthUser authUser,
       @RequestBody AttendanceCorrectionRequest request) {
     attendanceCorrectionCommandService.requestCorrection(
-        authUser.userId(), // 요청자(empId)
+        authUser.employeeId(), // 요청자(empId)
         request);
   }
 
@@ -49,7 +49,7 @@ public class AttendanceCorrectionCommandController {
       @CurrentUser AuthUser authUser) {
     attendanceCorrectionCommandService.applyApprovedCorrection(
         correctionId,
-        authUser.userId() // 결정자(empId, 로그용)
+        authUser.employeeId() // 결정자(empId, 로그용)
     );
   }
 
@@ -63,7 +63,7 @@ public class AttendanceCorrectionCommandController {
       @RequestParam String rejectReason) {
     attendanceCorrectionCommandService.applyRejectedCorrection(
         correctionId,
-        authUser.userId(),
+        authUser.employeeId(),
         rejectReason);
   }
 }
