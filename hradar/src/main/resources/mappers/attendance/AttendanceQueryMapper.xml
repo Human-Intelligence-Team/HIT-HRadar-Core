@@ -76,6 +76,8 @@
 
     SELECT
     a.attendance_id
+    , a.emp_id
+    , e.name AS emp_name
     , a.work_date
     , a.status
     , e.dept_id
@@ -117,35 +119,29 @@
       a.work_type     AS workType,
       CASE
         WHEN a.status = 'LEAVE' THEN '휴가'
-        WHEN EXISTS (
-          SELECT 1 FROM attendance_work_log w
-          WHERE w.attendance_id = a.attendance_id AND w.end_at IS NULL AND w.is_deleted = 'N'
-        ) THEN
+        /* 출근 중인지 확인 (퇴근 기록이 없는 로그가 존재하면 출근 중) */
+        WHEN (SELECT COUNT(*) FROM attendance_work_log wl 
+              WHERE wl.attendance_id = a.attendance_id AND wl.end_at IS NULL AND wl.is_deleted = 'N') > 0 THEN
           CASE
             WHEN a.work_type = 'REMOTE' THEN '재택'
             WHEN a.work_type = 'OUTSIDE' THEN '외근'
             ELSE '출근'
           END
-        WHEN EXISTS (
-          SELECT 1 FROM attendance_work_log w
-          WHERE w.attendance_id = a.attendance_id AND w.is_deleted = 'N'
-        ) THEN '퇴근'
+        /* 퇴근했는지 확인 (로그는 있는데 모두 닫혀있으면 퇴근) */
+        WHEN (SELECT COUNT(*) FROM attendance_work_log wl 
+              WHERE wl.attendance_id = a.attendance_id AND wl.is_deleted = 'N') > 0 THEN '퇴근'
         ELSE '미출근'
       END AS status,
       d.dept_name     AS departmentName,
       p.name          AS jobTitle,
-      (
-        SELECT COALESCE(SUM(TIMESTAMPDIFF(MINUTE, w.start_at, IFNULL(w.end_at, NOW()))), 0)
-        FROM attendance_work_log w
-        WHERE w.attendance_id = a.attendance_id AND w.is_deleted = 'N'
-      ) AS totalWorkMinutes,
-      (
-        SELECT w.location
-        FROM attendance_work_log w
-        WHERE w.attendance_id = a.attendance_id AND w.is_deleted = 'N'
-        ORDER BY w.start_at DESC
-        LIMIT 1
-      ) AS location
+      /* 총 근무 시간 계산 (서브쿼리 대신 조인을 쓰면 정확도가 떨어질 수 있어 스칼라 서브쿼리로 안정성 확보 - 인덱스 있으면 충분히 빠름) */
+      (SELECT COALESCE(SUM(TIMESTAMPDIFF(MINUTE, wl.start_at, IFNULL(wl.end_at, NOW()))), 0)
+       FROM attendance_work_log wl
+       WHERE wl.attendance_id = a.attendance_id AND wl.is_deleted = 'N') AS totalWorkMinutes,
+      /* 최신 근무 위치 */
+      (SELECT wl.location FROM attendance_work_log wl
+       WHERE wl.attendance_id = a.attendance_id AND wl.is_deleted = 'N'
+       ORDER BY wl.start_at DESC LIMIT 1) AS location
     FROM attendance a
     JOIN employee e ON a.emp_id = e.emp_id
     LEFT JOIN department d ON e.dept_id = d.dept_id
