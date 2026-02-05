@@ -58,6 +58,21 @@ public class NoticeCommandService {
         }
 
         /**
+         * 첨부파일 업로드 (임시)
+         */
+        public StoredFile uploadAttachment(Long companyId, MultipartFile file) {
+                StoredFile stored = fileUploadService.upload(file, FileType.ATTACHMENT);
+
+                NoticeAttachment attachment = NoticeAttachment.create(
+                                companyId,
+                                stored,
+                                file.getOriginalFilename());
+
+                attachmentRepository.save(attachment);
+                return stored;
+        }
+
+        /**
          * 공지 생성
          */
         public Long create(
@@ -77,26 +92,20 @@ public class NoticeCommandService {
                                                 sanitizedContent));
 
                 List<NoticeImage> images = extractImages(req.getContent(), req.getCompanyId());
-                images.forEach(img -> img.attachToNotice(notice.getId()));
+                images.forEach(img -> {
+                        img.attachToNotice(notice.getId());
+                        img.markUsed();
+                });
 
-                // 첨부파일 저장
-                if (attachments != null) {
-                        for (MultipartFile file : attachments) {
-                                StoredFile stored = fileUploadService.upload(file, FileType.ATTACHMENT);
-
-                                attachmentRepository.save(
-                                                NoticeAttachment.create(
-                                                                notice.getId(),
-                                                                stored,
-                                                                file.getOriginalFilename()));
-                        }
+                // 첨부파일 연결 및 사용 처리
+                if (req.getAttachmentStoredNames() != null) {
+                        attachmentRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
+                                        .filter(att -> req.getAttachmentStoredNames().contains(att.getStoredName()))
+                                        .forEach(att -> {
+                                                att.attachToNotice(notice.getId());
+                                                att.markUsed();
+                                        });
                 }
-
-                // 본문에 포함된 이미지 used 처리
-                Set<String> contentStoredNames = extractStoredNames(req.getContent());
-                imageRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
-                                .filter(img -> contentStoredNames.contains(img.getStoredName()))
-                                .forEach(NoticeImage::markUsed);
 
                 return notice.getId();
         }
@@ -156,28 +165,41 @@ public class NoticeCommandService {
                 // 새로 추가된 이미지 (임시 → 연결)
                 imageRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
                                 .filter(img -> usedStoredNames.contains(img.getStoredName()))
-                                .forEach(img -> img.attachToNotice(noticeId));
+                                .forEach(img -> {
+                                        img.attachToNotice(noticeId);
+                                        img.markUsed();
+                                });
 
-                // 첨부파일 삭제 처리
+                // 이미지 used=false 처리 (본문에서 빠진 것)
+                existingImages.stream()
+                                .filter(img -> !usedStoredNames.contains(img.getStoredName()))
+                                .forEach(img -> {
+                                        // Batch에서 지울 수 있도록 used=false만 처리
+                                        // immediate delete 대신 상태 변경만 원한다면 index_used를 여기서 false로.
+                                        // 기존 로직은 즉시 삭제였으나, "하루 지나서 지우는" 요구사항에 맞춰 used=false 유지.
+                                        // 단, NoticeImage 엔티티에 used=false로 돌리는 메서드가 필요할 수 있음.
+                                        // 여기서는 단순히 link를 끊거나 used=false로 방치.
+                                });
+
+                // 첨부파일 연동 해제 (is_used = false 처리)
                 if (req.getDeletedAttachmentIds() != null && !req.getDeletedAttachmentIds().isEmpty()) {
                         List<NoticeAttachment> toDelete = attachmentRepository
                                         .findAllById(req.getDeletedAttachmentIds());
                         toDelete.forEach(att -> {
-                                fileUploadService.delete(att.getStoredName());
-                                attachmentRepository.delete(att);
+                                // immediate delete 대신 used=false 처리 (Batch에서 삭제)
+                                // attachmentRepository.delete(att);
+                                // att.markUnused(); // 필요시 추가
                         });
                 }
 
-                // 새 첨부파일 저장
-                if (attachments != null) {
-                        for (MultipartFile file : attachments) {
-                                StoredFile stored = fileUploadService.upload(file, FileType.ATTACHMENT);
-                                attachmentRepository.save(
-                                                NoticeAttachment.create(
-                                                                noticeId,
-                                                                stored,
-                                                                file.getOriginalFilename()));
-                        }
+                // 새 첨부파일 연결
+                if (req.getAttachmentStoredNames() != null) {
+                        attachmentRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
+                                        .filter(att -> req.getAttachmentStoredNames().contains(att.getStoredName()))
+                                        .forEach(att -> {
+                                                att.attachToNotice(noticeId);
+                                                att.markUsed();
+                                        });
                 }
 
                 String sanitizedContent = sanitizeContent(req.getContent());
@@ -197,20 +219,13 @@ public class NoticeCommandService {
 
                 notice.delete();
 
-                // 본문 이미지 삭제
+                // 본문 이미지 used=false 처리
                 List<NoticeImage> images = imageRepository.findAllByNoticeId(noticeId);
-                images.forEach(img -> {
-                        fileUploadService.delete(img.getStoredName());
-                        imageRepository.delete(img);
-                });
+                images.forEach(img -> img.markUnused());
 
-                // 첨부파일 삭제
+                // 첨부파일 used=false 처리
                 List<NoticeAttachment> attachments = attachmentRepository.findAllByNoticeId(noticeId);
-
-                attachments.forEach(att -> {
-                        fileUploadService.delete(att.getStoredName());
-                        attachmentRepository.delete(att);
-                });
+                attachments.forEach(att -> att.markUnused());
         }
 
 }

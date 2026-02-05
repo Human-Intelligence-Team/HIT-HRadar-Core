@@ -11,5 +11,9 @@ public interface NoticeAttachmentRepository {
 
     List<NoticeAttachment> findAllById(Iterable<Long> ids);
 
+    List<NoticeAttachment> findAllByCompanyIdAndUsedFalse(Long companyId);
+
     void delete(NoticeAttachment att);
+
+    List<NoticeAttachment> findAllByUsedFalseAndCreatedAtBefore(java.time.LocalDateTime dateTime);
 }

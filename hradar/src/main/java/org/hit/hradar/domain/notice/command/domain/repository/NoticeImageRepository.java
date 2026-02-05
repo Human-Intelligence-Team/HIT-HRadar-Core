@@ -5,9 +5,9 @@ import org.hit.hradar.domain.notice.command.domain.aggregate.NoticeImage;
 import java.util.List;
 import java.util.Optional;
 
-
 public interface NoticeImageRepository {
     <S extends NoticeImage> S save(S NoticeImage);
+
     List<NoticeImage> findAll();
 
     List<NoticeImage> findAllByCompanyIdAndUsedFalse(Long companyId);
@@ -17,4 +17,6 @@ public interface NoticeImageRepository {
     void delete(NoticeImage img);
 
     List<NoticeImage> findAllByNoticeId(Long noticeId);
+
+    List<NoticeImage> findAllByUsedFalseAndCreatedAtBefore(java.time.LocalDateTime dateTime);
 }

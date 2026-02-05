@@ -51,7 +51,7 @@ public class NoticeCommandController {
                         @RequestPart(required = false) List<MultipartFile> files,
                         @CurrentUser AuthUser authUser) {
                 NoticeDto dto = new NoticeDto(request.getCategoryId(), request.getTitle(), request.getContent(),
-                                authUser.companyId());
+                                authUser.companyId(), null, request.getAttachmentStoredNames());
                 noticeCommandService.create(dto, files);
                 return ApiResponse.success(null);
         }
@@ -68,7 +68,8 @@ public class NoticeCommandController {
                                 request.getTitle(),
                                 request.getContent(),
                                 authUser.companyId(),
-                                request.getDeletedAttachmentIds());
+                                request.getDeletedAttachmentIds(),
+                                request.getAttachmentStoredNames());
 
                 noticeCommandService.updateNotice(noticeId, dto, files);
                 return ApiResponse.success(null);
