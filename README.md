@@ -469,7 +469,11 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 
 - ### 🧪 프론트 단위 테스트
   	프론트 단위 테스트 결과서를 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1M08fqH1nXOL5BNbKlYSQnGuuSC2kXnJKZOFM52vHlOI/edit?gid=1870006995#gid=1870006995)를 클릭하세요 
-   
+
+- ### 🧪 통합테스트 결과서
+  	통합테스트 결과서를 자세히 보려면 [여기](https://docs.google.com/document/d/1Vtvi8Cn6cBVX2LFP_PFrZ7F2fcVTqlCI0u8otDm5ie8/edit?usp=sharing)를 클릭하세요
+    <details> <summary> 통합테스트 결과서 </summary>
+   </details>
 ---
 
 ## 🔁 5. 배포 문서
@@ -479,5 +483,12 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	<details> <summary> 시스템 아키텍처 구조도 </summary>
 	  <img width="1165" height="1108" alt="image" src="https://github.com/user-attachments/assets/101786af-a9c3-4332-9168-f0653b66e677" />
   </details>
+
+- ### 📚 CI/CD 계획서
+    CI/CD 계획서를 자세히 보려면 [여기](https://docs.google.com/document/d/1b8fki6BD_eJWlP1vMqFKc3vGyJAkGkAP3GHhCCvqhkA/edit?usp=sharing)를 클릭하세요 <br>
+	<details> <summary> CI/CD 계획서 </summary>
+	  
+  </details>
+
 
 ---

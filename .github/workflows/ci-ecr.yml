@@ -53,4 +53,4 @@ jobs:
             -d "{
               \"content\": \"🧩 **Core CI 결과**\n서비스: \`${ECR_REPOSITORY}\`\n태그: \`${{ github.sha }}\`\n상태: **${STATUS}**\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
             }" \
-            ${{ secrets.DISCORD_WEBHOOK_URL }}
+            ${{ secrets.DISCORD_CORE_WEBHOOK_URL }}

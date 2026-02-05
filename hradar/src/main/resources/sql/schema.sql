@@ -16,6 +16,11 @@ DROP TABLE IF EXISTS department;
 DROP TABLE IF EXISTS company_position;
 DROP TABLE IF EXISTS company;
 DROP TABLE IF EXISTS company_application;
+DROP TABLE IF EXISTS leave_grant;
+DROP TABLE IF EXISTS emp_leave;
+DROP TABLE IF EXISTS leave_policy;
+DROP TABLE IF EXISTS approval_document_type;
+
 
 -- Legacy table (if exists)
 DROP TABLE IF EXISTS positions;
@@ -193,6 +198,72 @@ CREATE TABLE role_employee (
 ) ENGINE=InnoDB;
 
 CREATE INDEX IDX_ROLE_EMP_EMP_ID ON role_employee (emp_id);
+
+-- 11. Leave Grant
+CREATE TABLE leave_grant (
+    grant_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    emp_id              BIGINT NOT NULL,
+    year                INT NOT NULL,
+    total_days          DOUBLE NOT NULL,
+    remaining_days      DOUBLE NOT NULL,
+    granted_days        DATE,
+    expire_date         DATE,
+    is_deleted          CHAR(1) DEFAULT 'N',
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+-- 12. Emp Leave
+CREATE TABLE emp_leave (
+    leave_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doc_id              BIGINT NOT NULL,
+    emp_id              BIGINT NOT NULL,
+    grant_id            BIGINT NOT NULL,
+    leave_type          VARCHAR(50) NOT NULL,
+    leave_unit_type     VARCHAR(50) NOT NULL,
+    reason              VARCHAR(255),
+    start_date          DATE NOT NULL,
+    end_date            DATE NOT NULL,
+    leave_days          DOUBLE NOT NULL,
+    requested_at        DATETIME(6) NOT NULL,
+    is_deleted          CHAR(1) NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+-- 13. Leave Policy
+CREATE TABLE leave_policy (
+    policy_id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    company_id          BIGINT NOT NULL,
+    type_code           VARCHAR(50) NOT NULL,
+    type_name           VARCHAR(100) NOT NULL,
+    unit_code           VARCHAR(50) NOT NULL,
+    unit_days           DOUBLE NOT NULL,
+    is_active           CHAR(1) DEFAULT 'Y' NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+-- 14. Approval Document Type
+CREATE TABLE approval_document_type (
+    type_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    company_id          BIGINT NOT NULL,
+    doc_type            VARCHAR(50) NOT NULL,
+    name                VARCHAR(100) NOT NULL,
+    is_active           TINYINT(1) DEFAULT 1 NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
 
 
 /* =========================
@@ -436,5 +507,20 @@ SELECT r.role_id, u.employee_id, NOW(), 1
 FROM user_account u
 JOIN role r ON r.com_id = u.com_id AND r.role_key = 'EMPLOYEE'
 WHERE u.com_id = 1;
+
+COMMIT;
+
+-- 13) Leave Grant Initialization (15 days for all employees)
+INSERT INTO leave_grant (emp_id, year, total_days, remaining_days, granted_days, expire_date, is_deleted, created_at, created_by)
+SELECT emp_id, 2023, 15, 15, '2023-01-01', '2023-12-31', 'N', NOW(6), 1
+FROM employee
+WHERE com_id = 1;
+
+COMMIT;
+
+-- 14) Approval Document Types Initialization
+INSERT INTO approval_document_type (company_id, doc_type, name, is_active, is_deleted, created_at, created_by) VALUES
+(1, 'GENERAL', '일반 결재', 1, 'N', NOW(6), 1),
+(1, 'LEAVE', '휴가 신청서', 1, 'N', NOW(6), 1);
 
 COMMIT;

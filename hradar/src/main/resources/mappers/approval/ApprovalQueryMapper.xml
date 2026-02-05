@@ -18,6 +18,7 @@
       d.submitted_at  AS submittedAt
     FROM approval_document d
     WHERE d.writer_id = #{userId}
+      AND d.status != 'REJECTED'
       AND d.is_deleted = 'N'
     ORDER BY d.created_at DESC
   </select>
@@ -59,7 +60,10 @@
     SELECT
       d.doc_id        AS docId,
       d.title         AS title,
+      d.doc_type      AS docType,
+      d.status        AS status,
       h.reason        AS rejectReason,
+      d.submitted_at  AS submittedAt,
       h.acted_at      AS rejectedAt
     FROM approval_document d
            JOIN approval_history h

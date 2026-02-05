@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
@@ -49,6 +50,10 @@ public class AttendanceAuthLog extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
+  // 실제 행위 시각 (DB 제약 조건 대응)
+  @Column(name = "acted_at", nullable = false, updatable = false)
+  private LocalDateTime actedAt;
+
   // ===== 생성자 =====
   public AttendanceAuthLog(Long attendanceId, String ipAddress) {
     this.attendanceId = attendanceId;
@@ -56,5 +61,6 @@ public class AttendanceAuthLog extends BaseTimeEntity {
     this.authType = "IP";
     this.authResult = AuthResult.SUCCESS;
     this.isDeleted = 'N';
+    this.actedAt = LocalDateTime.now();
   }
 }
