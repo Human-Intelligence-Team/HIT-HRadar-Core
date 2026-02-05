@@ -2,6 +2,7 @@ package org.hit.hradar.domain.approval.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,11 +37,27 @@ public class ApprovalDocumentType extends BaseTimeEntity {
   @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
-  public ApprovalDocumentType(Long companyId, String docType, String name, boolean active) {
+  @Column(name = "attendance_category")
+  @Enumerated(jakarta.persistence.EnumType.STRING)
+  private ApprovalAttendanceCategory attendanceCategory = ApprovalAttendanceCategory.NONE;
+
+  @Column(name = "overtime_minutes")
+  private Integer overtimeMinutes = 0;
+
+  public ApprovalDocumentType(Long companyId, String docType, String name, boolean active, ApprovalAttendanceCategory attendanceCategory, Integer overtimeMinutes) {
     this.companyId = companyId;
     this.docType = docType;
     this.name = name;
     this.active = active;
+    this.attendanceCategory = (attendanceCategory == null) ? ApprovalAttendanceCategory.NONE : attendanceCategory;
+    this.overtimeMinutes = (overtimeMinutes == null) ? 0 : overtimeMinutes;
+  }
+
+  public void update(String name, boolean active, ApprovalAttendanceCategory attendanceCategory, Integer overtimeMinutes) {
+    this.name = name;
+    this.active = active;
+    this.attendanceCategory = (attendanceCategory == null) ? ApprovalAttendanceCategory.NONE : attendanceCategory;
+    this.overtimeMinutes = (overtimeMinutes == null) ? 0 : overtimeMinutes;
   }
 
   public void updateName(String name) {

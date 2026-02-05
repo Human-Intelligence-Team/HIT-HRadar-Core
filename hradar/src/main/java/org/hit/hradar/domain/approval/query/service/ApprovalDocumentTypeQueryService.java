@@ -23,7 +23,9 @@ public class ApprovalDocumentTypeQueryService {
                 t.getTypeId(),
                 t.getDocType(),
                 t.getName(),
-                t.isActive()
+                t.isActive(),
+                t.getAttendanceCategory(),
+                t.getOvertimeMinutes()
             ))
             .toList()
     );
@@ -35,7 +37,9 @@ public class ApprovalDocumentTypeQueryService {
                 p.getPolicyId(),
                 p.getTypeName(),
                 p.getTypeName(),
-                p.getIsActive() == 'Y'
+                p.getIsActive() == 'Y',
+                org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalAttendanceCategory.VACATION,
+                0 // Leave policies usually don't have static overtime
             ))
             .toList()
     );

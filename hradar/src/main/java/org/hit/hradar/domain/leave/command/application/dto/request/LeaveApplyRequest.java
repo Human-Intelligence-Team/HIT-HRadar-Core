@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 public class LeaveApplyRequest {
-  private Long grantId;
-  private String leaveType;
+  private Long leaveGrantId;
+  private Long leaveTypeId;
   private String leaveUnitType;
   private String reason;
-  private LocalDate startDate;
-  private LocalDate endDate;
-  private double leaveDays;
+  private LocalDate fromDate;
+  private LocalDate toDate;
+  private double days;
 
 }
