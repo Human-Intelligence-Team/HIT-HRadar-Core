@@ -11,6 +11,9 @@ public class HrNotificationProducer {
 
     private final KafkaTemplate<String, HrNotificationEvent> kafkaTemplate;
 
+    @org.springframework.beans.factory.annotation.Value("${spring.kafka.topic.notification}")
+    private String topic;
+
     public HrNotificationProducer(KafkaTemplate<String, HrNotificationEvent> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
@@ -23,13 +26,11 @@ public class HrNotificationProducer {
                 notificationDTO.getUserId(),
                 notificationDTO.getTitle(),
                 notificationDTO.getMessage(),
-                notificationDTO.getLinkUrl()
-        );
+                notificationDTO.getLinkUrl());
 
         kafkaTemplate.send(
-                "hr.notification",
+                topic,
                 String.valueOf(notificationDTO.getUserId()),
-                event
-        );
+                event);
     }
 }

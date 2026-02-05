@@ -19,6 +19,8 @@ spring:
       port: ${REDIS_PORT}
   kafka:
     bootstrap-servers: ${KAFKA_BROKERS}
+    topic:
+      notification: ${KAFKA_TOPIC_NOTIFICATION}
   mail:
     host: smtp.gmail.com
     port: 587
