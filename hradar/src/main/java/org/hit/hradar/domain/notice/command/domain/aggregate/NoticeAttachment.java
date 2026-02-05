@@ -18,7 +18,10 @@ public class NoticeAttachment extends BaseTimeEntity {
     @Column(name = "attachment_id")
     private Long id;
 
-    @Column(name = "notice_id", nullable = false)
+    @Column(name = "com_id", nullable = false)
+    private Long companyId;
+
+    @Column(name = "notice_id")
     private Long noticeId;
 
     @Column(name = "original_name", nullable = false)
@@ -30,17 +33,32 @@ public class NoticeAttachment extends BaseTimeEntity {
     @Column(nullable = false)
     private String url;
 
+    @Column(name = "is_used", nullable = false)
+    private boolean used;
+
     public static NoticeAttachment create(
-            Long noticeId,
+            Long companyId,
             StoredFile file,
-            String originalName
-    ) {
+            String originalName) {
         NoticeAttachment a = new NoticeAttachment();
-        a.noticeId = noticeId;
+        a.companyId = companyId;
         a.originalName = originalName;
         a.storedName = file.storedName();
         a.url = file.url();
+        a.used = false;
         return a;
     }
-}
 
+    public void markUsed() {
+        this.used = true;
+    }
+
+    public void markUnused() {
+        this.used = false;
+        this.noticeId = null;
+    }
+
+    public void attachToNotice(Long id) {
+        this.noticeId = id;
+    }
+}

@@ -459,26 +459,20 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 
 
 - ### 🧪 백엔드 단위 테스트
-   <details> <summary> 백엔드 단위 테스트 </summary>
+  <details> <summary> 백엔드 단위 테스트 </summary>
+	   <img width="1920" height="1456" alt="Image" src="https://github.com/user-attachments/assets/cab9f43f-322a-4572-976d-7462e489e14d" />
+	   <img width="1920" height="1472" alt="Image" src="https://github.com/user-attachments/assets/b2ca8e7d-c3e5-4205-804d-d1dd672b83ec" />
    </details>
 	
 - ### 🖼️ 화면 설계서
 	화면설계서 자세히 보려면 [여기](https://www.figma.com/design/uQH8OOGnUcBvW5vdqyLDeb/HRadar?node-id=0-1&t=gIS4WO7ZGkaB3lSL-1)를 클릭하세요 <br>
 
 - ### 🧪 프론트 단위 테스트
-   <details> <summary> 로그인/회사 신청 </summary>
-   </details>
-   <details> <summary> 인사관리 </summary>
-   </details>
-			 <details> <summary> 근태관리 </summary>
-   </details>
-			 <details> <summary> 결재 </summary>
-   </details>
-				 <details> <summary> 성과관리 </summary>
-   </details>
-				 <details> <summary> 연봉 </summary>
-   </details>
-				 <details> <summary> 기타기능 </summary>
+  	프론트 단위 테스트 결과서를 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1M08fqH1nXOL5BNbKlYSQnGuuSC2kXnJKZOFM52vHlOI/edit?gid=1870006995#gid=1870006995)를 클릭하세요 
+
+- ### 🧪 통합테스트 결과서
+  	통합테스트 결과서를 자세히 보려면 [여기](https://docs.google.com/document/d/1Vtvi8Cn6cBVX2LFP_PFrZ7F2fcVTqlCI0u8otDm5ie8/edit?usp=sharing)를 클릭하세요
+    <details> <summary> 통합테스트 결과서 </summary>
    </details>
 ---
 
@@ -489,5 +483,12 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	<details> <summary> 시스템 아키텍처 구조도 </summary>
 	  <img width="1165" height="1108" alt="image" src="https://github.com/user-attachments/assets/101786af-a9c3-4332-9168-f0653b66e677" />
   </details>
+
+- ### 📚 CI/CD 계획서
+    CI/CD 계획서를 자세히 보려면 [여기](https://docs.google.com/document/d/1b8fki6BD_eJWlP1vMqFKc3vGyJAkGkAP3GHhCCvqhkA/edit?usp=sharing)를 클릭하세요 <br>
+	<details> <summary> CI/CD 계획서 </summary>
+	  
+  </details>
+
 
 ---

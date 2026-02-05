@@ -19,20 +19,44 @@
   <select id="findByEmpId"
     resultType="org.hit.hradar.domain.leave.query.dto.response.LeaveListDto">
     SELECT
-      leave_id        AS leaveId,
-      leave_type      AS leaveType,
-      doc_id          AS docId,
-      reason          AS reason,
-      leave_unit_type AS leaveUnitType,
-      start_date      AS startDate,
-      end_date        AS endDate,
-      leave_days      AS leaveDays,
-      requested_at    AS requestedAt,
-      NULL            AS approvalStatus
-    FROM emp_leave
-    WHERE emp_id = #{empId}
-      AND is_deleted = 'N'
-    ORDER BY start_date DESC
+      l.leave_id        AS leaveId,
+      l.leave_type      AS leaveType,
+      l.doc_id          AS docId,
+      l.reason          AS reason,
+      l.leave_unit_type AS leaveUnitType,
+      l.start_date      AS startDate,
+      l.end_date        AS endDate,
+      l.leave_days      AS leaveDays,
+      l.requested_at    AS requestedAt,
+      ad.status         AS approvalStatus,
+      NULL              AS empName
+    FROM emp_leave l
+    JOIN approval_document ad ON l.doc_id = ad.doc_id
+    WHERE l.emp_id = #{empId}
+      AND l.is_deleted = 'N'
+    ORDER BY l.start_date DESC
+  </select>
+
+  <select id="findByRequestorDept"
+    resultType="org.hit.hradar.domain.leave.query.dto.response.LeaveListDto">
+    SELECT
+      l.leave_id        AS leaveId,
+      l.leave_type      AS leaveType,
+      l.doc_id          AS docId,
+      l.reason          AS reason,
+      l.leave_unit_type AS leaveUnitType,
+      l.start_date      AS startDate,
+      l.end_date        AS endDate,
+      l.leave_days      AS leaveDays,
+      l.requested_at    AS requestedAt,
+      e.name            AS empName,
+      ad.status         AS approvalStatus
+    FROM emp_leave l
+    JOIN employee e ON l.emp_id = e.emp_id
+    LEFT JOIN approval_document ad ON l.doc_id = ad.doc_id
+    WHERE e.dept_id = (SELECT dept_id FROM employee WHERE emp_id = #{requestorEmpId})
+      AND l.is_deleted = 'N'
+    ORDER BY l.start_date DESC
   </select>
 
 

@@ -7,12 +7,20 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      maximum-pool-size: 45
+      minimum-idle: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
   kafka:
     bootstrap-servers: ${KAFKA_BROKERS}
+    topic:
+      notification: ${KAFKA_TOPIC_NOTIFICATION}
   mail:
     host: smtp.gmail.com
     port: 587
@@ -24,6 +32,10 @@ spring:
           auth: true
           starttls:
             enable: true
+auth:
+  internal:
+    base-url: ${AUTH_INTERNAL_BASE_URL}
+    token: ${INTERNAL_TOKEN}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
@@ -40,8 +52,13 @@ file:
 
 external:
   vector-index:
-    base-url: http://hr-chatbot:8000
+    base-url: http://hr-chatbot:80
 
 logging:
   level:
     root: INFO
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mappers/**/*.xml

@@ -36,12 +36,12 @@ public class NoticeImage extends BaseTimeEntity {
     /* used=false 배치로 정리 */
     @Column(name = "is_used", nullable = false)
     private boolean used;
-// 삭제 추가
+
+    // 삭제 추가
     public static NoticeImage create(
             Long companyId,
             StoredFile file,
-            String originalName
-    ) {
+            String originalName) {
         NoticeImage img = new NoticeImage();
         img.companyId = companyId;
         img.url = file.url();
@@ -55,8 +55,12 @@ public class NoticeImage extends BaseTimeEntity {
         this.used = true;
     }
 
+    public void markUnused() {
+        this.used = false;
+        this.noticeId = null;
+    }
+
     public void attachToNotice(Long id) {
         this.noticeId = id;
     }
 }
-

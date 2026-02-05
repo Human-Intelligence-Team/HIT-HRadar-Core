@@ -36,7 +36,10 @@ public class S3FileStorageClient implements FileStorageClient {
         String originalName = file.getOriginalFilename();
         String extension = extractExtension(originalName);
         String savedFileName = UUID.randomUUID() + "." + extension;
-        String key = prefix + savedFileName;
+
+        // Structured Key: prefix/images/uuid.ext or prefix/attachments/uuid.ext
+        String typePath = type.getPath();
+        String key = prefix + typePath + "/" + savedFileName;
 
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -45,6 +48,7 @@ public class S3FileStorageClient implements FileStorageClient {
                     .contentType(file.getContentType())
                     .build();
 
+            log.info("Uploading object to S3 - Bucket: {}, Key: {}", bucket, key);
             s3Client.putObject(putObjectRequest,
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
@@ -52,10 +56,13 @@ public class S3FileStorageClient implements FileStorageClient {
             throw new BusinessException(FileErrorCode.FAIL_UPLOAD, e);
         }
 
-        // Return Proxy URL: /api/v1/files/{type}/{storedName}
-        String typePath = (type == FileType.IMAGE) ? "images" : "attachments";
+        // Return Proxy URL: /api/v1/files/{typePath}/{savedFileName}
         String proxyUrl = "/api/v1/files/" + typePath + "/" + savedFileName;
-        return new StoredFile(proxyUrl, savedFileName);
+
+        // Store the relative path (typePath/savedFileName) to keep 'prefix'
+        // configurable
+        String storedName = typePath + "/" + savedFileName;
+        return new StoredFile(proxyUrl, storedName);
     }
 
     @Override
@@ -67,6 +74,7 @@ public class S3FileStorageClient implements FileStorageClient {
                     .key(key)
                     .build();
 
+            log.info("Deleting object from S3 - Bucket: {}, Key: {}", bucket, key);
             s3Client.deleteObject(deleteObjectRequest);
         } catch (Exception e) {
             throw new BusinessException(FileErrorCode.FAIL_DELETE, e);
@@ -91,6 +99,7 @@ public class S3FileStorageClient implements FileStorageClient {
     public InputStream download(String storedName) {
         // Fallback or internal use only
         String key = prefix + storedName;
+        log.info("Downloading object from S3 - Bucket: {}, Key: {}", bucket, key);
         return s3Client.getObject(GetObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)

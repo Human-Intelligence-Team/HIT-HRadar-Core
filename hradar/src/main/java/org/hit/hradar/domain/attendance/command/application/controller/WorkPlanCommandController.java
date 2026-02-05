@@ -32,7 +32,7 @@ public class WorkPlanCommandController {
       @RequestBody ApprovalDraftCreateRequest request) {
     return approvalProviderService.save(
         null,
-        authUser.userId(),
+        authUser.employeeId(),
         authUser.companyId(),
         request,
         ApprovalSaveMode.DRAFT);
@@ -45,13 +45,13 @@ public class WorkPlanCommandController {
       @CurrentUser AuthUser authUser,
       @RequestBody WorkPlanCreateRequest request) {
     workPlanCommandService.createWorkPlan(
-        authUser.userId(),
+        authUser.employeeId(),
         docId,
         request);
 
     approvalProviderService.save(
         docId,
-        authUser.userId(),
+        authUser.employeeId(),
         authUser.companyId(),
         null,
         ApprovalSaveMode.SUBMIT);

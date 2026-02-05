@@ -22,7 +22,6 @@ public class UpdateCompanyRequest {
   @Size(max = 30)
   private String comTel;
 
-  @Size(max = 10)
   private LocalDate foundDate;
 
   private String comEmail;

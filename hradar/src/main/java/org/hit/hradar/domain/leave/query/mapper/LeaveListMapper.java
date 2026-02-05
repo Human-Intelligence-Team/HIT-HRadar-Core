@@ -14,6 +14,8 @@ public interface LeaveListMapper {
 
   List<LeaveListDto> findByEmpId(@Param("empId") Long empId);
 
+  List<LeaveListDto> findByRequestorDept(@Param("requestorEmpId") Long requestorEmpId);
+
   boolean existsOverlap(
       @Param("empId") Long empId,
       @Param("start") LocalDate start,

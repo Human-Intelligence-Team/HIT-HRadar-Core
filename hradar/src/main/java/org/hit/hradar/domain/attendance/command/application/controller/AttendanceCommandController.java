@@ -34,7 +34,7 @@ public class AttendanceCommandController {
 
     // 출퇴근 처리 위임
     AttendanceCheckResponse response = attendanceCommandService.processAttendance(
-        authUser.userId(),
+        authUser.employeeId(),
         authUser.companyId(),
         clientIp);
 
