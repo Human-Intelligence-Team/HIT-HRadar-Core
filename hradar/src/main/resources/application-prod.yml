@@ -24,6 +24,9 @@ spring:
           auth: true
           starttls:
             enable: true
+  internal:
+    base-url: ${AUTH_INTERNAL_BASE_URL}
+    token: ${INTERNAL_TOKEN}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
