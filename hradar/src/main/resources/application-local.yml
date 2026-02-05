@@ -59,6 +59,10 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+  kafka:
+    bootstrap-servers: localhost:9092
+    topic:
+      notification: hr.notification
 
 
 jwt:
