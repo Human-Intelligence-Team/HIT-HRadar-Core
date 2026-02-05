@@ -6,6 +6,7 @@ import org.hit.hradar.domain.rolePermission.command.domain.aggregate.EmployeeRol
 import org.hit.hradar.domain.rolePermission.command.domain.aggregate.Role;
 import org.hit.hradar.domain.rolePermission.command.infrastructure.RoleEmpJpaRepository;
 import org.hit.hradar.domain.rolePermission.command.infrastructure.RoleJpaRepository;
+import org.hit.hradar.domain.rolePermission.command.domain.policy.EmployeeRoleAssignmentPolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,12 @@ class EmployeeRoleAssignmentApplicationServiceTest {
     @Mock
     private EmployeeRepository employeeRepository;
 
+    @Mock
+    private EmployeeRoleAssignmentPolicy employeeRoleAssignmentPolicy;
+
+    @Mock
+    private DefaultRoleCommandService defaultRoleCommandService;
+
     @Test
     @DisplayName("사원 역할 수정 성공 - EMPLOYEE 역할 자동 포함")
     void updateEmployeeRoles_Success() {
@@ -45,7 +52,7 @@ class EmployeeRoleAssignmentApplicationServiceTest {
         List<Long> roleIds = List.of(10L); // Custom role
 
         Employee employee = Employee.builder().empId(empId).comId(comId).build();
-        Role employeeRole = Role.builder().roleId(1L).comId(comId).roleKey("EMPLOYEE").build();
+        Role employeeRole = Role.builder().roleId(1L).comId(comId).roleKey("EMPLOYEE").isSystem('Y').build();
         Role customRole = Role.builder().roleId(10L).comId(comId).roleKey("CUSTOM").isSystem('N').build();
 
         given(employeeRepository.findByEmpIdAndComIdAndIsDeleted(empId, comId, 'N'))

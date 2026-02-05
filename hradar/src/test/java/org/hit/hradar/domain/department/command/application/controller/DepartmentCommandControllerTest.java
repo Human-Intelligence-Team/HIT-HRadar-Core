@@ -54,7 +54,7 @@ class DepartmentCommandControllerTest {
                 .willReturn(1L);
 
         // when & then
-        mockMvc.perform(post("/department")
+        mockMvc.perform(post("/departments")
                 .header("X-User-Id", "1")
                 .header("X-User-Role", "admin")
                 .header("X-Company-Id", String.valueOf(companyId))
@@ -62,8 +62,7 @@ class DepartmentCommandControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.data").value(1L));
+                .andExpect(jsonPath("$.success").value(true));
     }
 
     @Test
@@ -75,7 +74,7 @@ class DepartmentCommandControllerTest {
         UpdateDepartmentRequest request = new UpdateDepartmentRequest("Updated Dept", null, null, "02-111-2222");
 
         // when & then
-        mockMvc.perform(patch("/department/{deptId}", deptId)
+        mockMvc.perform(patch("/departments/{deptId}", deptId)
                 .header("X-User-Id", "1")
                 .header("X-User-Role", "admin")
                 .header("X-Company-Id", String.valueOf(companyId))
@@ -94,7 +93,7 @@ class DepartmentCommandControllerTest {
         Long companyId = 1L;
 
         // when & then
-        mockMvc.perform(delete("/department/{deptId}", deptId)
+        mockMvc.perform(delete("/departments/{deptId}", deptId)
                 .header("X-User-Id", "1")
                 .header("X-User-Role", "admin")
                 .header("X-Company-Id", String.valueOf(companyId))

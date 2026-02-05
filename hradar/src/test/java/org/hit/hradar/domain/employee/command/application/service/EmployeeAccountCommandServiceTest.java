@@ -50,6 +50,17 @@ class EmployeeAccountCommandServiceTest {
         @Mock
         private EmployeeRoleAssignmentApplicationService roleAssignmentService;
 
+        @org.junit.jupiter.api.BeforeEach
+        void setUp() {
+                employeeAccountCommandService = new EmployeeAccountCommandService(
+                                employeeRepository,
+                                accountRepository,
+                                userJpaRepository,
+                                companyRepository,
+                                passwordEncoder,
+                                roleAssignmentService);
+        }
+
         @Test
         @DisplayName("사원 및 계정 생성 성공")
         void createEmployeeWithAccount_Success() {
@@ -72,6 +83,7 @@ class EmployeeAccountCommandServiceTest {
                                 any(Character.class)))
                                 .willReturn(false);
                 given(userJpaRepository.existsByComIdAndLoginIdAndStatus(any(), anyString(), any())).willReturn(false);
+                given(userJpaRepository.existsByComIdAndEmailAndStatus(any(), anyString(), any())).willReturn(false);
                 given(employeeRepository.save(any(Employee.class))).willReturn(savedEmp);
                 given(passwordEncoder.encode("password123")).willReturn("hashed_pw");
                 given(accountRepository.save(any(Account.class))).willReturn(savedAccount);

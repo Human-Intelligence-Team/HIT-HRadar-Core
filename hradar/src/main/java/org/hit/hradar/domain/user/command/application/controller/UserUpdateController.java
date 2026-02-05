@@ -29,4 +29,13 @@ public class UserUpdateController {
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 
+  @Operation(summary = "관리자용 비밀번호 초기화", description = "관리자가 사원의 비밀번호를 초기값(1234)으로 초기화합니다.")
+  @PatchMapping("/{accId}/reset-password")
+  public ResponseEntity<ApiResponse<Void>> resetPassword(
+      @PathVariable Long accId,
+      @CurrentUser AuthUser authUser) {
+    userService.resetPassword(accId, authUser.companyId());
+    return ResponseEntity.ok(ApiResponse.success(null));
+  }
+
 }
