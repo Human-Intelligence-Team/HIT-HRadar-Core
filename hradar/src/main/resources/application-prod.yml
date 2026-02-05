@@ -7,12 +7,20 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      maximum-pool-size: 45
+      minimum-idle: 10
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 30000
   data:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
   kafka:
     bootstrap-servers: ${KAFKA_BROKERS}
+    topic:
+      notification: ${KAFKA_TOPIC_NOTIFICATION}
   mail:
     host: smtp.gmail.com
     port: 587
