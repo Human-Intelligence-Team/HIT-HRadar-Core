@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.5'
-    id 'io.spring.dependency-management' version '1.1.5'
-    id 'jacoco' // 1. 자코코 플러그인 추가
+    id 'org.springframework.boot' version '3.5.9'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'jacoco'
 }
 
 jacoco {
@@ -48,7 +48,7 @@ dependencyManagement {
         mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
         mavenBom "software.amazon.awssdk:bom:2.17.295"
     }
-    springCloudVersion = "2023.0.1"
+    springCloudVersion = "2025.0.0"
 }
 
 

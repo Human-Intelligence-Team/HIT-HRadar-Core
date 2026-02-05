@@ -81,12 +81,19 @@ file:
     access-key: ${AWS_ACCESS_KEY_ID}
     secret-key: ${AWS_SECRET_ACCESS_KEY}
     prefix: test/
-    base-url: https://s3.ap-northeast-2.amazonaws.com/s3-hradar-bucket/test
+    base-url: https://s3.ap-northeast-2.amazonaws.com/s3-hradar-bucket/test/
 
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: mappers/**/*.xml
+#
+#logging:
+#  level:
+#    root: INFO
+#    org.hit.hradar: DEBUG
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
 
 external:
   vector-index:

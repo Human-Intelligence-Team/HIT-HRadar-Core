@@ -72,6 +72,7 @@ class NoticeCommandServiceTest {
                                 "title",
                                 "<img src=\"/files/a.png\">",
                                 1L,
+                                null,
                                 null);
 
                 lenient().when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
@@ -97,7 +98,7 @@ class NoticeCommandServiceTest {
 
         @Test
         void create_fail_categoryNotFound() {
-                NoticeDto dto = new NoticeDto(1L, "t", "c", 1L, null);
+                NoticeDto dto = new NoticeDto(1L, "t", "c", 1L, null, null);
 
                 lenient().when(categoryRepository.findByIdAndCompanyIdAndIsDeletedNot(1L, 1L, 'Y'))
                                 .thenReturn(Optional.empty());
@@ -146,9 +147,10 @@ class NoticeCommandServiceTest {
 
                 NoticeDto dto = new NoticeDto(
                                 1L,
-                                "new title",
-                                "<p>no image</p>",
+                                "title",
+                                "<img src=\"/files/a.png\">",
                                 1L,
+                                null,
                                 null);
 
                 lenient().when(imageRepository.findAllByCompanyIdAndUsedFalse(1L))

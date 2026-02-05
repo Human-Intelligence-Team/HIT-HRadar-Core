@@ -13,12 +13,15 @@ public class NoticeDto {
     private final String content;
     private final Long companyId;
     private List<Long> deletedAttachmentIds;
+    private List<String> attachmentStoredNames;
 
-    public NoticeDto(Long categoryId, String title, String content, Long companyId, List<Long> deletedAttachmentIds) {
+    public NoticeDto(Long categoryId, String title, String content, Long companyId,
+            List<Long> deletedAttachmentIds, List<String> attachmentStoredNames) {
         this.categoryId = categoryId;
         this.title = title;
         this.content = content;
         this.companyId = companyId;
         this.deletedAttachmentIds = deletedAttachmentIds;
+        this.attachmentStoredNames = attachmentStoredNames;
     }
 }
