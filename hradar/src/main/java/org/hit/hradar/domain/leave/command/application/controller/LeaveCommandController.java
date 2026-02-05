@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Leave Command", description = "휴가 결재 상신 및 데이터 저장 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/leave")
+@RequestMapping("/leave/command")
 public class LeaveCommandController {
 
     private final LeaveCommandService leaveCommandService;

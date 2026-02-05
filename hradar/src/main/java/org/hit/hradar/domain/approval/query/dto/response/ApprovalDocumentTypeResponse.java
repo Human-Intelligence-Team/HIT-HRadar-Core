@@ -11,4 +11,6 @@ public class ApprovalDocumentTypeResponse {
   private String docType;
   private String name;
   private boolean active;
+  private org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalAttendanceCategory attendanceCategory;
+  private Integer overtimeMinutes;
 }

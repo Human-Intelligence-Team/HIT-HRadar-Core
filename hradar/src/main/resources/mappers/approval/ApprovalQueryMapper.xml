@@ -32,6 +32,7 @@
       d.doc_id        AS docId,
       d.title         AS title,
       d.doc_type      AS docType,
+      d.status        AS status,
       d.submitted_at  AS submittedAt,
       s.step_order    AS stepOrder
     FROM approval_line_step s
