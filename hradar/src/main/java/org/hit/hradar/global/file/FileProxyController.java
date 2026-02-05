@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +35,9 @@ public class FileProxyController {
                 .getAttribute(org.springframework.web.servlet.HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
         String bestMatchPattern = (String) request
                 .getAttribute(org.springframework.web.servlet.HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE);
-        String storedName = new org.springframework.util.AntPathMatcher().extractPathWithinPattern(bestMatchPattern,
-                path);
+        String storedName = type + "/"
+                + new AntPathMatcher().extractPathWithinPattern(bestMatchPattern,
+                        path);
 
         // 1. Try to generate a Presigned URL (specifically for S3)
         // S3FileStorageClient implements this to return the S3 URL.
