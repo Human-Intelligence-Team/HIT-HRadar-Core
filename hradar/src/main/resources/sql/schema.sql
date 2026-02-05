@@ -257,12 +257,21 @@ CREATE TABLE approval_document_type (
     company_id          BIGINT NOT NULL,
     doc_type            VARCHAR(50) NOT NULL,
     name                VARCHAR(100) NOT NULL,
+    attendance_category VARCHAR(50) DEFAULT 'NONE',
+    overtime_minutes    INT DEFAULT 0,
     is_active           TINYINT(1) DEFAULT 1 NOT NULL,
     is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
     created_at          DATETIME(6) NOT NULL,
     updated_at          DATETIME(6),
     created_by          BIGINT,
     updated_by          BIGINT
+) ENGINE=InnoDB;
+
+-- 15. Approval Payload
+CREATE TABLE approval_payload (
+    payload_id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doc_id              BIGINT NOT NULL,
+    payload             JSON NOT NULL
 ) ENGINE=InnoDB;
 
 

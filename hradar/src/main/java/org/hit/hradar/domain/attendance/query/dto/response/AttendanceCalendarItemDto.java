@@ -18,6 +18,7 @@ public class AttendanceCalendarItemDto {
   private String departmentName;
   private String jobTitle;
   private Long totalWorkMinutes;
+  private Integer overtimeMinutes;
   private String location;
 
 

@@ -18,6 +18,9 @@ public class ApprovalTaskResponse {
   // 문서 유형
   private String docType;
 
+  // 문서 상태 (Added)
+  private String status;
+
   // 제출 일시
   private LocalDateTime submittedAt;
 

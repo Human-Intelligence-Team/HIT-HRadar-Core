@@ -29,4 +29,7 @@ public class ApprovalDetailResponse {
   // 댓글
   private List<ApprovalCommentResponse> comments;
 
+  // Payload (JSON)
+  private String payload;
+
 }

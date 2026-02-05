@@ -96,11 +96,17 @@
     , COALESCE(
     SUM(TIMESTAMPDIFF(MINUTE, w.start_at, w.end_at)) OVER (), 0
     ) AS total_work_minutes
+    , wp.overtime_minutes AS overtime_minutes
+    , CASE WHEN wp.overtime_minutes > 0 THEN '발생' ELSE '미발생' END AS overtime_status
     FROM attendance a
     JOIN employee e ON a.emp_id = e.emp_id
     LEFT JOIN attendance_work_log w
     ON w.attendance_id = a.attendance_id
     AND w.is_deleted = 'N'
+    LEFT JOIN attendance_work_plan wp
+    ON wp.emp_id = a.emp_id 
+    AND wp.status = 'APPROVED'
+    AND a.work_date BETWEEN DATE(wp.start_at) AND DATE(wp.end_at)
     WHERE a.emp_id = #{targetEmpId}
     AND a.work_date = #{workDate}
     ORDER BY w.start_at ASC
@@ -134,10 +140,16 @@
       END AS status,
       d.dept_name     AS departmentName,
       p.name          AS jobTitle,
-      /* 총 근무 시간 계산 (서브쿼리 대신 조인을 쓰면 정확도가 떨어질 수 있어 스칼라 서브쿼리로 안정성 확보 - 인덱스 있으면 충분히 빠름) */
       (SELECT COALESCE(SUM(TIMESTAMPDIFF(MINUTE, wl.start_at, IFNULL(wl.end_at, NOW()))), 0)
        FROM attendance_work_log wl
        WHERE wl.attendance_id = a.attendance_id AND wl.is_deleted = 'N') AS totalWorkMinutes,
+      /* 초과근무 시간 */
+      (SELECT COALESCE(wp.overtime_minutes, 0)
+       FROM attendance_work_plan wp
+       WHERE wp.emp_id = a.emp_id 
+         AND wp.status = 'APPROVED'
+         AND a.work_date BETWEEN DATE(wp.start_at) AND DATE(wp.end_at)
+       LIMIT 1) AS overtimeMinutes,
       /* 최신 근무 위치 */
       (SELECT wl.location FROM attendance_work_log wl
        WHERE wl.attendance_id = a.attendance_id AND wl.is_deleted = 'N'

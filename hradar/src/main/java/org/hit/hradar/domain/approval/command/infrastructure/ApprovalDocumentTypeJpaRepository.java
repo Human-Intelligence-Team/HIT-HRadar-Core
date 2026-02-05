@@ -10,4 +10,7 @@ public interface ApprovalDocumentTypeJpaRepository
   List<ApprovalDocumentType> findByCompanyIdAndActiveTrue(Long companyId);
 
   List<ApprovalDocumentType> findByCompanyId(Long companyId);
+
+  // For Listener lookup (Safe against duplicates)
+  java.util.Optional<ApprovalDocumentType> findFirstByCompanyIdAndDocTypeOrderByTypeIdDesc(Long companyId, String docType);
 }
