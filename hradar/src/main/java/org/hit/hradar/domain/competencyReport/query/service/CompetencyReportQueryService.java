@@ -16,6 +16,7 @@ import org.hit.hradar.domain.competencyReport.query.mapper.ContentMapper;
 import org.hit.hradar.domain.competencyReport.query.service.support.CommonQueryService;
 import org.hit.hradar.domain.employee.command.domain.aggregate.Employee;
 import org.hit.hradar.domain.employee.query.service.provider.EmployeeProviderService;
+import org.hit.hradar.domain.evaluation.command.domain.aggregate.CycleStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -99,4 +100,34 @@ public class CompetencyReportQueryService {
   }
 
 
+  /**
+   * 역량 강화 생성여부 목록
+   * @param request
+   * @return
+   */
+  public CompetencyReportSearchResponse getGeneratedCompetencyReports(CompReportCycleSearchRequest request, Long comId) {
+    request.setComId(comId);
+    List<CompetencyReportDTO> reports = competencyReportMapper.findAllWithCreatedYn(request);
+
+    reports.forEach(report -> {
+      if (CycleStatus.CLOSED.equals(report.getStatus()) && 'Y' == report.getIsCompReportGenerated()) {
+
+        CompReportCycleSearchRequest dateRequest = new CompReportCycleSearchRequest(
+            comId,
+            report.getYear(),
+            report.getQuarter(),
+            report.getCycleId()
+        );
+
+        CompetencyReportDTO period = competencyReportMapper.findCreatedReportPeriod(dateRequest);
+
+        if (period != null) {
+          report.setStartDate(period.getStartDate());
+          report.setEndDate(period.getEndDate());
+        }
+      }
+    });
+
+    return new CompetencyReportSearchResponse(reports);
+  }
 }

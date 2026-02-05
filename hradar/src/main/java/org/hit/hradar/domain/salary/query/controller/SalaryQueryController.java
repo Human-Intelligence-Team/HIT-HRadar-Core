@@ -3,11 +3,15 @@ package org.hit.hradar.domain.salary.query.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest;
 import org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalTargetRequest;
 import org.hit.hradar.domain.salary.query.dto.response.AnnualCompensationSummaryResponse;
+import org.hit.hradar.domain.salary.query.dto.response.SalaryApprovalResponse;
 import org.hit.hradar.domain.salary.query.dto.response.SalaryApprovalTargetResponse;
 import org.hit.hradar.domain.salary.query.service.SalaryQueryService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,4 +53,9 @@ public class SalaryQueryController {
     SalaryApprovalTargetResponse response = salaryQueryService.getSalaryApprovalTargets(request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
+
+
+
+
+
 }

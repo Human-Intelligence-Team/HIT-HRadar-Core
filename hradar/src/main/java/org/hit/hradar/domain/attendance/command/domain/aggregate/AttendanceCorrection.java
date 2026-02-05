@@ -59,7 +59,7 @@ public class AttendanceCorrection extends BaseTimeEntity {
   //신청 상태
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false)
-  private ApprovalStatus status = ApprovalStatus.REQUESTED;
+  private AttendanceApprovalStatus status = AttendanceApprovalStatus.REQUESTED;
 
   //요청 일자(같은 요청이 여러 개일 경우)
   @Column(name = "requested_at", nullable = false)
@@ -94,14 +94,14 @@ public class AttendanceCorrection extends BaseTimeEntity {
     correction.correctionType = correctionType;
     correction.reason = reason;
     correction.requestedValue = requestedValue;
-    correction.status = ApprovalStatus.REQUESTED;
+    correction.status = AttendanceApprovalStatus.REQUESTED;
     correction.requestedAt = LocalDateTime.now();
     return correction;
   }
 
     //승인
     public void approve(Long deciderEmpId) {
-      this.status = ApprovalStatus.APPROVED;
+      this.status = AttendanceApprovalStatus.APPROVED;
       this.deciderEmpId = deciderEmpId;
       this.decidedAt = LocalDateTime.now();
     }
@@ -109,7 +109,7 @@ public class AttendanceCorrection extends BaseTimeEntity {
 
   //반려
   public void reject(Long deciderEmpId, String rejectReason) {
-    this.status = ApprovalStatus.REJECTED;
+    this.status = AttendanceApprovalStatus.REJECTED;
     this.deciderEmpId = deciderEmpId;
     this.rejectReason = rejectReason;
     this.decidedAt = LocalDateTime.now();

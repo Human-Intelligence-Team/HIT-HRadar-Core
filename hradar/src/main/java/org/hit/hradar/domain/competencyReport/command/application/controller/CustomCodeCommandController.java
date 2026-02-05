@@ -36,7 +36,6 @@ public class CustomCodeCommandController {
       @RequestBody @Valid CustomCodeCreateRequest request
   )  {
 
-    System.out.println("드록>?>");
     Long comId = authUser.companyId();
     customCodeCommandService.createCustomCode(request, comId);
     return ResponseEntity.ok(ApiResponse.success(null));

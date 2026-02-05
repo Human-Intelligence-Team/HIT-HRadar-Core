@@ -26,5 +26,7 @@ public interface CompetencyReportMapper {
 
   CompetencyReportDTO findByCompetencyReportId(Long competencyReportId);
 
+  List<CompetencyReportDTO> findAllWithCreatedYn(CompReportCycleSearchRequest request);
 
+  CompetencyReportDTO findCreatedReportPeriod(CompReportCycleSearchRequest request);
 }

@@ -51,7 +51,7 @@ public class AttendanceWorkPlan extends BaseTimeEntity {
   // 신청 상태
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 30)
-  private ApprovalStatus status = ApprovalStatus.REQUESTED;
+  private AttendanceApprovalStatus status = AttendanceApprovalStatus.REQUESTED;
 
   // 삭제 여부
   @Column(name = "is_deleted", nullable = false)
@@ -74,16 +74,16 @@ public class AttendanceWorkPlan extends BaseTimeEntity {
     plan.startAt = startAt;
     plan.endAt = endAt;
     plan.overtimeMinutes = overtimeMinutes;
-    plan.status = ApprovalStatus.REQUESTED;
+    plan.status = AttendanceApprovalStatus.REQUESTED;
     return plan;
 
   }
   public void approve() {
-    this.status = ApprovalStatus.APPROVED;
+    this.status = AttendanceApprovalStatus.APPROVED;
   }
 
   public void reject() {
-    this.status = ApprovalStatus.REJECTED;
+    this.status = AttendanceApprovalStatus.REJECTED;
   }
 
 

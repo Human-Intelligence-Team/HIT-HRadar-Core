@@ -8,6 +8,7 @@ import org.hit.hradar.global.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,15 +21,29 @@ public class TagQueryController {
 
   /**
    * 태그 목록
+   * 
    * @param request
    * @return
    */
   @GetMapping
   public ResponseEntity<ApiResponse<TagSearchResponse>> tags(
-      TagSearchRequest request
-  )  {
+      TagSearchRequest request) {
 
     TagSearchResponse response = tagQueryService.tags(request);
+    return ResponseEntity.ok(ApiResponse.success(response));
+  }
+
+  /**
+   * 태그 목록
+   * 
+   * @param request
+   * @return
+   */
+  @GetMapping("/{tagName}")
+  public ResponseEntity<ApiResponse<TagSearchResponse>> tagsByTagName(
+      @PathVariable String tagName) {
+
+    TagSearchResponse response = tagQueryService.tagsByTagName(tagName);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 

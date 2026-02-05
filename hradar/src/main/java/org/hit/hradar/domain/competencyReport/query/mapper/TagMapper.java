@@ -10,5 +10,7 @@ public interface TagMapper {
 
   List<TagDTO> findAllTags(TagSearchRequest request);
 
+  List<TagDTO> findTagsByTagName(String tagName);
+
   List<TagDTO> findAllTagsByContentId(Long id);
 }

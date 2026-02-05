@@ -24,18 +24,12 @@ public class CustomCodeCommandService {
     Long customCodeId = request.getCustomCodeId();
     CustomCode code = customCodeRepository.findByCustomCodeId(customCodeId);
 
-     CustomCode createCode = CustomCode.create(
-                        comId
-                      , code.getGroupCode()
-                      , code.getGroupName()
-                      , request.getCustomCode()
-                      , request.getCustomName()
-                      , request.getCustomDesc()
-                      , request.getIsDeleted());
+    CustomCode createCode = CustomCode.create(
+        comId, code.getGroupCode(), code.getGroupName(), request.getCustomCode(), request.getCustomName(),
+        request.getCustomDesc());
 
-      customCodeRepository.save(createCode);
+    customCodeRepository.save(createCode);
   }
-
 
   public CustomCodeExistResponse existCustomCode(String customCode, Long comId) {
 
@@ -51,12 +45,10 @@ public class CustomCodeCommandService {
     if (codeIds == null || codeIds.isEmpty()) {
       throw new BusinessException(CompetencyReportErrorCode.CUSTOM_CODE_ID_REQUIRED);
     }
-    System.out.println("deleteCustomCode222" + codeIds);
 
-    //customCodeRepository.deleteByCustomCodeIdInAndComId(codeIds, comId);
+    // customCodeRepository.deleteByCustomCodeIdInAndComId(codeIds, comId);
 
     customCodeRepository.deleteByComIdAndCustomCodeIdIn(comId, codeIds);
-
 
   }
 }

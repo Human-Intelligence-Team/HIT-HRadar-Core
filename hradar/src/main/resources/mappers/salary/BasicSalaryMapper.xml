@@ -3,30 +3,81 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.hit.hradar.domain.salary.query.mapper.BasicSalaryMapper">
+
+  <select id="findAllByBasicSalary"
+    parameterType="org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest"
+    resultType="org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO">
+    <!-- 연봉 목록 조회 (전체)-->
+    SELECT YEAR(ad.CREATED_AT) AS year
+         , ad.DOC_ID
+         , ad.TITLE
+         , ad.approved_at
+         , bse.SALARY_INCREASE_TYPE
+         , ad.STATUS AS approvalStatus
+         , emp.NAME AS writer
+         , SUM(bse.BASIC_SALARY) AS totalSalary
+         , count (bse.BASIC_SALARY_EMPLOYEE_ID ) AS empCount
+      FROM APPROVAL_DOCUMENT ad
+      JOIN employee emp ON ad.WRITER_ID = emp.EMP_ID
+      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
+     WHERE ad.IS_DELETED = 'N'
+       AND ad.COMPANY_ID = #{comId}
+       AND ad.DOC_TYPE = 'BASIC_SALARY'
+     GROUP BY ad.DOC_ID, ad.TITLE, ad.approved_at, ad.STATUS, ad.WRITER_ID, emp.NAME , bse.SALARY_INCREASE_TYPE
+  </select>
+
+  <select id="findAllByBasicSalaryByDocId"
+    parameterType="org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest"
+    resultType="org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO">
+    <!-- 연봉 목록 조회 (전체)-->
+    SELECT YEAR(ad.CREATED_AT) AS year
+         , ad.DOC_ID
+         , ad.TITLE
+         , ad.approved_at
+         , bse.SALARY_INCREASE_TYPE
+         , ad.STATUS AS approvalStatus
+         , emp.NAME AS writer
+         , SUM(bse.BASIC_SALARY) AS totalSalary
+         , count (bse.BASIC_SALARY_EMPLOYEE_ID ) AS empCount
+      FROM APPROVAL_DOCUMENT ad
+      JOIN employee emp ON ad.WRITER_ID = emp.EMP_ID
+      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
+     WHERE ad.IS_DELETED = 'N'
+       AND ad.COMPANY_ID = #{comId}
+       AND ad.DOC_ID = #{docId}
+       AND ad.DOC_TYPE = 'BASIC_SALARY'
+     GROUP BY ad.DOC_ID, ad.TITLE, ad.approved_at, ad.STATUS, ad.WRITER_ID, emp.NAME , bse.SALARY_INCREASE_TYPE
+  </select>
+
   <select id="findAllBasicSalaries"
     parameterType="org.hit.hradar.domain.salary.query.dto.request.BasicSalarySearchRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO">
     <!-- 기본급 목록 조회 (전체)-->
-    SELECT YEAR(ad.APPROVED_AT) AS year -- 년도
+    SELECT YEAR(ad.CREATED_AT) AS year -- 년도
+         , ad.DOC_ID
+         , ad.DOC_TYPE
          , emp.EMP_ID  -- 사원 pk
          , emp.EMPLOYEE_NO -- 사번
          , emp.NAME -- 사원명
          , dep.DEPT_NAME  -- 부서명
-         , cp.NAME -- 직위
-         , ad.APPROVED_AT -- 승인 일시
+         , cp.NAME  AS positionName-- 직위
+         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt -- 승인 일시
          , emp.type AS employmentType-- 재직 상태
-      FROM APPROVAL_DOCUMENT ad
-      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
-      JOIN EMPLOYEE emp ON bse.EMP_ID = emp.EMP_ID
-      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
-      JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID
+         , bse.SALARY_INCREASE_TYPE
+    FROM APPROVAL_DOCUMENT ad
+      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID AND bse.IS_DELETED = 'N'
+      JOIN EMPLOYEE emp ON bse.EMP_ID = emp.EMP_ID AND emp.IS_DELETED = 'N'
+      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID AND dep.IS_DELETED = 'N'
+      JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID AND cp.IS_DELETED = 'N'
      WHERE ad.IS_DELETED = 'N'
-       AND bse.IS_DELETED = 'N'
-       AND emp.IS_DELETED = 'N'
-       AND dep.IS_DELETED = 'N'
-       AND cp.IS_DELETED = 'N'
+       AND ad.DOC_TYPE = 'BASIC_SALARY'
+       AND ad.COMPANY_ID = #{comId}
+       AND ad.DOC_ID = #{docId}
     <if test="deptId != null">
        AND dep.DEPT_ID = #{deptId}
+    </if>
+    <if test="comPositionId != null">
+      AND cp.POSITION_ID = #{comPositionId}
     </if>
     <if test="employmentType != null">
        AND emp.TYPE = #{employmentType}
@@ -44,23 +95,19 @@
     parameterType="Long"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO">
     <!-- 기본급 목록 조회 (본인)-->
-    SELECT YEAR(ad.APPROVED_AT) AS year -- 년도
+    SELECT YEAR(ad.CREATED_AT) AS year -- 년도
          , emp.EMP_ID  -- 사원 pk
          , emp.EMPLOYEE_NO -- 사번
          , emp.NAME -- 사원명
          , dep.DEPT_NAME  -- 부서명
          , cp.NAME -- 직위
-         , ad.APPROVED_AT -- 승인 일시
+         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt -- 승인 일시
       FROM APPROVAL_DOCUMENT ad
-      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
-      JOIN EMPLOYEE emp ON bse.EMP_ID = emp.EMP_ID
-      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
-      JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID
+      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID AND bse.IS_DELETED = 'N'
+      JOIN EMPLOYEE emp ON bse.EMP_ID = emp.EMP_ID AND emp.IS_DELETED = 'N'
+      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID AND dep.IS_DELETED = 'N'
+      JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID AND cp.IS_DELETED = 'N'
      WHERE ad.IS_DELETED = 'N'
-       AND bse.IS_DELETED = 'N'
-       AND emp.IS_DELETED = 'N'
-       AND dep.IS_DELETED = 'N'
-       AND cp.IS_DELETED = 'N'
        AND emp.EMP_ID = #{empId}
   </select>
 
@@ -68,34 +115,36 @@
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO">
     <!-- 기본급 히스토리 (전년도/ 올해) -->
     SELECT bse.BASIC_SALARY_EMPLOYEE_ID
+         , bse.SALARY_INCREASE_TYPE
          , ad.DOC_ID
          , ad.TITLE
          , bse.EMP_ID
          , bse.BASIC_SALARY
          , bse.INCREASE_RATE
          , bse.INCREASE_AMOUNT
-         , ad.APPROVED_AT
+         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt
     FROM basic_salary_employee bse
       JOIN approval_document ad ON ad.doc_id = bse.doc_id
      WHERE bse.IS_DELETED = 'N'
        AND ad.IS_DELETED = 'N'
        AND bse.EMP_ID = #{empId}
-       AND YEAR(ad.approved_at) = #{year}
+       AND YEAR(ad.CREATED_AT) = #{year}
   </select>
 
   <select id="findAllBasicSalariesHistoryByEmpId"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryHistoryDTO">
     <!-- 기본급 히스토리 (전년도/ 올해) -->
-    SELECT YEAR(ad.approved_at) AS year
+    SELECT YEAR(ad.CREATED_AT) AS year
+         , bse.SALARY_INCREASE_TYPE
+         , bse.EMP_ID
          , ad.TITLE
          , LAG(bse.basic_salary) OVER (PARTITION BY bse.emp_id ORDER BY ad.approved_at) AS prevSalary
          , bse.basic_salary              AS currentSalary
          , bse.increase_rate
-         , ad.approved_at
+         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt
       FROM basic_salary_employee bse
-      JOIN approval_document ad ON ad.doc_id = bse.doc_id
+      JOIN approval_document ad ON ad.doc_id = bse.doc_id AND ad.IS_DELETED = 'N'
      WHERE bse.IS_DELETED = 'N'
-       AND ad.IS_DELETED = 'N'
        AND bse.EMP_ID = #{empId}
      ORDER BY ad.approved_at DESC
   </select>
@@ -110,7 +159,7 @@
          , bse.BASIC_SALARY
          , bse.INCREASE_RATE
          , bse.INCREASE_AMOUNT
-         , ad.APPROVED_AT
+         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt
       FROM APPROVAL_DOCUMENT ad
       JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
      WHERE ad.IS_DELETED = 'N'

@@ -10,10 +10,9 @@ import org.hit.hradar.domain.salary.command.domain.repository.BasicSalaryReposit
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
 public interface BasicSalaryJpaRepository extends BasicSalaryRepository, JpaRepository<BasicSalary, Long> {
 
-  default void saveAll(List<BasicSalary> basicSalaries) {
+  default void saveAllWithPolicy(List<BasicSalary> basicSalaries) {
     if (basicSalaries == null || basicSalaries.isEmpty()) {
       return;
     }

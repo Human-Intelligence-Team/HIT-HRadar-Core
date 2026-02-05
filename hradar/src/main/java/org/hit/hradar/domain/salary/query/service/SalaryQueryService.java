@@ -3,7 +3,10 @@ package org.hit.hradar.domain.salary.query.service;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO;
+import org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest;
 import org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalTargetRequest;
+import org.hit.hradar.domain.salary.query.dto.response.SalaryApprovalResponse;
 import org.hit.hradar.domain.salary.query.dto.response.SalaryApprovalTargetResponse;
 import org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.CompensationSalaryDTO;
@@ -68,4 +71,6 @@ public class SalaryQueryService {
     List<SalaryApprovalTargetDTO> compensationSalary = salaryMapper.findSalaryApprovalTargets(request);
     return new SalaryApprovalTargetResponse(compensationSalary);
   }
+
+
 }

@@ -12,7 +12,7 @@ public class ContentSearchRequest {
   private Long type;// 유형
   private Long level; // 난이도
   private Integer learningTime; // 학습시간
-  private List<Long> tags; // 태그
+  private String tag; // 태그
   private Character isDeleted; // 사용여부
 
 }

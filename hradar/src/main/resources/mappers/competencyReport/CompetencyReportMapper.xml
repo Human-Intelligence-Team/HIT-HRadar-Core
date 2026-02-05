@@ -49,7 +49,6 @@
        AND emp.TYPE = 'WORKING' -- 재직 중
        AND cc.YEAR = #{year}
        AND cc.QUARTER = #{quarter}
-       AND cc.CYCLE_ID = #{cycleId}
     <if test="deptId != null">
        AND dp.DEPT_ID = #{deptId}
     </if>
@@ -62,6 +61,7 @@
     <if test="employeeName != null and employeeName != ''">
        AND emp.NAME LIKE CONCAT('%', #{employeeName}, '%')
     </if>
+
      ORDER BY cc.YEAR DESC, cc.QUARTER DESC, cr.CREATED_AT DESC
   </select>
 
@@ -81,7 +81,7 @@
       FROM CYCLE cc
       JOIN employee emp ON cc.EMP_ID = emp.EMP_ID
      WHERE cc.IS_DELETED = 'N'
-    <if test="year != null">
+    <if test="year != null and year != ''">
        AND cc.YEAR = #{year}
     </if>
     <if test="quarter != null">
@@ -139,10 +139,51 @@
          , cr.COMPETENCY_REPORT_ID
       FROM CYCLE cc
       JOIN COMPETENCY_REPORT cr USING (CYCLE_ID)
-     WHERE cr.EMP_ID = #{empId}
+     WHERE cr.EMP_ID = 1008
+    <!--#{empId}-->
     <if test="request.year != null">
        AND cc.YEAR = #{request.year}
     </if>
      ORDER BY cc.YEAR DESC, cc.QUARTER DESC, cr.CREATED_AT DESC
   </select>
+
+  <select id="findAllWithCreatedYn"
+    parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompReportCycleSearchRequest"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
+    <!-- 역량강화 생성 리스트 -->
+    SELECT cc.CYCLE_ID
+    , cc.CYCLE_NAME
+    , cc.EMP_ID
+    , emp.NAME AS employeeName
+    , cc.IS_COMP_REPORT_GENERATED
+    , cc.QUARTER
+    , cc.STATUS
+    , cc.YEAR
+    FROM CYCLE cc
+    JOIN EMPLOYEE emp ON cc.EMP_ID = emp.EMP_ID
+    WHERE cc.IS_DELETED = 'N'
+      AND cc.COMPANY_ID = #{comId}
+    <if test="year != null">
+      AND cc.YEAR = #{year}
+    </if>
+    ORDER BY cc.YEAR ASC , cc.QUARTER desc
+  </select>
+  <select id="findCreatedReportPeriod"
+    parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompReportCycleSearchRequest"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
+    <!-- 역량강화 생성 리스트 -->
+    SELECT cr.START_DATE
+         , cr.END_DATE
+      FROM COMPETENCY_REPORT cr
+      JOIN cycle cc ON cr.CYCLE_ID = cc.CYCLE_ID
+     WHERE cr.IS_DELETED = 'N'
+       AND cc.COMPANY_ID = #{comId}
+       AND cc.CYCLE_ID = #{cycleId}
+       AND cc.YEAR = #{year}
+       AND cc.QUARTER = #{quarter}
+       AND cc.IS_COMP_REPORT_GENERATED = 'Y'
+       AND cc.STATUS = 'CLOSED'
+     LIMIT 1
+  </select>
+
 </mapper>

@@ -1,9 +1,11 @@
 package org.hit.hradar.domain.competencyReport.query.dto.request;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Quarter;
 
 @Getter
+@NoArgsConstructor
 public class CompetencyReportSearchRequest {
 
   private String year;
@@ -15,6 +17,9 @@ public class CompetencyReportSearchRequest {
   private String employeeName; // 사원명
 
 
+  public CompetencyReportSearchRequest (String year) {
+    this.year = year;
+  }
   public CompetencyReportSearchRequest(String year, Quarter quarter, Long deptId, Long comPositionId, Long employeeNo
     , String employeeName
   ) {

@@ -21,22 +21,18 @@ public class CompetencyReportCommandController {
 
   private final CompetencyReportCommandService competencyReportCommandService;
 
-
   /**
    * 학습 컨텐츠 등록
+   * 
    * @return
    */
   @PostMapping()
   public ResponseEntity<ApiResponse<Void>> createReport(
       @CurrentUser AuthUser authUser,
-      @RequestBody CompetencyReportCreateRequest request
-  )  {
-    System.out.println("CompetencyReportCommandController.createReport");
-
+      @RequestBody CompetencyReportCreateRequest request) {
     Long comId = authUser.companyId();
     competencyReportCommandService.createReport(comId, request);
     return ResponseEntity.ok(ApiResponse.success(null));
   }
-
 
 }

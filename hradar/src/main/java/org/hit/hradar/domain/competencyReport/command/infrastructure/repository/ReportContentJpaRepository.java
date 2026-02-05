@@ -9,11 +9,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface ReportContentJpaRepository extends ReportContentRepository,
     JpaRepository<ReportContent, Integer> {
 
-  default void saveAll(List<ReportContent> reportContents) {
-    if (reportContents == null || reportContents.isEmpty()) {
-      return;
+  default void saveAllIfNotEmpty(List<ReportContent> reportContents) {
+    if (reportContents != null && !reportContents.isEmpty()) {
+      this.saveAll(reportContents);
     }
-    saveAll(reportContents);
   }
 
 }

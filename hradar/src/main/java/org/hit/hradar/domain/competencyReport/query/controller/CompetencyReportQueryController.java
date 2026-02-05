@@ -108,4 +108,24 @@ public class CompetencyReportQueryController {
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
+  /**
+   * 역량 강화 생성여부 목록
+   *
+   * @param request
+   * @return
+   */
+  @Operation(summary = "전체 역량 리포트 목록 조회", description = "모든 역량 리포트 목록을 조회합니다.")
+  @GetMapping("/generated")
+  public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getGeneratedCompetencyReports(
+      @CurrentUser AuthUser authUser,
+      CompReportCycleSearchRequest request) {
+
+    System.out.println("CompetencyReportQueryController.getGeneratedCompetencyReports");
+
+    Long comId =  authUser.companyId();
+    CompetencyReportSearchResponse response = competencyReportQueryService.getGeneratedCompetencyReports(request, comId);
+   return ResponseEntity.ok(ApiResponse.success(response));
+  }
+
+
 }

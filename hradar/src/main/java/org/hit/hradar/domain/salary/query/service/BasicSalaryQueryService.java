@@ -6,9 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.salary.command.domain.repository.BasicSalaryRepository;
 import org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.BasicSalaryHistoryDTO;
+import org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO;
 import org.hit.hradar.domain.salary.query.dto.request.BasicSalarySearchRequest;
+import org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest;
 import org.hit.hradar.domain.salary.query.dto.response.BasicSalaryHistoryResponse;
 import org.hit.hradar.domain.salary.query.dto.response.BasicSalarySearchResponse;
+import org.hit.hradar.domain.salary.query.dto.response.SalaryApprovalResponse;
 import org.hit.hradar.domain.salary.query.mapper.BasicSalaryMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,15 +24,39 @@ public class BasicSalaryQueryService {
   private final BasicSalaryMapper basicSalaryMapper;
 
   /**
+   * 연봉 결재 목록
+   * @param comId
+   * @param request
+   * @return
+   */
+  public SalaryApprovalResponse approvedBasicSalaries(Long comId, SalaryApprovalRequest request) {
+
+
+    request.setComId(comId);
+    List<SalaryApprovalDTO> salaries = basicSalaryMapper.findAllByBasicSalary(request);
+
+    return new SalaryApprovalResponse(salaries);
+
+  }
+
+  /**
    * 연봉 목록 조회(전체)
    * @return
    */
   public BasicSalarySearchResponse basicSalaries(
-      BasicSalarySearchRequest request
+      BasicSalarySearchRequest request, Long docId, Long comId
   ) {
 
+    request.setDocId(docId);
+    request.setComId(comId);
     List<BasicSalaryDTO> basicSalaries = basicSalaryMapper.findAllBasicSalaries(request);
-    return new BasicSalarySearchResponse(basicSalaries);
+
+    // 제목
+    SalaryApprovalRequest dto = new SalaryApprovalRequest(comId, docId);
+    SalaryApprovalDTO salaryApproval =  basicSalaryMapper.findAllByBasicSalaryByDocId(dto);
+
+
+    return new BasicSalarySearchResponse(basicSalaries,salaryApproval);
   }
 
   /**
@@ -39,7 +66,7 @@ public class BasicSalaryQueryService {
   public BasicSalarySearchResponse getMyBasicSalaries(Long empId) {
 
     List<BasicSalaryDTO> basicSalaries = basicSalaryMapper.findAllBasicSalariesByEmpId(empId);
-    return new BasicSalarySearchResponse(basicSalaries);
+    return new BasicSalarySearchResponse(basicSalaries, null);
   }
 
   /**
@@ -68,7 +95,8 @@ public class BasicSalaryQueryService {
         prevBasicSalary,
         currentBasicSalary,
         currentSalary != null ? currentSalary.getIncreaseRate() : null,
-        currentSalary != null ? currentSalary.getApprovedAt() : null
+        currentSalary != null ? currentSalary.getApprovedAt() : null,
+        currentSalary.getSalaryIncreaseType()
     );
 
     return new BasicSalaryHistoryResponse(result, null);

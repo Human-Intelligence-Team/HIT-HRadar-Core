@@ -31,4 +31,14 @@
      WHERE tg.IS_DELETED = 'N'
        AND ctt.CONTENT_ID = #{contentId}
   </select>
+
+  <select id="findTagsByTagName"
+    parameterType="String"
+    resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
+    SELECT t.tag_id
+         , t.tag_name
+      FROM tag t
+     WHERE t.is_deleted = 'N'
+       AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
+  </select>
 </mapper>

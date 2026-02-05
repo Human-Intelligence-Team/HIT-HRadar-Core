@@ -19,4 +19,6 @@ public class ApprovalDraftCreateRequest {
   private List<Long> referenceIds;
 
   private JsonNode Payload;
+
+
 }

@@ -2,6 +2,8 @@ package org.hit.hradar.domain.salary.query.service;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO;
+import org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest;
 import org.hit.hradar.domain.salary.query.dto.response.CompensationSearchResponse;
 import org.hit.hradar.domain.salary.query.dto.CompensationHistoryDTO;
 import org.hit.hradar.domain.salary.query.dto.CompensationSalaryDTO;
@@ -9,6 +11,7 @@ import org.hit.hradar.domain.salary.query.dto.request.CompensationSearchRequest;
 import org.hit.hradar.domain.salary.query.dto.request.CompensationHistorySearchRequest;
 import org.hit.hradar.domain.salary.query.dto.response.CompensationHistorySearchResponse;
 import org.hit.hradar.domain.salary.query.dto.response.CompensationSummaryResponse;
+import org.hit.hradar.domain.salary.query.dto.response.SalaryApprovalResponse;
 import org.hit.hradar.domain.salary.query.mapper.CompensationSalaryMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,10 +60,17 @@ public class CompensationSalaryQueryService {
    * @param request
    * @return
    */
-  public CompensationSearchResponse compensationSalaries(CompensationSearchRequest request) {
+  public CompensationSearchResponse compensationSalaries(CompensationSearchRequest request, Long docId, Long comId) {
 
+    request.setDocId(docId);
+    request.setComId(comId);
     List<CompensationSalaryDTO> compensationSalaries = compensationSalaryMapper.findAllCompensationSalaries(request);
-    return new CompensationSearchResponse(compensationSalaries);
+
+    // 제목
+    SalaryApprovalRequest dto = new SalaryApprovalRequest(comId, docId);
+    SalaryApprovalDTO salaryApproval =  compensationSalaryMapper.findAllByCompensationSalariesByDocId(dto);
+
+    return new CompensationSearchResponse(compensationSalaries, salaryApproval);
   }
 
   /**
@@ -77,5 +87,18 @@ public class CompensationSalaryQueryService {
     CompensationSalaryDTO summary = compensationSalaryMapper.findCompensationSalaries(startDate, endDate, null);
     return new CompensationSummaryResponse(startDate, endDate, summary);
 
+  }
+
+  /**
+   * 변동보상 결재 목록 조회
+   *
+   * @return
+   */
+  public SalaryApprovalResponse approvedCompensationSalaries(Long comId, SalaryApprovalRequest request) {
+    request.setComId(comId);
+    List<SalaryApprovalDTO> salaries = compensationSalaryMapper.findAllByCompensationSalaries(request);
+
+
+    return new SalaryApprovalResponse(salaries);
   }
 }

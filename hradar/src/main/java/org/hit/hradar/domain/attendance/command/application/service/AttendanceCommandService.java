@@ -59,7 +59,7 @@ public class AttendanceCommandService {
         workPlanRepository
             .findByEmpIdAndStatusAndStartAtLessThanEqualAndEndAtGreaterThanEqual(
                 empId,
-                ApprovalStatus.APPROVED,
+                AttendanceApprovalStatus.APPROVED,
                 now,
                 now
             );
