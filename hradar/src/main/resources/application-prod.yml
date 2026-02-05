@@ -57,3 +57,8 @@ external:
 logging:
   level:
     root: INFO
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: mappers/**/*.xml
