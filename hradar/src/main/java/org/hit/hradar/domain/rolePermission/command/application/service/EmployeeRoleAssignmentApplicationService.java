@@ -60,8 +60,9 @@ public class EmployeeRoleAssignmentApplicationService {
     employeeRepository.findByEmpIdAndComIdAndIsDeleted(empId, comId, 'N')
         .orElseThrow(() -> new BusinessException(org.hit.hradar.domain.employee.EmployeeErrorCode.EMPLOYEE_ERROR_CODE));
 
-    // 기존 권한 삭제
+    // 기존 권한 삭제 후 즉시 flush (중복 에러 방지)
     roleEmpRepository.deleteByEmpId(empId);
+    roleEmpRepository.flush(); // ⭐ 삭제를 DB에 즉시 반영
 
     // 새 권한 부여
 

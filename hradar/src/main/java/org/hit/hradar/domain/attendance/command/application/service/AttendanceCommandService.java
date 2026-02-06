@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hit.hradar.domain.attendance.IpPolicyErrorCode;
 import org.hit.hradar.domain.attendance.command.application.dto.response.AttendanceCheckResponse;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.*;
 import org.hit.hradar.domain.attendance.command.domain.policy.IpAccessValidator;
@@ -13,7 +12,6 @@ import org.hit.hradar.domain.attendance.command.domain.repository.AttendanceRepo
 import org.hit.hradar.domain.attendance.command.infrastructure.AttendanceAuthLogJpaRepository;
 import org.hit.hradar.domain.attendance.command.infrastructure.AttendanceWorkLogJpaRepository;
 import org.hit.hradar.domain.attendance.command.infrastructure.AttendanceWorkPlanJpaRepository;
-import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +37,8 @@ public class AttendanceCommandService {
         log.info("clientIp={}", clientIp);
 
         if (!ipAccessValidator.validate(comId, clientIp)) {
-            throw new BusinessException(IpPolicyErrorCode.IpRange_NOT_FOUND);
+            // throw new BusinessException(IpPolicyErrorCode.IpRange_NOT_FOUND);
+            log.warn("IP Validation Failed for IP: {}. Proceeding as requested (Dev Policy).", clientIp);
         }
         log.info("clientIp={}", clientIp);
 

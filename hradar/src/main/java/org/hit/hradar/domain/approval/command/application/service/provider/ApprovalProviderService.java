@@ -186,7 +186,7 @@ public class ApprovalProviderService {
     );
   }
 
-  private void updatePayload(Long docId, JsonNode payload) {
+  public void updatePayload(Long docId, JsonNode payload) {
     // 일반 결재 문서의 경우 payload가 없을 수 있음
     if (payload == null || payload.isNull() || payload.isEmpty()) {
       // payload가 없는 경우 업데이트하지 않음

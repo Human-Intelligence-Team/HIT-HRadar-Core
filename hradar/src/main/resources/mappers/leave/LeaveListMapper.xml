@@ -31,7 +31,7 @@
       ad.status         AS approvalStatus,
       NULL              AS empName
     FROM emp_leave l
-    JOIN approval_document ad ON l.doc_id = ad.doc_id
+    LEFT JOIN approval_document ad ON l.doc_id = ad.doc_id
     WHERE l.emp_id = #{empId}
       AND l.is_deleted = 'N'
     ORDER BY l.start_date DESC
@@ -50,9 +50,11 @@
       l.leave_days      AS leaveDays,
       l.requested_at    AS requestedAt,
       e.name            AS empName,
+      d.dept_name       AS departmentName,
       ad.status         AS approvalStatus
     FROM emp_leave l
     JOIN employee e ON l.emp_id = e.emp_id
+    LEFT JOIN department d ON e.dept_id = d.dept_id
     LEFT JOIN approval_document ad ON l.doc_id = ad.doc_id
     WHERE e.dept_id = (SELECT dept_id FROM employee WHERE emp_id = #{requestorEmpId})
       AND l.is_deleted = 'N'

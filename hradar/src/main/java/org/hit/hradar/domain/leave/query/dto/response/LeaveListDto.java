@@ -35,4 +35,6 @@ public class LeaveListDto {
 
   private String empName; // Added for Department View
 
+  private String departmentName;
+
 }

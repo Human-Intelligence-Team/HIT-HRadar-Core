@@ -74,9 +74,18 @@ public class ApprovalApproveCommandService {
         .ifPresent(ApprovalLineStep::changeToPending);
 
     // 6. 승인 히스토리 기록 (EmployeeID 사용)
-    approvalHistoryRepository.save(
-        ApprovalHistory.approved(docId, employeeId, currentStep)
+    // 중복 기록 방지
+    boolean exists = approvalHistoryRepository.existsByStepIdAndActorIdAndApprovalActionType(
+        currentStep.getStepId(),
+        employeeId,
+        org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalActionType.APPROVED
     );
+
+    if (!exists) {
+      approvalHistoryRepository.save(
+          ApprovalHistory.approved(docId, employeeId, currentStep)
+      );
+    }
 
     // 7. 더 이상 PENDING 없으면 문서 최종 승인
     boolean hasPending =

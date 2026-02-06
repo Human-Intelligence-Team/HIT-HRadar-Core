@@ -9,12 +9,15 @@ import org.hit.hradar.domain.user.command.domain.aggregate.AccountStatus;
 import org.hit.hradar.domain.user.command.domain.aggregate.UserRole;
 import org.hit.hradar.domain.user.command.domain.repository.AccountRepository;
 import org.hit.hradar.domain.user.command.infrastructure.AccountJpaRepository;
+import org.hit.hradar.global.client.AuthInternalClient;
 import org.hit.hradar.global.exception.BusinessException;
+import org.hit.hradar.global.util.RandomGenerator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -22,6 +25,7 @@ public class UserService {
   private final AccountRepository accountRepository;
   private final AccountJpaRepository userJpaRepository;
   private final PasswordEncoder passwordEncoder;
+  private final AuthInternalClient authInternalClient;
 
   @Transactional
   public CreateFirstUserRequest createFirstUserRequest(
@@ -31,8 +35,7 @@ public class UserService {
       String loginId,
       String name,
       String email,
-      String password
-  ) {
+      String password) {
     if (userJpaRepository.existsByComIdAndLoginIdAndStatus(comId, loginId, AccountStatus.ACTIVE)) {
       throw new BusinessException(UserErrorCode.DUPLICATE_LOGIN_ID);
     }
@@ -54,8 +57,7 @@ public class UserService {
             .userRole(UserRole.user)
             .status(AccountStatus.ACTIVE)
             .isDeleted('N')
-            .build()
-    );
+            .build());
 
     return new CreateFirstUserRequest(
         saved.getAccId(),
@@ -63,9 +65,7 @@ public class UserService {
         companyCode,
         empId,
         loginId,
-        password
-    );
-
+        password);
 
   }
 
@@ -91,5 +91,41 @@ public class UserService {
     account.updateLoginInfo(newLoginId, request.getName(), newEmail);
   }
 
+  /**
+   * 관리자용 비밀번호 초기화
+   * - admin: 플랫폼 전역 관리자 (모든 회사 접근 가능)
+   * - user: 회사 관리자 (자기 회사만 접근 가능)
+   * - 비밀번호를 고정값 "1234"로 초기화
+   */
+  @Transactional
+  public void resetPassword(Long accId, Long managerComId, UserRole managerRole) {
+    Account account;
+
+    if (managerRole == UserRole.admin) {
+      // 플랫폼 전역 관리자: 회사 제약 없음
+      account = userJpaRepository.findByAccIdAndIsDeleted(accId, 'N')
+          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+      // 활성 상태 확인
+      if (account.getStatus() != AccountStatus.ACTIVE) {
+        throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
+      }
+    } else {
+      // 회사 관리자: 같은 회사 소속인지 확인
+      account = userJpaRepository.findByAccIdAndComIdAndStatus(accId, managerComId, AccountStatus.ACTIVE)
+          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    // 비밀번호 "1234"로 초기화
+    String tempPw = "1234";
+    account.updatePassword(passwordEncoder.encode(tempPw));
+
+    // 기존 리프레시 토큰 무효화 요청 (동기 - 보안 일관성 유지)
+    try {
+      authInternalClient.revokeRefreshToken(account.getAccId()).block();
+    } catch (Exception e) {
+      log.warn("[AUTH_REVOKE_FAIL] accountId={}, message={}", account.getAccId(), e.getMessage());
+    }
+  }
 
 }

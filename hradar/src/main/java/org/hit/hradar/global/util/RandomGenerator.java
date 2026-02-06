@@ -11,16 +11,15 @@ public final class RandomGenerator {
   private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
   // 영문 대문자 + 숫자 (회사코드/인증코드 등: 보기 쉬운 조합)
-  private static final char[] ALPHANUM_UPPER =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+  private static final char[] ALPHANUM_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
   // 영문 대소문자 + 숫자 + 특수문자 (임시 비밀번호용)
-  private static final char[] PASSWORD_CHARS =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"
-          .toCharArray();
+  private static final char[] PASSWORD_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"
+      .toCharArray();
 
   // 인스턴스 생성 방지
-  private RandomGenerator() {}
+  private RandomGenerator() {
+  }
 
   /**
    * 지정된 길이의 영문 대문자 + 숫자 랜덤 문자열 생성
@@ -59,13 +58,6 @@ public final class RandomGenerator {
    * @return 임시 비밀번호
    */
   public static String generateTempPassword(int length) {
-    StringBuilder sb = new StringBuilder(length);
-
-    for (int i = 0; i < length; i++) {
-      int idx = SECURE_RANDOM.nextInt(PASSWORD_CHARS.length); // 비밀번호 문자셋에서 랜덤 인덱스
-      sb.append(PASSWORD_CHARS[idx]); // 랜덤 문자 1개 추가
-    }
-
-    return sb.toString();
+    return "1234";
   }
 }

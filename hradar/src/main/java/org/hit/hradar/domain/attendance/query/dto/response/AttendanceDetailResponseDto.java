@@ -27,6 +27,8 @@ public class AttendanceDetailResponseDto {
   private LocalDateTime checkOutTime;
 
   private int totalWorkMinutes;
+  private Integer overtimeMinutes;
+  private String overtimeStatus;
 
   private List<WorkLogTimelineItemDto> timeline;
 }
