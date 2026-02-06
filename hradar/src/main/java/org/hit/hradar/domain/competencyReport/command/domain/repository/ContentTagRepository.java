@@ -8,4 +8,5 @@ public interface ContentTagRepository {
   void saveAllWithPolicy(List<ContentTag> contentTags);
   void deleteAllByContentId(Long contentId);
 
+  List<ContentTag> findAllByContentId(Long contentId);
 }

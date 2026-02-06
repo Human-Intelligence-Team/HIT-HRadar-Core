@@ -18,13 +18,27 @@ public class TagQueryService {
 
   /**
    * 태그 목록 조회
+   * 
    * @param request
    * @return
    */
-  public TagSearchResponse tags(TagSearchRequest request) {
+  public TagSearchResponse tags(TagSearchRequest request, Long comId) {
 
-     List<TagDTO> response = tagMapper.findAllTags(request);
-     return TagSearchResponse.tags(response);
+    request.setComId(comId);
+    List<TagDTO> response = tagMapper.findAllTags(request);
+    return TagSearchResponse.tags(response);
 
   }
+
+  /**
+   * 태그 이름으로 태그 목록 조회
+   * 
+   * @param tagName
+   * @return
+   */
+  public TagSearchResponse tagsByTagName(String tagName, Long comId) {
+    List<TagDTO> response = tagMapper.findTagsByTagName(tagName, comId);
+    return TagSearchResponse.tags(response);
+  }
+
 }

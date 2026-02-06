@@ -1,10 +1,17 @@
 package org.hit.hradar.domain.competencyReport.query.dto.request;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Quarter;
 
 @Getter
+@NoArgsConstructor
+@Setter
 public class CompetencyReportSearchRequest {
+
+  private Long empId;
+  private Long comId;
 
   private String year;
   private Quarter quarter;
@@ -15,6 +22,9 @@ public class CompetencyReportSearchRequest {
   private String employeeName; // 사원명
 
 
+  public CompetencyReportSearchRequest (String year) {
+    this.year = year;
+  }
   public CompetencyReportSearchRequest(String year, Quarter quarter, Long deptId, Long comPositionId, Long employeeNo
     , String employeeName
   ) {
@@ -26,9 +36,5 @@ public class CompetencyReportSearchRequest {
     this.employeeName = employeeName;
   }
 
-
-  public void setDeptId(Long deptId) {
-    this.deptId = deptId;
-  }
 
 }

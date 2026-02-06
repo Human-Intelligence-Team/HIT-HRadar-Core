@@ -18,6 +18,7 @@
   </select>
 
   <select id="findAllCustomCodeByGroupCode"
+    parameterType="org.hit.hradar.domain.competencyReport.command.application.dto.request.CustomCodeSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CustomCodeDTO">
     SELECT crc.CUSTOM_CODE_ID
          , crc.GROUP_CODE
@@ -26,7 +27,9 @@
          , crc.CUSTOM_NAME
       FROM competency_report_custom_code crc
      WHERE crc.COM_ID = #{comId}
+    <if test="groupCode != null">
        AND crc.GROUP_CODE = #{groupCode}
+    </if>
        AND crc.CUSTOM_CODE IS NOT NULL
      ORDER BY crc.CUSTOM_CODE_ID
   </select>

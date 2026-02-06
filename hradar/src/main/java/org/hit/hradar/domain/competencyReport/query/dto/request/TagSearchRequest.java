@@ -10,5 +10,6 @@ import lombok.Setter;
 public class TagSearchRequest {
 
   private String tagName;
+  private Long comId;
 
 }

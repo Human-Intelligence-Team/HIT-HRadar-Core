@@ -38,7 +38,7 @@ public class CompensationSalary extends BaseTimeEntity {
   @Column(name = "amount", nullable = false)
   private Long amount;
 
-  @Column(name = "rate", nullable = false, precision = 5, scale = 2)
+  @Column(name = "rate", precision = 5, scale = 2)
   private BigDecimal rate;
 
   @Column(name = "remark", length = 100)

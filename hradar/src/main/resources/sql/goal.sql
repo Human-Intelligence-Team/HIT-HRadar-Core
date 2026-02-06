@@ -52,7 +52,7 @@ INSERT INTO goal (
     (203, 201, 'LEVEL_2', 'PERSONAL', 'KPI',
      'A 사원 - 신규 고객 매출', NULL,
      '2026-01-01', '2026-03-31',
-     3015, 1008,
+     3015, 1007,
      'WAIT', 'APPROVED',
      NULL,
      'N',

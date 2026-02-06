@@ -40,8 +40,8 @@ public class CompetencyReportQueryController {
       CompetencyReportSearchRequest request) {
 
     Long empId = authUser.employeeId();
-
-    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(empId, request);
+    Long comId = authUser.companyId();
+    CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(empId, request, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
@@ -72,9 +72,11 @@ public class CompetencyReportQueryController {
   @Operation(summary = "회차별 역량 리포트 목록 조회", description = "특정 회차의 역량 리포트 목록을 조회합니다.")
   @GetMapping("/cycle")
   public ResponseEntity<ApiResponse<CycleSearchResponse>> getCycles(
+      @CurrentUser AuthUser authUser,
       CompReportCycleSearchRequest request) {
 
-    CycleSearchResponse response = competencyReportQueryService.getCycles(request);
+    Long comId = authUser.companyId();
+    CycleSearchResponse response = competencyReportQueryService.getCycles(request, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
@@ -87,9 +89,11 @@ public class CompetencyReportQueryController {
   @Operation(summary = "전체 역량 리포트 목록 조회", description = "모든 역량 리포트 목록을 조회합니다.")
   @GetMapping("/all")
   public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getCompetencyReportsByAll(
+      @CurrentUser AuthUser authUser,
       CompReportCycleSearchRequest request) {
 
-    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportsByAll(request);
+    Long comId = authUser.companyId();
+    CompetencyReportSearchResponse response = competencyReportQueryService.getCompetencyReportsByAll(request, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
@@ -102,10 +106,30 @@ public class CompetencyReportQueryController {
   @Operation(summary = "역량 리포트 상세 조회", description = "리포트 ID로 역량 리포트의 상세 내용을 조회합니다.")
   @GetMapping("/{id}")
   public ResponseEntity<ApiResponse<CompetencyReportDetailResponse>> getCompetencyReportsById(
-      @PathVariable Long id) {
+      @CurrentUser AuthUser authUser,
+      @PathVariable("id") Long id) {
 
-    CompetencyReportDetailResponse response = competencyReportQueryService.getCompetencyReportsById(id);
+    Long comId = authUser.companyId();
+    CompetencyReportDetailResponse response = competencyReportQueryService.getCompetencyReportsById(id, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
+
+  /**
+   * 역량 강화 생성여부 목록
+   *
+   * @param request
+   * @return
+   */
+  @Operation(summary = "전체 역량 리포트 목록 조회", description = "모든 역량 리포트 목록을 조회합니다.")
+  @GetMapping("/generated")
+  public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getGeneratedCompetencyReports(
+      @CurrentUser AuthUser authUser,
+      CompReportCycleSearchRequest request) {
+
+    Long comId =  authUser.companyId();
+    CompetencyReportSearchResponse response = competencyReportQueryService.getGeneratedCompetencyReports(request, comId);
+   return ResponseEntity.ok(ApiResponse.success(response));
+  }
+
 
 }

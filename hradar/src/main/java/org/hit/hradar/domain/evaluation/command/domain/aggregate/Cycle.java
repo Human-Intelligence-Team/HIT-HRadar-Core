@@ -126,4 +126,8 @@ public class Cycle extends BaseTimeEntity {
     public void close() {
         this.status = CycleStatus.CLOSED;
     }
+
+    public void updateIsReportGenerated(Character isReportGenerated) {
+      this.isReportGenerated = isReportGenerated;
+    }
 }

@@ -26,6 +26,10 @@ public class Tag extends BaseTimeEntity {
   @Column(name = "tag_id")
   private Long tagId;
 
+  //회사 id
+  @Column(name = "company_id", nullable = false)
+  private Long companyId;
+
   @Column(name = "tag_name", nullable = false, length = 50, unique = true)
   private String tagName;
 
@@ -39,12 +43,13 @@ public class Tag extends BaseTimeEntity {
     }
   }
 
- private Tag(String tagName) {
+ private Tag(String tagName, Long companyId) {
     this.tagName = tagName;
+    this.companyId = companyId;
  }
 
  // 등록
- public static Tag create(String tagName) {
+ public static Tag create(String tagName, Long companyId) {
 
    if (tagName == null) {
      throw new BusinessException(TAG_NAME_REQUIRED);
@@ -55,7 +60,7 @@ public class Tag extends BaseTimeEntity {
      throw new BusinessException(TAG_NAME_REQUIRED);
    }
 
-    return new Tag(normalizedTagName);
+    return new Tag(normalizedTagName,  companyId);
  }
 
 }

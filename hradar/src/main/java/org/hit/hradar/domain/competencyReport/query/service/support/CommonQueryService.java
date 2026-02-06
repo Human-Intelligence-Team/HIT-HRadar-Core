@@ -39,6 +39,7 @@ public class CommonQueryService {
               , first.getLearningTime()
               , first.getResourcePath()
               , first.getIsDeleted()
+              , first.getReason()
               ,  tags
           );
           return dto;

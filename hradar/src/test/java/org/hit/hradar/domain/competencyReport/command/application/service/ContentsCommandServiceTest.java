@@ -42,7 +42,7 @@ class ContentsCommandServiceTest {
     // given
     List<Long> tagIds = List.of(1L, 2L);
     ContentCreateRequest request = new ContentCreateRequest(
-        "제목", "VIDEO", "BEGINNER", 60, "path", "notes", tagIds
+        "제목",1L , "VIDEO", "BEGINNER", 60, "path", "notes", tagIds
     );
 
     // [변경점] save 호출 시, 전달받은 실제 객체에 ID를 강제로 심어줍니다.
@@ -54,7 +54,7 @@ class ContentsCommandServiceTest {
     });
 
     // when
-    contentsCommandService.createContents(request);
+    contentsCommandService.createContents(request, 1L);
 
     // then
     then(contentRepository).should(times(1)).save(any(Content.class));
@@ -69,10 +69,10 @@ class ContentsCommandServiceTest {
     ContentUpdateRequest request = new ContentUpdateRequest(contentId, "수정 제목", "수정 내용", List.of(3L, 4L));
     Content existingContent = mock(Content.class);
 
-    given(contentRepository.findById(contentId)).willReturn(Optional.of(existingContent));
+    given(contentRepository.findByCompanyIdAndId(1L ,contentId)).willReturn(Optional.of(existingContent));
 
     // when
-    ContentUpdateResponse response = contentsCommandService.updateContent(request);
+    ContentUpdateResponse response = contentsCommandService.updateContent(request, 1L);
 
     // then
     assertThat(response.getContentId()).isEqualTo(contentId);
@@ -88,10 +88,10 @@ class ContentsCommandServiceTest {
     Long contentId = 100L;
     Content existingContent = mock(Content.class);
     given(existingContent.getIsDeleted()).willReturn('N');
-    given(contentRepository.findById(contentId)).willReturn(Optional.of(existingContent));
+    given(contentRepository.findByCompanyIdAndId(1L, contentId)).willReturn(Optional.of(existingContent));
 
     // when
-    contentsCommandService.deleteContent(contentId);
+    contentsCommandService.deleteContent(contentId, 1L);
 
     // then
     then(existingContent).should(times(1)).delete('Y');

@@ -39,9 +39,6 @@ public class ApprovalApproveCommandService {
     ApprovalLine line = approvalLineRepository.findByDocId(docId)
         .orElseThrow(() -> new BusinessException(ApprovalErrorCode.LINE_NOT_FOUND));
 
-    System.out.println("DEBUG: Approve Request - DocId: " + docId + ", EmpId: " + employeeId + ", AccId: " + accountId);
-    System.out.println("DEBUG: LineId: " + line.getLineId());
-
     // 3. 현재 차례(PENDING) + 결재자/대리결재자 조회 (핵심 - AccountID 사용)
     ApprovalLineStep currentStep =
         approvalLineStepRepository

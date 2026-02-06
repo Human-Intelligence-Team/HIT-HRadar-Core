@@ -6,7 +6,7 @@ import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Content;
 public interface ContentRepository {
 
   Content save(Content content);
-  Optional<Content> findById(Long contentId);
+  Optional<Content> findByCompanyIdAndId(Long comId, Long contentId);
 
   void delete(Content content);
 }
