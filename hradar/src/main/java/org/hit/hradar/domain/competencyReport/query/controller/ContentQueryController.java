@@ -8,7 +8,9 @@ import org.hit.hradar.domain.competencyReport.query.dto.response.ContentDetailRe
 import org.hit.hradar.domain.competencyReport.query.dto.response.ContentSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.dto.response.TagSearchResponse;
 import org.hit.hradar.domain.competencyReport.query.service.ContentQueryService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,9 +35,11 @@ public class ContentQueryController {
   @Operation(summary = "학습 컨텐츠 목록 조회", description = "등록된 모든 학습 컨텐츠 목록을 조회합니다.")
   @GetMapping
   public ResponseEntity<ApiResponse<ContentSearchResponse>> contents(
+      @CurrentUser AuthUser authUser,
       ContentSearchRequest request) {
 
-    ContentSearchResponse response = contentQueryService.contents(request);
+    Long comId =  authUser.companyId();
+    ContentSearchResponse response = contentQueryService.contents(request, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
@@ -48,9 +52,11 @@ public class ContentQueryController {
   @Operation(summary = "학습 컨텐츠 상세 조회", description = "컨텐츠 ID로 학습 컨텐츠의 상세 정보를 조회합니다.")
   @GetMapping("{id}")
   public ResponseEntity<ApiResponse<ContentDetailResponse>> contentDetail(
+      @CurrentUser AuthUser authUser,
       @PathVariable("id") Long id) {
 
-    ContentDetailResponse response = contentQueryService.contentDetail(id);
+    Long comId =  authUser.companyId();
+    ContentDetailResponse response = contentQueryService.contentDetail(id, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 }

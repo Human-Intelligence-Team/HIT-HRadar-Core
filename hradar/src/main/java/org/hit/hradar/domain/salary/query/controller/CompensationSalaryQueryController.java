@@ -60,7 +60,6 @@ public class CompensationSalaryQueryController {
     Long docId = id;
     Long comId = authUser.companyId();
 
-    System.out.println("compensationSalaries" + request.getEmploymentType());
 
     CompensationSearchResponse response = compensationSalaryQueryService.compensationSalaries(request, docId, comId);
     return ResponseEntity.ok(ApiResponse.success(response));

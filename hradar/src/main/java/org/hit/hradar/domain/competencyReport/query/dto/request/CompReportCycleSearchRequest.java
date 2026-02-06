@@ -25,6 +25,8 @@ public class CompReportCycleSearchRequest {
   private CycleStatus status;
 
   private Long comId;
+
+
   public CompReportCycleSearchRequest(String year, Quarter quarter, Long cycleId, Long deptId, Long comPositionId, String employeeNo, String employeeName) {
     this.year = year;
     this.quarter = quarter;

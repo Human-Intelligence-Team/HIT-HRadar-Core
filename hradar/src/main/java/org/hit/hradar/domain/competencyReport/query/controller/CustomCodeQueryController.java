@@ -44,7 +44,6 @@ public class CustomCodeQueryController {
       CustomCodeSearchRequest request
 
   ) {
-
     Long comId = authUser.companyId();
     CustomCodeSearchResponse response = customCodeQueryService.customCodesByCustomCode(comId, request);
     return ResponseEntity.ok(ApiResponse.success(response));

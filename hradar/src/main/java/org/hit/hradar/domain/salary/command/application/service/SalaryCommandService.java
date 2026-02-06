@@ -25,7 +25,6 @@ public class SalaryCommandService {
    * @param empId
    */
   public void createSalaryApproval(CommonApprovalRequest request, Long empId, Long comId) {
-    System.out.println("SalaryCommandService.createSalaryApproval");
 
     ApprovalDraftCreateRequest approvalDraft =
         new ApprovalDraftCreateRequest(
@@ -41,16 +40,13 @@ public class SalaryCommandService {
     Long approvalDocId = approvalProviderService.save(
         request.getDocId(), empId, comId , approvalDraft, request.getApprovalSaveMode());
 
-    System.out.println("SalaryCommandService.createSalaryApproval approvalDocId: " + approvalDocId);
 
     // 기본급/ 변동 보상 등록
     String approvalDocumentType = request.getApprovalDocumentType();
-    System.out.println("SalaryCommandService.createSalaryApproval approvalDocumentType: " + approvalDocumentType);
     // 기본급
     List<SalaryDTO> salaries = request.getSalaries();
     if (approvalDocumentType.equals("BASIC_SALARY")) {
 
-      System.out.println("SalaryCommandService.createSalaryApproval 기본급");
 
       // 임시저장된 기본급 확인
       List<BasicSalary> basicSalaries = basicSalaryCommandService.getBasicSalariesByDocId(approvalDocId);
@@ -65,8 +61,6 @@ public class SalaryCommandService {
     // 변동 보상
     List<SalaryDTO> compensations = request.getCompensationSalaries();
     if (approvalDocumentType.equals("COMPENSATION_SALARY")) {
-
-      System.out.println("SalaryCommandService.createSalaryApproval 변동 보상 ");
 
       // 임시저장된 변동 보상 확인
       List<CompensationSalary> compensationSalaries = compensationCommandService.getCompensationSalariesByDocId(approvalDocId);

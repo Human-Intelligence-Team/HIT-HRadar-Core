@@ -17,4 +17,6 @@ public class ContentSearchRequest {
   private String tag; // 태그
   private Character isDeleted; // 사용여부
 
+  private Long comId;
+
 }

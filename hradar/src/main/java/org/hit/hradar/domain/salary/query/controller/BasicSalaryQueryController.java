@@ -39,7 +39,6 @@ public class BasicSalaryQueryController {
       SalaryApprovalRequest request) {
 
     Long comId = authUser.companyId();
-    System.out.println("$$$$$$ " + request.getYear());
     SalaryApprovalResponse response = basicSalaryQueryService.approvedBasicSalaries(comId, request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }

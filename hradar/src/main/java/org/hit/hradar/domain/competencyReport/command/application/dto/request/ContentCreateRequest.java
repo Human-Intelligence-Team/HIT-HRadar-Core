@@ -32,8 +32,11 @@ public class ContentCreateRequest {
 
    private List<Long> tags; // 태그 id 리스트
 
-  public ContentCreateRequest(String title, String type, String level, Integer learningTime, String resourcePath, String notes, List<Long> tags) {
+  private Long comId;
+
+  public ContentCreateRequest(String title, Long comId, String type, String level, Integer learningTime, String resourcePath, String notes, List<Long> tags) {
     this.title = title;
+    this.comId = comId;
     this.type = type;
     this.level = level;
     this.learningTime = learningTime;
@@ -41,4 +44,6 @@ public class ContentCreateRequest {
     this.notes = notes;
     this.tags = tags;
   }
+
+
 }

@@ -2,6 +2,7 @@ package org.hit.hradar.domain.competencyReport.query.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.hit.hradar.domain.competencyReport.query.dto.TagDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.request.TagSearchRequest;
 
@@ -10,7 +11,11 @@ public interface TagMapper {
 
   List<TagDTO> findAllTags(TagSearchRequest request);
 
-  List<TagDTO> findTagsByTagName(String tagName);
+  List<TagDTO> findTagsByTagName(
+      @Param("tagName") String tagName,
+      @Param("comId") Long comId);
 
-  List<TagDTO> findAllTagsByContentId(Long id);
+  List<TagDTO> findAllTagsByContentId(
+      @Param("id") Long id,
+      @Param("comId") Long comId);
 }

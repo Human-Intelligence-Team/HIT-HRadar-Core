@@ -14,6 +14,7 @@
       FROM tag t
       LEFT JOIN CONTENT_TAG ct ON t.TAG_ID = ct.TAG_ID
      WHERE t.is_deleted = 'N'
+      AND t.company_id = #{comId}
     <if test="tagName != null and tagName != ''">
        AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
     </if>
@@ -22,23 +23,23 @@
   </select>
 
   <select id="findAllTagsByContentId"
-    parameterType="Long"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
     SELECT ctt.TAG_ID
          , tg.TAG_NAME
       FROM CONTENT_TAG  ctt
       JOIN TAG tg USING(TAG_ID)
      WHERE tg.IS_DELETED = 'N'
+       AND t.company_id = #{comId}
        AND ctt.CONTENT_ID = #{contentId}
   </select>
 
   <select id="findTagsByTagName"
-    parameterType="String"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.TagDTO">
     SELECT t.tag_id
          , t.tag_name
       FROM tag t
      WHERE t.is_deleted = 'N'
+    AND t.company_id = #{comId}
        AND t.tag_name LIKE CONCAT('%', #{tagName}, '%')
   </select>
 </mapper>

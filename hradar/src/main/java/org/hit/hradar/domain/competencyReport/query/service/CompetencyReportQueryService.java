@@ -34,9 +34,11 @@ public class CompetencyReportQueryService {
    */
   public CompetencyReportSearchResponse getMyCompetencyReport(
       Long empId,
-      CompetencyReportSearchRequest request) {
+      CompetencyReportSearchRequest request, Long comId) {
 
-    List<CompetencyReportDTO> reports = competencyReportMapper.findAllByEmpId(empId, request);
+    request.setEmpId(empId);
+    request.setComId(comId);
+    List<CompetencyReportDTO> reports = competencyReportMapper.findAllByEmpId(request);
     return new  CompetencyReportSearchResponse(reports);
   }
 
@@ -61,8 +63,9 @@ public class CompetencyReportQueryService {
    * @param request
    * @return
    */
-  public CycleSearchResponse getCycles(CompReportCycleSearchRequest request) {
+  public CycleSearchResponse getCycles(CompReportCycleSearchRequest request, Long comId) {
 
+    request.setComId(comId);
     List<CycleDTO> cycles = competencyReportMapper.findAllCycle(request);
     return new CycleSearchResponse(cycles);
   }
@@ -72,8 +75,9 @@ public class CompetencyReportQueryService {
    * @param request
    * @return
    */
-  public CompetencyReportSearchResponse getCompetencyReportsByAll(CompReportCycleSearchRequest request) {
+  public CompetencyReportSearchResponse getCompetencyReportsByAll(CompReportCycleSearchRequest request, Long comId) {
 
+    request.setComId(comId);
     List<CompetencyReportDTO> reports = competencyReportMapper.findAllByCycleId(request);
     return new CompetencyReportSearchResponse(reports);
   }
@@ -83,15 +87,15 @@ public class CompetencyReportQueryService {
    * @param id
    * @return
    */
-  public CompetencyReportDetailResponse getCompetencyReportsById(Long id) {
+  public CompetencyReportDetailResponse getCompetencyReportsById(Long id, Long comId) {
 
     Long competencyReportId = id;
 
     // 회차, 사원정보, kpi/okr, 등급 평가 내용
-    CompetencyReportDTO report = competencyReportMapper.findByCompetencyReportId(competencyReportId);
+    CompetencyReportDTO report = competencyReportMapper.findByCompetencyReportId(competencyReportId, comId);
 
     // 학습 컨텐츠, 태그 리스트
-    List<ContentRowDTO>  contentAndTagRows = contentMapper.findContentByCompetencyReportId(competencyReportId);
+    List<ContentRowDTO>  contentAndTagRows = contentMapper.findContentByCompetencyReportId(competencyReportId, comId);
 
     // 학습 컨텐츠 변환
     List<ContentDTO> result = commonQueryService.getContents(contentAndTagRows);

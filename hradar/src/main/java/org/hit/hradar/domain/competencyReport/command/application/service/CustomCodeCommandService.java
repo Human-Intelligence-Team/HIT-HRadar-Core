@@ -1,5 +1,6 @@
 package org.hit.hradar.domain.competencyReport.command.application.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.CustomCodeCreateRequest;
@@ -21,13 +22,22 @@ public class CustomCodeCommandService {
   @Transactional
   public void createCustomCode(CustomCodeCreateRequest request, Long comId) {
 
-    Long customCodeId = request.getCustomCodeId();
-    CustomCode code = customCodeRepository.findByCustomCodeId(customCodeId);
+    CustomCode groupBase = customCodeRepository.findByCustomCodeId(request.getCustomCodeId());
+
+    if (groupBase == null) {
+      throw new BusinessException(CompetencyReportErrorCode.CUSTOM_CODE_ID_REQUIRED);
+    }
 
     CustomCode createCode = CustomCode.create(
-        comId, code.getGroupCode(), code.getGroupName(), request.getCustomCode(), request.getCustomName(),
-        request.getCustomDesc());
+        comId,
+        groupBase.getGroupCode(),
+        groupBase.getGroupName(),
+        request.getCustomCode(),
+        request.getCustomName(),
+        request.getCustomDesc()
+    );
 
+    // 3. 저장
     customCodeRepository.save(createCode);
   }
 
@@ -45,8 +55,6 @@ public class CustomCodeCommandService {
     if (codeIds == null || codeIds.isEmpty()) {
       throw new BusinessException(CompetencyReportErrorCode.CUSTOM_CODE_ID_REQUIRED);
     }
-
-    // customCodeRepository.deleteByCustomCodeIdInAndComId(codeIds, comId);
 
     customCodeRepository.deleteByComIdAndCustomCodeIdIn(comId, codeIds);
 

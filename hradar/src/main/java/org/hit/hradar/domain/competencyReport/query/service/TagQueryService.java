@@ -22,8 +22,9 @@ public class TagQueryService {
    * @param request
    * @return
    */
-  public TagSearchResponse tags(TagSearchRequest request) {
+  public TagSearchResponse tags(TagSearchRequest request, Long comId) {
 
+    request.setComId(comId);
     List<TagDTO> response = tagMapper.findAllTags(request);
     return TagSearchResponse.tags(response);
 
@@ -35,8 +36,8 @@ public class TagQueryService {
    * @param tagName
    * @return
    */
-  public TagSearchResponse tagsByTagName(String tagName) {
-    List<TagDTO> response = tagMapper.findTagsByTagName(tagName);
+  public TagSearchResponse tagsByTagName(String tagName, Long comId) {
+    List<TagDTO> response = tagMapper.findTagsByTagName(tagName, comId);
     return TagSearchResponse.tags(response);
   }
 

@@ -26,6 +26,10 @@ public class Content extends BaseTimeEntity {
   @Column(name = "content_id")
   private Long id;
 
+  //회사 id
+  @Column(name = "company_id", nullable = false)
+  private Long companyId;
+
   @Column(name = "title", nullable = false, length = 100)
   private String title;
 
@@ -54,8 +58,9 @@ public class Content extends BaseTimeEntity {
     }
   }
 
-  public Content(String title, String type, String level, Integer learningTime, String resourcePath, String notes) {
+  public Content(String title, Long companyId, String type, String level, Integer learningTime, String resourcePath, String notes) {
     this.title = title;
+    this.companyId = companyId;
     this.type = type;
     this.level = level;
     this.learningTime = learningTime;
@@ -82,6 +87,7 @@ public class Content extends BaseTimeEntity {
     validate(request.getTitle(), request.getType());
 
     return new Content(request.getTitle()
+                    , request.getComId()
                     , request.getType()
                     , request.getLevel()
                     , request.getLearningTime()

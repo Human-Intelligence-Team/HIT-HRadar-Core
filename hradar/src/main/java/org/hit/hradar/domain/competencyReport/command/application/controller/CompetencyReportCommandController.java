@@ -30,6 +30,7 @@ public class CompetencyReportCommandController {
   public ResponseEntity<ApiResponse<Void>> createReport(
       @CurrentUser AuthUser authUser,
       @RequestBody CompetencyReportCreateRequest request) {
+
     Long comId = authUser.companyId();
     competencyReportCommandService.createReport(comId, request);
     return ResponseEntity.ok(ApiResponse.success(null));

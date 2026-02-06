@@ -35,7 +35,6 @@ public class CompetencyReportCommandService {
    * @param comId
    */
   public void createReport(Long comId, CompetencyReportCreateRequest request) {
-    System.out.println("CompetencyReportCommandService.createReport started");
     // setting
     Long cycleId = request.getCycleId(); // 회차
     LocalDate start = LocalDate.parse(request.getStartDate()); // 시작일
