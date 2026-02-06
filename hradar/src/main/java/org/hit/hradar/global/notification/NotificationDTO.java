@@ -11,4 +11,5 @@ public class NotificationDTO {
     private final String title;
     private final String message;
     private final String linkUrl;
+    private final Long createdBy;
 }

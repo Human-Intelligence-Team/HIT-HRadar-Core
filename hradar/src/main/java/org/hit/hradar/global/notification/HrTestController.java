@@ -16,7 +16,7 @@ public class HrTestController {
 
     @GetMapping("/test/notify")
     public String notifyTest() {
-        NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, 1L, "알림 테스트", "알림 메시지 테스트입니다.", "/notice");
+        NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, 1L, "알림 테스트", "알림 메시지 테스트입니다.", "/notice", 1L);
         producer.sendNotification(notificationDTO);
         return "sent";
     }
@@ -34,14 +34,14 @@ public class HrTestController {
       System.out.println("companyId: " + companyId);
       System.out.println("role: " + role);
 
-        NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, authUser.userId(), "공지 알림 테스트", "공지 메시지 테스트입니다.", "/notice");
+        NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, authUser.userId(), "공지 알림 테스트", "공지 메시지 테스트입니다.", "/notice", authUser.userId());
         producer.sendNotification(notificationDTO);
         return "sent";
     }
 
     @GetMapping("/test/notify3")
     public String notifyTest3() {
-        NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, 2L, "테스트 알림", "테스트입니다.", "/notice");
+        NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, 2L, "테스트 알림", "테스트입니다.", "/notice", 2L);
         producer.sendNotification(notificationDTO);
         return "sent";
     }

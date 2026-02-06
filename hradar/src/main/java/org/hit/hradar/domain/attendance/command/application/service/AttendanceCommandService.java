@@ -12,6 +12,9 @@ import org.hit.hradar.domain.attendance.command.domain.repository.AttendanceRepo
 import org.hit.hradar.domain.attendance.command.infrastructure.AttendanceAuthLogJpaRepository;
 import org.hit.hradar.domain.attendance.command.infrastructure.AttendanceWorkLogJpaRepository;
 import org.hit.hradar.domain.attendance.command.infrastructure.AttendanceWorkPlanJpaRepository;
+import org.hit.hradar.global.notification.HrNotificationProducer;
+import org.hit.hradar.global.notification.NotificationDTO;
+import org.hit.hradar.global.notification.NotificationType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,7 @@ public class AttendanceCommandService {
     private final AttendanceWorkLogJpaRepository workLogRepository;
     private final AttendanceAuthLogJpaRepository authLogRepository;
     private final AttendanceWorkPlanJpaRepository workPlanRepository;
+    private final HrNotificationProducer hrNotificationProducer;
 
     public AttendanceCheckResponse processAttendance(
             Long empId,
@@ -109,6 +113,16 @@ public class AttendanceCommandService {
         // 5. 인증 로그 저장
         authLogRepository.save(
                 new AttendanceAuthLog(attendance.getAttendanceId(), clientIp));
+
+        // 6. 알림 전송 (실시간 캘린더 연동을 위해)
+        hrNotificationProducer.sendNotification(new NotificationDTO(
+                NotificationType.ATTENDANCE_CHANGED,
+                empId,
+                "근태 변경",
+                attendanceStatusType.equals("CHECK_IN") ? "출근 처리되었습니다." : "퇴근 처리되었습니다.",
+                "/attendance/commute",
+                empId
+        ));
 
         // 직원 정보 / 초과근무는 아직 자리표시자
         return new AttendanceCheckResponse(
