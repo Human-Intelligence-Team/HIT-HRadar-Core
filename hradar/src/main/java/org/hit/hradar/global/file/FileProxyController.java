@@ -3,6 +3,8 @@ package org.hit.hradar.global.file;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hit.hradar.domain.notice.command.domain.aggregate.NoticeAttachment;
+import org.hit.hradar.domain.notice.command.domain.repository.NoticeAttachmentRepository;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -25,6 +30,7 @@ import java.net.URI;
 public class FileProxyController {
 
     private final FileStorageClient storageClient;
+    private final NoticeAttachmentRepository attachmentRepository;
 
     @GetMapping("/{type}/**")
     public ResponseEntity<Resource> proxyFile(
@@ -66,9 +72,33 @@ public class FileProxyController {
         else if (lowerName.endsWith(".pdf"))
             contentType = "application/pdf";
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(contentType));
+
+        if ("attachments".equals(type)) {
+            String downloadName = resolveAttachmentName(storedName);
+            String encodedName = URLEncoder.encode(downloadName, StandardCharsets.UTF_8).replace("+", "%20");
+            headers.set(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + encodedName + "\""
+            );
+        } else {
+            headers.set(
+                    HttpHeaders.CONTENT_DISPOSITION,
+                    "inline; filename=\"" + storedName + "\""
+            );
+        }
+
         return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + storedName + "\"")
+                .headers(headers)
                 .body(resource);
+    }
+
+    private String resolveAttachmentName(String storedName) {
+        Optional<NoticeAttachment> att = attachmentRepository.findByStoredName(storedName);
+        if (att.isPresent() && att.get().getOriginalName() != null && !att.get().getOriginalName().isBlank()) {
+            return att.get().getOriginalName();
+        }
+        return storedName.substring(storedName.lastIndexOf("/") + 1);
     }
 }
