@@ -17,6 +17,7 @@ public class ComAppListItemResponse {
 
   // 회사 정보
   private String companyName;
+  private String companyCode; // 승인 후 생성된 회사 코드
   private String bizNo;
   private String comTel;
   private String address;

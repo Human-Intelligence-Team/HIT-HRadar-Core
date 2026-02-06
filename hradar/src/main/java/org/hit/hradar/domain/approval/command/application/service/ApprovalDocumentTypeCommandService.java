@@ -22,7 +22,9 @@ public class ApprovalDocumentTypeCommandService {
             companyId,
             req.getDocType(),
             req.getName(),
-            active
+            active,
+            req.getAttendanceCategory(),
+            req.getOvertimeMinutes()
         )
     );
   }
@@ -30,7 +32,8 @@ public class ApprovalDocumentTypeCommandService {
     ApprovalDocumentType type = approvalDocumentTypeJpaRepository.findById(typeId)
         .orElseThrow();
 
-    type.updateName(req.getName());
+    boolean active = (req.getActive() == null) ? type.isActive() : req.getActive();
+    type.update(req.getName(), active, req.getAttendanceCategory(), req.getOvertimeMinutes());
   }
 
   public void delete(Long typeId) {

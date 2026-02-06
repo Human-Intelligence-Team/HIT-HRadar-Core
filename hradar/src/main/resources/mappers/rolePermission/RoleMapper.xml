@@ -43,6 +43,7 @@
       p.perm_id AS permId,
       p.perm_key AS permKey,
       p.name AS name,
+      p.route_path AS routePath,
       p.description AS description
     FROM role_permission rp
     JOIN permission p ON rp.perm_id = p.perm_id
@@ -54,6 +55,7 @@
       perm_id AS permId,
       perm_key AS permKey,
       name AS name,
+      route_path AS routePath,
       description AS description
     FROM permission
     WHERE is_deleted = 'N'

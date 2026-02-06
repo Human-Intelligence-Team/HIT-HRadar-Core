@@ -9,11 +9,11 @@ INSERT INTO goal (
     is_deleted,
     created_at, updated_at, created_by, updated_by
 ) VALUES
-    (100, NULL,
+    (201, NULL,
      'LEVEL_1', 'TEAM', 'KPI',
      'Q1 팀 매출 성장', '팀 전체 매출 목표',
      '2026-01-01', '2026-03-31',
-     10, 1,
+     3015, 1007,
      'WAIT', 'APPROVED',
      NULL,
      'N',
@@ -29,11 +29,11 @@ INSERT INTO goal (
     is_deleted,
     created_at, updated_at, created_by, updated_by
 ) VALUES
-    (200, NULL,
+    (202, NULL,
      'LEVEL_1', 'TEAM', 'OKR',
      'Q1 서비스 안정화', '서비스 품질 향상',
      '2026-01-01', '2026-03-31',
-     10, 1,
+     3015, 1007,
      'WAIT', 'APPROVED',
      NULL,
      'N',
@@ -49,10 +49,10 @@ INSERT INTO goal (
     is_deleted,
     created_at, updated_at, created_by, updated_by
 ) VALUES
-    (101, 100, 'LEVEL_2', 'PERSONAL', 'KPI',
+    (203, 201, 'LEVEL_2', 'PERSONAL', 'KPI',
      'A 사원 - 신규 고객 매출', NULL,
      '2026-01-01', '2026-03-31',
-     10, 1,
+     3015, 1007,
      'WAIT', 'APPROVED',
      NULL,
      'N',
@@ -69,10 +69,10 @@ INSERT INTO goal (
     is_deleted,
     created_at, updated_at, created_by, updated_by
 )  VALUES
-    (102, 100, 'LEVEL_2', 'PERSONAL', 'KPI',
+    (204, 201, 'LEVEL_2', 'PERSONAL', 'KPI',
      'B 사원 - 기존 고객 유지', NULL,
      '2026-01-01', '2026-03-31',
-     10, 2,
+     3015, 1008,
      'WAIT', 'APPROVED',
      NULL,
      'N',
@@ -89,10 +89,10 @@ INSERT INTO goal (
     is_deleted,
     created_at, updated_at, created_by, updated_by
 )  VALUES
-    (103, 100, 'LEVEL_2', 'PERSONAL', 'KPI',
+    (205, 201, 'LEVEL_2', 'PERSONAL', 'KPI',
      'C 사원 - 파트너 매출', NULL,
      '2026-01-01', '2026-03-31',
-     10, 3,
+     3015, 1009,
      'WAIT', 'APPROVED',
      NULL,
      'N',
@@ -108,10 +108,10 @@ INSERT INTO goal (
     is_deleted,
     created_at, updated_at, created_by, updated_by
 ) VALUES
-    (201, 200, 'LEVEL_2', 'PERSONAL', 'OKR',
+    (206, 202, 'LEVEL_2', 'PERSONAL', 'OKR',
     'A 사원 - 장애 감소', NULL,
     '2026-01-01', '2026-03-31',
-    10, 1,
+     3015, 1007,
     'WAIT', 'APPROVED',
     NULL,
     'N',
@@ -128,10 +128,10 @@ INSERT INTO goal (
     is_deleted,
     created_at, updated_at, created_by, updated_by
 )VALUES
-    (202, 200, 'LEVEL_2', 'PERSONAL', 'OKR',
+    (207, 202, 'LEVEL_2', 'PERSONAL', 'OKR',
      'B 사원 - 배포 안정성 향상', NULL,
      '2026-01-01', '2026-03-31',
-     10, 2,
+     3015, 1008,
      'WAIT', 'APPROVED',
      NULL,
      'N',

@@ -9,6 +9,7 @@
             resultType="org.hit.hradar.domain.evaluation.query.dto.response.CycleEvaluationTypeResponse">
 
         SELECT
+            cet.cycle_eval_type_id AS cycleEvalTypeId,
             et.eval_type_id AS evalTypeId,
             et.type_name    AS typeName
         FROM cycle_evaluation_type cet

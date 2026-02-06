@@ -2,6 +2,7 @@ package org.hit.hradar.domain.companyApplication.command.application.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hit.hradar.domain.companyApplication.command.application.service.ComAppApprovalService;
+import org.hit.hradar.domain.companyApplication.command.application.service.ComAppCommandService;
 import org.hit.hradar.global.aop.AuthUserArgumentResolver;
 import org.hit.hradar.global.config.WebConfig;
 import org.hit.hradar.global.context.RequestUserContext;
@@ -24,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import({ WebConfig.class, AuthUserArgumentResolver.class })
 class ComAppCommandControllerTest {
 
+        @MockBean
+        private ComAppCommandService comAppCommandService;
+
         @Autowired
         private MockMvc mockMvc;
 
@@ -44,7 +48,7 @@ class ComAppCommandControllerTest {
                 Long userId = 1L;
 
                 // when & then
-                mockMvc.perform(post("/applications/{applicationId}/approve", applicationId)
+                mockMvc.perform(post("/company-applications/{applicationId}/approve", applicationId)
                                 .header("X-User-Id", String.valueOf(userId))
                                 .header("X-User-Role", "admin")
                                 .header("X-Company-Id", "1")

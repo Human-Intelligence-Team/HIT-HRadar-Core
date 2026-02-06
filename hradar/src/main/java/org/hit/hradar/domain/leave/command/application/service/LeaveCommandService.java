@@ -12,6 +12,7 @@ import org.hit.hradar.domain.leave.query.dto.response.LeaveGrantDto;
 import org.hit.hradar.domain.leave.query.mapper.LeaveGrantMapper;
 import org.hit.hradar.domain.leave.query.mapper.LeaveListMapper;
 import org.hit.hradar.domain.leave.query.mapper.LeaveUsageMapper;
+import org.hit.hradar.domain.leave.command.infrastructure.LeavePolicyJpaRepository; // Added import
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class LeaveCommandService {
   private final LeaveListMapper leaveListMapper;
   private final LeaveGrantMapper leaveGrantMapper;
   private final LeaveUsageMapper leaveUsageMapper;
+  private final LeavePolicyJpaRepository leavePolicyJpaRepository; // Injected
 
 
   //휴가 도메인 데이터 저장(결재 이미 생성된 상태)
@@ -42,34 +44,39 @@ public class LeaveCommandService {
     //휴가 기간 중복 검증
     boolean overlap = leaveListMapper.existsOverlap(
         employeeId,
-        request.getStartDate(),
-        request.getEndDate()
+        request.getFromDate(),
+        request.getToDate()
     );
 
     if (overlap)  {
       throw new BusinessException(LeaveErrorCode.LEAVE_OVERLAP);
     }
     //연차 잔여 검증
-    LeaveGrantDto grant = leaveGrantMapper.findByGrantId(request.getGrantId());
+    LeaveGrantDto grant = leaveGrantMapper.findByGrantId(request.getLeaveGrantId());
     if (grant == null) {
       throw new BusinessException(LeaveErrorCode.LEAVE_GRANT_NOT_FOUND);
     }
 
-    if (grant.getRemainingDays() < request.getLeaveDays()) {
+    if (grant.getRemainingDays() < request.getDays()) {
       throw new BusinessException(LeaveErrorCode.LEAVE_NOT_ENOUGH);
     }
+
+    // Leave Type Name Resolution
+    String leaveTypeName = leavePolicyJpaRepository.findById(request.getLeaveTypeId())
+            .map(p -> p.getTypeName())
+            .orElse("연차"); // Default fallback or throw exception
 
     //emp_leave 저장(휴가 사실)
     EmpLeave leave  = EmpLeave.builder()
         .docId(docId)
         .empId(employeeId)
-        .grantId(request.getGrantId())
-        .leaveType(request.getLeaveType())
+        .grantId(request.getLeaveGrantId())
+        .leaveType(leaveTypeName) // Resolved Name
         .leaveUnitType(request.getLeaveUnitType())
         .reason(request.getReason())
-        .startDate(request.getStartDate())
-        .endDate(request.getEndDate())
-        .leaveDays(request.getLeaveDays())
+        .startDate(request.getFromDate())
+        .endDate(request.getToDate())
+        .leaveDays(request.getDays())
         .requestedAt(LocalDateTime.now())
         .isDeleted('N')
         .build();
@@ -79,16 +86,16 @@ public class LeaveCommandService {
     leaveUsageJpaRepository.save(
         LeaveUsage.create(
             leave.getLeaveId(),
-            request.getGrantId(),
-            request.getLeaveDays(),
-            request.getStartDate()
+            request.getLeaveGrantId(),
+            request.getDays(),
+            request.getFromDate()
         )
     );
 
 // leave_grant remaining_days 차감
     leaveUsageMapper.decreaseRemainingDays(
-        request.getGrantId(),
-        request.getLeaveDays()
+        request.getLeaveGrantId(),
+        request.getDays()
     );
   }
 }

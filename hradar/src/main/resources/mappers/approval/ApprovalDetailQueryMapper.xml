@@ -17,8 +17,10 @@
       d.doc_type,
       d.status,
       d.submitted_at,
-      d.writer_id
+      d.writer_id,
+      p.payload
     FROM approval_document d
+    LEFT JOIN approval_payload p ON d.doc_id = p.doc_id
     WHERE d.doc_id = #{docId}
       AND d.is_deleted = 'N'
   </select>
@@ -35,9 +37,9 @@
     <result property="content" column="content"/>
     <result property="docType" column="doc_type"/>
     <result property="status" column="status"/>
-    <result property="status" column="status"/>
     <result property="submittedAt" column="submitted_at"/>
     <result property="writerId" column="writer_id"/>
+    <result property="payload" column="payload"/>
 
     <!-- 결재선 -->
     <collection property="approvalSteps"

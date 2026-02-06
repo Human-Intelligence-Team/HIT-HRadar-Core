@@ -63,7 +63,7 @@ class DepartmentCommandServiceTest {
                 // when & then
                 assertThatThrownBy(() -> departmentCommandService.createDepartment(request, companyId))
                                 .isInstanceOf(BusinessException.class)
-                                .hasMessageContaining("이미 존재하는 부서명입니다.");
+                                .hasMessageContaining("이미 사용중인 부서명입니다.");
         }
 
         @Test

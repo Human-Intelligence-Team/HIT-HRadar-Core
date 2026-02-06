@@ -57,7 +57,7 @@ class PositionCommandServiceTest {
         // when & then
         assertThatThrownBy(() -> positionCommandService.createPosition(request, comId))
                 .isInstanceOf(BusinessException.class)
-                .hasMessageContaining("이미 존재하는 직급명입니다.");
+                .hasMessageContaining("이미 사용중인 직책명입니다.");
     }
 
     @Test

@@ -37,4 +37,18 @@
           AND c.is_deleted = 'N'
 
     </select>
+    <select id="selectEvaluationTypesByCycleId"
+            parameterType="long"
+            resultType="string">
+
+        SELECT et.type_name
+        FROM evaluation_type et
+                 JOIN cycle_evaluation_type cet
+                      ON cet.eval_type_id = et.eval_type_id
+        WHERE cet.cycle_id = #{cycleId}
+          AND et.is_deleted = 'N'
+          AND cet.is_deleted = 'N'
+
+    </select>
+
 </mapper>

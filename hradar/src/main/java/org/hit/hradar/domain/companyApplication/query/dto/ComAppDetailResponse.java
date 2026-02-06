@@ -14,6 +14,7 @@ public class ComAppDetailResponse {
 
   // company_application.company_name
   private String comName;
+  private String comCode; // 승인 후 생성된 회사 코드
 
   // company_application.biz_no
   private String bizNo;

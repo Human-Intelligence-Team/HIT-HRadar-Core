@@ -98,14 +98,7 @@ public class NoticeCommandService {
                 });
 
                 // 첨부파일 연결 및 사용 처리
-                if (req.getAttachmentStoredNames() != null) {
-                        attachmentRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
-                                        .filter(att -> req.getAttachmentStoredNames().contains(att.getStoredName()))
-                                        .forEach(att -> {
-                                                att.attachToNotice(notice.getId());
-                                                att.markUsed();
-                                        });
-                }
+                uploadAndAttachAttachments(req.getCompanyId(), notice.getId(), attachments);
 
                 return notice.getId();
         }
@@ -182,25 +175,10 @@ public class NoticeCommandService {
                                 });
 
                 // 첨부파일 연동 해제 (is_used = false 처리)
-                if (req.getDeletedAttachmentIds() != null && !req.getDeletedAttachmentIds().isEmpty()) {
-                        List<NoticeAttachment> toDelete = attachmentRepository
-                                        .findAllById(req.getDeletedAttachmentIds());
-                        toDelete.forEach(att -> {
-                                // immediate delete 대신 used=false 처리 (Batch에서 삭제)
-                                // attachmentRepository.delete(att);
-                                // att.markUnused(); // 필요시 추가
-                        });
-                }
+                markAttachmentsUnused(noticeId, req.getCompanyId(), req.getDeletedAttachmentIds());
 
                 // 새 첨부파일 연결
-                if (req.getAttachmentStoredNames() != null) {
-                        attachmentRepository.findAllByCompanyIdAndUsedFalse(req.getCompanyId()).stream()
-                                        .filter(att -> req.getAttachmentStoredNames().contains(att.getStoredName()))
-                                        .forEach(att -> {
-                                                att.attachToNotice(noticeId);
-                                                att.markUsed();
-                                        });
-                }
+                uploadAndAttachAttachments(req.getCompanyId(), noticeId, attachments);
 
                 String sanitizedContent = sanitizeContent(req.getContent());
 
@@ -226,6 +204,38 @@ public class NoticeCommandService {
                 // 첨부파일 used=false 처리
                 List<NoticeAttachment> attachments = attachmentRepository.findAllByNoticeId(noticeId);
                 attachments.forEach(att -> att.markUnused());
+        }
+
+        private void uploadAndAttachAttachments(
+                        Long companyId,
+                        Long noticeId,
+                        List<MultipartFile> attachments) {
+                if (attachments == null || attachments.isEmpty()) {
+                        return;
+                }
+
+                for (MultipartFile file : attachments) {
+                        StoredFile stored = fileUploadService.upload(file, FileType.ATTACHMENT);
+
+                        NoticeAttachment attachment = NoticeAttachment.create(
+                                        companyId,
+                                        stored,
+                                        file.getOriginalFilename());
+                        attachment.attachToNotice(noticeId);
+                        attachment.markUsed();
+                        attachmentRepository.save(attachment);
+                }
+        }
+
+        private void markAttachmentsUnused(Long noticeId, Long companyId, List<Long> attachmentIds) {
+                if (attachmentIds == null || attachmentIds.isEmpty()) {
+                        return;
+                }
+
+                List<NoticeAttachment> toDelete = attachmentRepository.findAllById(attachmentIds);
+                toDelete.stream()
+                                .filter(att -> noticeId.equals(att.getNoticeId()) && companyId.equals(att.getCompanyId()))
+                                .forEach(NoticeAttachment::markUnused);
         }
 
 }

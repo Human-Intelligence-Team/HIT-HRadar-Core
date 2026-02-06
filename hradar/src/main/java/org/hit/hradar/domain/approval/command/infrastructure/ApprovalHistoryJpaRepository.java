@@ -7,6 +7,12 @@ public interface ApprovalHistoryJpaRepository extends JpaRepository<ApprovalHist
 
   ApprovalHistory save(ApprovalHistory history);
 
+  boolean existsByStepIdAndActorIdAndApprovalActionType(
+      Long stepId,
+      Long actorId,
+      org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalActionType approvalActionType
+  );
+
     
 
 }

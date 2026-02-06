@@ -60,8 +60,8 @@ public class CompanyCommandService {
         request.getComName(),
         request.getComTel(),
         request.getAddress(),
-        request.getCeoName(),
         request.getComEmail(),
+        request.getCeoName(),
         request.getFoundDate());
 
     return UpdateCompanyResponse.builder()

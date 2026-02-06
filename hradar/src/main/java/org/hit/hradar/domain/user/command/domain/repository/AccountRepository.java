@@ -20,4 +20,6 @@ public interface AccountRepository {
 
   boolean existsByLoginIdAndComIdAndIsDeleted(String loginId, Long comId, Character isDeleted);
 
+  boolean existsByLoginId(String loginId);
+
 }
