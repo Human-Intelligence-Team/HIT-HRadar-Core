@@ -5,11 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.user.command.application.dto.request.UpdateUserAccountRequest;
 import org.hit.hradar.domain.user.command.application.service.UserService;
+import org.hit.hradar.domain.user.command.domain.aggregate.UserRole;
 import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
 import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 @Tag(name = "User Account Command", description = "사용자 계정 정보 관리 API")
 @RestController
@@ -34,7 +36,9 @@ public class UserUpdateController {
   public ResponseEntity<ApiResponse<Void>> resetPassword(
       @PathVariable Long accId,
       @CurrentUser AuthUser authUser) {
-    userService.resetPassword(accId, authUser.companyId());
+    // role 문자열을 UserRole enum으로 변환
+    UserRole userRole = UserRole.valueOf(authUser.role());
+    userService.resetPassword(accId, authUser.companyId(), userRole);
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 

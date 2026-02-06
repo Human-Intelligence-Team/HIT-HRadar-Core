@@ -93,24 +93,38 @@ public class UserService {
 
   /**
    * 관리자용 비밀번호 초기화
-   * - 소속 회사 관리자만 가능
+   * - admin: 플랫폼 전역 관리자 (모든 회사 접근 가능)
+   * - user: 회사 관리자 (자기 회사만 접근 가능)
    * - 비밀번호를 고정값 "1234"로 초기화
    */
   @Transactional
-  public void resetPassword(Long accId, Long managerComId) {
-    // 1) 대상 사용자 조회 (같은 회사 소속인지 확인)
-    Account account = userJpaRepository.findByAccIdAndComIdAndStatus(accId, managerComId, AccountStatus.ACTIVE)
-        .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+  public void resetPassword(Long accId, Long managerComId, UserRole managerRole) {
+    Account account;
 
-    // 2) 비밀번호 "1234"로 초기화
+    if (managerRole == UserRole.admin) {
+      // 플랫폼 전역 관리자: 회사 제약 없음
+      account = userJpaRepository.findByAccIdAndIsDeleted(accId, 'N')
+          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+
+      // 활성 상태 확인
+      if (account.getStatus() != AccountStatus.ACTIVE) {
+        throw new BusinessException(UserErrorCode.USER_NOT_FOUND);
+      }
+    } else {
+      // 회사 관리자: 같은 회사 소속인지 확인
+      account = userJpaRepository.findByAccIdAndComIdAndStatus(accId, managerComId, AccountStatus.ACTIVE)
+          .orElseThrow(() -> new BusinessException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    // 비밀번호 "1234"로 초기화
     String tempPw = "1234";
     account.updatePassword(passwordEncoder.encode(tempPw));
 
-    // 3) 기존 리프레시 토큰 무효화 요청 (동기 - 보안 일관성 유지)
+    // 기존 리프레시 토큰 무효화 요청 (동기 - 보안 일관성 유지)
     try {
-      authInternalClient.revokeRefreshToken(accId).block();
+      authInternalClient.revokeRefreshToken(account.getAccId()).block();
     } catch (Exception e) {
-      log.warn("[AUTH_REVOKE_FAIL] accountId={}, message={}", accId, e.getMessage());
+      log.warn("[AUTH_REVOKE_FAIL] accountId={}, message={}", account.getAccId(), e.getMessage());
     }
   }
 
