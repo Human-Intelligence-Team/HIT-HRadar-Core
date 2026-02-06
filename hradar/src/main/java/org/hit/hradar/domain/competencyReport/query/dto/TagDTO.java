@@ -2,8 +2,10 @@ package org.hit.hradar.domain.competencyReport.query.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class TagDTO {
 
   private Long tagId;

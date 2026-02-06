@@ -34,9 +34,12 @@ public class SalaryQueryController {
   @Operation(summary = "사원 연간 총 연봉 조회", description = "특정 사원의 한 해 동안 지급된 총 기본급 및 변동 보상의 합계를 조회합니다.")
   @GetMapping("/{empId}/annual-summary")
   public ResponseEntity<ApiResponse<AnnualCompensationSummaryResponse>> getEmployeeAnnualSalarySummary(
-      @PathVariable Long empId) {
+      @CurrentUser AuthUser authUser,
+      @PathVariable("empId") Long empId) {
 
-    AnnualCompensationSummaryResponse response = salaryQueryService.getEmployeeAnnualSalarySummary(empId);
+
+    Long comId = authUser.companyId();
+    AnnualCompensationSummaryResponse response = salaryQueryService.getEmployeeAnnualSalarySummary(empId, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 

@@ -2,9 +2,11 @@ package org.hit.hradar.domain.competencyReport.query.dto.response;
 
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.competencyReport.query.dto.TagDTO;
 
 @Getter
+@NoArgsConstructor
 public class TagSearchResponse {
 
   private List<TagDTO> tags;

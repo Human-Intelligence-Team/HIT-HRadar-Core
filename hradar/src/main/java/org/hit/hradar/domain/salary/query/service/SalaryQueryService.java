@@ -31,19 +31,19 @@ public class SalaryQueryService {
    * @param empId
    * @return
    */
-  public AnnualCompensationSummaryResponse getEmployeeAnnualSalarySummary(Long empId) {
+  public AnnualCompensationSummaryResponse getEmployeeAnnualSalarySummary(Long empId, Long comId) {
 
     // 기본급 조회
     Long basic = 0L;
     int year = LocalDate.now().getYear() - 1;
     String yearStr = String.valueOf(year);
-    BasicSalaryDTO basicSalary = basicSalaryQueryService.getEmployeeBasicSalary(empId, yearStr);
+    BasicSalaryDTO basicSalary = basicSalaryQueryService.getEmployeeBasicSalary(empId, yearStr, comId);
     if (basicSalary != null) {
       basicSalary.getBasicSalary();
     }
 
     // 변동 보상 조회 (각각 총 금액)
-    CompensationSalaryDTO summary = compensationSalaryQueryService.getEmployeeCompensationSalarySummary(empId, yearStr);
+    CompensationSalaryDTO summary = compensationSalaryQueryService.getEmployeeCompensationSalarySummary(empId, yearStr, comId);
 
     Long totalCompensation = summary == null ? 0L : summary.getTotalCompensation();
     Long totalBonus = summary == null ? 0L : summary.getTotalBonus();

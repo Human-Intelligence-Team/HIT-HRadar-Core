@@ -48,7 +48,7 @@ public class ContentQueryController {
   @Operation(summary = "학습 컨텐츠 상세 조회", description = "컨텐츠 ID로 학습 컨텐츠의 상세 정보를 조회합니다.")
   @GetMapping("{id}")
   public ResponseEntity<ApiResponse<ContentDetailResponse>> contentDetail(
-      @PathVariable Long id) {
+      @PathVariable("id") Long id) {
 
     ContentDetailResponse response = contentQueryService.contentDetail(id);
     return ResponseEntity.ok(ApiResponse.success(response));

@@ -2,10 +2,12 @@ package org.hit.hradar.domain.competencyReport.query.dto.request;
 
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ContentSearchRequest {
 
   private String title; // 콘텐츠명

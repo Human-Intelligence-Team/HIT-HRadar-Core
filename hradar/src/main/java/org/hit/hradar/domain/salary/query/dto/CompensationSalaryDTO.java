@@ -17,6 +17,7 @@ public class CompensationSalaryDTO {
   private Long empId;
   private CompensationType compensationType;
   private String year; // 년도
+
   private String employeeNo; // 사번
   private String name; // 이름
   private String deptName; // 부서명
@@ -54,6 +55,14 @@ public class CompensationSalaryDTO {
     this.compensationType = compensationType;
   }
 
-
+  public CompensationSalaryDTO(Long totalAmount, Long totalCompensation, Long totalAllowance,
+      Long totalPerformance, Long totalIncentive, Long totalBonus) {
+    this.totalAmount = totalAmount;
+    this.totalCompensation = totalCompensation;
+    this.totalAllowance = totalAllowance;
+    this.totalPerformance = totalPerformance;
+    this.totalIncentive = totalIncentive;
+    this.totalBonus = totalBonus;
+  }
 
 }

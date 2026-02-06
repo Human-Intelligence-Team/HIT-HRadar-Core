@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.BasicSalaryHistoryDTO;
+import org.hit.hradar.domain.salary.query.dto.BasicSalarySummaryDTO;
 import org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO;
 import org.hit.hradar.domain.salary.query.dto.request.BasicSalarySearchRequest;
 import org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest;
@@ -14,7 +15,7 @@ public interface BasicSalaryMapper {
 
   List<BasicSalaryDTO> findAllBasicSalaries(BasicSalarySearchRequest request);
 
-  List<BasicSalaryDTO> findAllBasicSalariesByEmpId(Long empId);
+  List<BasicSalaryDTO> findAllBasicSalariesByEmpId(SalaryApprovalRequest request);
 
   BasicSalaryDTO findBasicSalarySummaryByEmpIdAndYear(
       @Param("empId") Long empId,
@@ -28,4 +29,6 @@ public interface BasicSalaryMapper {
 
   List<SalaryApprovalDTO> findAllByBasicSalary(SalaryApprovalRequest request);
   SalaryApprovalDTO findAllByBasicSalaryByDocId(SalaryApprovalRequest request);
+
+  List<BasicSalarySummaryDTO> findBasicSalarySummaryByYear(SalaryApprovalRequest request);
 }

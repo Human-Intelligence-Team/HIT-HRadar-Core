@@ -1,11 +1,11 @@
 package org.hit.hradar.domain.salary.query.dto.request;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 
 @Getter
-@Setter
+@NoArgsConstructor
 public class BasicSalarySearchRequest {
 
   private Long docId;

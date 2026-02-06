@@ -41,7 +41,8 @@ public class TagQueryController {
    */
   @GetMapping("/{tagName}")
   public ResponseEntity<ApiResponse<TagSearchResponse>> tagsByTagName(
-      @PathVariable String tagName) {
+      @PathVariable("tagName") String tagName
+  ) {
 
     TagSearchResponse response = tagQueryService.tagsByTagName(tagName);
     return ResponseEntity.ok(ApiResponse.success(response));

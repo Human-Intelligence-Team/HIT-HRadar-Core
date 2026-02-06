@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.goal.command.domain.aggregate.AchieveStatus;
 import org.hit.hradar.domain.goal.command.domain.aggregate.GoalApproveStatus;
 import org.hit.hradar.domain.goal.command.domain.aggregate.GoalDepth;
@@ -12,6 +13,7 @@ import org.hit.hradar.domain.goal.command.domain.aggregate.GoalType;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class OkrDataDTO {
 
   private Long goalId;

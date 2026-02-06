@@ -51,7 +51,7 @@ public class CustomCodeCommandController {
   @GetMapping("existCustomCode")
   public ResponseEntity<ApiResponse<CustomCodeExistResponse>> existCustomCode(
       @CurrentUser AuthUser authUser,
-      @RequestParam String customCode
+      @RequestParam("customCode") String customCode
   )  {
 
     Long comId = authUser.companyId();

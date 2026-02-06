@@ -11,7 +11,7 @@
     SELECT YEAR(ad.CREATED_AT ) AS year
          , ad.DOC_ID
          , ad.TITLE
-         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt
+         , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt
          , cse.COMPENSATION_TYPE
          , ad.STATUS AS approvalStatus
          , emp.NAME AS writer
@@ -25,6 +25,7 @@
        AND ad.COMPANY_ID = #{comId}
        AND ad.DOC_TYPE = 'COMPENSATION_SALARY'
      GROUP BY ad.DOC_ID, ad.TITLE, ad.approved_at, ad.STATUS, ad.WRITER_ID, emp.NAME, cse.COMPENSATION_TYPE
+     ORDER BY ad.DOC_ID DESC
   </select>
 
   <select id="findAllByCompensationSalariesByDocId"
@@ -34,7 +35,7 @@
     SELECT YEAR(ad.CREATED_AT ) AS year
           , ad.DOC_ID
          , ad.TITLE
-         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt
+         , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt
          , cse.COMPENSATION_TYPE
          , ad.STATUS AS approvalStatus
          , emp.NAME AS writer
@@ -49,6 +50,7 @@
        AND ad.DOC_ID = #{docId}
        AND ad.DOC_TYPE = 'COMPENSATION_SALARY'
      GROUP BY ad.DOC_ID, ad.TITLE, ad.approved_at, ad.STATUS, ad.WRITER_ID, emp.NAME, cse.COMPENSATION_TYPE
+     ORDER BY ad.DOC_ID DESC
   </select>
 
   <select id="findAllCompensationSalaries"
@@ -63,11 +65,9 @@
           , emp.NAME -- 사원명
           , dep.DEPT_NAME  -- 부서명
           , cp.NAME  AS positionName-- 직위
-          , ad.APPROVED_AT -- 승인 일시
           , emp.type AS employmentType-- 재직 상태
-          , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt
+          , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt
           , cse.REMARK
-          , emp.type AS employmentType-- 재직 상태
           , cse.COMPENSATION_TYPE
        FROM COMPENSATION_SALARY_EMPLOYEE cse
        JOIN APPROVAL_DOCUMENT ad ON cse.DOC_ID = ad.DOC_ID AND ad.IS_DELETED = 'N'
@@ -109,16 +109,15 @@
          , cse.AMOUNT
          , ad.DOC_TYPE
          , cse.RATE
-         , DATE_FORMAT(MAX(ad.APPROVED_AT), '%Y-%m-%d') AS approvedAt
+         , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt
          , cse.EMP_ID
          , ad.STATUS AS approvalStatus
          , cse.REMARK
       FROM COMPENSATION_SALARY_EMPLOYEE cse
-      JOIN APPROVAL_DOCUMENT ad
-        ON cse.DOC_ID = ad.DOC_ID
+      JOIN APPROVAL_DOCUMENT ad ON cse.DOC_ID = ad.DOC_ID AND ad.IS_DELETED = 'N'
      WHERE cse.IS_DELETED = 'N'
-       AND ad.IS_DELETED = 'N'
        AND ad.DOC_TYPE = 'COMPENSATION_SALARY'
+       AND ad.COMPANY_ID = #{comId}
        AND cse.EMP_ID = #{empId}
     <if test="year != null">
        AND YEAR(ad.CREATED_AT) = #{year}
@@ -126,11 +125,13 @@
     <if test="type != null">
        AND cse.COMPENSATION_TYPE = #{type}
     </if>
+     ORDER BY ad.DOC_ID DESC
   </select>
 
 
 
   <select id="findCompensationSalaries"
+    parameterType="org.hit.hradar.domain.salary.query.dto.request.CompensationSearchRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.CompensationSalaryDTO">
 
     SELECT ad.TITLE
@@ -152,13 +153,13 @@
          ) AS totalAllowance
          , SUM(cse.AMOUNT) AS totalCompensation
       FROM COMPENSATION_SALARY_EMPLOYEE cse
-      JOIN APPROVAL_DOCUMENT ad ON cse.DOC_ID = ad.DOC_ID
+      JOIN APPROVAL_DOCUMENT ad ON cse.DOC_ID = ad.DOC_ID AND ad.IS_DELETED  = 'N'
      WHERE cse.IS_DELETED = 'N'
-       AND ad.IS_DELETED  = 'N'
        AND ad.STATUS = 'APPROVED'
        AND ad.DOC_TYPE = 'COMPENSATION_SALARY'
        AND ad.APPROVED_AT <![CDATA[>=]]> #{startDate}
        AND ad.APPROVED_AT <![CDATA[<]]> DATE_ADD(#{endDate}, INTERVAL 1 DAY)
+       AND ad.COMPANY_ID = #{comId}
     <if test="empId != null">
        AND cse.EMP_ID = #{empId}
     </if>

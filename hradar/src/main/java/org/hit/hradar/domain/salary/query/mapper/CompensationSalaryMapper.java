@@ -17,10 +17,7 @@ public interface CompensationSalaryMapper {
 
   List<CompensationSalaryDTO> findAllCompensationSalaries(CompensationSearchRequest request);
 
-  CompensationSalaryDTO findCompensationSalaries(
-        @Param("startDate") String startDate
-      , @Param("endDate") String endDate
-      , @Param("empId") Long empId);
+  CompensationSalaryDTO findCompensationSalaries(CompensationSearchRequest request);
 
   List<SalaryApprovalDTO> findAllByCompensationSalaries(SalaryApprovalRequest request);
 

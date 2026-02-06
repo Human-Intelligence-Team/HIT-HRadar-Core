@@ -102,7 +102,7 @@ public class CompetencyReportQueryController {
   @Operation(summary = "역량 리포트 상세 조회", description = "리포트 ID로 역량 리포트의 상세 내용을 조회합니다.")
   @GetMapping("/{id}")
   public ResponseEntity<ApiResponse<CompetencyReportDetailResponse>> getCompetencyReportsById(
-      @PathVariable Long id) {
+      @PathVariable("id") Long id) {
 
     CompetencyReportDetailResponse response = competencyReportQueryService.getCompetencyReportsById(id);
     return ResponseEntity.ok(ApiResponse.success(response));
@@ -119,8 +119,6 @@ public class CompetencyReportQueryController {
   public ResponseEntity<ApiResponse<CompetencyReportSearchResponse>> getGeneratedCompetencyReports(
       @CurrentUser AuthUser authUser,
       CompReportCycleSearchRequest request) {
-
-    System.out.println("CompetencyReportQueryController.getGeneratedCompetencyReports");
 
     Long comId =  authUser.companyId();
     CompetencyReportSearchResponse response = competencyReportQueryService.getGeneratedCompetencyReports(request, comId);
