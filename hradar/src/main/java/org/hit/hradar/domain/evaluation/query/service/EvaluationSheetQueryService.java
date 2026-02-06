@@ -39,6 +39,11 @@ public class EvaluationSheetQueryService {
                         .map(EvaluationSectionRow::getSectionId)
                         .toList();
 
+        // 섹션이 없으면 바로 빈 결과 반환
+        if (sectionIds.isEmpty()) {
+            return List.of();
+        }
+
         // 4. 섹션에 속한 문제 목록 조회
         List<EvaluationQuestionRow> questions =
                 evaluationQuestionMapper.findBySectionIds(sectionIds);
