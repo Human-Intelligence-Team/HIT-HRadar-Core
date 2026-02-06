@@ -51,14 +51,14 @@ class RoleCommandControllerTest {
         given(roleCommandService.createCustomRole(any(), any(CreateRoleRequest.class))).willReturn(1L);
 
         // when & then
-        mockMvc.perform(post("/role")
+        mockMvc.perform(post("/roles")
                 .header("X-User-Id", "1")
                 .header("X-User-Role", "admin")
                 .header("X-Company-Id", "1")
                 .header("X-Employee-Id", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data").value(1L));
     }
