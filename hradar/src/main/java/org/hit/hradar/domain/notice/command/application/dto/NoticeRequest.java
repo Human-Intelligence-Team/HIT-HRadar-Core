@@ -10,5 +10,4 @@ public class NoticeRequest {
     private String title;
     private String content;
     private List<Long> deletedAttachmentIds;
-    private List<String> attachmentStoredNames;
 }
