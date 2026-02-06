@@ -1,4 +1,4 @@
-package org.hit.hradar.config;
+package org.hit.hradar.global.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
