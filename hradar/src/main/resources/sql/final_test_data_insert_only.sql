@@ -1,172 +1,315 @@
--- 최종 통합 테스트 데이터 (INSERT ONLY - Admin 제외)
--- Admin(ID 1)은 시스템 초기화 시 생성되므로 2번부터 추가
--- 실행 방법: mysql -u root -p hradar < src/main/resources/sql/final_test_data_insert_only.sql
+/* =========================================================
+ * HRadar DEV Seed (create-drop 전제, PLATFORM admin 유지)
+ *
+ * ✅ 플랫폼 admin: 서버 기동 시 PlatformAdminInitializer가 자동 생성 (건드리지 않음)
+ * ✅ 권한/역할/role_permission: "1번 DDL 스키마" 기준(perm_key/route_path, role_id 명시)
+ * ✅ 회사/신청/부서/직위/직원/계정/role_employee: "2번 의도(간단 구조)" 유지
+ * ✅ 부서 4개 × 10명 = 40명
+ * ✅ employee <-> user_account 1:1
+ * ✅ emp_id/account_id: 1001~1040 명시
+ * ✅ user_account.role: 전부 'user'
+ * ✅ PLATFORM 테넌트와 섞이지 않게 company_code='TEST001'로 앵커
+ *
+ * 주의:
+ * - create-drop이므로 INSERT IGNORE / ON DUPLICATE KEY UPDATE 없음
+ * - 아래 스크립트는 "테이블이 비어있다" 가정
+ * ========================================================= */
 
--- 1. 회사 신청 (Audit 없음)
-INSERT IGNORE INTO company_application (application_id, address, biz_no, company_telephone, company_name, creater_email, creater_login_id, creater_name, status) 
-VALUES (1, '서울시 강남구 테헤란로', '123-45-67890', '02-1234-5678', '테스트컴퍼니', 'admin@hradar.com', 'admin', '관리자', 'APPROVED');
+START TRANSACTION;
 
--- 2. 회사
-INSERT IGNORE INTO company (com_id, application_id, company_code, name, biz_no, address, status, is_deleted, created_at, created_by) 
-VALUES (1, 1, 'TEST001', '테스트컴퍼니', '123-45-67890', '서울시 강남구 테헤란로', 'APPROVED', 'N', NOW(), 1);
+-- 공통 비밀번호(1234) BCrypt 해시 (너가 준 값 그대로)
+SET @PW := '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.';
 
--- 3. 직위
-INSERT IGNORE INTO company_position (position_id, com_id, `rank`, name, is_deleted, created_at, created_by) VALUES 
-(1, 1, 1, '사원', 'N', NOW(), 1),
-(2, 1, 2, '대리', 'N', NOW(), 1),
-(3, 1, 3, '과장', 'N', NOW(), 1),
-(4, 1, 4, '팀장', 'N', NOW(), 1),
-(5, 1, 5, '임원', 'N', NOW(), 1),
-(6, 1, 6, '대표이사', 'N', NOW(), 1);
+-- =========================================================
+-- 0) 회사 신청서 (application_id=1 고정)
+-- =========================================================
+INSERT INTO company_application
+(application_id, address, biz_no, company_telephone, company_name,
+ creater_email, creater_login_id, creater_name, status,
+ reject_reason, reviewed_at, reviewed_by)
+VALUES
+    (1, '서울시 강남구 테헤란로', '123-45-67890', '02-1234-5678', '테스트컴퍼니',
+     'admin@hradar.com', 'admin', '관리자', 'APPROVED',
+     NULL, NULL, NULL);
 
--- 4. 부서
-INSERT IGNORE INTO department (dept_id, com_id, dept_name, is_deleted, created_at, created_by) VALUES 
-(1, 1, '경영지원본부', 'N', NOW(), 1),
-(2, 1, '인사팀', 'N', NOW(), 1),
-(3, 1, '개발본부', 'N', NOW(), 1),
-(4, 1, '플랫폼개발팀', 'N', NOW(), 1);
+-- =========================================================
+-- 1) 회사 (company_code='TEST001'로 앵커, com_id는 AUTO)
+-- =========================================================
+INSERT INTO company
+(application_id, company_code, name, ceo_name, company_email,
+ biz_no, address, company_telephone, founded_date,
+ status, is_deleted, created_at, updated_at, created_by, updated_by)
+VALUES
+    (1, 'TEST001', '테스트컴퍼니', '김대표', 'contact@test001.com',
+     '123-45-67890', '서울시 강남구 테헤란로', '02-1234-5678', '2018-01-01',
+     'APPROVED', 'N', NOW(6), NOW(6), 1, 1);
 
--- 5. 사원 (1번 김대표/Admin 제외, 2번부터 시작)
-INSERT IGNORE INTO employee (emp_id, com_id, dept_id, position_id, name, employee_no, email, type, is_deleted, created_at, created_by) VALUES 
-(2, 1, 2, 4, '이인사', 'E002', 'hr_mgr@test.com', 'WORKING', 'N', NOW(), 1),
-(3, 1, 4, 4, '박개발', 'E003', 'dev_mgr@test.com', 'WORKING', 'N', NOW(), 1),
-(4, 1, 4, 1, '최사원', 'E004', 'dev_staff@test.com', 'WORKING', 'N', NOW(), 1),
-(5, 1, 2, 2, '정HR', 'E005', 'hr_staff@test.com', 'WORKING', 'N', NOW(), 1);
+-- TEST 회사 com_id 확보 (PLATFORM과 절대 섞이지 않게)
+SET @TEST_COM_ID := (SELECT com_id FROM company WHERE company_code='TEST001' LIMIT 1);
 
--- 6. 사용자 계정 (1번 admin 제외, 2번부터 시작)
--- 비밀번호는 모두 '1234'
-INSERT IGNORE INTO user_account (account_id, company_code, com_id, employee_id, login_id, email, name, password, role, status, is_deleted) VALUES 
-(2, 'TEST001', 1, 2, 'hr_manager', 'hr_mgr@test.com', '이인사', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'ADMIN', 'ACTIVE', 'N'),
-(3, 'TEST001', 1, 3, 'dev_manager', 'dev_mgr@test.com', '박개발', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'USER', 'ACTIVE', 'N'),
-(4, 'TEST001', 1, 4, 'dev_staff', 'dev_staff@test.com', '최사원', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'USER', 'ACTIVE', 'N'),
-(5, 'TEST001', 1, 5, 'hr_staff', 'hr_staff@test.com', '정HR', '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.', 'USER', 'ACTIVE', 'N');
+-- =========================================================
+-- 2) 직위 (간단 구조 유지: 6개)
+--    position_id는 AUTO이므로 명시하지 않음
+-- =========================================================
+INSERT INTO company_position (com_id, `rank`, name, is_deleted, created_at, created_by)
+VALUES
+    (@TEST_COM_ID, 1, '사원',     'N', NOW(6), 1),
+    (@TEST_COM_ID, 2, '대리',     'N', NOW(6), 1),
+    (@TEST_COM_ID, 3, '과장',     'N', NOW(6), 1),
+    (@TEST_COM_ID, 4, '팀장',     'N', NOW(6), 1),
+    (@TEST_COM_ID, 5, '임원',     'N', NOW(6), 1),
+    (@TEST_COM_ID, 6, '대표이사', 'N', NOW(6), 1);
 
--- 7. 권한 - 라우터 경로 100% 매핑
-INSERT IGNORE INTO permission (perm_key, name, route_path, is_deleted, created_at, created_by) VALUES
--- 공통/내 정보
-('POLICY_READ', '정책 조회', '/policy', 'N', NOW(), 1),
-('NOTICE_READ', '공지 조회', '/notice', 'N', NOW(), 1),
-('NOTICE_MANAGE', '공지 관리', '/notice/create', 'N', NOW(), 1),
-('MY_PROFILE', '내 정보', '/my-profile', 'N', NOW(), 1),
-('MY_DEPT', '내 부서', '/my-department', 'N', NOW(), 1),
--- 조직/인사
-('DEPT_LIST', '부서 목록', '/organization', 'N', NOW(), 1),
-('ORG_CHART', '조직도', '/department/org-chart', 'N', NOW(), 1),
-('DEPT_MANAGE', '부서 관리', '/department/manage', 'N', NOW(), 1),
-('EMP_MANAGE', '사원 관리', '/employee', 'N', NOW(), 1),
-('EMP_LIST_READ', '사원 목록 조회', '/personnel/employees/list', 'N', NOW(), 1),
-('POS_MANAGE', '직위 관리', '/personnel/positions', 'N', NOW(), 1),
-('POS_read', '직위 목록', '/personnel/positions/list', 'N', NOW(), 1),
-('EMP_APPOINT', '인사 발령', '/personnel/appointment', 'N', NOW(), 1),
-('EMP_HISTORY', '발령 이력', '/personnel/history', 'N', NOW(), 1),
--- 회사
-('COM_MY', '내 회사', '/company/my', 'N', NOW(), 1),
-('COM_MANAGE_MY', '회사 관리', '/company/my-manage', 'N', NOW(), 1),
-('ROLE_MANAGE', '역할 관리', '/company/roles', 'N', NOW(), 1),
-('COM_MANAGE_ALL', '회사 전체 관리', '/company/manage', 'N', NOW(), 1),
--- 성과/목표
-('GOAL_LIST', '목표 목록', '/goal', 'N', NOW(), 1),
-('GOAL_DASH_HR', 'HR 목표 대시보드', '/hr/goals', 'N', NOW(), 1),
-('GOAL_TEAM_LIST', '팀 목표 목록', '/to/goals', 'N', NOW(), 1),
-('GOAL_CREATE', '목표 생성', '/goal/create', 'N', NOW(), 1),
-('REPORT_ALL', '리포트 전체', '/all/competency/report', 'N', NOW(), 1),
-('REPORT_DEPT', '리포트 부서', '/dept/competency/report', 'N', NOW(), 1),
-('REPORT_ME', '리포트 개인', '/me/competency/report', 'N', NOW(), 1),
-('SALARY_DASH', '급여 대시보드', '/salary/dashboard', 'N', NOW(), 1),
--- 급여
-('SALARY_BASIC_ALL', '기본급 전체', '/all/salary/basic', 'N', NOW(), 1),
-('SALARY_BASIC_ME', '내 기본급', '/me/salary/basic', 'N', NOW(), 1),
-('SALARY_COMP_ALL', '변동급 전체', '/all/salary/compensation', 'N', NOW(), 1),
--- 콘텐츠
-('CONTENT_ALL', '콘텐츠 전체', '/all/contents', 'N', NOW(), 1),
-('TAG_MANAGE', '태그 관리', '/contents/tag', 'N', NOW(), 1),
--- 회차/평가
-('CYCLE_MANAGE', '회차 관리', '/cycles', 'N', NOW(), 1),
-('CYCLE_MANAGE_HR', 'HR 회차 관리', '/hr/cycles', 'N', NOW(), 1),
-('GRADE_SETTING', '등급 설정', '/grade/setting', 'N', NOW(), 1),
-('GRADE_LIST_DEPT', '부서 등급', '/grading/list', 'N', NOW(), 1),
-('GRADE_LIST_HR', 'HR 등급', '/hr/grading/list', 'N', NOW(), 1),
-('GRADE_ASSIGN', '등급 부여', '/to/grading/list', 'N', NOW(), 1),
-('GRADE_APPROVE', '등급 승인', '/hr/grading/list/approve', 'N', NOW(), 1),
-('GRADE_MY', '내 등급', '/my/grading', 'N', NOW(), 1),
-('GRADE_OBJECTION', '이의제기', '/to/grading/objection', 'N', NOW(), 1),
--- 평가 설정
-('EVAL_TYPE', '평가 유형', '/hr/evaluation/type/setting', 'N', NOW(), 1),
-('EVAL_FORM', '평가 문항', '/hr/evaluation/question/form/setting', 'N', NOW(), 1),
-('EVAL_ASSIGN', '평가 배정', '/hr/evaluation/assignment', 'N', NOW(), 1),
-('EVAL_STATUS', '배정 현황', '/hr/evaluation/assignment/status', 'N', NOW(), 1),
-('EVAL_EXEC', '평가 수행', '/evaluation/assignment/response', 'N', NOW(), 1),
-('EVAL_RESULT_HR', '평가 결과(HR)', '/hr/evaluation/response/result', 'N', NOW(), 1),
-('EVAL_RESULT_MY', '평가 결과(나)', '/evaluation/response/my/result', 'N', NOW(), 1),
--- 대시보드
-('DASH_MY', '내 대시보드', '/my/dashboard', 'N', NOW(), 1),
-('DASH_HR', 'HR 대시보드', '/hr/dashboard', 'N', NOW(), 1),
--- 결재
-('APPR_TYPE', '결재 양식', '/approval/approval-document-types', 'N', NOW(), 1),
-('APPR_CREATE', '기안 작성', '/approval/create', 'N', NOW(), 1),
-('APPR_MY', '내 문서함', '/approval/my-documents', 'N', NOW(), 1),
-('APPR_ALL', '전체 문서함', '/approval/all-documents', 'N', NOW(), 1),
-('APPR_ADMIN', '결재 관리', '/approval/admin', 'N', NOW(), 1),
--- 근태
-('ATT_COMMUTE', '내 출퇴근', '/attendance/commute', 'N', NOW(), 1),
-('ATT_IP', 'IP 정책', '/attendance/ip-policy', 'N', NOW(), 1),
-('ATT_DEPT', '부서 근태', '/attendance/department', 'N', NOW(), 1),
-('ATT_CAL', '근태 캘린더', '/attendance/department-calendar', 'N', NOW(), 1),
--- 휴가
-('LEAVE_MY', '내 휴가', '/leave/my-history', 'N', NOW(), 1),
-('LEAVE_POLICY', '휴가 정책', '/leave/policy', 'N', NOW(), 1),
-('LEAVE_DEPT', '부서 휴가', '/leave/admin/department-history', 'N', NOW(), 1);
+-- 직위 id 변수(테스트 회사에서 rank로 역조회)
+SET @P_STAFF := (SELECT position_id FROM company_position WHERE com_id=@TEST_COM_ID AND `rank`=1 LIMIT 1);
+SET @P_ASST  := (SELECT position_id FROM company_position WHERE com_id=@TEST_COM_ID AND `rank`=2 LIMIT 1);
+SET @P_MGR   := (SELECT position_id FROM company_position WHERE com_id=@TEST_COM_ID AND `rank`=4 LIMIT 1);
 
--- 8. 역할
-INSERT IGNORE INTO role (role_id, com_id, is_system, role_key, name, is_deleted, created_at, created_by) VALUES
-(1, 1, 'Y', 'ADMIN', '최고 관리자', 'N', NOW(), 1),
-(2, 1, 'Y', 'EMPLOYEE', '일반 사원', 'N', NOW(), 1),
-(3, 1, 'N', 'HR_ADMIN', '인사 관리자', 'N', NOW(), 1),
-(4, 1, 'N', 'TEAM_LEADER', '부서장', 'N', NOW(), 1);
+-- =========================================================
+-- 3) 부서 4개 (간단 구조 유지: parent/manager NULL)
+--    dept_id는 요청대로 명시(2001~2004)
+-- =========================================================
+INSERT INTO department
+(dept_id, com_id, parent_dept_id, manager_employee_id, dept_name, dept_phone,
+ is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES
+    (2001, @TEST_COM_ID, NULL, NULL, '경영지원본부', '02-2001-0000', 'N', NOW(6), 1, NULL, NULL),
+    (2002, @TEST_COM_ID, NULL, NULL, '인사팀',       '02-2002-0000', 'N', NOW(6), 1, NULL, NULL),
+    (2003, @TEST_COM_ID, NULL, NULL, '개발본부',     '02-2003-0000', 'N', NOW(6), 1, NULL, NULL),
+    (2004, @TEST_COM_ID, NULL, NULL, '플랫폼개발팀', '02-2004-0000', 'N', NOW(6), 1, NULL, NULL);
 
--- 9. 역할-권한 매핑
+SET @D1 := 2001;
+SET @D2 := 2002;
+SET @D3 := 2003;
+SET @D4 := 2004;
+
+-- =========================================================
+-- 4) 직원 40명 (부서별 10명) emp_id=1001~1040 명시
+-- =========================================================
+INSERT INTO employee
+(emp_id, com_id, dept_id, position_id, name, employee_no, email,
+ gender, birth, hire_date, `type`,
+ phone_number, extension_number, note, image,
+ is_deleted, created_at, created_by, updated_at, updated_by)
+VALUES
+-- 경영지원본부 (1001~1010)
+(1001, @TEST_COM_ID, @D1, @P_MGR,   '경영팀장01', 'E1001', 'hq01@test001.com', 'MALE',   '19900101', '2023-01-02', 'WORKING', '010-9000-1001', '1001', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1002, @TEST_COM_ID, @D1, @P_ASST,  '경영대리02', 'E1002', 'hq02@test001.com', 'FEMALE', '19900202', '2023-01-02', 'WORKING', '010-9000-1002', '1002', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1003, @TEST_COM_ID, @D1, @P_STAFF, '경영사원03', 'E1003', 'hq03@test001.com', 'MALE',   '19900303', '2023-01-02', 'WORKING', '010-9000-1003', '1003', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1004, @TEST_COM_ID, @D1, @P_STAFF, '경영사원04', 'E1004', 'hq04@test001.com', 'FEMALE', '19900404', '2023-01-02', 'WORKING', '010-9000-1004', '1004', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1005, @TEST_COM_ID, @D1, @P_STAFF, '경영사원05', 'E1005', 'hq05@test001.com', 'MALE',   '19900505', '2023-01-02', 'WORKING', '010-9000-1005', '1005', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1006, @TEST_COM_ID, @D1, @P_STAFF, '경영사원06', 'E1006', 'hq06@test001.com', 'FEMALE', '19900606', '2023-01-02', 'WORKING', '010-9000-1006', '1006', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1007, @TEST_COM_ID, @D1, @P_STAFF, '경영사원07', 'E1007', 'hq07@test001.com', 'MALE',   '19900707', '2023-01-02', 'WORKING', '010-9000-1007', '1007', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1008, @TEST_COM_ID, @D1, @P_STAFF, '경영사원08', 'E1008', 'hq08@test001.com', 'FEMALE', '19900808', '2023-01-02', 'WORKING', '010-9000-1008', '1008', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1009, @TEST_COM_ID, @D1, @P_STAFF, '경영사원09', 'E1009', 'hq09@test001.com', 'MALE',   '19900909', '2023-01-02', 'WORKING', '010-9000-1009', '1009', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1010, @TEST_COM_ID, @D1, @P_STAFF, '경영사원10', 'E1010', 'hq10@test001.com', 'FEMALE', '19901010', '2023-01-02', 'WORKING', '010-9000-1010', '1010', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+
+-- 인사팀 (1011~1020)
+(1011, @TEST_COM_ID, @D2, @P_MGR,   '인사팀장01', 'E1011', 'hr01@test001.com', 'FEMALE', '19901111', '2023-02-01', 'WORKING', '010-9000-1011', '1011', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1012, @TEST_COM_ID, @D2, @P_ASST,  '인사대리02', 'E1012', 'hr02@test001.com', 'MALE',   '19901212', '2023-02-01', 'WORKING', '010-9000-1012', '1012', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1013, @TEST_COM_ID, @D2, @P_STAFF, '인사사원03', 'E1013', 'hr03@test001.com', 'FEMALE', '19910113', '2023-02-01', 'WORKING', '010-9000-1013', '1013', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1014, @TEST_COM_ID, @D2, @P_STAFF, '인사사원04', 'E1014', 'hr04@test001.com', 'MALE',   '19910214', '2023-02-01', 'WORKING', '010-9000-1014', '1014', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1015, @TEST_COM_ID, @D2, @P_STAFF, '인사사원05', 'E1015', 'hr05@test001.com', 'FEMALE', '19910315', '2023-02-01', 'WORKING', '010-9000-1015', '1015', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1016, @TEST_COM_ID, @D2, @P_STAFF, '인사사원06', 'E1016', 'hr06@test001.com', 'MALE',   '19910416', '2023-02-01', 'WORKING', '010-9000-1016', '1016', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1017, @TEST_COM_ID, @D2, @P_STAFF, '인사사원07', 'E1017', 'hr07@test001.com', 'FEMALE', '19910517', '2023-02-01', 'WORKING', '010-9000-1017', '1017', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1018, @TEST_COM_ID, @D2, @P_STAFF, '인사사원08', 'E1018', 'hr08@test001.com', 'MALE',   '19910618', '2023-02-01', 'WORKING', '010-9000-1018', '1018', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1019, @TEST_COM_ID, @D2, @P_STAFF, '인사사원09', 'E1019', 'hr09@test001.com', 'FEMALE', '19910719', '2023-02-01', 'WORKING', '010-9000-1019', '1019', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1020, @TEST_COM_ID, @D2, @P_STAFF, '인사사원10', 'E1020', 'hr10@test001.com', 'MALE',   '19910820', '2023-02-01', 'WORKING', '010-9000-1020', '1020', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+
+-- 개발본부 (1021~1030)
+(1021, @TEST_COM_ID, @D3, @P_MGR,   '개발팀장01', 'E1021', 'dev01@test001.com', 'MALE',   '19910921', '2023-03-01', 'WORKING', '010-9000-1021', '1021', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1022, @TEST_COM_ID, @D3, @P_ASST,  '개발대리02', 'E1022', 'dev02@test001.com', 'FEMALE', '19911022', '2023-03-01', 'WORKING', '010-9000-1022', '1022', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1023, @TEST_COM_ID, @D3, @P_STAFF, '개발사원03', 'E1023', 'dev03@test001.com', 'MALE',   '19911123', '2023-03-01', 'WORKING', '010-9000-1023', '1023', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1024, @TEST_COM_ID, @D3, @P_STAFF, '개발사원04', 'E1024', 'dev04@test001.com', 'FEMALE', '19911224', '2023-03-01', 'WORKING', '010-9000-1024', '1024', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1025, @TEST_COM_ID, @D3, @P_STAFF, '개발사원05', 'E1025', 'dev05@test001.com', 'MALE',   '19920125', '2023-03-01', 'WORKING', '010-9000-1025', '1025', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1026, @TEST_COM_ID, @D3, @P_STAFF, '개발사원06', 'E1026', 'dev06@test001.com', 'FEMALE', '19920226', '2023-03-01', 'WORKING', '010-9000-1026', '1026', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1027, @TEST_COM_ID, @D3, @P_STAFF, '개발사원07', 'E1027', 'dev07@test001.com', 'MALE',   '19920327', '2023-03-01', 'WORKING', '010-9000-1027', '1027', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1028, @TEST_COM_ID, @D3, @P_STAFF, '개발사원08', 'E1028', 'dev08@test001.com', 'FEMALE', '19920428', '2023-03-01', 'WORKING', '010-9000-1028', '1028', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1029, @TEST_COM_ID, @D3, @P_STAFF, '개발사원09', 'E1029', 'dev09@test001.com', 'MALE',   '19920529', '2023-03-01', 'WORKING', '010-9000-1029', '1029', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1030, @TEST_COM_ID, @D3, @P_STAFF, '개발사원10', 'E1030', 'dev10@test001.com', 'FEMALE', '19920630', '2023-03-01', 'WORKING', '010-9000-1030', '1030', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+
+-- 플랫폼개발팀 (1031~1040)
+(1031, @TEST_COM_ID, @D4, @P_MGR,   '플랫폼팀장01', 'E1031', 'plat01@test001.com', 'FEMALE', '19920701', '2023-04-01', 'WORKING', '010-9000-1031', '1031', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1032, @TEST_COM_ID, @D4, @P_ASST,  '플랫폼대리02', 'E1032', 'plat02@test001.com', 'MALE',   '19920802', '2023-04-01', 'WORKING', '010-9000-1032', '1032', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1033, @TEST_COM_ID, @D4, @P_STAFF, '플랫폼사원03', 'E1033', 'plat03@test001.com', 'FEMALE', '19920903', '2023-04-01', 'WORKING', '010-9000-1033', '1033', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1034, @TEST_COM_ID, @D4, @P_STAFF, '플랫폼사원04', 'E1034', 'plat04@test001.com', 'MALE',   '19921004', '2023-04-01', 'WORKING', '010-9000-1034', '1034', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1035, @TEST_COM_ID, @D4, @P_STAFF, '플랫폼사원05', 'E1035', 'plat05@test001.com', 'FEMALE', '19921105', '2023-04-01', 'WORKING', '010-9000-1035', '1035', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1036, @TEST_COM_ID, @D4, @P_STAFF, '플랫폼사원06', 'E1036', 'plat06@test001.com', 'MALE',   '19921206', '2023-04-01', 'WORKING', '010-9000-1036', '1036', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1037, @TEST_COM_ID, @D4, @P_STAFF, '플랫폼사원07', 'E1037', 'plat07@test001.com', 'FEMALE', '19930107', '2023-04-01', 'WORKING', '010-9000-1037', '1037', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1038, @TEST_COM_ID, @D4, @P_STAFF, '플랫폼사원08', 'E1038', 'plat08@test001.com', 'MALE',   '19930208', '2023-04-01', 'WORKING', '010-9000-1038', '1038', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1039, @TEST_COM_ID, @D4, @P_STAFF, '플랫폼사원09', 'E1039', 'plat09@test001.com', 'FEMALE', '19930309', '2023-04-01', 'WORKING', '010-9000-1039', '1039', NULL, NULL, 'N', NOW(6), 1, NULL, NULL),
+(1040, @TEST_COM_ID, @D4, @P_STAFF, '플랫폼사원10', 'E1040', 'plat10@test001.com', 'MALE',   '19930410', '2023-04-01', 'WORKING', '010-9000-1040', '1040', NULL, NULL, 'N', NOW(6), 1, NULL, NULL);
+
+-- =========================================================
+-- 5) 계정 40개 (account_id=emp_id, employee_id=emp_id, role='user')
+--    login_id 규칙: hq01~hq10, hr01~hr10, dev01~dev10, plat01~plat10
+-- =========================================================
+INSERT INTO user_account
+(account_id, com_id, company_code, employee_id, login_id, email, password, name, role, status, is_deleted
+)
+SELECT
+    e.emp_id AS account_id,
+    e.com_id AS com_id,
+    'TEST001' AS company_code,
+    e.emp_id AS employee_id,
+    CONCAT(
+            CASE e.dept_id
+                WHEN @D1 THEN 'hq'
+                WHEN @D2 THEN 'hr'
+                WHEN @D3 THEN 'dev'
+                WHEN @D4 THEN 'plat'
+                END,
+            LPAD(((e.emp_id - 1001) % 10) + 1, 2, '0')
+    ) AS login_id,
+    e.email AS email,
+    @PW AS password,
+    e.name AS name,
+    'user' AS role,
+    'ACTIVE' AS status,
+    'N' AS is_deleted
+FROM employee e
+WHERE e.com_id = @TEST_COM_ID
+  AND e.emp_id BETWEEN 1001 AND 1040;
+
+-- =========================================================
+-- 6) 권한/역할/매핑 (1번 DDL 기준)
+-- =========================================================
+
+-- 6-1) permission (너가 준 최신 목록 그대로)
+INSERT INTO permission (perm_key, name, route_path, is_deleted, created_at, created_by) VALUES
+                                                                                            ('POLICY_READ', '정책 조회', '/policy', 'N', NOW(6), 1),
+                                                                                            ('NOTICE_READ', '공지 조회', '/notice', 'N', NOW(6), 1),
+                                                                                            ('NOTICE_MANAGE', '공지 관리', '/notice/create', 'N', NOW(6), 1),
+                                                                                            ('MY_PROFILE', '내 정보', '/my-profile', 'N', NOW(6), 1),
+                                                                                            ('MY_DEPT', '내 부서', '/my-department', 'N', NOW(6), 1),
+                                                                                            ('DEPT_LIST', '부서 목록', '/organization', 'N', NOW(6), 1),
+                                                                                            ('ORG_CHART', '조직도', '/department/org-chart', 'N', NOW(6), 1),
+                                                                                            ('DEPT_MANAGE', '부서 관리', '/department/manage', 'N', NOW(6), 1),
+                                                                                            ('EMP_MANAGE', '사원 관리', '/employee', 'N', NOW(6), 1),
+                                                                                            ('EMP_LIST_READ', '사원 목록 조회', '/personnel/employees/list', 'N', NOW(6), 1),
+                                                                                            ('POS_MANAGE', '직위 관리', '/personnel/positions', 'N', NOW(6), 1),
+                                                                                            ('POS_read', '직위 목록', '/personnel/positions/list', 'N', NOW(6), 1),
+                                                                                            ('EMP_APPOINT', '인사 발령', '/personnel/appointment', 'N', NOW(6), 1),
+                                                                                            ('EMP_HISTORY', '발령 이력', '/personnel/history', 'N', NOW(6), 1),
+                                                                                            ('COM_MY', '내 회사', '/company/my', 'N', NOW(6), 1),
+                                                                                            ('COM_MANAGE_MY', '회사 관리', '/company/my-manage', 'N', NOW(6), 1),
+                                                                                            ('ROLE_MANAGE', '역할 관리', '/company/roles', 'N', NOW(6), 1),
+                                                                                            ('COM_MANAGE_ALL', '회사 전체 관리', '/company/manage', 'N', NOW(6), 1),
+                                                                                            ('GOAL_LIST', '목표 목록', '/goal', 'N', NOW(6), 1),
+                                                                                            ('GOAL_DASH_HR', 'HR 목표 대시보드', '/hr/goals', 'N', NOW(6), 1),
+                                                                                            ('GOAL_TEAM_LIST', '팀 목표 목록', '/to/goals', 'N', NOW(6), 1),
+                                                                                            ('GOAL_CREATE', '목표 생성', '/goal/create', 'N', NOW(6), 1),
+                                                                                            ('REPORT_ALL', '리포트 전체', '/all/competency/report', 'N', NOW(6), 1),
+                                                                                            ('REPORT_DEPT', '리포트 부서', '/dept/competency/report', 'N', NOW(6), 1),
+                                                                                            ('REPORT_ME', '리포트 개인', '/me/competency/report', 'N', NOW(6), 1),
+                                                                                            ('SALARY_DASH', '급여 대시보드', '/salary/dashboard', 'N', NOW(6), 1),
+                                                                                            ('SALARY_BASIC_ALL', '기본급 전체', '/all/salary/basic', 'N', NOW(6), 1),
+                                                                                            ('SALARY_BASIC_ME', '내 기본급', '/me/salary/basic', 'N', NOW(6), 1),
+                                                                                            ('SALARY_COMP_ALL', '변동급 전체', '/all/salary/compensation', 'N', NOW(6), 1),
+                                                                                            ('CONTENT_ALL', '콘텐츠 전체', '/all/contents', 'N', NOW(6), 1),
+                                                                                            ('TAG_MANAGE', '태그 관리', '/contents/tag', 'N', NOW(6), 1),
+                                                                                            ('CYCLE_MANAGE', '회차 관리', '/cycles', 'N', NOW(6), 1),
+                                                                                            ('CYCLE_MANAGE_HR', 'HR 회차 관리', '/hr/cycles', 'N', NOW(6), 1),
+                                                                                            ('GRADE_SETTING', '등급 설정', '/grade/setting', 'N', NOW(6), 1),
+                                                                                            ('GRADE_LIST_DEPT', '부서 등급', '/grading/list', 'N', NOW(6), 1),
+                                                                                            ('GRADE_LIST_HR', 'HR 등급', '/hr/grading/list', 'N', NOW(6), 1),
+                                                                                            ('GRADE_ASSIGN', '등급 부여', '/to/grading/list', 'N', NOW(6), 1),
+                                                                                            ('GRADE_APPROVE', '등급 승인', '/hr/grading/list/approve', 'N', NOW(6), 1),
+                                                                                            ('GRADE_MY', '내 등급', '/my/grading', 'N', NOW(6), 1),
+                                                                                            ('GRADE_OBJECTION', '이의제기', '/to/grading/objection', 'N', NOW(6), 1),
+                                                                                            ('EVAL_TYPE', '평가 유형', '/hr/evaluation/type/setting', 'N', NOW(6), 1),
+                                                                                            ('EVAL_FORM', '평가 문항', '/hr/evaluation/question/form/setting', 'N', NOW(6), 1),
+                                                                                            ('EVAL_ASSIGN', '평가 배정', '/hr/evaluation/assignment', 'N', NOW(6), 1),
+                                                                                            ('EVAL_STATUS', '배정 현황', '/hr/evaluation/assignment/status', 'N', NOW(6), 1),
+                                                                                            ('EVAL_EXEC', '평가 수행', '/evaluation/assignment/response', 'N', NOW(6), 1),
+                                                                                            ('EVAL_RESULT_HR', '평가 결과(HR)', '/hr/evaluation/response/result', 'N', NOW(6), 1),
+                                                                                            ('EVAL_RESULT_MY', '평가 결과(나)', '/evaluation/response/my/result', 'N', NOW(6), 1),
+                                                                                            ('DASH_MY', '내 대시보드', '/my/dashboard', 'N', NOW(6), 1),
+                                                                                            ('DASH_HR', 'HR 대시보드', '/hr/dashboard', 'N', NOW(6), 1),
+                                                                                            ('APPR_TYPE', '결재 양식', '/approval/approval-document-types', 'N', NOW(6), 1),
+                                                                                            ('APPR_CREATE', '기안 작성', '/approval/create', 'N', NOW(6), 1),
+                                                                                            ('APPR_MY', '내 문서함', '/approval/my-documents', 'N', NOW(6), 1),
+                                                                                            ('APPR_ALL', '전체 문서함', '/approval/all-documents', 'N', NOW(6), 1),
+                                                                                            ('APPR_ADMIN', '결재 관리', '/approval/admin', 'N', NOW(6), 1),
+                                                                                            ('ATT_COMMUTE', '내 출퇴근', '/attendance/commute', 'N', NOW(6), 1),
+                                                                                            ('ATT_IP', 'IP 정책', '/attendance/ip-policy', 'N', NOW(6), 1),
+                                                                                            ('ATT_DEPT', '부서 근태', '/attendance/department', 'N', NOW(6), 1),
+                                                                                            ('ATT_CAL', '근태 캘린더', '/attendance/department-calendar', 'N', NOW(6), 1),
+                                                                                            ('LEAVE_MY', '내 휴가', '/leave/my-history', 'N', NOW(6), 1),
+                                                                                            ('LEAVE_POLICY', '휴가 정책', '/leave/policy', 'N', NOW(6), 1),
+                                                                                            ('LEAVE_DEPT', '부서 휴가', '/leave/admin/department-history', 'N', NOW(6), 1);
+
+-- 6-2) role (role_id 명시: 1~4, com_id는 TEST 회사)
+INSERT INTO role (role_id, com_id, is_system, role_key, name, is_deleted, created_at, created_by)
+VALUES
+    (1, @TEST_COM_ID, 'Y', 'ADMIN',       '최고 관리자', 'N', NOW(6), 1),
+    (2, @TEST_COM_ID, 'Y', 'EMPLOYEE',    '일반 사원',   'N', NOW(6), 1),
+    (3, @TEST_COM_ID, 'N', 'HR_ADMIN',    '인사 관리자', 'N', NOW(6), 1),
+    (4, @TEST_COM_ID, 'N', 'TEAM_LEADER', '부서장',      'N', NOW(6), 1);
+
+-- 6-3) role_permission
 -- ADMIN: 모든 권한
-INSERT IGNORE INTO role_permission (role_id, perm_id, created_at, created_by) 
-SELECT 1, perm_id, NOW(), 1 FROM permission;
+INSERT INTO role_permission (role_id, perm_id, created_at, created_by)
+SELECT 1, perm_id, NOW(6), 1 FROM permission;
 
--- EMPLOYEE: 기본 권한 (내정보, 공지, 결재, 휴가, 근태, 평가, 리포트)
-INSERT IGNORE INTO role_permission (role_id, perm_id, created_at, created_by) 
-SELECT 2, perm_id, NOW(), 1 FROM permission WHERE perm_key IN (
-  'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ',
-  'ATT_COMMUTE', 'LEAVE_MY', 'APPR_MY', 'APPR_CREATE',
-  'DASH_MY', 'SALARY_BASIC_ME', 'EVAL_EXEC', 'EVAL_RESULT_MY', 
-  'REPORT_ME', 'CONTENT_ALL', 'GRADE_MY', 'GOAL_LIST'
-);
+-- EMPLOYEE: 기본 권한
+INSERT INTO role_permission (role_id, perm_id, created_at, created_by)
+SELECT 2, perm_id, NOW(6), 1 FROM permission WHERE perm_key IN (
+                                                                'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ',
+                                                                'ATT_COMMUTE', 'LEAVE_MY', 'APPR_MY', 'APPR_CREATE',
+                                                                'DASH_MY', 'SALARY_BASIC_ME', 'EVAL_EXEC', 'EVAL_RESULT_MY',
+                                                                'REPORT_ME', 'CONTENT_ALL', 'GRADE_MY', 'GOAL_LIST'
+    );
 
 -- HR_ADMIN
-INSERT IGNORE INTO role_permission (role_id, perm_id, created_at, created_by)
-SELECT 3, perm_id, NOW(), 1 FROM permission WHERE perm_key IN (
-  'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ', 'NOTICE_MANAGE',
-  'DEPT_LIST', 'ORG_CHART', 'DEPT_MANAGE', 
-  'EMP_MANAGE', 'EMP_LIST_READ', 'POS_MANAGE', 'POS_read', 'EMP_APPOINT', 'EMP_HISTORY',
-  'ATT_COMMUTE', 'ATT_IP', 'ATT_DEPT', 'ATT_CAL',
-  'LEAVE_MY', 'LEAVE_POLICY', 'LEAVE_DEPT',
-  'GOAL_DASH_HR', 'SALARY_BASIC_ALL', 'SALARY_DASH', 'SALARY_COMP_ALL',
-  'EVAL_TYPE', 'EVAL_FORM', 'EVAL_ASSIGN', 'EVAL_STATUS', 'EVAL_RESULT_HR',
-  'GRADE_SETTING', 'GRADE_LIST_HR', 'GRADE_APPROVE',
-  'DASH_HR'
-);
+INSERT INTO role_permission (role_id, perm_id, created_at, created_by)
+SELECT 3, perm_id, NOW(6), 1 FROM permission WHERE perm_key IN (
+                                                                'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ', 'NOTICE_MANAGE',
+                                                                'DEPT_LIST', 'ORG_CHART', 'DEPT_MANAGE',
+                                                                'EMP_MANAGE', 'EMP_LIST_READ', 'POS_MANAGE', 'POS_read', 'EMP_APPOINT', 'EMP_HISTORY',
+                                                                'ATT_COMMUTE', 'ATT_IP', 'ATT_DEPT', 'ATT_CAL',
+                                                                'LEAVE_MY', 'LEAVE_POLICY', 'LEAVE_DEPT',
+                                                                'GOAL_DASH_HR', 'SALARY_BASIC_ALL', 'SALARY_DASH', 'SALARY_COMP_ALL',
+                                                                'EVAL_TYPE', 'EVAL_FORM', 'EVAL_ASSIGN', 'EVAL_STATUS', 'EVAL_RESULT_HR',
+                                                                'GRADE_SETTING', 'GRADE_LIST_HR', 'GRADE_APPROVE',
+                                                                'DASH_HR'
+    );
 
 -- TEAM_LEADER
-INSERT IGNORE INTO role_permission (role_id, perm_id, created_at, created_by)
-SELECT 4, perm_id, NOW(), 1 FROM permission WHERE perm_key IN (
-  'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ',
-  'ATT_COMMUTE', 'LEAVE_MY', 'APPR_MY', 'APPR_CREATE',
-  'GOAL_TEAM_LIST', 'GRADE_LIST_DEPT', 'GRADE_ASSIGN', 'GRADE_OBJECTION',
-  'REPORT_DEPT'
-);
+INSERT INTO role_permission (role_id, perm_id, created_at, created_by)
+SELECT 4, perm_id, NOW(6), 1 FROM permission WHERE perm_key IN (
+                                                                'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ',
+                                                                'ATT_COMMUTE', 'LEAVE_MY', 'APPR_MY', 'APPR_CREATE',
+                                                                'GOAL_TEAM_LIST', 'GRADE_LIST_DEPT', 'GRADE_ASSIGN', 'GRADE_OBJECTION',
+                                                                'REPORT_DEPT'
+    );
 
--- 10. 사원-역할 매핑
--- admin(1번) 제외
--- hr_manager
-INSERT IGNORE INTO role_employee (role_id, emp_id, created_at, created_by) VALUES (1, 2, NOW(), 1);
--- dev_manager
-INSERT IGNORE INTO role_employee (role_id, emp_id, created_at, created_by) VALUES (4, 3, NOW(), 1);
+-- =========================================================
+-- 7) role_employee (사원-역할 매핑)
+-- 규칙:
+--  - 전원 EMPLOYEE(2)
+--  - 각 부서 첫번째(팀장): TEAM_LEADER(4)
+--  - 인사팀장(1011): HR_ADMIN(3) 추가
+-- =========================================================
+
+-- 전원 EMPLOYEE
+INSERT INTO role_employee (role_id, emp_id, created_at, created_by)
+SELECT 2, emp_id, NOW(6), 1
+FROM employee
+WHERE com_id=@TEST_COM_ID AND emp_id BETWEEN 1001 AND 1040;
+
+-- 부서별 팀장 4명 TEAM_LEADER
+INSERT INTO role_employee (role_id, emp_id, created_at, created_by) VALUES
+                                                                        (4, 1001, NOW(6), 1),
+                                                                        (4, 1011, NOW(6), 1),
+                                                                        (4, 1021, NOW(6), 1),
+                                                                        (4, 1031, NOW(6), 1);
+
+-- 인사팀장에게 HR_ADMIN 추가
+INSERT INTO role_employee (role_id, emp_id, created_at, created_by) VALUES
+    (1, 1011, NOW(6), 1);
+
+COMMIT;
 -- dev_staff
 INSERT IGNORE INTO role_employee (role_id, emp_id, created_at, created_by) VALUES (2, 4, NOW(), 1);
 -- hr_staff

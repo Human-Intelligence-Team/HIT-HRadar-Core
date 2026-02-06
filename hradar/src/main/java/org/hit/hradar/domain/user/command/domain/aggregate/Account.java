@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "user_account", uniqueConstraints = {
