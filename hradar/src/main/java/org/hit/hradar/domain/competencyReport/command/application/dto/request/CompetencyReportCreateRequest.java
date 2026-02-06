@@ -1,8 +1,10 @@
 package org.hit.hradar.domain.competencyReport.command.application.dto.request;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class CompetencyReportCreateRequest {
 
   private Long cycleId; // 회차 ID

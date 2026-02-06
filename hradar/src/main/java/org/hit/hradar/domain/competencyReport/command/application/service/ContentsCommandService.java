@@ -27,9 +27,10 @@ public class ContentsCommandService {
    * @param request
    */
   @Transactional
-  public void createContents(ContentCreateRequest request){
+  public void createContents(ContentCreateRequest request, Long comId){
 
     // 학습 컨텐츠 등록
+    request.setComId(comId);
     Content content = Content.create(request);
     contentRepository.save(content);
 
@@ -42,11 +43,11 @@ public class ContentsCommandService {
   }
 
   @Transactional
-  public ContentUpdateResponse updateContent(ContentUpdateRequest request) {
+  public ContentUpdateResponse updateContent(ContentUpdateRequest request, Long comId) {
 
     // exist
     Long contentId = request.getContentId();
-    Content content = contentRepository.findById(contentId)
+    Content content = contentRepository.findByCompanyIdAndId(comId, contentId)
         .orElseThrow(() -> new BusinessException(CompetencyReportErrorCode.CONTENT_NOT_FOUND));
 
     // update - content
@@ -78,18 +79,17 @@ public class ContentsCommandService {
   }
 
   @Transactional
-  public void deleteContent(Long contentId) {
+  public void deleteContent(Long contentId, Long  comId) {
 
     if (contentId == null) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_ID_REQUIRED);
     }
 
-    Content content = contentRepository.findById(contentId)
+    Content content = contentRepository.findByCompanyIdAndId(comId, contentId)
         .orElseThrow(() ->
             new BusinessException(CompetencyReportErrorCode.CONTENT_NOT_FOUND)
         );
 
-    // 이미 삭제된 컨텐츠 방어 로직 (선택)
     if ("Y".equals(content.getIsDeleted())) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_ALREADY_DELETED);
     }
@@ -97,6 +97,9 @@ public class ContentsCommandService {
     // soft delete
     content.delete('Y');
     contentRepository.save(content);
+
+    contentTagRepository.deleteAllByContentId(contentId);
+
   }
 
 }

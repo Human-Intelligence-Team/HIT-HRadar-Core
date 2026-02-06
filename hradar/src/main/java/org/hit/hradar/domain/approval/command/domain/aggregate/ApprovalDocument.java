@@ -46,7 +46,7 @@ public class ApprovalDocument extends BaseTimeEntity {
   private String title;
 
   //본문
-  @Column(name = "content", nullable = false)
+  @Column(name = "content", length= 2000)
   private String content;
 
   //상태(DRAFT / IN_PROGRESS / APPROVED / REJECTED)

@@ -8,7 +8,9 @@ import org.hit.hradar.domain.competencyReport.command.application.dto.request.Co
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.ContentUpdateRequest;
 import org.hit.hradar.domain.competencyReport.command.application.dto.response.ContentUpdateResponse;
 import org.hit.hradar.domain.competencyReport.command.application.service.ContentsCommandService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,9 +37,11 @@ public class ContentCommandController {
   @Operation(summary = "학습 컨텐츠 등록", description = "새로운 학습 컨텐츠를 등록합니다.")
   @PostMapping
   public ResponseEntity<ApiResponse<Void>> createContent(
+      @CurrentUser AuthUser authUser,
       @RequestBody @Valid ContentCreateRequest request) {
 
-    contentsCommandService.createContents(request);
+    Long comId = authUser.companyId();
+    contentsCommandService.createContents(request, comId);
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 
@@ -50,9 +54,11 @@ public class ContentCommandController {
   @Operation(summary = "학습 컨텐츠 수정", description = "기존 학습 컨텐츠 정보를 수정합니다.")
   @PutMapping
   public ResponseEntity<ApiResponse<ContentUpdateResponse>> updateContent(
+      @CurrentUser AuthUser authUser,
       @RequestBody @Valid ContentUpdateRequest request) {
 
-    ContentUpdateResponse response = contentsCommandService.updateContent(request);
+    Long comId = authUser.companyId();
+    ContentUpdateResponse response = contentsCommandService.updateContent(request, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
@@ -61,10 +67,12 @@ public class ContentCommandController {
    */
   @DeleteMapping("/{contentId}")
   public ResponseEntity<ApiResponse<Void>> deleteContent(
-      @PathVariable Long contentId
+      @CurrentUser AuthUser authUser,
+      @PathVariable("contentId") Long contentId
   ) {
 
-    contentsCommandService.deleteContent(contentId);
+    Long comId = authUser.companyId();
+    contentsCommandService.deleteContent(contentId, comId);
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 

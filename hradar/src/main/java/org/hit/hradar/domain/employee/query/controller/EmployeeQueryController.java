@@ -25,7 +25,7 @@ public class EmployeeQueryController {
   @GetMapping("/{empId}")
   public ResponseEntity<ApiResponse<EmployeeResponse>> getOne(
       @CurrentUser AuthUser authUser,
-      @PathVariable Long empId) {
+      @PathVariable("empId") Long empId) {
     EmployeeResponse res = employeeQueryService.getById(authUser.companyId(), empId);
 
     return ResponseEntity.ok(ApiResponse.success(res));

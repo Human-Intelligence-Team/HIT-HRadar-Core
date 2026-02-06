@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.salary.command.application.dto.SalaryDTO;
 import org.hit.hradar.domain.salary.command.domain.aggregate.CompensationSalary;
+import org.hit.hradar.domain.salary.command.domain.aggregate.CompensationType;
 import org.hit.hradar.domain.salary.command.domain.repository.CompensationSalaryRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +12,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CompensationCommandService {
 
-  private CompensationSalaryRepository compensationSalaryRepository;
+  private final CompensationSalaryRepository compensationSalaryRepository;
 
   /**
    * 변동보상 결재 등록
    * @param docId
-   * @param salaries
+   * @param compensations
    */
-  public void createCompensationSalaryApproval(Long docId, List<SalaryDTO> salaries) {
+  public void createCompensationSalaryApproval(Long docId, List<SalaryDTO> compensations) {
 
     List<CompensationSalary> compensationSalaries =
-        salaries.stream()
+        compensations.stream()
                 .map(compensation -> new CompensationSalary(
                       compensation.getCompensationType()
                     , docId
@@ -31,7 +32,7 @@ public class CompensationCommandService {
                     , compensation.getRemark()
                     )).toList();
 
-     compensationSalaryRepository.saveAll(compensationSalaries);
+     compensationSalaryRepository.saveAllWithPolicy(compensationSalaries);
 
   }
 

@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagCreateRequest;
 import org.hit.hradar.domain.competencyReport.command.application.dto.request.TagDeleteRequest;
 import org.hit.hradar.domain.competencyReport.command.application.service.TagCommandService;
+import org.hit.hradar.global.aop.CurrentUser;
 import org.hit.hradar.global.dto.ApiResponse;
+import org.hit.hradar.global.dto.AuthUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,10 +35,11 @@ public class TagCommandController {
   @Operation(summary = "태그 등록", description = "새로운 역량 리포트용 태그를 등록합니다.")
   @PostMapping
   public ResponseEntity<ApiResponse<Void>> createTag(
+      @CurrentUser AuthUser authUser,
       @RequestBody  @Valid TagCreateRequest request
   )  {
-
-    tagCommandService.createTag(request);
+    Long comId =  authUser.companyId();
+    tagCommandService.createTag(request, comId);
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 

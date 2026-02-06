@@ -2,10 +2,12 @@ package org.hit.hradar.domain.salary.command.application.dto;
 
 import java.math.BigDecimal;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.salary.command.domain.aggregate.CompensationType;
 import org.hit.hradar.domain.salary.command.domain.aggregate.SalaryIncreaseType;
 
 @Getter
+@NoArgsConstructor
 public class SalaryDTO {
 
   // 공통
@@ -40,4 +42,18 @@ public class SalaryDTO {
     this.amount = amount;
     this.rate = rate;
   }
+
+  // 기본급
+  public SalaryDTO(Long empId, Long salary) {
+    this.empId = empId;
+    this.basicSalary = salary;
+  }
+
+  // 변동보상
+  public SalaryDTO(Long empId, Long amount, CompensationType compensationType) {
+    this.empId = empId;
+    this.amount = amount;
+    this.compensationType = compensationType;
+  }
+
 }

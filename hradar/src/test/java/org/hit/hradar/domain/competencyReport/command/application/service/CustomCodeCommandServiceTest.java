@@ -35,9 +35,9 @@ class CustomCodeCommandServiceTest {
   void createCustomCode_Success() {
     // given
     Long comId = 1L;
-    Long originCodeId = 100L;
+    String groupCode = "LEVEL";
     CustomCodeCreateRequest request = new CustomCodeCreateRequest(
-        originCodeId, "NEW_CODE", "새이름", "설명", 'N'
+        groupCode, "NEW_CODE", "새이름", "설명", 'N'
     );
 
     // 1. 기존 코드 조회 결과 Mocking (그룹코드와 그룹명을 가져오기 위함)
@@ -45,13 +45,13 @@ class CustomCodeCommandServiceTest {
     given(originCode.getGroupCode()).willReturn("GRP001");
     given(originCode.getGroupName()).willReturn("공통그룹");
 
-    given(customCodeRepository.findByCustomCodeId(originCodeId)).willReturn(originCode);
+    given(customCodeRepository.findByGroupCode(groupCode)).willReturn(originCode);
 
     // when
     customCodeCommandService.createCustomCode(request, comId);
 
     // then
-    then(customCodeRepository).should(times(1)).findByCustomCodeId(originCodeId);
+    then(customCodeRepository).should(times(1)).findByGroupCode(groupCode);
     then(customCodeRepository).should(times(1)).save(any(CustomCode.class));
   }
 

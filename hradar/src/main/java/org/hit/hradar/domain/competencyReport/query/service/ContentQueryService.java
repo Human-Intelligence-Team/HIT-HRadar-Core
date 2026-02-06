@@ -33,8 +33,9 @@ public class ContentQueryService {
    * @param request
    * @return
    */
-  public ContentSearchResponse contents(ContentSearchRequest request) {
+  public ContentSearchResponse contents(ContentSearchRequest request, Long comId) {
 
+    request.setComId(comId);
     List<ContentRowDTO> contents = contentMapper.findAllContents(request);
 
     // 학습 컨텐츠 목록 변환
@@ -48,16 +49,16 @@ public class ContentQueryService {
    * @param id
    * @return
    */
-  public ContentDetailResponse contentDetail(Long id) {
+  public ContentDetailResponse contentDetail(Long id, Long comId) {
 
     // content detail
-    ContentDTO content = contentMapper.findContentByContentId(id);
+    ContentDTO content = contentMapper.findContentByContentId(id, comId);
     if (content == null) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_NOT_FOUND);
     }
 
     // content tag List
-    List<TagDTO> tags = tagMapper.findAllTagsByContentId(id);
+    List<TagDTO> tags = tagMapper.findAllTagsByContentId(id, comId);
     content.addTags(tags);
 
     return new ContentDetailResponse(content);
