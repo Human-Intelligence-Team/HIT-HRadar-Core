@@ -35,7 +35,6 @@ public class HrTestController {
       System.out.println("role: " + role);
 
         NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, authUser.userId(), "공지 알림 테스트", "공지 메시지 테스트입니다.", "/notice", authUser.userId());
-        NotificationDTO notificationDTO = new NotificationDTO(NotificationType.REPORT_CREATED, authUser.userId(), "공지 알림 테스트", "공지 메시지 테스트입니다.", "/notice");
         producer.sendNotification(notificationDTO);
         return "sent";
     }
