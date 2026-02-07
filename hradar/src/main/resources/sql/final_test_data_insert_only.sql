@@ -1,19 +1,401 @@
 /* =========================================================
- * HRadar DEV Seed (create-drop 전제, PLATFORM admin 유지)
- *
- * ✅ 플랫폼 admin: 서버 기동 시 PlatformAdminInitializer가 자동 생성 (건드리지 않음)
- * ✅ 권한/역할/role_permission: "1번 DDL 스키마" 기준(perm_key/route_path, role_id 명시)
- * ✅ 회사/신청/부서/직위/직원/계정/role_employee: "2번 의도(간단 구조)" 유지
- * ✅ 부서 4개 × 10명 = 40명
- * ✅ employee <-> user_account 1:1
- * ✅ emp_id/account_id: 1001~1040 명시
- * ✅ user_account.role: 전부 'user'
- * ✅ PLATFORM 테넌트와 섞이지 않게 company_code='TEST001'로 앵커
- *
- * 주의:
- * - create-drop이므로 INSERT IGNORE / ON DUPLICATE KEY UPDATE 없음
- * - 아래 스크립트는 "테이블이 비어있다" 가정
+ * HRadar Schema & Seed (DDL + Data)
+ * 
+ * ✅ 단일 파일로 스키마 생성 및 테스트 데이터 초기화 수행
+ * ✅ SET FOREIGN_KEY_CHECKS = 0/1 를 통한 안전한 초기화
  * ========================================================= */
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- 1. Drop tables if they exist
+DROP TABLE IF EXISTS role_employee;
+DROP TABLE IF EXISTS role_permission;
+DROP TABLE IF EXISTS role;
+DROP TABLE IF EXISTS permission;
+DROP TABLE IF EXISTS user_account;
+DROP TABLE IF EXISTS employee;
+DROP TABLE IF EXISTS department;
+DROP TABLE IF EXISTS company_position;
+DROP TABLE IF EXISTS company;
+DROP TABLE IF EXISTS company_application;
+DROP TABLE IF EXISTS leave_grant;
+DROP TABLE IF EXISTS emp_leave;
+DROP TABLE IF EXISTS leave_policy;
+DROP TABLE IF EXISTS attendance_work_log;
+DROP TABLE IF EXISTS attendance_work_plan;
+DROP TABLE IF EXISTS attendance;
+DROP TABLE IF EXISTS approval_comment;
+DROP TABLE IF EXISTS approval_history;
+DROP TABLE IF EXISTS approval_line_step;
+DROP TABLE IF EXISTS approval_line;
+DROP TABLE IF EXISTS approval_reference;
+DROP TABLE IF EXISTS approval_payload;
+DROP TABLE IF EXISTS approval_document;
+DROP TABLE IF EXISTS approval_document_type;
+DROP TABLE IF EXISTS positions;
+
+-- 2. Create Tables
+CREATE TABLE company_application (
+    application_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
+    company_name        VARCHAR(200) NOT NULL,
+    biz_no              VARCHAR(30) NOT NULL,
+    company_telephone   VARCHAR(30) NOT NULL,
+    address             VARCHAR(255) NOT NULL,
+    status              VARCHAR(15) NOT NULL,
+    creater_name        VARCHAR(50) NOT NULL,
+    creater_email       VARCHAR(100) NOT NULL,
+    creater_login_id    VARCHAR(100) NOT NULL,
+    reject_reason       VARCHAR(500),
+    reviewed_at         DATETIME(6),
+    reviewed_by         BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE company (
+    com_id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    application_id      BIGINT NOT NULL,
+    company_code        VARCHAR(30) NOT NULL UNIQUE,
+    name                VARCHAR(100) NOT NULL,
+    ceo_name            VARCHAR(50),
+    company_email       VARCHAR(100),
+    biz_no              VARCHAR(30) NOT NULL UNIQUE,
+    address             VARCHAR(255) NOT NULL,
+    company_telephone   VARCHAR(30),
+    founded_date        DATE,
+    status              VARCHAR(15) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE company_position (
+    position_id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    com_id              BIGINT NOT NULL,
+    name                VARCHAR(50) NOT NULL,
+    `rank`              INT NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT,
+    CONSTRAINT UK_POSITION_COMPANY_NAME UNIQUE (com_id, name)
+) ENGINE=InnoDB;
+
+CREATE TABLE department (
+    dept_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    com_id              BIGINT NOT NULL,
+    parent_dept_id      BIGINT,
+    manager_employee_id BIGINT,
+    dept_name           VARCHAR(40) NOT NULL,
+    dept_phone          VARCHAR(20),
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE employee (
+    emp_id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    com_id              BIGINT NOT NULL,
+    dept_id             BIGINT,
+    position_id         BIGINT,
+    name                VARCHAR(50) NOT NULL,
+    employee_no         VARCHAR(100),
+    email               VARCHAR(150),
+    gender              VARCHAR(10),
+    birth               VARCHAR(8),
+    hire_date           DATE,
+    exit_date           DATE,
+    image               VARCHAR(255),
+    extension_number    VARCHAR(15),
+    phone_number        VARCHAR(15),
+    note                VARCHAR(1000),
+    type                VARCHAR(20),
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT,
+    CONSTRAINT UK_EMP_COMPANY_EMP_NO UNIQUE (com_id, employee_no),
+    CONSTRAINT UK_EMP_COMPANY_EMAIL UNIQUE (com_id, email)
+) ENGINE=InnoDB;
+
+CREATE TABLE user_account (
+    account_id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    com_id              BIGINT NOT NULL,
+    company_code        VARCHAR(30) NOT NULL,
+    employee_id         BIGINT,
+    login_id            VARCHAR(50) NOT NULL,
+    email               VARCHAR(150),
+    password            VARCHAR(150) NOT NULL,
+    name                VARCHAR(100) NOT NULL,
+    role                VARCHAR(10) NOT NULL,
+    status              VARCHAR(15) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    CONSTRAINT UK_COMPANY_LOGINID UNIQUE (com_id, login_id),
+    CONSTRAINT UK_ACCOUNT_COMPANY_EMAIL UNIQUE (com_id, email)
+) ENGINE=InnoDB;
+
+CREATE INDEX IDX_ACCOUNT_EMP_ID ON user_account (com_id, employee_id);
+
+CREATE TABLE role (
+    role_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    com_id              BIGINT NOT NULL,
+    is_system           CHAR(1) DEFAULT 'N' NOT NULL,
+    role_key            VARCHAR(100),
+    name                VARCHAR(255) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT,
+    CONSTRAINT UK_ROLE_COM_NAME UNIQUE (com_id, name),
+    CONSTRAINT UK_ROLE_COM_ROLE_KEY UNIQUE (com_id, role_key)
+) ENGINE=InnoDB;
+
+CREATE INDEX IDX_ROLE_COM_ID ON role (com_id);
+
+CREATE TABLE permission (
+    perm_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    parent_perm_id      BIGINT,
+    perm_key            VARCHAR(100) NOT NULL UNIQUE,
+    name                VARCHAR(255) NOT NULL,
+    route_path          VARCHAR(255),
+    description         VARCHAR(255),
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE role_permission (
+    role_id             BIGINT NOT NULL,
+    perm_id             BIGINT NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT,
+    PRIMARY KEY (role_id, perm_id),
+    CONSTRAINT FK_ROLE_PERM_ROLE FOREIGN KEY (role_id) REFERENCES role (role_id),
+    CONSTRAINT FK_ROLE_PERM_PERM FOREIGN KEY (perm_id) REFERENCES permission (perm_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE role_employee (
+    role_emp_id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    role_id             BIGINT NOT NULL,
+    emp_id              BIGINT NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT,
+    CONSTRAINT UK_ROLE_EMP UNIQUE (role_id, emp_id),
+    CONSTRAINT FK_ROLE_EMP_ROLE FOREIGN KEY (role_id) REFERENCES role (role_id)
+) ENGINE=InnoDB;
+
+CREATE INDEX IDX_ROLE_EMP_EMP_ID ON role_employee (emp_id);
+
+CREATE TABLE leave_grant (
+    grant_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    emp_id              BIGINT NOT NULL,
+    year                INT NOT NULL,
+    total_days          DOUBLE NOT NULL,
+    remaining_days      DOUBLE NOT NULL,
+    granted_days        DATE,
+    expire_date         DATE,
+    is_deleted          CHAR(1) DEFAULT 'N',
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE emp_leave (
+    leave_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doc_id              BIGINT NOT NULL,
+    emp_id              BIGINT NOT NULL,
+    grant_id            BIGINT NOT NULL,
+    leave_type          VARCHAR(50) NOT NULL,
+    leave_unit_type     VARCHAR(50) NOT NULL,
+    reason              VARCHAR(255),
+    start_date          DATE NOT NULL,
+    end_date            DATE NOT NULL,
+    leave_days          DOUBLE NOT NULL,
+    requested_at        DATETIME(6) NOT NULL,
+    is_deleted          CHAR(1) NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE leave_policy (
+    policy_id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    company_id          BIGINT NOT NULL,
+    type_code           VARCHAR(50) NOT NULL,
+    type_name           VARCHAR(100) NOT NULL,
+    unit_code           VARCHAR(50) NOT NULL,
+    unit_days           DOUBLE NOT NULL,
+    is_active           CHAR(1) DEFAULT 'Y' NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_document_type (
+    type_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    company_id          BIGINT NOT NULL,
+    doc_type            VARCHAR(50) NOT NULL,
+    name                VARCHAR(100) NOT NULL,
+    attendance_category VARCHAR(50) DEFAULT 'NONE',
+    overtime_minutes    INT DEFAULT 0,
+    is_active           TINYINT(1) DEFAULT 1 NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_document (
+    doc_id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    company_id          BIGINT NOT NULL,
+    dept_id             BIGINT,
+    writer_id           BIGINT NOT NULL,
+    doc_type            VARCHAR(50) NOT NULL,
+    title               VARCHAR(200) NOT NULL,
+    content             VARCHAR(2000),
+    status              VARCHAR(20) NOT NULL,
+    submitted_at        DATETIME(6),
+    approved_at         DATETIME(6),
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_line (
+    line_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doc_id              BIGINT NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_line_step (
+    step_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    line_id             BIGINT NOT NULL,
+    step_order          INT NOT NULL,
+    approver_id         BIGINT NOT NULL,
+    proxy_approver_id   BIGINT,
+    status              VARCHAR(20) NOT NULL,
+    acted_at            DATETIME(6),
+    reject_reason       VARCHAR(255),
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_history (
+    history_id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doc_id               BIGINT NOT NULL,
+    actor_id             BIGINT NOT NULL,
+    step_id              BIGINT,
+    approval_action_type VARCHAR(50) NOT NULL,
+    reason               VARCHAR(255),
+    acted_at             DATETIME(6),
+    is_deleted           CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at           DATETIME(6) NOT NULL,
+    updated_at           DATETIME(6),
+    created_by           BIGINT,
+    updated_by           BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_comment (
+    comment_id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    parent_comment_id    BIGINT,
+    approval_document_id BIGINT NOT NULL,
+    writer_id            BIGINT NOT NULL,
+    content              VARCHAR(1000) NOT NULL,
+    is_deleted           CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at           DATETIME(6) NOT NULL,
+    updated_at           DATETIME(6),
+    created_by           BIGINT,
+    updated_by           BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_reference (
+    reference_id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ref_emp_id           BIGINT NOT NULL,
+    doc_id               BIGINT NOT NULL,
+    is_deleted           CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at           DATETIME(6) NOT NULL,
+    updated_at           DATETIME(6),
+    created_by           BIGINT,
+    updated_by           BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_payload (
+    payload_id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doc_id              BIGINT NOT NULL,
+    payload             JSON NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance (
+    attendance_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    emp_id              BIGINT NOT NULL,
+    work_date           DATE NOT NULL,
+    work_type           VARCHAR(50) NOT NULL,
+    status              VARCHAR(20) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance_work_log (
+    work_log_id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    work_log_type       VARCHAR(20) NOT NULL,
+    attendance_id       BIGINT NOT NULL,
+    start_at            DATETIME(6) NOT NULL,
+    end_at              DATETIME(6),
+    worked_minutes      INT,
+    location            VARCHAR(100) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance_work_plan (
+    work_plan_id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    emp_id              BIGINT NOT NULL,
+    work_type           VARCHAR(50) NOT NULL,
+    location            VARCHAR(50) NOT NULL,
+    start_at            DATETIME(6) NOT NULL,
+    end_at              DATETIME(6) NOT NULL,
+    overtime_minutes    INT,
+    doc_id              BIGINT NOT NULL,
+    status              VARCHAR(30) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+SET FOREIGN_KEY_CHECKS = 1;
 
 START TRANSACTION;
 
@@ -310,9 +692,10 @@ INSERT INTO role_employee (role_id, emp_id, created_at, created_by) VALUES
     (1, 1011, NOW(6), 1);
 
 COMMIT;
--- dev_staff
-INSERT IGNORE INTO role_employee (role_id, emp_id, created_at, created_by) VALUES (2, 4, NOW(), 1);
--- hr_staff
-INSERT IGNORE INTO role_employee (role_id, emp_id, created_at, created_by) VALUES (3, 5, NOW(), 1);
+-- 8) 연차 지급 (전사 사원에게 2026년도 연차 20개씩 지급)
+INSERT INTO leave_grant (emp_id, year, total_days, remaining_days, granted_days, expire_date, is_deleted, created_at, created_by)
+SELECT emp_id, 2026, 20, 20, '2026-01-01', '2026-12-31', 'N', NOW(6), 1
+FROM employee
+WHERE com_id = @TEST_COM_ID;
 
 COMMIT;

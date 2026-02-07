@@ -55,4 +55,8 @@ public class Attendance extends BaseTimeEntity {
   public void changeWorkType(String workType) {
     this.workType = workType;
   }
+
+  public void updateStatus(AttendanceStatus status) {
+    this.status = status;
+  }
 }
