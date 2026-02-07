@@ -2,11 +2,13 @@ package org.hit.hradar.domain.competencyReport.query.dto.response;
 
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.ContentDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO;
 
 @Getter
+@NoArgsConstructor
 public class CompetencyReportDetailResponse {
 
   // 회차, 사원정보, 역량 강화 리포트

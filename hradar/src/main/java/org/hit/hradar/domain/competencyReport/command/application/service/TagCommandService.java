@@ -24,7 +24,7 @@ public class TagCommandService {
    * @param request
    */
   @Transactional
-  public void createTag(TagCreateRequest request) {
+  public void createTag(TagCreateRequest request, Long comId) {
 
     String normalizedTagName = request.getTagName().trim();
 
@@ -33,7 +33,7 @@ public class TagCommandService {
     }
 
     // create
-    Tag tag = Tag.create(normalizedTagName);
+    Tag tag = Tag.create(normalizedTagName,  comId);
     tagRepository.save(tag);
   }
 

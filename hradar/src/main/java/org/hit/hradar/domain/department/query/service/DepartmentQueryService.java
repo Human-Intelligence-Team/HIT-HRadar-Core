@@ -65,7 +65,8 @@ public class DepartmentQueryService {
     // 3) 부서 노드 생성 + 사원 세팅
     Map<Long, DepartmentNode> departmentMap = new HashMap<>();
     for (DepartmentResponse dept : allDepartments) {
-      DepartmentNode node = new DepartmentNode(dept.getDeptId(), dept.getDeptName(), dept.getParentDeptId());
+      DepartmentNode node = new DepartmentNode(dept.getDeptId(), dept.getDeptName(), dept.getParentDeptId(),
+          dept.getManagerEmpId(), dept.getManagerName());
 
       node.setEmployees(employeesByDept.getOrDefault(dept.getDeptId(), new ArrayList<>()));
       departmentMap.put(dept.getDeptId(), node);
@@ -87,6 +88,5 @@ public class DepartmentQueryService {
 
     return OrganizationChartResponse.of(rootNodes);
   }
-
 
 }

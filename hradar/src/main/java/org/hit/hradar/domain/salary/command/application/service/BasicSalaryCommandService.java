@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.salary.command.application.dto.SalaryDTO;
 import org.hit.hradar.domain.salary.command.domain.aggregate.BasicSalary;
+import org.hit.hradar.domain.salary.command.domain.aggregate.SalaryIncreaseType;
 import org.hit.hradar.domain.salary.command.domain.repository.BasicSalaryRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class BasicSalaryCommandService {
    * 기본급 등록
    * @param salaries
    */
-  public void createBasicSalaryApproval(Long docId, List<SalaryDTO> salaries) {
+  public void createBasicSalaryApproval(Long docId, List<SalaryDTO> salaries, SalaryIncreaseType salaryIncreaseType) {
 
     List<BasicSalary> basicSalaries =
         salaries.stream()
@@ -28,11 +29,11 @@ public class BasicSalaryCommandService {
                     , salary.getBasicSalary()
                     , salary.getIncreaseRate()
                     , salary.getIncreaseAmount()
-                    , salary.getSalaryIncreaseType()
+                    , salaryIncreaseType
                     , salary.getRemark()
                 )).toList();
 
-     basicSalaryRepository.saveAll(basicSalaries);
+     basicSalaryRepository.saveAllWithPolicy(basicSalaries);
 
   }
 

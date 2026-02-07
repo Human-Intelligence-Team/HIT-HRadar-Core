@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hit.hradar.domain.salary.command.domain.aggregate.SalaryIncreaseType;
 
 @Getter
 @NoArgsConstructor
@@ -17,8 +18,10 @@ public class BasicSalaryHistoryDTO {
   private Long currentSalary;
   private BigDecimal increaseRate;
   private LocalDateTime approvedAt;
+  private SalaryIncreaseType salaryIncreaseType;
 
-  public BasicSalaryHistoryDTO(Long empId, String year, String title, Long prevSalary, Long currentSalary,  BigDecimal increaseRate, LocalDateTime approvedAt) {
+  public BasicSalaryHistoryDTO(Long empId, String year, String title, Long prevSalary, Long currentSalary,  BigDecimal increaseRate, LocalDateTime approvedAt
+  , SalaryIncreaseType salaryIncreaseType) {
     this.empId = empId;
     this.year = year;
     this.title = title;
@@ -26,10 +29,11 @@ public class BasicSalaryHistoryDTO {
     this.currentSalary = currentSalary;
     this.increaseRate = increaseRate;
     this.approvedAt = approvedAt;
+    this.salaryIncreaseType = salaryIncreaseType;
   }
 
-  public static BasicSalaryHistoryDTO create (Long empId, String year, String title, Long prevSalary, Long currentSalary,  BigDecimal increaseRate, LocalDateTime approvedAt) {
-   return new BasicSalaryHistoryDTO(empId, year, title, prevSalary, currentSalary, increaseRate, approvedAt);
+  public static BasicSalaryHistoryDTO create (Long empId, String year, String title, Long prevSalary, Long currentSalary,  BigDecimal increaseRate, LocalDateTime approvedAt, SalaryIncreaseType salaryIncreaseType) {
+   return new BasicSalaryHistoryDTO(empId, year, title, prevSalary, currentSalary, increaseRate, approvedAt,  salaryIncreaseType);
   }
 
 }

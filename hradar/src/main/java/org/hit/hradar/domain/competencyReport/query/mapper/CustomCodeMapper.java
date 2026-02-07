@@ -12,9 +12,7 @@ public interface CustomCodeMapper {
 
   List<CustomCodeDTO> findGroupCodes(Long comId);
 
-  List<CustomCodeDTO> findAllCustomCodeByGroupCode(
-      @Param("comId") Long comId,
-      @Param("groupCode")  String groupCode);
+  List<CustomCodeDTO> findAllCustomCodeByGroupCode(CustomCodeSearchRequest request);
 
   List<CustomCodeDTO> findAllCustomCodes(
       @Param("comId") Long comId,

@@ -34,10 +34,10 @@ public class BasicSalary  extends BaseTimeEntity {
   @Column(name = "basic_salary", nullable = false)
   private Long basicSalary;
 
-  @Column(name = "increase_rate", nullable = false, precision = 5, scale = 2)
+  @Column(name = "increase_rate", precision = 5, scale = 2)
   private BigDecimal increaseRate;
 
-  @Column(name = "increase_amount", nullable = false)
+  @Column(name = "increase_amount")
   private Integer increaseAmount;
 
   @Enumerated(EnumType.STRING)

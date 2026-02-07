@@ -36,7 +36,8 @@ public class SalaryCommandController {
       @CurrentUser AuthUser authUser) {
 
     Long empId = authUser.employeeId();
-    salaryCommandService.createSalaryApproval(commonApprovalRequest, empId);
+    Long comId = authUser.companyId();
+    salaryCommandService.createSalaryApproval(commonApprovalRequest, empId, comId);
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 

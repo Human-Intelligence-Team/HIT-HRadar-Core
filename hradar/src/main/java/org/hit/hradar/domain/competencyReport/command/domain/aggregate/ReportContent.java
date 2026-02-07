@@ -12,7 +12,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Getter
-@Table(name="report_content")
+@Table(name = "report_content")
 @NoArgsConstructor
 public class ReportContent extends BaseTimeEntity {
 
@@ -27,7 +27,7 @@ public class ReportContent extends BaseTimeEntity {
   @Column(name = "content_id", nullable = false)
   private Long contentId;
 
-  @Column(name="reason" )
+  @Column(name = "reason")
   private String reason;
 
   public ReportContent(Long competencyReportId, Long contentId, String reason) {
@@ -37,8 +37,11 @@ public class ReportContent extends BaseTimeEntity {
   }
 
   public static void create(Long competencyReportId, Long contentId, String reason) {
-    new  ReportContent(competencyReportId, contentId, reason);
+    new ReportContent(competencyReportId, contentId, reason);
   }
 
+  public void updateReportId(Long competencyReportId) {
+    this.competencyReportId = competencyReportId;
+  }
 
 }

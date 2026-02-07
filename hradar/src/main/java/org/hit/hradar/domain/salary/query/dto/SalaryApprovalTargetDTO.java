@@ -1,9 +1,11 @@
 package org.hit.hradar.domain.salary.query.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 
 @Getter
+@NoArgsConstructor
 public class SalaryApprovalTargetDTO {
 
   private Long empId;

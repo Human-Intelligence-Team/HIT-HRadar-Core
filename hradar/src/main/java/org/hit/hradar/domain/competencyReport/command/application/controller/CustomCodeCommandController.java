@@ -36,7 +36,6 @@ public class CustomCodeCommandController {
       @RequestBody @Valid CustomCodeCreateRequest request
   )  {
 
-    System.out.println("드록>?>");
     Long comId = authUser.companyId();
     customCodeCommandService.createCustomCode(request, comId);
     return ResponseEntity.ok(ApiResponse.success(null));
@@ -52,7 +51,7 @@ public class CustomCodeCommandController {
   @GetMapping("existCustomCode")
   public ResponseEntity<ApiResponse<CustomCodeExistResponse>> existCustomCode(
       @CurrentUser AuthUser authUser,
-      @RequestParam String customCode
+      @RequestParam("customCode") String customCode
   )  {
 
     Long comId = authUser.companyId();

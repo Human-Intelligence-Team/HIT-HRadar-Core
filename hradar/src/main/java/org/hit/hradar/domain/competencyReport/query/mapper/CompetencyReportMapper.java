@@ -13,10 +13,7 @@ import org.springframework.data.repository.query.Param;
 @Mapper
 public interface CompetencyReportMapper {
 
-  List<CompetencyReportDTO> findAllByEmpId(
-      @Param("empId") Long empId,
-      @Param("request") CompetencyReportSearchRequest request
-  );
+  List<CompetencyReportDTO> findAllByEmpId(CompetencyReportSearchRequest request);
 
   List<CompetencyReportDTO> findAllByDepthId(CompetencyReportSearchRequest request);
 
@@ -24,7 +21,11 @@ public interface CompetencyReportMapper {
 
   List<CompetencyReportDTO> findAllByCycleId(CompReportCycleSearchRequest request);
 
-  CompetencyReportDTO findByCompetencyReportId(Long competencyReportId);
+  CompetencyReportDTO findByCompetencyReportId(
+      @Param("competencyReportId") Long competencyReportId,
+      @Param("comId") Long comId);
 
+  List<CompetencyReportDTO> findAllWithCreatedYn(CompReportCycleSearchRequest request);
 
+  CompetencyReportDTO findCreatedReportPeriod(CompReportCycleSearchRequest request);
 }

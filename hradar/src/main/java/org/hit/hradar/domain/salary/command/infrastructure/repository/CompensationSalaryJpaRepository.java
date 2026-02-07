@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CompensationSalaryJpaRepository extends CompensationSalaryRepository, JpaRepository<CompensationSalary, Long> {
 
-  default void saveAll(List<CompensationSalary> compensationSalaries) {
+  default void saveAllWithPolicy(List<CompensationSalary> compensationSalaries) {
     if (compensationSalaries == null || compensationSalaries.isEmpty()) {
       return;
     }

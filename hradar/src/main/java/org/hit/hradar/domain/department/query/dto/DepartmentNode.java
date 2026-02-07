@@ -16,9 +16,14 @@ public class DepartmentNode {
     private List<DepartmentNode> children = new ArrayList<>();
     private List<EmployeeNode> employees = new ArrayList<>();
 
-    public DepartmentNode(Long deptId, String deptName, Long parentDeptId) {
+    private Long managerId;
+    private String managerName;
+
+    public DepartmentNode(Long deptId, String deptName, Long parentDeptId, Long managerId, String managerName) {
         this.deptId = deptId;
         this.deptName = deptName;
         this.parentDeptId = parentDeptId;
+        this.managerId = managerId;
+        this.managerName = managerName;
     }
 }

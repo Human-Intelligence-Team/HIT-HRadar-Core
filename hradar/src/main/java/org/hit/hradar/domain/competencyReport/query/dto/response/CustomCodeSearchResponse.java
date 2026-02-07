@@ -3,9 +3,11 @@ package org.hit.hradar.domain.competencyReport.query.dto.response;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.competencyReport.query.dto.CustomCodeDTO;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class CustomCodeSearchResponse {
 

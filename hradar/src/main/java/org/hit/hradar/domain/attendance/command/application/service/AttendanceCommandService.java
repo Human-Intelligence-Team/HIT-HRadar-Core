@@ -60,7 +60,7 @@ public class AttendanceCommandService {
         Optional<AttendanceWorkPlan> approvedPlan = workPlanRepository
                 .findByEmpIdAndStatusAndStartAtLessThanEqualAndEndAtGreaterThanEqual(
                         empId,
-                        ApprovalStatus.APPROVED,
+                        AttendanceApprovalStatus.APPROVED,
                         now,
                         now);
 

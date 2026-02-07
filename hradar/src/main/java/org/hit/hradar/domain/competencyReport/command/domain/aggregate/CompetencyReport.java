@@ -15,7 +15,7 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Getter
-@Table(name="competency_report")
+@Table(name = "competency_report")
 @NoArgsConstructor
 public class CompetencyReport extends BaseTimeEntity {
 
@@ -38,13 +38,13 @@ public class CompetencyReport extends BaseTimeEntity {
   @Column(name = "end_date", nullable = false)
   private LocalDate endDate;
 
-  @Column(name = "kpi_okr_result_summary", nullable = false)
+  @Column(name = "kpi_okr_result_summary", nullable = false, columnDefinition = "TEXT")
   private String kpiOkrResultSummary;
 
-  @Column(name = "goal_failure_analysis", nullable = false)
+  @Column(name = "goal_failure_analysis", nullable = false, columnDefinition = "TEXT")
   private String goalFailureAnalysis;
 
-  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  @Column(name = "is_deleted", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isDeleted;
 
   @PrePersist
@@ -54,7 +54,8 @@ public class CompetencyReport extends BaseTimeEntity {
     }
   }
 
-  public CompetencyReport(Long empId, Long cycleId, LocalDate startDate, LocalDate endDate,  String kpiOkrResultSummary, String goalFailureAnalysis, Character isDeleted) {
+  public CompetencyReport(Long empId, Long cycleId, LocalDate startDate, LocalDate endDate, String kpiOkrResultSummary,
+      String goalFailureAnalysis, Character isDeleted) {
     this.empId = empId;
     this.cycleId = cycleId;
     this.startDate = startDate;
@@ -66,7 +67,7 @@ public class CompetencyReport extends BaseTimeEntity {
 
   public static void create(Long empId, Long cycleId, LocalDate startDate, LocalDate endDate,
       String kpiOkrResultSummary, String goalFailureAnalysis) {
-    new CompetencyReport(empId,  cycleId, startDate, endDate, kpiOkrResultSummary, goalFailureAnalysis, 'N');
+    new CompetencyReport(empId, cycleId, startDate, endDate, kpiOkrResultSummary, goalFailureAnalysis, 'N');
   }
 
 }

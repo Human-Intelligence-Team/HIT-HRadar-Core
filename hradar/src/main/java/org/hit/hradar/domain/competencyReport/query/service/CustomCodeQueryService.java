@@ -37,10 +37,8 @@ public class CustomCodeQueryService {
    */
   public CustomCodeSearchResponse customCodesByCustomCode(Long comId, CustomCodeSearchRequest request) {
 
-    CustomCode code = customCodeRepository.findByCustomCodeId(request.getCustomCodeId());
-    String groupCode = code.getGroupCode();
-
-    List<CustomCodeDTO> customCodes = customCodeMapper.findAllCustomCodeByGroupCode(comId, groupCode);
+    request.setComId(comId);
+    List<CustomCodeDTO> customCodes = customCodeMapper.findAllCustomCodeByGroupCode(request);
     return new CustomCodeSearchResponse(customCodes);
   }
 

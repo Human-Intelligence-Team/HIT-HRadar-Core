@@ -1,6 +1,6 @@
 package org.hit.hradar.domain.attendance.command.domain.aggregate;
 
-public enum ApprovalStatus {
+public enum AttendanceApprovalStatus {
   REQUESTED,
   APPROVED,
   REJECTED

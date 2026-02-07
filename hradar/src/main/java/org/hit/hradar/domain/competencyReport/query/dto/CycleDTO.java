@@ -3,10 +3,12 @@ package org.hit.hradar.domain.competencyReport.query.dto;
 import java.time.LocalDate;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.competencyReport.command.domain.aggregate.Quarter;
 import org.hit.hradar.domain.evaluation.command.domain.aggregate.CycleStatus;
 
 @Getter
+@NoArgsConstructor
 public class CycleDTO {
 
   private Long cycleId;
