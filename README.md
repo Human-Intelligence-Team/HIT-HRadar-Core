@@ -363,7 +363,8 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	<br>
   <img src="https://img.shields.io/badge/JPA(Hibernate)-59666C?style=for-the-badge"/>
 	<br>
-  <img src="https://img.shields.io/badge/Spring_MVC-6DA252?style=for-the-badge"/><img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_MVC-6DA252?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
 		<br>
    <br>
 </div>
