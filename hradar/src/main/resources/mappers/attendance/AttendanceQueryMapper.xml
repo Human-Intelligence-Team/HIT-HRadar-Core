@@ -63,6 +63,8 @@
     <result property="checkInTime" column="check_in_time"/>
     <result property="checkOutTime" column="check_out_time"/>
     <result property="totalWorkMinutes" column="total_work_minutes"/>
+    <result property="overtimeMinutes" column="overtime_minutes"/>
+    <result property="overtimeStatus" column="overtime_status"/>
 
     <collection property="timeline"
       resultMap="WorkLogTimelineResultMap"/>
@@ -96,17 +98,21 @@
     , COALESCE(
     SUM(TIMESTAMPDIFF(MINUTE, w.start_at, w.end_at)) OVER (), 0
     ) AS total_work_minutes
-    , wp.overtime_minutes AS overtime_minutes
-    , CASE WHEN wp.overtime_minutes > 0 THEN '발생' ELSE '미발생' END AS overtime_status
+    , (SELECT SUM(overtime_minutes) FROM attendance_overtime 
+        WHERE emp_id = a.emp_id AND overtime_date = a.work_date AND is_deleted = 'N' AND status = 'APPROVED') AS overtime_minutes
+    , CASE WHEN (SELECT COUNT(*) FROM attendance_overtime 
+        WHERE emp_id = a.emp_id AND overtime_date = a.work_date AND is_deleted = 'N' AND status = 'APPROVED') > 0 THEN '발생' ELSE '미발생' END AS overtime_status
     FROM attendance a
     JOIN employee e ON a.emp_id = e.emp_id
     LEFT JOIN attendance_work_log w
     ON w.attendance_id = a.attendance_id
     AND w.is_deleted = 'N'
+    /* wp 조인은 work_plan 조회용 (overtime_minutes 조회용이 아님) */
     LEFT JOIN attendance_work_plan wp
     ON wp.emp_id = a.emp_id 
     AND wp.status = 'APPROVED'
     AND a.work_date BETWEEN DATE(wp.start_at) AND DATE(wp.end_at)
+    AND wp.work_type != 'WORK' /* OVERTIME은 제외 */
     WHERE a.emp_id = #{targetEmpId}
     AND a.work_date = #{workDate}
     ORDER BY w.start_at ASC
@@ -124,7 +130,7 @@
       a.work_date     AS workDate,
       a.work_type     AS workType,
       CASE
-        WHEN a.status = 'LEAVE' THEN '휴가'
+        WHEN a.status = 'LEAVE' THEN a.work_type
         /* 출근 중인지 확인 (퇴근 기록이 없는 로그가 존재하면 출근 중) */
         WHEN (SELECT COUNT(*) FROM attendance_work_log wl 
               WHERE wl.attendance_id = a.attendance_id AND wl.end_at IS NULL AND wl.is_deleted = 'N') > 0 THEN
@@ -144,12 +150,12 @@
        FROM attendance_work_log wl
        WHERE wl.attendance_id = a.attendance_id AND wl.is_deleted = 'N') AS totalWorkMinutes,
       /* 초과근무 시간 */
-      (SELECT COALESCE(wp.overtime_minutes, 0)
-       FROM attendance_work_plan wp
-       WHERE wp.emp_id = a.emp_id 
-         AND wp.status = 'APPROVED'
-         AND a.work_date BETWEEN DATE(wp.start_at) AND DATE(wp.end_at)
-       LIMIT 1) AS overtimeMinutes,
+      (SELECT COALESCE(SUM(overtime_minutes), 0)
+       FROM attendance_overtime
+       WHERE emp_id = a.emp_id 
+         AND status = 'APPROVED'
+         AND overtime_date = a.work_date
+         AND is_deleted = 'N') AS overtimeMinutes,
       /* 최신 근무 위치 */
       (SELECT wl.location FROM attendance_work_log wl
        WHERE wl.attendance_id = a.attendance_id AND wl.is_deleted = 'N'

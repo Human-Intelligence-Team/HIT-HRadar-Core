@@ -180,6 +180,18 @@ public class ApprovalDocument extends BaseTimeEntity {
     return this.status == ApprovalStatus.DRAFT;
   }
 
+  public boolean isInProgress() {
+    return this.status == ApprovalStatus.IN_PROGRESS;
+  }
+
+  public boolean isApproved() {
+    return this.status == ApprovalStatus.APPROVED;
+  }
+
+  public boolean isRejected() {
+    return this.status == ApprovalStatus.REJECTED;
+  }
+
   // 임시저장 문서 내용 수정
   public void update(
       String title,

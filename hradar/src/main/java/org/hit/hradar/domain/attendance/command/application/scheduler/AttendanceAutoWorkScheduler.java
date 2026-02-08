@@ -89,12 +89,13 @@ public class AttendanceAutoWorkScheduler {
         continue;
       }
 
-      // 휴가(VACATION)인 경우: 출퇴근 로그를 남기지 않고 상태만 LEAVE로 변경
-      if ("VACATION".equals(plan.getWorkType())) {
+      // 휴가(VACATION) 혹은 병가 등 장소가 NONE인 경우: 출퇴근 로그를 남기지 않고 상태만 LEAVE로 변경
+      if ("NONE".equals(plan.getLocation())) {
         if (attendance.getStatus() != org.hit.hradar.domain.attendance.command.domain.aggregate.AttendanceStatus.LEAVE) {
           attendance.updateStatus(org.hit.hradar.domain.attendance.command.domain.aggregate.AttendanceStatus.LEAVE);
+          attendance.changeWorkType(plan.getWorkType()); // Update workType (e.g., "병가")
           attendanceRepository.save(attendance);
-          log.info("[AUTO] empId={} status changed to LEAVE due to VACATION plan", plan.getEmpId());
+          log.info("[AUTO] empId={} status changed to LEAVE due to Leave plan (type={})", plan.getEmpId(), plan.getWorkType());
         }
         continue;
       }
