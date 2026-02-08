@@ -151,4 +151,21 @@
     LIMIT 1
   </select>
 
+  <!-- empId로 accId 조회 -->
+  <select id="findAccIdByEmpId" resultType="long">
+    SELECT account_id
+    FROM user_account
+    WHERE employee_id = #{empId}
+      AND is_deleted = 'N'
+    LIMIT 1
+  </select>
+
+  <!-- accId로 empId 조회 -->
+  <select id="findEmpIdByAccId" resultType="long">
+    SELECT employee_id
+    FROM user_account
+    WHERE account_id = #{accId}
+      AND is_deleted = 'N'
+    LIMIT 1
+  </select>
 </mapper>

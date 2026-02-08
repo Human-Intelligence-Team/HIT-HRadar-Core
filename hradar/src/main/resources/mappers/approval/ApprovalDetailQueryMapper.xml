@@ -113,10 +113,12 @@
 
     SELECT
       c.comment_id,
+      c.parent_comment_id,
       c.writer_id,
       u.name as writer_name,
       c.content,
       c.created_at
+
     FROM approval_comment c
            LEFT JOIN user_account u ON c.writer_id = u.employee_id
     WHERE c.approval_document_id = #{docId}

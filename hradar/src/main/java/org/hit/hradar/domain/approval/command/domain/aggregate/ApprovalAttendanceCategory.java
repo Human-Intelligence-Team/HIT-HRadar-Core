@@ -7,5 +7,6 @@ public enum ApprovalAttendanceCategory {
     WORK_FIELD, // 외근
     WORK_TRIP, // 출장
     VACATION, // 휴가 (추후 확장용)
+    LEAVE_SICK, // 병가
     OVERTIME // 초과근무
 }

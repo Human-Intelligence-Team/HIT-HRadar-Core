@@ -7,13 +7,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
 @Table(name = "leave_grant")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class LeaveGrant extends BaseTimeEntity {
+
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +48,20 @@ public class LeaveGrant extends BaseTimeEntity {
   private LocalDate expireDate;
 
   //삭제여부
+  @Column(name = "is_deleted", nullable = false)
   private Character isDeleted = 'N';
 
+  public static LeaveGrant create(Long empId, Integer year, double totalDays, LocalDate grantedDays, LocalDate expireDate) {
 
+    return LeaveGrant.builder()
+        .empId(empId)
+        .year(year)
+        .totalDays(totalDays)
+        .remainingDays(totalDays) // Initial remaining days is same as total
+        .grantedDays(grantedDays)
+        .expireDate(expireDate)
+        .isDeleted('N')
+        .build();
+  }
 }
+

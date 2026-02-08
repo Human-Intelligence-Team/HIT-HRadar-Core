@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface LeaveUsageJpaRepository extends JpaRepository<LeaveUsage, Long>  {
 
   void deleteByLeaveId(Long leaveId);
+
+  boolean existsByLeaveId(Long leaveId);
 }

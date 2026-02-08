@@ -19,11 +19,17 @@ DROP TABLE IF EXISTS company_position;
 DROP TABLE IF EXISTS company;
 DROP TABLE IF EXISTS company_application;
 DROP TABLE IF EXISTS leave_grant;
+DROP TABLE IF EXISTS leave_usage;
 DROP TABLE IF EXISTS emp_leave;
 DROP TABLE IF EXISTS leave_policy;
+DROP TABLE IF EXISTS attendance_overtime;
+DROP TABLE IF EXISTS attendance_correction;
+DROP TABLE IF EXISTS attendance_auth_log;
+DROP TABLE IF EXISTS ip_range_policy;
 DROP TABLE IF EXISTS attendance_work_log;
 DROP TABLE IF EXISTS attendance_work_plan;
 DROP TABLE IF EXISTS attendance;
+
 DROP TABLE IF EXISTS approval_comment;
 DROP TABLE IF EXISTS approval_history;
 DROP TABLE IF EXISTS approval_line_step;
@@ -212,6 +218,16 @@ CREATE TABLE leave_grant (
     updated_by          BIGINT
 ) ENGINE=InnoDB;
 
+CREATE TABLE leave_usage (
+    usage_id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    leave_id        BIGINT NOT NULL,
+    grant_id        BIGINT NOT NULL,
+    use_date        DATE NOT NULL,
+    used_days       DOUBLE NOT NULL,
+    is_deleted      CHAR(1) DEFAULT 'N' NOT NULL
+) ENGINE=InnoDB;
+
+
 CREATE TABLE emp_leave (
     leave_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
     doc_id              BIGINT NOT NULL,
@@ -378,6 +394,70 @@ CREATE TABLE attendance_work_log (
     updated_by          BIGINT
 ) ENGINE=InnoDB;
 
+CREATE TABLE attendance_overtime (
+    overtime_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
+    emp_id           BIGINT NOT NULL,
+    doc_id           BIGINT NOT NULL,
+    overtime_date    DATE NOT NULL,
+    overtime_minutes INT NOT NULL,
+    status           VARCHAR(30) NOT NULL,
+    is_deleted       CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at       DATETIME(6) NOT NULL,
+    updated_at       DATETIME(6),
+    created_by       BIGINT,
+    updated_by       BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance_correction (
+    attendance_correction BIGINT AUTO_INCREMENT PRIMARY KEY,
+    attendance_id         BIGINT NOT NULL,
+    work_log_id           BIGINT NOT NULL,
+    doc_id                BIGINT NOT NULL,
+    decider_emp_id        BIGINT,
+    requester_emp_id      BIGINT NOT NULL,
+    type                  VARCHAR(50) NOT NULL,
+    reason                VARCHAR(255) NOT NULL,
+    requested_value       VARCHAR(255) NOT NULL,
+    status                VARCHAR(30) NOT NULL,
+    reject_reason         VARCHAR(255),
+    requested_at          DATETIME(6) NOT NULL,
+    decided_at            DATETIME(6),
+    is_deleted            CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at            DATETIME(6) NOT NULL,
+    updated_at            DATETIME(6),
+    created_by            BIGINT,
+    updated_by            BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance_auth_log (
+    auth_log_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+    attendance_id   BIGINT NOT NULL,
+    auth_type       VARCHAR(50) NOT NULL,
+    auth_result     VARCHAR(50) NOT NULL,
+    ip_address      VARCHAR(45) NOT NULL,
+    mac_address     VARCHAR(50),
+    acted_at        DATETIME(6) NOT NULL,
+    is_deleted      CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at      DATETIME(6) NOT NULL,
+    updated_at      DATETIME(6),
+    created_by      BIGINT,
+    updated_by      BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE ip_range_policy (
+    ip_id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    com_id          BIGINT NOT NULL,
+    cidr            VARCHAR(50) NOT NULL,
+    location_name   VARCHAR(100) NOT NULL,
+    ip_policy_type  VARCHAR(50) NOT NULL,
+    is_active       TINYINT(1) DEFAULT 1 NOT NULL,
+    is_deleted      CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at      DATETIME(6) NOT NULL,
+    updated_at      DATETIME(6),
+    created_by      BIGINT,
+    updated_by      BIGINT
+) ENGINE=InnoDB;
+
 CREATE TABLE attendance_work_plan (
     work_plan_id        BIGINT AUTO_INCREMENT PRIMARY KEY,
     emp_id              BIGINT NOT NULL,
@@ -394,6 +474,8 @@ CREATE TABLE attendance_work_plan (
     created_by          BIGINT,
     updated_by          BIGINT
 ) ENGINE=InnoDB;
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -691,10 +773,7 @@ INSERT INTO role_employee (role_id, emp_id, created_at, created_by) VALUES
     (1, 1011, NOW(6), 1);
 
 COMMIT;
--- 8) 연차 지급 (전사 사원에게 2026년도 연차 20개씩 지급)
-INSERT INTO leave_grant (emp_id, year, total_days, remaining_days, granted_days, expire_date, is_deleted, created_at, created_by)
-SELECT emp_id, 2026, 20, 20, '2026-01-01', '2026-12-31', 'N', NOW(6), 1
-FROM employee
-WHERE com_id = @TEST_COM_ID;
+-- 8) Leave Grant (REMOVED HARDCODED DATA)
 
 COMMIT;
+

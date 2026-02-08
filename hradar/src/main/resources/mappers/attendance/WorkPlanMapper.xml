@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.hit.hradar.domain.attendance.query.mapper.WorkPlanMapper">
+
+    <resultMap id="WorkPlanDtoMap" type="org.hit.hradar.domain.attendance.query.dto.WorkPlanDto">
+        <result property="empId" column="emp_id"/>
+        <result property="workType" column="work_type"/>
+        <result property="startAt" column="start_at"/>
+        <result property="endAt" column="end_at"/>
+        <result property="location" column="location"/>
+    </resultMap>
+
+    <select id="findActiveWorkPlans" resultMap="WorkPlanDtoMap">
+        SELECT
+            emp_id,
+            work_type,
+            start_at,
+            end_at,
+            location
+        FROM attendance_work_plan
+        WHERE is_deleted = 'N'
+          AND status = 'APPROVED'
+          AND (
+            DATE(start_at) = DATE(#{now})
+            OR DATE(end_at) = DATE(#{now})
+            OR (#{now} BETWEEN start_at AND end_at)
+          )
+    </select>
+
+</mapper>
