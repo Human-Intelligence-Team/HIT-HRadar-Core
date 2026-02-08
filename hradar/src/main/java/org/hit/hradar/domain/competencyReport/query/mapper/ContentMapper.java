@@ -13,7 +13,7 @@ public interface ContentMapper {
   List<ContentRowDTO> findAllContents(ContentSearchRequest request);
 
   ContentDTO findContentByContentId(
-      @Param("contentId") Long contentId,
+      @Param("id") Long id,
        @Param("comId") Long comId);
 
   List<ContentRowDTO> findContentByCompetencyReportId(

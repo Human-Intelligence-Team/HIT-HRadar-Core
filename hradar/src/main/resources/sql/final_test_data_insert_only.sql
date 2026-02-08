@@ -582,7 +582,6 @@ INSERT INTO permission (perm_key, name, route_path, is_deleted, created_at, crea
                                                                                             ('GOAL_TEAM_LIST', '팀 목표 목록', '/to/goals', 'N', NOW(6), 1),
                                                                                             ('GOAL_CREATE', '목표 생성', '/goal/create', 'N', NOW(6), 1),
                                                                                             ('REPORT_ALL', '리포트 전체', '/all/competency/report', 'N', NOW(6), 1),
-                                                                                            ('REPORT_DEPT', '리포트 부서', '/dept/competency/report', 'N', NOW(6), 1),
                                                                                             ('REPORT_ME', '리포트 개인', '/me/competency/report', 'N', NOW(6), 1),
                                                                                             ('SALARY_DASH', '급여 대시보드', '/salary/dashboard', 'N', NOW(6), 1),
                                                                                             ('SALARY_BASIC_ALL', '기본급 전체', '/all/salary/basic', 'N', NOW(6), 1),

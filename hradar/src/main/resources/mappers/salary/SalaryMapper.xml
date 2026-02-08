@@ -6,58 +6,35 @@
   <select id="findSalaryApprovalTargets"
     parameterType="org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalTargetRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.SalaryApprovalTargetDTO">
-    <!--SELECT emp.EMP_ID
-         , emp.EMPLOYEE_NO
-         , dep.DEPT_NAME
-         , emp.NAME
-         , cp.NAME AS positionName
-      FROM COMPENSATION_SALARY_EMPLOYEE cse
-      JOIN approval_document ad ON ad.doc_id = cse.DOC_ID
-      JOIN EMPLOYEE emp ON cse.EMP_ID = emp.EMP_ID
-      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
-      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.POSITION_ID
-     WHERE ad.IS_DELETED = 'N'
-       AND cse.IS_DELETED = 'N'
-       AND emp.IS_DELETED = 'N'
-       AND dep.IS_DELETED = 'N'
-       AND cp.IS_DELETED = 'N'
-       AND ad.STATUS = 'SUBMITTED'
-       AND ad.DOC_TYPE = #{approvalDocumentType}
-     ORDER BY dep.DEPT_NAME ASC , emp.NAME asc-->
-    SELECT emp.EMP_ID
-         , emp.EMPLOYEE_NO
-         , dep.DEPT_NAME
-         , emp.NAME AS employeeName
-         , cp.NAME AS positionName
-         , emp.TYPE AS employmentType
-      FROM COMPENSATION_SALARY_EMPLOYEE cse
-      JOIN approval_document ad ON ad.doc_id = cse.DOC_ID
-      JOIN EMPLOYEE emp ON cse.EMP_ID = emp.EMP_ID
-      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
-      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.POSITION_ID
-     WHERE ad.IS_DELETED = 'N'
-       AND cse.IS_DELETED = 'N'
-       AND emp.IS_DELETED = 'N'
-       AND dep.IS_DELETED = 'N'
-       AND cp.IS_DELETED = 'N'
-       AND ad.STATUS = #{approvalStatus}
-       AND ad.DOC_TYPE = #{approvalDocumentType}
-    <if test="employmentType != null and employmentType != ''">
-       AND emp.TYPE = #{employmentType}
-    </if>
-    <if test="employeeNo != null and employeeNo != ''">
-       AND emp.EMPLOYEE_NO = #{employeeNo}
-    </if>
-    <if test="deptId != null">
-       AND dep.DEPT_ID = #{deptId}
-    </if>
-    <if test="employeeName != null and employeeName != ''">
-       AND emp.NAME LIKE CONCAT('%', #{employeeName}, '%')
-    </if>
-    <if test="positionId != null">
-       AND cp.POSITION_ID = #{positionId}
-    </if>
-     ORDER BY dep.DEPT_NAME ASC , emp.NAME asc
+  select emp.emp_id
+       , emp.employee_no
+       , dep.dept_name
+       , emp.name as employeeName
+       , cp.name as positionName
+       , emp.type as employmentType
+    from compensation_salary_employee cse
+    join approval_document ad on ad.doc_id = cse.doc_id and ad.is_deleted = 'N'
+    join employee emp on cse.emp_id = emp.emp_id
+    join department dep on emp.dept_id = dep.dept_id
+    join company_position cp on emp.position_id = cp.position_id and cp.is_deleted = 'N'
+   where cse.is_deleted = 'N'
+     and ad.status = #{approvalStatus}
+     and ad.doc_type = #{approvalDocumentType}
+  <if test="employmentType != null and employmentType != ''">
+     and emp.type = #{employmentType}
+  </if>
+  <if test="employeeNo != null and employeeNo != ''">
+     and emp.employee_no = #{employeeNo}
+  </if>
+  <if test="deptId != null">
+     and dep.dept_id = #{deptId}
+  </if>
+  <if test="employeeName != null and employeeName != ''">
+     and emp.name like concat('%', #{employeeName}, '%')
+  </if>
+  <if test="positionId != null">
+     and cp.position_id = #{positionId}
+  </if>
+  order by dep.dept_name asc, emp.name asc
   </select>
-
 </mapper>

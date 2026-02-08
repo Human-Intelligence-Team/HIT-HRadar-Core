@@ -111,9 +111,12 @@ public class CompetencyReportQueryService {
    */
   public CompetencyReportSearchResponse getGeneratedCompetencyReports(CompReportCycleSearchRequest request, Long comId) {
     request.setComId(comId);
+
+    // 년도 별 회차 목록
     List<CompetencyReportDTO> reports = competencyReportMapper.findAllWithCreatedYn(request);
 
     reports.forEach(report -> {
+      // close, Y 일 경우
       if (CycleStatus.CLOSED.equals(report.getStatus()) && 'Y' == report.getIsCompReportGenerated()) {
 
         CompReportCycleSearchRequest dateRequest = new CompReportCycleSearchRequest(
@@ -123,6 +126,7 @@ public class CompetencyReportQueryService {
             report.getCycleId()
         );
 
+        // 생성 기간 가져오기
         CompetencyReportDTO period = competencyReportMapper.findCreatedReportPeriod(dateRequest);
 
         if (period != null) {
