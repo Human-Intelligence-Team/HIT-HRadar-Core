@@ -22,6 +22,22 @@ public class EmployeeCommandService {
   private final EmployeeRepository employeeRepository;
   private final AccountRepository accountRepository;
   private final org.hit.hradar.domain.rolePermission.command.application.service.EmployeeRoleAssignmentApplicationService roleAssignmentService;
+  private final org.hit.hradar.global.file.FileUploadService fileUploadService;
+
+  @Transactional
+  public String uploadProfileImage(Long comId, Long empId, org.springframework.web.multipart.MultipartFile file) {
+    Employee emp = employeeRepository.findByEmpIdAndComIdAndIsDeleted(empId, comId, 'N')
+        .orElseThrow(() -> new BusinessException(EmployeeErrorCode.EMPLOYEE_ERROR_CODE));
+
+    org.hit.hradar.global.file.StoredFile stored = fileUploadService.upload(file,
+        org.hit.hradar.global.file.FileType.PROFILE_IMAGE);
+
+    // 기존 이미지가 있다면 삭제하는 로직을 추가할 수도 있음 (선택 사항)
+    // if (emp.getImage() != null) fileUploadService.delete(emp.getImage());
+
+    emp.updateProfileImage(stored.url());
+    return stored.url();
+  }
 
   /**
    * 회사 생성자(첫 사원)
@@ -85,7 +101,8 @@ public class EmployeeCommandService {
         req.getImage(),
         req.getExtNo(),
         req.getPhoneNo(),
-        req.getNote());
+        req.getNote(),
+        req.getEmploymentType());
 
     return UpdateEmployeeProfileResponse.builder()
         .empId(emp.getEmpId())
@@ -98,6 +115,8 @@ public class EmployeeCommandService {
         .image(emp.getImage())
         .extNo(emp.getExtNo())
         .phoneNo(emp.getPhoneNo())
+        .note(emp.getNote())
+        .employmentType(emp.getEmploymentType())
         .build();
   }
 

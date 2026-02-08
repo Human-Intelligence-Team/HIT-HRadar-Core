@@ -7,6 +7,7 @@ import org.hit.hradar.domain.evaluation.command.domain.aggregate.CycleStatus;
 import org.hit.hradar.domain.evaluation.command.domain.repository.CycleRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,7 @@ public class CycleStatusService {
     private final CycleRepository cycleRepository;
 
     //시간 경과에 따른 상태 자동 반영
+    @Transactional
     public void autoUpdateCycleStatus(){
         LocalDateTime now = LocalDateTime.now();
 
@@ -28,17 +30,16 @@ public class CycleStatusService {
 
         for (Cycle cycle : cycles) {
 
-            //종료일 경과 -> CLOSED
-            if(now.isAfter(cycle.getEndDate())) {
+            // 종료일 경과 → CLOSED
+            if (cycle.getStatus() != CycleStatus.CLOSED &&
+                    now.isAfter(cycle.getEndDate())) {
                 cycle.close();
                 continue;
             }
 
-            if (cycle.getStatus() != CycleStatus.APPROVED) {
-                continue;
-            }
-
-            if (!now.isBefore(cycle.getStartDate())) {
+            // APPROVED 상태에서 시작일 도래 → IN_PROGRESS
+            if (cycle.getStatus() == CycleStatus.APPROVED &&
+                    !now.isBefore(cycle.getStartDate())) {
                 cycle.open();
             }
         }

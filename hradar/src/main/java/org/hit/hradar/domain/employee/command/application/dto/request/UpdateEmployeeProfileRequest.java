@@ -19,4 +19,5 @@ public class UpdateEmployeeProfileRequest {
   private String extNo; // nullable
   private String phoneNo; // nullable
   private String note; // nullable
+  private org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType employmentType; // nullable
 }

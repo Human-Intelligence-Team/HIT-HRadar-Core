@@ -14,9 +14,15 @@ public class RequestScopeAuditorAware implements AuditorAware<Long> {
 
     @Override
     public Optional<Long> getCurrentAuditor() {
-        Long userId = requestUserContext.userId();
-        return userId != null
-                ? Optional.of(userId)
-                : Optional.of(0L); // 또는 SYSTEM ID
+        try {
+            Long userId = requestUserContext.userId();
+            return userId != null
+                    ? Optional.of(userId)
+                    : Optional.of(0L);
+        } catch (Exception e) {
+            // request scope가 없을 때 (스케줄러 등)
+            return Optional.of(0L); // SYSTEM
+        }
     }
+
 }

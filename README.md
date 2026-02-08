@@ -299,94 +299,141 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 | 데이터 활용 | 사후 정리 | 사전·사후 성장 설계 |
 
 ---
-
 ## 🚀 3. 기술 스택
 
 ### 🚀 Stacks
 🔹 Frontend
 <div align=center>
 	<img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vuedotjs&logoColor=white"/>
-<img src="https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E"/>
-<img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white"/>
-<img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white"/>
 <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white"/>
 <img src="https://img.shields.io/badge/Pinia-FFD700?style=for-the-badge&logo=pinia&logoColor=black"/>
 <img src="https://img.shields.io/badge/Vue_Router-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white"/>
+	<br>
 <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white"/>
+<img src="https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white">
+<img src="https://img.shields.io/badge/AntV X6-8B5DFF?style=for-the-badge&logo=antv&logoColor=white">
+<img src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white">
+<img src="https://img.shields.io/badge/Prettier-F7B93E?style=for-the-badge&logo=prettier&logoColor=white">
+	<br>
    <br>
 </div>
 
-🔹 Backend
+🔹 Backend - Gateway
 <div align=center>
-  <img src="https://img.shields.io/badge/Java_17-007396?style=for-the-badge&logo=java&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Java_21-007396?style=for-the-badge&logo=java&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_Boot_3.5.9-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+	<br>
   <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/>
-  <img src="https://img.shields.io/badge/JPA(Hibernate)-59666C?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white"/>
+	<img src="https://img.shields.io/badge/Spring_Cloud_Gateway-FF6F00?style=for-the-badge"/>
   <br>
-  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Tesseract_OCR-5A5A5A?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Vector_DB-FF6F00?style=for-the-badge"/>
+	<br>
 </div>
 
+🔹 Backend - Core
+<div align=center>
+  <img src="https://img.shields.io/badge/Java_21-007396?style=for-the-badge&logo=java&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_Boot_3.5.9-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+	<br>
+  <img src="https://img.shields.io/badge/Spring_Data_JPA-59666C?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/MyBatis-59666C?style=for-the-badge"/>
+  <br>
+  <img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_MVC-6DA252?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/WebFlux-6DA252?style=for-the-badge"/>
+<br><br>
+</div>
+
+🔹 Backend - Auth
+<div align=center>
+  <img src="https://img.shields.io/badge/Java_21-007396?style=for-the-badge&logo=java&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_Boot_3.5.9-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+	<br>
+  <img src="https://img.shields.io/badge/JPA(Hibernate)-59666C?style=for-the-badge"/>
+	<br>
+  <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white"/>
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_MVC-6DA252?style=for-the-badge"/><br><br>
+</div>
+
+🔹 Backend - Notification
+<div align=center>
+  <img src="https://img.shields.io/badge/Java_21-007396?style=for-the-badge&logo=java&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_Boot_3.5.9-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+	<br>
+  <img src="https://img.shields.io/badge/JPA(Hibernate)-59666C?style=for-the-badge"/>
+	<br>
+  <img src="https://img.shields.io/badge/Spring_MVC-6DA252?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
+		<br>
+   <br>
+</div>
+
+🔹 Backend - ChatBot
+<div align=center>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
+	<img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
+	<br><br>
+</div>
 
 🔹 DataBase
 <div align=center>
   <img src="https://img.shields.io/badge/MariaDB-003545?style=for-the-badge&logo=mariadb&logoColor=white"/>
   <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
   <img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Qdrant-DC382D?style=for-the-badge"/><br><br>
 </div>
 
 <br>
 🔹 Infra / DevOps
 <div align=center>
   <img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Amazon_EKS-FF9900?style=for-the-badge&logo=amazoneks&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Amazon_ECR-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Amazon_S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Amazon_CloudFront-8C4FFF?style=for-the-badge&logo=amazoncloudfront&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Amazon_Route_53-8C4FFF?style=for-the-badge&logo=amazonroute53&logoColor=white"/>
-  <br>
   <img src="https://img.shields.io/badge/VPC-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Application_Load_Balancer-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Route_53-8C4FFF?style=for-the-badge&logo=amazonroute53&logoColor=white"/>
+  <img src="https://img.shields.io/badge/CloudFront-8C4FFF?style=for-the-badge&logo=amazoncloudfront&logoColor=white"/>
+  <img src="https://img.shields.io/badge/S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/>
+  <br>
+  <img src="https://img.shields.io/badge/Application_Load_Balancer-232F3E?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/RDS-527FFF?style=for-the-badge&logo=amazonrds&logoColor=white"/>
   <img src="https://img.shields.io/badge/ElastiCache-FF4F8B?style=for-the-badge&logo=amazonelasticache&logoColor=white"/>
-  <br>
+</div>
+<div align=center>
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
   <img src="https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Argo_CD-FE4C1C?style=for-the-badge&logo=argo&logoColor=white"/>
-  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"/>
-  <img src="https://img.shields.io/badge/Linux(Ubuntu)-E95420?style=for-the-badge&logo=ubuntu&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon_EKS-FF9900?style=for-the-badge&logo=amazoneks&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Amazon_ECR-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white"/>
 </div>
-
-<br>
+<div align=center>
+  <img src="https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Argo_CD-FE4C1C?style=for-the-badge&logo=argo&logoColor=white"/>
+</div>
 <br>
 
 ### ⚒️ Tools
 <div align=center>
-  <img src="https://img.shields.io/badge/HeidiSQL-2C3E50?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/ERD_Cloud-2ECC71?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white"/>
   <img src="https://img.shields.io/badge/VS_Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/>
-  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
   <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white"/>
   <img src="https://img.shields.io/badge/Docker_Desktop-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
-<br>
+  <br>
+  <img src="https://img.shields.io/badge/HeidiSQL-2C3E50?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/ERD_Cloud-2ECC71?style=for-the-badge"/>
+</div>
 </div>
 <br>
 <br>
 
 ### 👥  Collaboration      
 <div align=center>
-   <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
   <img src="https://img.shields.io/badge/Git-181717?style=for-the-badge&logo=git&logoColor=white"/>
+  <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white"/>
   <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white"/>
   <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white"/>
   <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white"/>
-<br>
 </div>
+</div>
+
 
 ---
 ##  ⚒️4. 형상 관리
@@ -481,7 +528,7 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	아키텍처 구조도 자세히 보려면 [여기](https://app.diagrams.net/#G1LPNRuxvUPA9K1NXrrZWdV01yKCUTH6RZ#%7B%22pageId%22%3A%22qR65Kjy7YShbSICQCzts%22%7D)를 클릭하세요 <br>
 
 	<details> <summary> 시스템 아키텍처 구조도 </summary>
-	  <img width="1165" height="1108" alt="image" src="https://github.com/user-attachments/assets/101786af-a9c3-4332-9168-f0653b66e677" />
+		<img width="1438" height="1525" alt="HRadar System Architecture drawio" src="https://github.com/user-attachments/assets/145b87fe-8a06-4a55-8a75-e9df43bdcbf1" />
   </details>
 
 - ### 📚 CI/CD 계획서

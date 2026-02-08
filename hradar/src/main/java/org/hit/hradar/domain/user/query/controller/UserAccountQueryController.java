@@ -26,9 +26,8 @@ public class UserAccountQueryController {
   public ResponseEntity<ApiResponse<UserAccountListResponse>> list(
       @ModelAttribute UserAccountSearchCondition condition,
       @CurrentUser AuthUser authUser) {
-    Long comId = authUser.companyId();
-
-    UserAccountListResponse result = userAccountQueryService.getList(comId, condition);
+    // Service Layer에서 권한 및 필터링 로직 처리
+    UserAccountListResponse result = userAccountQueryService.getList(authUser, condition);
     return ResponseEntity.ok(ApiResponse.success(result));
   }
 
@@ -37,9 +36,7 @@ public class UserAccountQueryController {
   public ResponseEntity<ApiResponse<UserAccountDetailResponse>> detail(
       @PathVariable Long accId,
       @CurrentUser AuthUser authUser) {
-    Long comId = authUser.companyId();
-
-    UserAccountDetailResponse result = userAccountQueryService.getDetail(comId, accId);
+    UserAccountDetailResponse result = userAccountQueryService.getDetail(authUser, accId);
     return ResponseEntity.ok(ApiResponse.success(result));
   }
 }

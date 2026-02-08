@@ -9,6 +9,11 @@ public enum FileType {
             5 * 1024 * 1024, // 5MB
             "images"),
 
+    PROFILE_IMAGE(
+            Set.of("jpg", "jpeg", "png", "gif", "webp"),
+            5 * 1024 * 1024, // 5MB
+            "images"),
+
     ATTACHMENT(
             Set.of("pdf", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "zip", "txt", "csv", "png", "jpg", "jpeg"),
             20 * 1024 * 1024, // 20MB

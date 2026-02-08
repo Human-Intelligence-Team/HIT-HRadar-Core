@@ -31,6 +31,7 @@ public class S3FileStorageClient implements FileStorageClient {
     @Value("${file.s3.prefix:}")
     private String prefix;
 
+
     @Override
     public StoredFile upload(MultipartFile file, FileType type) {
         String originalName = file.getOriginalFilename();

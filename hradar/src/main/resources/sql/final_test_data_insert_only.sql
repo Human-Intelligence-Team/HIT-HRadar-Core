@@ -61,7 +61,7 @@ CREATE TABLE company (
     address             VARCHAR(255) NOT NULL,
     company_telephone   VARCHAR(30),
     founded_date        DATE,
-    status              VARCHAR(15) NOT NULL,
+    status              VARCHAR(15) NOT NULL, 
     is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
     created_at          DATETIME(6) NOT NULL,
     updated_at          DATETIME(6),
@@ -411,7 +411,7 @@ INSERT INTO company_application
  reject_reason, reviewed_at, reviewed_by)
 VALUES
     (1, '서울시 강남구 테헤란로', '123-45-67890', '02-1234-5678', '테스트컴퍼니',
-     'admin@hradar.com', 'admin', '관리자', 'APPROVED',
+     'admin@hradar.com', 'hr01', '인사팀장01', 'APPROVED',
      NULL, NULL, NULL);
 
 -- =========================================================
