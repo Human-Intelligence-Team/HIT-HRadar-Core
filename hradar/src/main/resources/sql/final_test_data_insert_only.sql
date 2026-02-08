@@ -61,7 +61,7 @@ CREATE TABLE company (
     address             VARCHAR(255) NOT NULL,
     company_telephone   VARCHAR(30),
     founded_date        DATE,
-    status              VARCHAR(15) NOT NULL,
+    status              VARCHAR(15) NOT NULL, 
     is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
     created_at          DATETIME(6) NOT NULL,
     updated_at          DATETIME(6),
