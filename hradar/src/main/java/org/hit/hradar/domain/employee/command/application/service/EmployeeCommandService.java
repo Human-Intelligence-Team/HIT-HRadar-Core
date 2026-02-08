@@ -98,7 +98,7 @@ public class EmployeeCommandService {
         birth,
         req.getHireDate(),
         req.getExitDate(),
-        req.getImage(),
+        (req.getImage() != null) ? req.getImage() : emp.getImage(), // 이미지 null이면 유지
         req.getExtNo(),
         req.getPhoneNo(),
         req.getNote(),

@@ -33,6 +33,10 @@ public class RoleCommandService {
 
     validatePermIds(req.getPermIds());
 
+    if (roleJpaRepository.existsByComIdAndName(comId, req.getName())) {
+      throw new BusinessException(RoleErrorCode.DUPLICATE_ROLE_NAME);
+    }
+
     Role role = Role.createCustomRole(comId, req.getName());
     Role saved = roleJpaRepository.save(role);
 
@@ -60,6 +64,14 @@ public class RoleCommandService {
     // userRole=USER는 기본 역할 수정 불가 (정책 변경: 권한 매핑을 위해 수정 허용)
     if (role.getIsSystem() == 'Y') {
       throw new BusinessException(RoleErrorCode.SYSTEM_ROLE_CANNOT_UPDATE);
+    }
+
+    // 이름 변경 시 중복 체크 및 업데이트
+    if (!role.getName().equals(req.getName())) {
+      if (roleJpaRepository.existsByComIdAndName(comId, req.getName())) {
+        throw new BusinessException(RoleErrorCode.DUPLICATE_ROLE_NAME);
+      }
+      role.updateName(req.getName());
     }
 
     // 권한 매핑은 replace 방식: 전체 삭제 후 재삽입

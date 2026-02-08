@@ -6,6 +6,9 @@ import org.hit.hradar.domain.rolePermission.command.domain.aggregate.Role;
 
 public interface RoleRepository {
   Optional<Role> findByComIdAndRoleKey(Long comId, String roleKey);
+
   List<Role> findAllByComId(Long comId);
+
+  boolean existsByComIdAndName(Long comId, String name);
 
 }

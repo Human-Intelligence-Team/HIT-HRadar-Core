@@ -14,6 +14,7 @@ import org.hit.hradar.domain.employee.command.domain.aggregate.Gender;
 import org.hit.hradar.domain.employee.command.domain.repository.EmployeeRepository;
 import org.hit.hradar.domain.positions.command.domain.aggregate.Positions;
 import org.hit.hradar.domain.positions.command.domain.repository.PositionRepository;
+import org.hit.hradar.domain.rolePermission.RoleErrorCode;
 import org.hit.hradar.domain.user.command.domain.aggregate.Account;
 import org.hit.hradar.domain.user.command.domain.aggregate.AccountStatus;
 import org.hit.hradar.domain.user.command.domain.aggregate.UserRole;
@@ -43,7 +44,8 @@ public class EmployeeCsvRegisterService {
     private final PositionRepository positionRepository;
     private final CompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final org.hit.hradar.domain.rolePermission.command.domain.repository.RoleRepository roleRepository;
+    private final org.hit.hradar.domain.rolePermission.command.infrastructure.RoleEmpJpaRepository roleEmpRepository;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
     private static final Pattern DATE_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
@@ -130,6 +132,19 @@ public class EmployeeCsvRegisterService {
                 .build();
 
         accountRepository.save(account);
+
+        // 기본 권한 부여 (EMPLOYEE)
+        org.hit.hradar.domain.rolePermission.command.domain.aggregate.Role defaultRole = roleRepository
+                .findByComIdAndRoleKey(company.getCompanyId(), "EMPLOYEE")
+                .orElseThrow(() -> new BusinessException(RoleErrorCode.ROLE_NOT_FOUND));
+
+        org.hit.hradar.domain.rolePermission.command.domain.aggregate.EmployeeRole employeeRole = org.hit.hradar.domain.rolePermission.command.domain.aggregate.EmployeeRole
+                .builder()
+                .roleId(defaultRole.getRoleId())
+                .empId(savedEmp.getEmpId())
+                .build();
+
+        roleEmpRepository.save(employeeRole);
     }
 
     private EmployeeRegisterRequest validateAndMap(Long companyId, EmployeeCsvRegisterRequest dto,
@@ -160,6 +175,10 @@ public class EmployeeCsvRegisterService {
             throw new BusinessException(EmployeeErrorCode.CSV_MISSING_REQUIRED_FIELD, "로그인ID는 필수입니다.");
         if (isEmpty(password))
             throw new BusinessException(EmployeeErrorCode.CSV_MISSING_REQUIRED_FIELD, "비밀번호는 필수입니다.");
+        if (isEmpty(gender))
+            throw new BusinessException(EmployeeErrorCode.CSV_MISSING_REQUIRED_FIELD, "성별은 필수입니다.");
+        if (isEmpty(birth))
+            throw new BusinessException(EmployeeErrorCode.CSV_MISSING_REQUIRED_FIELD, "생년월일은 필수입니다.");
         // hireDate는 선택
 
         // 포맷
