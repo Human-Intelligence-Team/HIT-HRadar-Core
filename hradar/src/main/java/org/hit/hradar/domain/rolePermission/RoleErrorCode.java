@@ -13,6 +13,7 @@ public enum RoleErrorCode implements ErrorCode {
   DUPLICATE_PERMISSION_KEY("ROLE_006", "이미 존재하는 권한 키입니다.", HttpStatus.CONFLICT),
   PERMISSION_NOT_FOUND("ROLE_007", "해당 권한을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
   PERMISSION_DENIED("ROLE_008", "권한이 없습니다.", HttpStatus.FORBIDDEN),
+  DUPLICATE_ROLE_NAME("ROLE_009", "이미 존재하는 역할 이름입니다.", HttpStatus.CONFLICT),
   ;
 
   private final String errorCode;

@@ -6,16 +6,12 @@ import lombok.*;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(
-    name = "role",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "UK_ROLE_COM_NAME", columnNames = {"com_id", "name"}),
-        @UniqueConstraint(name = "UK_ROLE_COM_ROLE_KEY", columnNames = {"com_id", "role_key"})
-    },
-    indexes = {
-        @Index(name = "IDX_ROLE_COM_ID", columnList = "com_id")
-    }
-)
+@Table(name = "role", uniqueConstraints = {
+    @UniqueConstraint(name = "UK_ROLE_COM_NAME", columnNames = { "com_id", "name" }),
+    @UniqueConstraint(name = "UK_ROLE_COM_ROLE_KEY", columnNames = { "com_id", "role_key" })
+}, indexes = {
+    @Index(name = "IDX_ROLE_COM_ID", columnList = "com_id")
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,7 +30,7 @@ public class Role extends BaseTimeEntity {
   @Column(name = "is_system", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isSystem;
 
-  //기본 역할 식별키 (커스텀 역할은 null) - OWNER, HRTEAM, TEAMLEADER, EMPLOYEE
+  // 기본 역할 식별키 (커스텀 역할은 null) - OWNER, HRTEAM, TEAMLEADER, EMPLOYEE
   @Column(name = "role_key", length = 100)
   private String roleKey;
 
@@ -43,7 +39,6 @@ public class Role extends BaseTimeEntity {
 
   @Column(name = "is_deleted", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isDeleted;
-
 
   public static Role createSystemRole(Long comId, String roleKey, String name) {
     return Role.builder()
@@ -59,11 +54,12 @@ public class Role extends BaseTimeEntity {
     return Role.builder()
         .comId(comId)
         .isSystem('N')
-        .roleKey(null)  // 커스텀 역할은 null
+        .roleKey(null) // 커스텀 역할은 null
         .name(name)
         .isDeleted('N')
         .build();
   }
+
   public boolean isDeleted() {
     return this.isDeleted != null && this.isDeleted == 'Y';
   }
@@ -72,7 +68,8 @@ public class Role extends BaseTimeEntity {
     this.isDeleted = 'Y';
   }
 
-
+  public void updateName(String name) {
+    this.name = name;
+  }
 
 }
-

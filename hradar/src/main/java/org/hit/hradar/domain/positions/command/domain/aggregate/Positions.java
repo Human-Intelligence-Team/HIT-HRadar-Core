@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hit.hradar.global.dto.BaseTimeEntity;
 
 @Entity
-@Table(name = "company_position",
-    uniqueConstraints = @UniqueConstraint(name="UK_POSITION_COMPANY_NAME", columnNames={"com_id","name"})
-)
+@Table(name = "company_position", uniqueConstraints = @UniqueConstraint(name = "UK_POSITION_COMPANY_NAME", columnNames = {
+    "com_id", "name" }))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Positions extends BaseTimeEntity {
@@ -29,7 +28,7 @@ public class Positions extends BaseTimeEntity {
   @Column(name = "rank", nullable = false)
   private Integer rank;
 
-  @Column(name = "is_deleted", nullable= false , columnDefinition = "CHAR(1) DEFAULT 'N'")
+  @Column(name = "is_deleted", nullable = false, columnDefinition = "CHAR(1) DEFAULT 'N'")
   private Character isDeleted;
 
   @Builder

@@ -14,4 +14,8 @@ public interface PositionRepository {
     boolean existsByNameAndComIdAndIsDeleted(String name, Long comId, char isDeleted);
 
     Optional<Positions> findByNameAndComIdAndIsDeleted(String name, Long comId, char isDeleted);
+
+    boolean existsByRankAndComIdAndIsDeleted(Integer rank, Long comId, char isDeleted);
+
+    boolean existsByNameAndRankAndComIdAndIsDeleted(String name, Integer rank, Long comId, char isDeleted);
 }

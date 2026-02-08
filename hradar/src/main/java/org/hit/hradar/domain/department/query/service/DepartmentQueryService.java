@@ -42,8 +42,10 @@ public class DepartmentQueryService {
   }
 
   public EmployeeListResponse getDepartmentMembers(Long companyId, Long deptId) {
-    List<EmployeeResponse> members = employeeQueryMapper.findList(companyId, deptId, null, null, null);
-    return EmployeeListResponse.of(members);
+    // Legacy support: Fetch all members without pagination for now
+    List<EmployeeResponse> members = employeeQueryMapper.findList(
+        companyId, deptId, null, null, null, 0, Integer.MAX_VALUE);
+    return EmployeeListResponse.of(members, members.size(), Integer.MAX_VALUE);
   }
 
   public OrganizationChartResponse getOrganizationChart(Long companyId) {
@@ -68,7 +70,16 @@ public class DepartmentQueryService {
       DepartmentNode node = new DepartmentNode(dept.getDeptId(), dept.getDeptName(), dept.getParentDeptId(),
           dept.getManagerEmpId(), dept.getManagerName());
 
-      node.setEmployees(employeesByDept.getOrDefault(dept.getDeptId(), new ArrayList<>()));
+      List<EmployeeNode> departmentEmployees = employeesByDept.getOrDefault(dept.getDeptId(), new ArrayList<>());
+
+      // manager가 직원 목록에도 포함되어 있다면 제거 (중복 방지)
+      if (dept.getManagerEmpId() != null) {
+        departmentEmployees = departmentEmployees.stream()
+            .filter(e -> !e.getEmpId().equals(dept.getManagerEmpId()))
+            .collect(Collectors.toList());
+      }
+
+      node.setEmployees(departmentEmployees);
       departmentMap.put(dept.getDeptId(), node);
     }
 
