@@ -2,13 +2,12 @@ package org.hit.hradar.domain.competencyReport.query.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO;
-import org.hit.hradar.domain.competencyReport.query.dto.ContentDTO;
-import org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.CycleDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.request.CompetencyReportSearchRequest;
 import org.hit.hradar.domain.competencyReport.query.dto.request.CompReportCycleSearchRequest;
-import org.springframework.data.repository.query.Param;
+
 
 @Mapper
 public interface CompetencyReportMapper {

@@ -8,200 +8,206 @@
     parameterType="org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO">
     <!-- 연봉 목록 조회 (전체)-->
-    SELECT YEAR(ad.CREATED_AT) AS year
-         , ad.DOC_ID
-         , ad.TITLE
+    select year(ad.created_at) as year
+         , ad.doc_id
+         , ad.title
          , ad.approved_at
-         , bse.SALARY_INCREASE_TYPE
-         , ad.STATUS AS approvalStatus
-         , emp.NAME AS writer
-         , SUM(bse.BASIC_SALARY) AS totalSalary
-         , count (bse.BASIC_SALARY_EMPLOYEE_ID ) AS empCount
-      FROM APPROVAL_DOCUMENT ad
-      JOIN employee emp ON ad.WRITER_ID = emp.EMP_ID
-      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
-     WHERE ad.IS_DELETED = 'N'
-       AND ad.COMPANY_ID = #{comId}
-       AND ad.DOC_TYPE = 'BASIC_SALARY'
+         , bse.salary_increase_type
+         , ad.status as approvalStatus
+         , emp.name as writer
+         , sum(bse.basic_salary) as totalSalary
+         , count(bse.basic_salary_employee_id) as empCount
+      from approval_document ad
+      join employee emp on ad.writer_id = emp.emp_id
+      join basic_salary_employee bse on ad.doc_id = bse.doc_id
+     where ad.is_deleted = 'N'
+       and ad.company_id = #{comId}
+       and ad.doc_type = 'BASIC_SALARY'
     <if test="year != null">
-       AND YEAR(ad.CREATED_AT) = #{year}
+       and year(ad.created_at) = #{year}
     </if>
-     GROUP BY ad.DOC_ID, ad.TITLE, ad.approved_at, ad.STATUS, ad.WRITER_ID, emp.NAME , bse.SALARY_INCREASE_TYPE
+     group by ad.doc_id, ad.title, ad.approved_at, ad.status, ad.writer_id, emp.name, bse.salary_increase_type
+     order by ad.created_at desc
   </select>
 
   <select id="findAllByBasicSalaryByDocId"
     parameterType="org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO">
     <!-- 연봉 목록 조회 (전체)-->
-    SELECT YEAR(ad.CREATED_AT) AS year
-         , ad.DOC_ID
-         , ad.TITLE
+    select year(ad.created_at) as year
+         , ad.doc_id
+         , ad.title
          , ad.approved_at
-         , bse.SALARY_INCREASE_TYPE
-         , ad.STATUS AS approvalStatus
-         , emp.NAME AS writer
-         , SUM(bse.BASIC_SALARY) AS totalSalary
-         , count (bse.BASIC_SALARY_EMPLOYEE_ID ) AS empCount
-      FROM APPROVAL_DOCUMENT ad
-      JOIN employee emp ON ad.WRITER_ID = emp.EMP_ID
-      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
-     WHERE ad.IS_DELETED = 'N'
-       AND ad.COMPANY_ID = #{comId}
-       AND ad.DOC_ID = #{docId}
-       AND ad.DOC_TYPE = 'BASIC_SALARY'
-     GROUP BY ad.DOC_ID, ad.TITLE, ad.approved_at, ad.STATUS, ad.WRITER_ID, emp.NAME , bse.SALARY_INCREASE_TYPE
+         , bse.salary_increase_type
+         , ad.status as approvalStatus
+         , emp.name as writer
+         , sum(bse.basic_salary) as totalSalary
+         , count(bse.basic_salary_employee_id) as empCount
+      from approval_document ad
+      join employee emp on ad.writer_id = emp.emp_id
+      join basic_salary_employee bse on ad.doc_id = bse.doc_id
+     where ad.is_deleted = 'N'
+       and ad.company_id = #{comId}
+       and ad.doc_id = #{docId}
+       and ad.doc_type = 'BASIC_SALARY'
+     group by ad.doc_id, ad.title, ad.approved_at, ad.status, ad.writer_id, emp.name, bse.salary_increase_type
+     order by ad.created_at desc
   </select>
 
   <select id="findAllBasicSalaries"
     parameterType="org.hit.hradar.domain.salary.query.dto.request.BasicSalarySearchRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO">
     <!-- 기본급 목록 조회 (전체)-->
-    SELECT YEAR(ad.CREATED_AT) AS year -- 년도
-         , ad.DOC_ID
-         , ad.DOC_TYPE
-         , emp.EMP_ID  -- 사원 pk
-         , emp.EMPLOYEE_NO -- 사번
-         , emp.NAME -- 사원명
-         , dep.DEPT_NAME  -- 부서명
-         , cp.NAME  AS positionName-- 직위
-         , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt -- 승인 일시
-         , emp.type AS employmentType-- 재직 상태
-         , bse.SALARY_INCREASE_TYPE
-    FROM APPROVAL_DOCUMENT ad
-      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID AND bse.IS_DELETED = 'N'
-      JOIN EMPLOYEE emp ON bse.EMP_ID = emp.EMP_ID AND emp.IS_DELETED = 'N'
-      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID AND dep.IS_DELETED = 'N'
-      JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID AND cp.IS_DELETED = 'N'
-     WHERE ad.IS_DELETED = 'N'
-       AND ad.DOC_TYPE = 'BASIC_SALARY'
-       AND ad.COMPANY_ID = #{comId}
-       AND ad.DOC_ID = #{docId}
+    select year(ad.created_at) as year -- 년도
+         , ad.doc_id
+         , ad.doc_type
+         , emp.emp_id  -- 사원 pk
+         , emp.employee_no -- 사번
+         , emp.name -- 사원명
+         , dep.dept_name  -- 부서명
+         , cp.name  as positionName -- 직위
+         , date_format(ad.approved_at, '%Y-%m-%d') as approvedAt -- 승인 일시
+         , emp.type as employmentType -- 재직 상태
+         , bse.salary_increase_type
+      from approval_document ad
+      join basic_salary_employee bse on ad.doc_id = bse.doc_id and bse.is_deleted = 'N'
+      join employee emp on bse.emp_id = emp.emp_id and emp.is_deleted = 'N'
+      join department dep on emp.dept_id = dep.dept_id and dep.is_deleted = 'N'
+      join company_position cp on emp.position_id = cp.position_id and cp.is_deleted = 'N'
+     where ad.is_deleted = 'N'
+       and ad.doc_type = 'BASIC_SALARY'
+       and ad.company_id = #{comId}
+       and ad.doc_id = #{docId}
     <if test="deptId != null">
-       AND dep.DEPT_ID = #{deptId}
+       and dep.dept_id = #{deptId}
     </if>
     <if test="comPositionId != null">
-      AND cp.POSITION_ID = #{comPositionId}
+       and cp.position_id = #{comPositionId}
     </if>
     <if test="employmentType != null">
-       AND emp.TYPE = #{employmentType}
+       and emp.type = #{employmentType}
     </if>
     <if test="employeeNo != null and employeeNo != ''">
-       AND emp.EMPLOYEE_NO LIKE CONCAT('%', #{employeeNo}, '%')
+       and emp.employee_no like concat('%', #{employeeNo}, '%')
     </if>
     <if test="employeeName != null and employeeName != ''">
-       AND emp.NAME LIKE CONCAT('%', #{employeeName}, '%')
+       and emp.name like concat('%', #{employeeName}, '%')
     </if>
-     ORDER BY emp.NAME ASC
+     order by emp.name asc
   </select>
 
   <select id="findAllBasicSalariesByEmpId"
     parameterType="org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO">
     <!-- 기본급 목록 조회 (본인)-->
-     SELECT YEAR(ad.CREATED_AT) AS year -- 년도
-          , ad.DOC_ID
-          , ad.DOC_TYPE
-          , ad.TITLE
-          , emp.EMP_ID  -- 사원 pk
-          , emp.EMPLOYEE_NO -- 사번
-          , emp.NAME -- 사원명
-          , dep.DEPT_NAME  -- 부서명
-          , cp.NAME  AS positionName-- 직위
-          , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt -- 승인 일시
-          , bse.SALARY_INCREASE_TYPE
-       FROM APPROVAL_DOCUMENT ad
-       JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID AND bse.IS_DELETED = 'N'
-       JOIN EMPLOYEE emp ON bse.EMP_ID = emp.EMP_ID
-       JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID AND dep.IS_DELETED = 'N'
-       JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID AND cp.IS_DELETED = 'N'
-      WHERE ad.IS_DELETED = 'N'
-        AND ad.DOC_TYPE = 'BASIC_SALARY'
-        AND emp.EMP_ID = #{empId}
-        AND ad.COMPANY_ID = #{comId}
-        AND ad.STATUS = 'APPROVED'
+    select year(ad.created_at) as year -- 년도
+         , ad.doc_id
+         , ad.doc_type
+         , ad.title
+         , emp.emp_id  -- 사원 pk
+         , emp.employee_no -- 사번
+         , emp.name -- 사원명
+         , dep.dept_name  -- 부서명
+         , cp.name  as positionName -- 직위
+         , date_format(ad.approved_at, '%y-%m-%d') as approvedAt -- 승인 일시
+         , bse.salary_increase_type
+      from approval_document ad
+      join basic_salary_employee bse on ad.doc_id = bse.doc_id and bse.is_deleted = 'N'
+      join employee emp on bse.emp_id = emp.emp_id
+      join department dep on emp.dept_id = dep.dept_id and dep.is_deleted = 'N'
+      join company_position cp on emp.position_id = cp.position_id and cp.is_deleted = 'N'
+     where ad.is_deleted = 'N'
+       and ad.doc_type = 'BASIC_SALARY'
+       and emp.emp_id = #{empId}
+       and ad.company_id = #{comId}
+       and ad.status = 'APPROVED'
     <if test="year != null">
-      AND YEAR(ad.APPROVED_AT) = #{year}
+       and year(ad.approved_at) = #{year}
     </if>
+      order by ad.doc_id desc
   </select>
 
   <select id="findBasicSalarySummaryByEmpIdAndYear"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO">
     <!-- 기본급 히스토리 (전년도/ 올해) -->
-    SELECT bse.BASIC_SALARY_EMPLOYEE_ID
-         , bse.SALARY_INCREASE_TYPE
-         , ad.DOC_ID
-         , ad.TITLE
-         , bse.EMP_ID
-         , bse.BASIC_SALARY
-         , bse.INCREASE_RATE
-         , bse.INCREASE_AMOUNT
-         , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt
-    FROM basic_salary_employee bse
-      JOIN approval_document ad ON ad.doc_id = bse.doc_id
-     WHERE bse.IS_DELETED = 'N'
-       AND ad.IS_DELETED = 'N'
-       AND bse.EMP_ID = #{empId}
-       AND YEAR(ad.CREATED_AT) = #{year}
+    select bse.basic_salary_employee_id
+         , bse.salary_increase_type
+         , ad.doc_id
+         , ad.title
+         , bse.emp_id
+         , bse.basic_salary
+         , bse.increase_rate
+         , bse.increase_amount
+         , date_format(ad.approved_at, '%Y-%m-%d') as approvedAt
+      from basic_salary_employee bse
+      join approval_document ad on ad.doc_id = bse.doc_id
+     where bse.is_deleted = 'N'
+       and ad.is_deleted = 'N'
+       and bse.emp_id = #{empId}
+       and year(ad.created_at) = #{year}
   </select>
 
   <select id="findAllBasicSalariesHistoryByEmpId"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryHistoryDTO">
     <!-- 기본급 히스토리 (전년도/ 올해) -->
-    SELECT YEAR(ad.CREATED_AT) AS year
-         , bse.SALARY_INCREASE_TYPE
-         , bse.EMP_ID
-         , ad.TITLE
-         , LAG(bse.basic_salary) OVER (PARTITION BY bse.emp_id ORDER BY ad.approved_at) AS prevSalary
-         , bse.basic_salary              AS currentSalary
+    select year(ad.created_at) as year
+         , bse.salary_increase_type
+         , bse.emp_id
+         , ad.title
+         , lag(bse.basic_salary) over (partition by bse.emp_id order by ad.approved_at) as prevSalary
+         , bse.basic_salary              as currentSalary
          , bse.increase_rate
-         , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt
-      FROM basic_salary_employee bse
-      JOIN approval_document ad ON ad.doc_id = bse.doc_id AND ad.IS_DELETED = 'N'
-     WHERE bse.IS_DELETED = 'N'
-       AND bse.EMP_ID = #{empId}
-     ORDER BY ad.approved_at DESC
+         , date_format(ad.approved_at, '%Y-%m-%d') as approvedAt
+      from basic_salary_employee bse
+      join approval_document ad on ad.doc_id = bse.doc_id and ad.is_deleted = 'N'
+     where bse.is_deleted = 'N'
+       and bse.emp_id = #{empId}
+     order by ad.approved_at desc
   </select>
 
   <select id="findEmployeeBasicSalaryByEmpIdAndYear"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalaryDTO">
     <!-- 사원 기본급 조회 -->
-    SELECT bse.BASIC_SALARY_EMPLOYEE_ID
-         , ad.DOC_ID
-         , ad.TITLE
-         , bse.EMP_ID
-         , bse.BASIC_SALARY
-         , bse.INCREASE_RATE
-         , bse.INCREASE_AMOUNT
-         , DATE_FORMAT(ad.APPROVED_AT, '%Y-%m-%d') AS approvedAt
-      FROM APPROVAL_DOCUMENT ad
-      JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
-     WHERE ad.IS_DELETED = 'N'
-       AND bse.IS_DELETED  = 'N'
-       AND ad.DOC_TYPE = 'SALARY'
-       AND ad.STATUS = 'APPROVED'
-       AND bse.EMP_ID = #{empId}
-       AND YEAR(ad.approved_at) = #{year}
+    select bse.basic_salary_employee_id
+         , ad.doc_id
+         , ad.title
+         , bse.emp_id
+         , bse.basic_salary
+         , bse.increase_rate
+         , bse.increase_amount
+         , date_format(ad.approved_at, '%Y-%m-%d') as approvedAt
+      from approval_document ad
+      join basic_salary_employee bse on ad.doc_id = bse.doc_id
+     where ad.is_deleted = 'N'
+       and bse.is_deleted  = 'N'
+       and ad.doc_type = 'SALARY'
+       and ad.status = 'APPROVED'
+       and bse.emp_id = #{empId}
+       and year(ad.approved_at) = #{year}
   </select>
 
   <select id="findBasicSalarySummaryByYear"
     parameterType="org.hit.hradar.domain.salary.query.dto.request.SalaryApprovalRequest"
     resultType="org.hit.hradar.domain.salary.query.dto.BasicSalarySummaryDTO">
-      WITH RECURSIVE YearList AS (
-            SELECT #{year} AS target_year
-             UNION ALL
-            SELECT target_year - 1 FROM YearList WHERE target_year > #{year} - 4
+     with recursive yearlist
+       as (
+          select #{year} as target_year
+           union all
+          select target_year - 1
+            from yearlist
+           where target_year > #{year} - 4
          )
-    SELECT v.target_year AS year
-         , COALESCE(SUM(bse.BASIC_SALARY), 0) AS totalAmount
-      FROM YearList v
-      LEFT JOIN APPROVAL_DOCUMENT ad ON YEAR(ad.CREATED_AT) = v.target_year
-       AND ad.IS_DELETED = 'N'
-       AND ad.COMPANY_ID = 1
-       AND ad.DOC_TYPE = 'BASIC_SALARY'
-       AND ad.STATUS = 'APPROVED'
-      LEFT JOIN BASIC_SALARY_EMPLOYEE bse ON ad.DOC_ID = bse.DOC_ID
-     GROUP BY v.target_year
-     ORDER BY v.target_year DESC;
+    select v.target_year as year
+         , coalesce(sum(bse.basic_salary), 0) as totalAmount
+      from yearlist v
+      left join approval_document ad on year(ad.created_at) = v.target_year
+       and ad.is_deleted = 'N'
+       and ad.company_id = 1
+       and ad.doc_type = 'BASIC_SALARY'
+       and ad.status = 'APPROVED'
+      left join basic_salary_employee bse on ad.doc_id = bse.doc_id
+     group by v.target_year
+     order by v.target_year desc;
   </select>
 
 </mapper>

@@ -7,186 +7,187 @@
   <select id="findByCompetencyReportId"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
     <!-- 역량 강화 리포트 상세 (인사팀/개인) -->
-    SELECT cc.CYCLE_NAME -- 회차명
-         , cc.YEAR  -- 년도
-         , cc.QUARTER  -- 회차
-         , DATE_FORMAT(cr.CREATED_AT, '%Y-%m-%d') AS createdAt -- 생성일
-         , cr.COMPETENCY_REPORT_ID -- 역량 강화 리포트
-         , emp.NAME  AS  employeeName-- 이름
-         , emp.EMPLOYEE_NO AS employeeNo-- 사번
-         , dep.DEPT_NAME  AS deptName-- 부서
-         , cp.NAME AS positionName -- 직위
-         , cr.KPI_OKR_RESULT_SUMMARY  -- kpi okr
-         , cr.GOAL_FAILURE_ANALYSIS  -- 등급 평가
-      FROM COMPETENCY_REPORT cr
-      JOIN EMPLOYEE emp ON cr.EMP_ID = emp.EMP_ID
-      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
-      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.POSITION_ID
-      JOIN CYCLE cc ON cr.CYCLE_ID = cc.CYCLE_ID
-     WHERE cr.COMPETENCY_REPORT_ID = #{competencyReportId};
-       AND cc.company_id = #{comId}
+    select cc.cycle_name -- 회차명
+         , cc.year  -- 년도
+         , cc.quarter  -- 회차
+         , date_format(cr.created_at, '%y-%m-%d') as createdAt -- 생성일
+         , cr.competency_report_id -- 역량 강화 리포트
+         , emp.name  as  employeeName-- 이름
+         , emp.employee_no as employeeNo-- 사번
+         , dep.dept_name  as deptName-- 부서
+         , cp.name as positionName -- 직위
+         , cr.kpi_okr_result_summary  -- kpi okr
+         , cr.goal_failure_analysis  -- 등급 평가
+      from competency_report cr
+      join employee emp on cr.emp_id = emp.emp_id
+      join department dep on emp.dept_id = dep.dept_id
+      join company_position cp on emp.position_id = cp.position_id
+      join cycle cc on cr.cycle_id = cc.cycle_id
+     where cr.competency_report_id = #{competencyReportId}
+       and cc.company_id = #{comId}
   </select>
 
   <select id="findAllByCycleId"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompReportCycleSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
     <!-- 역량 강화 리포트 목록 (인사팀) -->
-    SELECT cc.CYCLE_NAME AS cycleName
-         , cc.YEAR AS year
-         , cc.QUARTER AS quarter
-         , DATE_FORMAT(cr.CREATED_AT, '%Y-%m-%d') AS createdAt
-         , cr.COMPETENCY_REPORT_ID AS competencyReportId
-         , emp.NAME AS employeeName  	 -- 사원 이름
-         , emp.EMPLOYEE_NO AS employeeNo 	 -- 사번
-         , dp.DEPT_NAME  AS deptName	 -- 부서명
-         , cmp.NAME  AS positionName	 -- 직위명
-      FROM COMPETENCY_REPORT cr
-      JOIN CYCLE cc ON cc.CYCLE_ID = cr.CYCLE_ID
-      JOIN EMPLOYEE emp ON cr.EMP_ID = emp.EMP_ID
-      JOIN DEPARTMENT dp ON emp.DEPT_ID = dp.DEPT_ID
-      JOIN COMPANY_POSITION cmp ON emp.POSITION_ID = cmp.POSITION_ID
-     WHERE cr.IS_DELETED = 'N'
-       AND cc.company_id = #{comId}
-       AND emp.TYPE = 'WORKING' -- 재직 중
-       AND cc.YEAR = #{year}
-       AND cc.QUARTER = #{quarter}
+    select cc.cycle_name as cycleName
+         , cc.year as year
+         , cc.quarter as quarter
+         , date_format(cr.created_at, '%Y-%m-%d') as createdAt
+         , cr.competency_report_id as competencyReportId
+         , emp.name as employeeName    -- 사원 이름
+         , emp.employee_no as employeeNo   -- 사번
+         , dp.dept_name as deptName   -- 부서명
+         , cmp.name as positionName   -- 직위명
+      from competency_report cr
+      join cycle cc on cc.cycle_id = cr.cycle_id
+      join employee emp on cr.emp_id = emp.emp_id
+      join department dp on emp.dept_id = dp.dept_id
+      join company_position cmp on emp.position_id = cmp.position_id
+     where cr.is_deleted = 'N'
+       and cc.company_id = #{comId}
+       and emp.type = 'WORKING' -- 재직 중
+       and cc.year = #{year}
+       and cc.quarter = #{quarter}
     <if test="deptId != null">
-       AND dp.DEPT_ID = #{deptId}
+       and dp.dept_id = #{deptId}
     </if>
     <if test="comPositionId != null">
-       AND cmp.POSITION_ID  = #{comPositionId}
+       and cmp.position_id = #{comPositionId}
     </if>
     <if test="employeeNo != null and employeeNo != ''">
-       AND emp.EMPLOYEE_NO LIKE CONCAT('%', #{employeeNo}, '%')
+       and emp.employee_no like concat('%', #{employeeNo}, '%')
     </if>
     <if test="employeeName != null and employeeName != ''">
-       AND emp.NAME LIKE CONCAT('%', #{employeeName}, '%')
+       and emp.name like concat('%', #{employeeName}, '%')
     </if>
-
-     ORDER BY cc.YEAR DESC, cc.QUARTER DESC, cr.CREATED_AT DESC
+     order by cc.year desc, cc.quarter desc, cr.created_at desc
   </select>
 
   <select id="findAllCycle"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompReportCycleSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CycleDTO">
     <!-- 역량 강화 리포트 회차 목록 (인사팀) -->
-    SELECT cc.CYCLE_ID
-         , cc.YEAR
-         , cc.QUARTER
-         , cc.CYCLE_NAME
-         , DATE_FORMAT(cc.START_DATE, '%Y-%m-%d') AS startDate
-         , DATE_FORMAT(cc.END_DATE, '%Y-%m-%d') AS endDate
-         , cc.STATUS
-         , emp.NAME AS empName
-         , cc.IS_COMP_REPORT_GENERATED
-      FROM CYCLE cc
-      JOIN employee emp ON cc.EMP_ID = emp.EMP_ID
-     WHERE cc.IS_DELETED = 'N'
-       AND cc.company_id = #{comId}
+    select cc.cycle_id
+         , cc.year
+         , cc.quarter
+         , cc.cycle_name
+         , date_format(cc.start_date, '%Y-%m-%d') as startDate
+         , date_format(cc.end_date, '%Y-%m-%d') as endDate
+         , cc.status
+         , emp.name as empName
+         , cc.is_comp_report_generated
+      from cycle cc
+      join employee emp on cc.emp_id = emp.emp_id
+     where cc.is_deleted = 'N'
+       and cc.status = 'CLOSED'
+       and cc.is_comp_report_generated = 'Y'
+       and cc.company_id = #{comId}
     <if test="year != null and year != ''">
-       AND cc.YEAR = #{year}
+       and cc.year = #{year}
     </if>
     <if test="quarter != null">
-       AND cc.QUARTER = #{quarter}
+       and cc.quarter = #{quarter}
     </if>
-     ORDER BY cc.YEAR DESC ,cc.QUARTER DESC
+     order by cc.year desc, cc.quarter desc
   </select>
 
   <select id="findAllByDepthId"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompetencyReportSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
     <!-- 역량 강화 리포트 목록 (팀장) -->
-    SELECT cc.CYCLE_NAME AS cycleName
-         , cc.YEAR AS year
-         , cc.QUARTER AS quarter
-         , DATE_FORMAT(cr.CREATED_AT, '%Y-%m-%d') AS createdAt
-         , cr.COMPETENCY_REPORT_ID AS competencyReportId
-         , emp.NAME AS employeeName  	 -- 사원 이름
-         , emp.EMPLOYEE_NO AS employeeNo 	 -- 사번
-         , dp.DEPT_NAME  AS deptName	 -- 부서명
-         , cmp.NAME  AS positionName	 -- 직위명
-      FROM COMPETENCY_REPORT cr
-      JOIN CYCLE cc ON cc.CYCLE_ID = cr.CYCLE_ID
-      JOIN EMPLOYEE emp ON cr.EMP_ID = emp.EMP_ID
-      JOIN DEPARTMENT dp ON emp.DEPT_ID = dp.DEPT_ID
-      JOIN COMPANY_POSITION cmp ON emp.POSITION_ID = cmp.POSITION_ID
-     WHERE cr.IS_DELETED = 'N'
-       AND emp.TYPE = 'WORKING' -- 재직 중
-       AND dp.DEPT_ID = #{deptId}
+    select cc.cycle_name as cycleName
+         , cc.year as year
+         , cc.quarter as quarter
+         , date_format(cr.created_at, '%Y-%m-%d') as createdAt
+         , cr.competency_report_id as competencyReportId
+         , emp.name as employeeName    -- 사원 이름
+         , emp.employee_no as employeeNo   -- 사번
+         , dp.dept_name as deptName   -- 부서명
+         , cmp.name as positionName   -- 직위명
+      from competency_report cr
+      join cycle cc on cc.cycle_id = cr.cycle_id
+      join employee emp on cr.emp_id = emp.emp_id
+      join department dp on emp.dept_id = dp.dept_id
+      join company_position cmp on emp.position_id = cmp.position_id
+     where cr.is_deleted = 'N'
+       and emp.type = 'working' -- 재직 중
+       and dp.dept_id = #{deptId}
     <if test="year != null">
-       AND cc.YEAR = #{year}
+       and cc.year = #{year}
     </if>
     <if test="quarter != null">
-       AND cc.QUARTER = #{quarter}
+       and cc.quarter = #{quarter}
     </if>
     <if test="comPositionId != null">
-       AND cmp.POSITION_ID  = #{comPositionId}
+       and cmp.position_id = #{comPositionId}
     </if>
     <if test="employeeNo != null and employeeNo != ''">
-      AND emp.EMPLOYEE_NO LIKE CONCAT('%', #{employeeNo}, '%')
+       and emp.employee_no like concat('%', #{employeeNo}, '%')
     </if>
     <if test="employeeName != null and employeeName != ''">
-      AND emp.NAME LIKE CONCAT('%', #{employeeName}, '%')
+       and emp.name like concat('%', #{employeeName}, '%')
     </if>
-    ORDER BY cc.YEAR DESC, cc.QUARTER DESC, cr.CREATED_AT DESC
+     order by cc.year desc, cc.quarter desc, cr.created_at desc
   </select>
 
   <select id="findAllByEmpId"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompetencyReportSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
     <!-- 역량 강화 리포트 목록 (사원) -->
-    SELECT cc.CYCLE_NAME
-         , cc.YEAR
-         , cc.QUARTER
-         , DATE_FORMAT(cr.CREATED_AT, '%Y-%m-%d') AS createdAt
-         , cr.COMPETENCY_REPORT_ID
-      FROM CYCLE cc
-      JOIN COMPETENCY_REPORT cr ON cc.CYCLE_id = cr.cycle_id
-     WHERE cc.company_id = #{comId}
-       AND cr.EMP_ID = #{empId}
+    select cc.cycle_name
+         , cc.year
+         , cc.quarter
+         , date_format(cr.created_at, '%Y-%m-%d') as createdAt
+         , cr.competency_report_id
+      from cycle cc
+      join competency_report cr on cc.cycle_id = cr.cycle_id
+     where cc.company_id = #{comId}
+       and cr.emp_id = #{empId}
     <if test="year != null">
-       AND cc.YEAR = #{year}
+       and cc.year = #{year}
     </if>
-     ORDER BY cc.YEAR DESC, cc.QUARTER DESC, cr.CREATED_AT DESC
+     order by cc.year desc, cc.quarter desc, cr.created_at desc
   </select>
 
   <select id="findAllWithCreatedYn"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompReportCycleSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
     <!-- 역량강화 생성 리스트 -->
-    SELECT cc.CYCLE_ID
-         , cc.CYCLE_NAME
-         , cc.EMP_ID
-         , emp.NAME AS employeeName
-         , cc.IS_COMP_REPORT_GENERATED
-         , cc.QUARTER
-         , cc.STATUS
-         , cc.YEAR
-      FROM CYCLE cc
-      JOIN EMPLOYEE emp ON cc.EMP_ID = emp.EMP_ID
-     WHERE cc.IS_DELETED = 'N'
-       AND cc.COMPANY_ID = #{comId}
+    select cc.cycle_id
+         , cc.cycle_name
+         , cc.emp_id
+         , emp.name as employeeName
+         , cc.is_comp_report_generated
+         , cc.quarter
+         , cc.status
+         , cc.year
+      from cycle cc
+      join employee emp on cc.emp_id = emp.emp_id
+     where cc.is_deleted = 'N'
+       and cc.company_id = #{comId}
     <if test="year != null">
-       AND cc.YEAR = #{year}
+       and cc.year = #{year}
     </if>
-    ORDER BY cc.YEAR ASC , cc.QUARTER desc
+     order by cc.year asc , cc.quarter desc
   </select>
   <select id="findCreatedReportPeriod"
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.CompReportCycleSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CompetencyReportDTO">
     <!-- 역량강화 생성 리스트 -->
-    SELECT cr.START_DATE
-         , cr.END_DATE
-      FROM COMPETENCY_REPORT cr
-      JOIN cycle cc ON cr.CYCLE_ID = cc.CYCLE_ID
-     WHERE cr.IS_DELETED = 'N'
-       AND cc.COMPANY_ID = #{comId}
-       AND cc.CYCLE_ID = #{cycleId}
-       AND cc.YEAR = #{year}
-       AND cc.QUARTER = #{quarter}
-       AND cc.IS_COMP_REPORT_GENERATED = 'Y'
-       AND cc.STATUS = 'CLOSED'
-     LIMIT 1
+    select cr.start_date
+         , cr.end_date
+      from competency_report cr
+      join cycle cc on cr.cycle_id = cc.cycle_id
+     where cr.is_deleted = 'n'
+       and cc.company_id = #{comId}
+       and cc.cycle_id = #{cycleId}
+       and cc.year = #{year}
+       and cc.quarter = #{quarter}
+       and cc.is_comp_report_generated = 'Y'
+       and cc.status = 'CLOSED'
+     limit 1
   </select>
 
 </mapper>

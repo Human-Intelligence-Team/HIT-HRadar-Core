@@ -6,6 +6,7 @@ import org.hit.hradar.domain.evaluation.command.domain.aggregate.Cycle;
 import org.hit.hradar.domain.evaluation.command.domain.repository.CycleRepository;
 import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -13,13 +14,12 @@ public class CycleProviderServiceImpl implements CycleProviderService {
 
   public final CycleRepository cycleRepository;
   @Override
+  @Transactional
   public void fetchCompetencyReportGeneratedById(Long cycleId) {
-
     Cycle cycle = cycleRepository.findById(cycleId)
         .orElseThrow(() -> new BusinessException(EvaluationErrorCode.CYCLE_CONFIGURATION_NOT_ALLOWED));
 
     cycle.updateIsReportGenerated('Y');
-
   }
 
 }

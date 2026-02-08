@@ -19,15 +19,16 @@ public class CompetencyReportSaver {
 
     @Transactional
     public Long saveReport(CompetencyReport report, List<ReportContent> contents) {
-        // 부모(리포트) 저장
-        CompetencyReport savedReport = competencyReportRepository.save(report);
+      // 1. 부모 저장
+      CompetencyReport savedReport = competencyReportRepository.save(report);
 
-        // 자식(추천 콘텐츠) 매핑 및 저장
-        if (contents != null && !contents.isEmpty()) {
+      // 2. 자식 ID 매핑 및 저장
+      if (contents != null && !contents.isEmpty()) {
+        Long reportId = savedReport.getCompetencyReportId();
+        contents.forEach(content -> content.updateReportId(reportId)); // 이 부분
+        reportContentRepository.saveAllIfNotEmpty(contents);
+      }
 
-            contents.forEach(content -> content.updateReportId(savedReport.getCompetencyReportId()));
-            reportContentRepository.saveAllIfNotEmpty(contents);
-        }
-        return savedReport.getCompetencyReportId();
+      return savedReport.getCompetencyReportId();
     }
 }
