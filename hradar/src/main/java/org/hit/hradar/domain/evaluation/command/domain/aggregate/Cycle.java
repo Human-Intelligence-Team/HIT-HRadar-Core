@@ -108,8 +108,15 @@ public class Cycle extends BaseTimeEntity {
     }
 
     public void approveCycle() {
-        this.status = CycleStatus.APPROVED;
+        LocalDateTime now = LocalDateTime.now();
+
+        if (this.startDate.isBefore(now) || this.startDate.isEqual(now)) {
+            this.status = CycleStatus.IN_PROGRESS;
+        } else {
+            this.status = CycleStatus.APPROVED;
+        }
     }
+
 
     //도메인 확인용
     public boolean isClosed() {

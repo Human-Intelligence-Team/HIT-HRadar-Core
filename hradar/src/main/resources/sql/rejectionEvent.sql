@@ -5,7 +5,7 @@ INSERT INTO rejection_event (
     updated_at,
                              created_by
 ) VALUES (
-             1001,
+             1007,
              '2026-03-02',
              NOW(),
              NOW(),
