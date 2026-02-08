@@ -308,6 +308,7 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white"/>
 <img src="https://img.shields.io/badge/Pinia-FFD700?style=for-the-badge&logo=pinia&logoColor=black"/>
 <img src="https://img.shields.io/badge/Vue_Router-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white"/>
+	<br>
 <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white"/>
 <img src="https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white">
 <img src="https://img.shields.io/badge/AntV X6-8B5DFF?style=for-the-badge&logo=antv&logoColor=white">
@@ -362,7 +363,17 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	<br>
   <img src="https://img.shields.io/badge/JPA(Hibernate)-59666C?style=for-the-badge"/>
 	<br>
-  <img src="https://img.shields.io/badge/Spring_MVC-6DA252?style=for-the-badge"/><br><br>
+  <img src="https://img.shields.io/badge/Spring_MVC-6DA252?style=for-the-badge"/><img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
+		<br>
+   <br>
+</div>
+
+🔹 Backend - ChatBot
+<div align=center>
+  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
+	<img src="https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
+	<br><br>
 </div>
 
 🔹 DataBase
