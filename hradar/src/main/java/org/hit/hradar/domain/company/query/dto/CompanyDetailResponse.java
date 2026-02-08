@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 public class CompanyDetailResponse {
 
   private Long companyId;
-  private Long appId  ;
+  private Long appId;
 
-  private String comCode  ;
+  private String comCode;
   private String ceoName;
   private String comEmail;
   private String companyName;

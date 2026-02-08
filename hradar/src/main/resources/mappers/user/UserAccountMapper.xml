@@ -94,14 +94,32 @@
        ======================= -->
 
   <!-- 계정 목록 조회 -->
-  <select id="findList"
-    resultMap="UserAccountListItemMap">
+
+  <!-- 계정 목록 조회 -->
+  <select id="findList" resultMap="UserAccountListItemMap">
     SELECT
     <include refid="UserAccountColumns"/>
     FROM user_account a
-    WHERE
-    <include refid="BaseWhere"/>
-    <include refid="SearchWhere"/>
+    LEFT JOIN employee e ON a.employee_id = e.emp_id
+    <where>
+        <if test="comId != null">
+            AND a.com_id = #{comId}
+        </if>
+        <if test="condition != null and condition.includeDeleted != true">
+            AND a.is_deleted = 'N'
+        </if>
+        <include refid="SearchWhere"/>
+        
+        <!-- 부서 필터 -->
+        <if test="condition != null and condition.deptId != null">
+            AND e.dept_id = #{condition.deptId}
+        </if>
+        
+        <!-- 회사 직접 필터 (Condition에 comId가 있고, Param comId가 null일 때 - 즉 슈퍼어드민) -->
+        <if test="condition != null and condition.comId != null">
+            AND a.com_id = #{condition.comId}
+        </if>
+    </where>
     ORDER BY a.account_id DESC
   </select>
 
@@ -111,8 +129,10 @@
     SELECT
     <include refid="UserAccountColumns"/>
     FROM user_account a
-    WHERE a.com_id = #{comId}
-    AND a.account_id = #{accId}
+    WHERE a.account_id = #{accId}
+    <if test="comId != null">
+      AND a.com_id = #{comId}
+    </if>
     LIMIT 1
   </select>
 

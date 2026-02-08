@@ -58,9 +58,9 @@ public class RoleCommandService {
     }
 
     // userRole=USER는 기본 역할 수정 불가 (정책 변경: 권한 매핑을 위해 수정 허용)
-    // if (role.getIsSystem() == 'Y') {
-    // throw new BusinessException(RoleErrorCode.SYSTEM_ROLE_CANNOT_UPDATE);
-    // }
+    if (role.getIsSystem() == 'Y') {
+      throw new BusinessException(RoleErrorCode.SYSTEM_ROLE_CANNOT_UPDATE);
+    }
 
     // 권한 매핑은 replace 방식: 전체 삭제 후 재삽입
     rolePermissionJpaRepository.deleteByIdRoleId(roleId);

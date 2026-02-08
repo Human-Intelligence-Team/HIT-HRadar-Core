@@ -35,8 +35,16 @@ public class DepartmentQueryController {
   @Operation(summary = "전체 부서 목록 조회", description = "회사 내 모든 부서 목록을 조회합니다.")
   @GetMapping
   public ResponseEntity<ApiResponse<DepartmentListResponse>> getAllDepartmentsByCompany(
+      @RequestParam(value = "comId", required = false) Long targetComId,
       @CurrentUser AuthUser authUser) {
-    DepartmentListResponse response = departmentQueryService.getAllDepartmentsByCompany(authUser.companyId());
+
+    Long searchComId = authUser.companyId();
+    // [Super Admin Logic] 타 회사 부서 조회 허용
+    if (targetComId != null && "admin".equalsIgnoreCase(authUser.role())) {
+      searchComId = targetComId;
+    }
+
+    DepartmentListResponse response = departmentQueryService.getAllDepartmentsByCompany(searchComId);
 
     return ResponseEntity.ok(ApiResponse.success(response));
   }

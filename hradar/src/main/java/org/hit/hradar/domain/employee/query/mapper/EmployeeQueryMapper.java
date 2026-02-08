@@ -11,14 +11,14 @@ import java.util.List;
 @Mapper
 public interface EmployeeQueryMapper {
 
-    List<EmployeeForOrgChartResponse> findEmployeesForOrgChart(Long comId);
+  List<EmployeeForOrgChartResponse> findEmployeesForOrgChart(Long comId);
 
-    Optional<EmployeeResponse> findById(@Param("comId") Long comId, @Param("empId") Long empId);
+  Optional<EmployeeResponse> findById(@Param("comId") Long comId, @Param("empId") Long empId);
 
-    List<EmployeeResponse> findList(
+  List<EmployeeResponse> findList(
       @Param("comId") Long comId,
       @Param("deptId") Long deptId,
       @Param("positionId") Long positionId,
-      @Param("employeeName") String employeeName
-    );
+      @Param("employeeName") String employeeName,
+      @Param("keyword") String keyword);
 }

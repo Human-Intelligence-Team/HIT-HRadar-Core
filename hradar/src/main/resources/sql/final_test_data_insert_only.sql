@@ -411,7 +411,7 @@ INSERT INTO company_application
  reject_reason, reviewed_at, reviewed_by)
 VALUES
     (1, '서울시 강남구 테헤란로', '123-45-67890', '02-1234-5678', '테스트컴퍼니',
-     'admin@hradar.com', 'admin', '관리자', 'APPROVED',
+     'admin@hradar.com', 'hr01', '인사팀장01', 'APPROVED',
      NULL, NULL, NULL);
 
 -- =========================================================
