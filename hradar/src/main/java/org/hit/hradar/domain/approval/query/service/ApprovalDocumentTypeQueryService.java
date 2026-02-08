@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.hit.hradar.domain.approval.command.infrastructure.ApprovalDocumentTypeJpaRepository;
+import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalAttendanceCategory;
 import org.hit.hradar.domain.approval.query.dto.response.ApprovalDocumentTypeResponse;
 import org.hit.hradar.domain.leave.query.service.LeavePolicyQueryService;
 import org.springframework.stereotype.Service;
@@ -35,11 +36,11 @@ public class ApprovalDocumentTypeQueryService {
             .stream()
             .map(p -> new ApprovalDocumentTypeResponse(
                 p.getPolicyId(),
+                p.getTypeCode(),
                 p.getTypeName(),
-                p.getTypeName(),
-                p.getIsActive() == 'Y',
-                org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalAttendanceCategory.VACATION,
-                0 // Leave policies usually don't have static overtime
+                'Y' == p.getIsActive(),
+                ApprovalAttendanceCategory.VACATION,
+                0
             ))
             .toList()
     );

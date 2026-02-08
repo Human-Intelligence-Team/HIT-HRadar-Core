@@ -37,25 +37,34 @@ public class EmployeeCsvPreviewService {
     private static final Pattern DATE_PATTERN = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$");
 
     /**
-     * CSV 파일을 파싱하고 유효성을 검증하여 미리보기 결과를 반환합니다.
+     * CSV 또는 엑셀 파일을 파싱하고 유효성을 검증하여 미리보기 결과를 반환합니다.
      *
      * @param companyId 회사 ID
-     * @param file      업로드된 CSV 파일
+     * @param file      업로드된 파일
      * @return 미리보기 결과 (유효성 검사 포함)
      */
     @Transactional(readOnly = true)
     public EmployeeCsvPreviewResponse preview(Long companyId, MultipartFile file) {
-        // 1. CSV 파싱
-        CsvParseResult parseResult;
-        try {
-            parseResult = csvParser.parse(file);
-        } catch (Exception e) {
+        // 1. 파일 파싱 (CSV 전용)
+        Map<String, Integer> header;
+        List<String[]> rows;
+
+        String filename = file.getOriginalFilename();
+        // 엑셀 파일은 더 이상 지원하지 않음 (또는 클라이언트에서 막음)
+        // 하지만 혹시 들어오면 에러 처리
+        if (filename != null && (filename.endsWith(".xlsx") || filename.endsWith(".xls"))) {
             throw new BusinessException(EmployeeErrorCode.INVALID_CSV_FORMAT,
-                    "CSV 파일 파싱 중 오류가 발생했습니다: " + e.getMessage());
+                    "엑셀 파일(.xlsx, .xls)은 지원하지 않습니다. CSV 파일을 업로드해주세요.");
         }
 
-        Map<String, Integer> header = parseResult.getHeaderIndex();
-        List<String[]> rows = parseResult.getRows();
+        try {
+            CsvParseResult result = csvParser.parse(file);
+            header = result.getHeaderIndex();
+            rows = result.getRows();
+        } catch (Exception e) {
+            throw new BusinessException(EmployeeErrorCode.INVALID_CSV_FORMAT,
+                    "파일 파싱 중 오류가 발생했습니다: " + e.getMessage());
+        }
 
         List<EmployeeCsvPreviewRow> previewRows = new ArrayList<>();
         int validCount = 0;
@@ -156,6 +165,7 @@ public class EmployeeCsvPreviewService {
             errors.add("이름 누락");
         if (isEmpty(email))
             errors.add("이메일 누락");
+        // phoneNo는 선택일 수도 있지만 기존 로직 유지
         if (isEmpty(phoneNo))
             errors.add("전화번호 누락");
         if (isEmpty(employeeNo))
@@ -229,7 +239,7 @@ public class EmployeeCsvPreviewService {
 
         if (index == null || index >= rowData.length)
             return null;
-        String val = rowData[index].trim();
+        String val = rowData[index] == null ? "" : rowData[index].trim();
         return val.isEmpty() ? null : val;
     }
 

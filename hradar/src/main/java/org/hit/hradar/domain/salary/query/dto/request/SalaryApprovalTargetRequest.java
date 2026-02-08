@@ -1,10 +1,12 @@
 package org.hit.hradar.domain.salary.query.dto.request;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalStatus;
 import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 
 @Getter
+@NoArgsConstructor
 public class SalaryApprovalTargetRequest {
 
   private ApprovalStatus approvalStatus;  // 결재 상태

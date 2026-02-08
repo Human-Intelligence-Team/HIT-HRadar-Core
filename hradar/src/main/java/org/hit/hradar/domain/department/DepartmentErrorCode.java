@@ -7,10 +7,12 @@ import org.springframework.http.HttpStatusCode;
 
 @Getter
 public enum DepartmentErrorCode implements ErrorCode {
-    DEPARTMENT_NOT_FOUND("DEPT_001", "존재하지 않는 부서입니다." , HttpStatus.NOT_FOUND),
-  DUPLICATE_DEPARTMENT_NAME("DEPT_002", "이미 사용중인 부서명입니다.", HttpStatus.CONFLICT),
-  INVALID_PARENT_DEPARTMENT("DEPT_003", "상위 부서가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
-  ;
+    DEPARTMENT_NOT_FOUND("DEPT_001", "존재하지 않는 부서입니다.", HttpStatus.NOT_FOUND),
+    DUPLICATE_DEPARTMENT_NAME("DEPT_002", "이미 사용중인 부서명입니다.", HttpStatus.CONFLICT),
+    INVALID_PARENT_DEPARTMENT("DEPT_003", "상위 부서가 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
+    CANNOT_DELETE_HAS_CHILDREN("DEPT_004", "하위 부서가 존재하여 삭제할 수 없습니다.", HttpStatus.CONFLICT),
+    CANNOT_DELETE_HAS_EMPLOYEES("DEPT_005", "소속된 사원이 존재하여 삭제할 수 없습니다.", HttpStatus.CONFLICT),
+    ;
 
     private final String errorCode;
     private final String message;
@@ -21,6 +23,7 @@ public enum DepartmentErrorCode implements ErrorCode {
         this.message = message;
         this.httpStatus = httpStatus;
     }
+
     @Override
     public String getErrorCode() {
         return errorCode;

@@ -14,6 +14,9 @@ import org.hit.hradar.domain.approval.event.ApprovalEvent;
 import org.hit.hradar.domain.approval.event.ApprovalEventType;
 import org.hit.hradar.domain.attendance.command.domain.aggregate.AttendanceWorkPlan;
 import org.hit.hradar.domain.attendance.command.infrastructure.AttendanceWorkPlanJpaRepository;
+import org.hit.hradar.global.notification.HrNotificationProducer;
+import org.hit.hradar.global.notification.NotificationDTO;
+import org.hit.hradar.global.notification.NotificationType;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,7 @@ public class ApprovalCompleteEventListener {
     private final AttendanceWorkPlanJpaRepository workPlanRepository;
     private final org.hit.hradar.domain.approval.command.infrastructure.ApprovalDocumentTypeJpaRepository documentTypeRepository;
     private final ObjectMapper objectMapper;
+    private final HrNotificationProducer hrNotificationProducer;
 
     @EventListener
     @Transactional
@@ -61,10 +65,10 @@ public class ApprovalCompleteEventListener {
             return;
         }
 
-        createAttendanceWorkPlan(doc, docType);
+        createAttendanceWorkPlan(doc, docType, event.getActorId());
     }
 
-    private void createAttendanceWorkPlan(ApprovalDocument doc, org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocumentType docType) {
+    private void createAttendanceWorkPlan(ApprovalDocument doc, org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalDocumentType docType, Long actorId) {
         org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalAttendanceCategory category = docType.getAttendanceCategory();
         // Fetch Payload
         ApprovalPayload payloadEntity = payloadRepository.findByDocId(doc.getDocId()).orElse(null);
@@ -131,6 +135,16 @@ public class ApprovalCompleteEventListener {
             workPlanRepository.save(plan);
             log.info("Created AttendanceWorkPlan (Dynamic) for docId: {}, category: {}, range: {} ~ {}", 
                      doc.getDocId(), category, startDate, endDate);
+
+            // Notify real-time calendar updates
+            hrNotificationProducer.sendNotification(new NotificationDTO(
+                NotificationType.ATTENDANCE_CHANGED,
+                doc.getWriterId(),
+                "근무 계획 승인",
+                "새로운 근무 계획이 승인되었습니다.",
+                "/attendance/commute",
+                actorId
+            ));
 
         } catch (Exception e) {
             log.error("Failed to process attendance work plan for docId: {}", doc.getDocId(), e);

@@ -97,7 +97,7 @@ public class Employee extends BaseTimeEntity {
   }
 
   public void updateEmployee(String name, String email, Gender gender, String birth, LocalDate hireDate,
-      LocalDate exitDate, String image, String extNo, String phoneNo, String note) {
+      LocalDate exitDate, String image, String extNo, String phoneNo, String note, EmploymentType employmentType) {
     this.name = name;
     this.email = email;
     this.gender = gender;
@@ -108,6 +108,9 @@ public class Employee extends BaseTimeEntity {
     this.extNo = extNo;
     this.phoneNo = phoneNo;
     this.note = note;
+    if (employmentType != null) {
+      this.employmentType = employmentType;
+    }
   }
 
   public void deletedEmployee() {
@@ -139,6 +142,10 @@ public class Employee extends BaseTimeEntity {
     if (v.equals(this.employeeNo))
       return;
     this.employeeNo = v;
+  }
+
+  public void updateProfileImage(String image) {
+    this.image = image;
   }
 
 }

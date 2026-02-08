@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ContentDTO {
 
   private Long contentId;
@@ -24,11 +26,13 @@ public class ContentDTO {
   private Character isDeleted; // 사용여부
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
+
+  private String reason;
   // 태그
   private List<TagDTO> tags;
 
   public ContentDTO(Long contentId, String title, Long type, String typeCode,String typeName,Long level,
-      String levelCode, String levelName,Integer learningTime, String resourcePath, Character isDeleted, List<TagDTO> tags) {
+      String levelCode, String levelName,Integer learningTime, String resourcePath, Character isDeleted, String reason, List<TagDTO> tags) {
 
     this.contentId = contentId;
     this.title = title;
@@ -41,6 +45,7 @@ public class ContentDTO {
     this.learningTime = learningTime;
     this.resourcePath = resourcePath;
     this.isDeleted = isDeleted;
+    this.reason = reason;
     this.tags = tags;
   }
 

@@ -51,7 +51,12 @@ public class DeptGradeQueryController {
         Employee emp = employeeRepository.findById(authUser.employeeId()).orElseThrow();
         Long deptId = emp.getDeptId();
 
-        DeptGrade deptGrade = deptGradeRepository.findByDepartmentId(deptId).orElseThrow();
+        DeptGrade deptGrade =
+                deptGradeRepository.findByDepartmentId(deptId).orElse(null);
+
+        if (deptGrade == null) {
+            return ResponseEntity.ok(ApiResponse.success(null));
+        }
         Grade deptgrade = gradeRepository.findById(deptGrade.getGradeId()).orElseThrow();
 
         MyDeptGradeResponseDto response = new MyDeptGradeResponseDto();

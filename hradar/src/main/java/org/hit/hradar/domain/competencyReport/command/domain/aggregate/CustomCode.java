@@ -21,25 +21,12 @@ import org.hit.hradar.global.dto.BaseTimeEntity;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 @Entity
-@Table(
-    name = "COMPETENCY_REPORT_CUSTOM_CODE",
-    uniqueConstraints = {
-        @UniqueConstraint(
-            name = "uk_company_group_custom",
-            columnNames = {"com_id", "group_code", "custom_code"}
-        )
-    },
-    indexes = {
-        @Index(
-            name = "idx_group_code",
-            columnList = "com_id, group_code"
-        ),
-        @Index(
-            name = "idx_group_custom",
-            columnList = "com_id, group_code, sort_order"
-        )
-    }
-)
+@Table(name = "COMPETENCY_REPORT_CUSTOM_CODE", uniqueConstraints = {
+    @UniqueConstraint(name = "uk_company_group_custom", columnNames = { "com_id", "group_code", "custom_code" })
+}, indexes = {
+    @Index(name = "idx_group_code", columnList = "com_id, group_code"),
+    @Index(name = "idx_group_custom", columnList = "com_id, group_code, sort_order")
+})
 public class CustomCode extends BaseTimeEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,7 +64,8 @@ public class CustomCode extends BaseTimeEntity {
     }
   }
 
-  public CustomCode(Long comId, String groupCode, String groupName, String customCode,String customName, String customDesc, Character isDeleted) {
+  public CustomCode(Long comId, String groupCode, String groupName, String customCode, String customName,
+      String customDesc, Character isDeleted) {
     this.comId = comId;
     this.groupCode = groupCode;
     this.groupName = groupName;
@@ -88,8 +76,9 @@ public class CustomCode extends BaseTimeEntity {
 
   }
 
-  public static CustomCode create(Long comId, String groupCode, String groupName,String customCode,String customName, String customDesc, Character isDeleted) {
-    return new CustomCode(comId, groupCode, groupName,customCode, customName, customDesc, isDeleted);
+  public static CustomCode create(Long comId, String groupCode, String groupName, String customCode, String customName,
+      String customDesc) {
+    return new CustomCode(comId, groupCode, groupName, customCode, customName, customDesc, 'N');
   }
 
 }

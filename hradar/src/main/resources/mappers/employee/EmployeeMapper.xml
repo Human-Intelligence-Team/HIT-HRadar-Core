@@ -113,7 +113,15 @@
       AND e.position_id = #{positionId}
     </if>
     <if test="employeeName != null and employeeName != ''">
-      AND e.NAME LIKE CONCAT('%', #{employeeName}, '%')
+      AND e.name LIKE CONCAT('%', #{employeeName}, '%')
+    </if>
+
+    <if test="keyword != null and keyword != ''">
+      AND (
+        e.name LIKE CONCAT('%', #{keyword}, '%')
+        OR
+        e.employee_no LIKE CONCAT('%', #{keyword}, '%')
+      )
     </if>
 
 

@@ -33,7 +33,8 @@ public class EmployeeQueryService {
       positionId = request.getPositionId();
     }
 
-    List<EmployeeResponse> employees = employeeQueryMapper.findList(comId, deptId, positionId, request.getEmployeeName());
+    List<EmployeeResponse> employees = employeeQueryMapper.findList(comId, deptId, positionId,
+        request.getEmployeeName(), request.getKeyword());
     return EmployeeListResponse.of(employees);
   }
 }

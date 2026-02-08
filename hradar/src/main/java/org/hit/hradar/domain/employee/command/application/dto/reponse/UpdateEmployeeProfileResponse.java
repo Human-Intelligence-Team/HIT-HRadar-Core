@@ -20,4 +20,5 @@ public class UpdateEmployeeProfileResponse {
   private String extNo;
   private String phoneNo;
   private String note;
+  private org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType employmentType;
 }

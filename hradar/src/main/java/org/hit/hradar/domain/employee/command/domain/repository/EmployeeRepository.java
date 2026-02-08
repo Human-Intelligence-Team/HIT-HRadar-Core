@@ -21,4 +21,8 @@ public interface EmployeeRepository {
   List<Employee> findAllByComIdAndDeptIdAndIsDeleted(Long companyId, Long deptId, Character isDeleted);
 
   List<Employee> findAllByComIdAndPositionIdAndIsDeleted(Long companyId, Long positionId, Character isDeleted);
+
+  boolean existsByDeptIdAndIsDeleted(Long deptId, Character isDeleted);
+
+  boolean existsByPositionIdAndIsDeleted(Long positionId, Character isDeleted);
 }

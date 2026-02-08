@@ -50,6 +50,19 @@ public class EmployeeProfileCommandController {
     return ResponseEntity.ok(ApiResponse.success(response));
   }
 
+  @Operation(summary = "사원 프로필 사진 업로드", description = "사원의 프로필 사진을 업로드하고 URL을 반환합니다.")
+  @PostMapping(value = "/{empId}/profile-image", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<ApiResponse<String>> uploadProfileImage(
+      @PathVariable Long empId,
+      @RequestPart("file") org.springframework.web.multipart.MultipartFile file,
+      @CurrentUser AuthUser authUser) {
+    Long companyId = authUser.companyId();
+
+    String imageUrl = employeeCommandService.uploadProfileImage(companyId, empId, file);
+
+    return ResponseEntity.ok(ApiResponse.success(imageUrl));
+  }
+
   @Operation(summary = "사원 삭제", description = "시스템에서 정해진 사원의 정보를 삭제 처리합니다.")
   @DeleteMapping("/{empId}")
   public ResponseEntity<ApiResponse<Void>> deleteEmployee(

@@ -10,11 +10,14 @@ import org.hit.hradar.global.exception.BusinessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.hit.hradar.domain.employee.command.domain.repository.EmployeeRepository;
+
 @Service
 @RequiredArgsConstructor
 public class PositionCommandService {
 
   private final PositionRepository positionRepository;
+  private final EmployeeRepository employeeRepository;
 
   private Long requireComId(Long companyId) {
     if (companyId == null) {
@@ -63,6 +66,9 @@ public class PositionCommandService {
     Positions position = positionRepository.findByPositionIdAndComIdAndIsDeleted(positionId, comId, 'N')
         .orElseThrow(() -> new BusinessException(PositionErrorCode.POSITION_NOT_FOUND));
 
+    if (employeeRepository.existsByPositionIdAndIsDeleted(positionId, 'N')) {
+      throw new BusinessException(PositionErrorCode.CANNOT_DELETE_HAS_EMPLOYEES);
+    }
 
     position.isDeleted();
   }

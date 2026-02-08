@@ -29,13 +29,18 @@ public class LocalFileStorageClient implements FileStorageClient {
         String extension = extractExtension(originalName);
 
         // 저장용 파일명 (점 포함)
-        String storedName = UUID.randomUUID() + "." + extension;
+        String savedFileName = UUID.randomUUID() + "." + extension;
+
+        // 타입별 경로 (images, attachments, profiles 등)
+        String typePath = type.getPath();
 
         try {
-            Path dirPath = Path.of(baseDir);
+            // baseDir + typePath 경로 생성
+            Path dirPath = Path.of(baseDir, typePath);
             Files.createDirectories(dirPath);
 
-            Path target = dirPath.resolve(storedName);
+            // 파일 저장
+            Path target = dirPath.resolve(savedFileName);
             try (InputStream in = file.getInputStream()) {
                 Files.copy(in, target);
             }
@@ -44,9 +49,11 @@ public class LocalFileStorageClient implements FileStorageClient {
             throw new BusinessException(FileErrorCode.FAIL_UPLOAD, e);
         }
 
-        // 접근 URL
-        String typePath = (type == FileType.IMAGE) ? "images" : "attachments";
-        String url = "/api/v1/files/" + typePath + "/" + storedName;
+        // 접근 URL: /api/v1/files/{typePath}/{savedFileName}
+        String url = "/api/v1/files/" + typePath + "/" + savedFileName;
+
+        // DB 저장용 storedName: typePath/savedFileName
+        String storedName = typePath + "/" + savedFileName;
 
         return new StoredFile(url, storedName);
     }

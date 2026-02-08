@@ -5,5 +5,5 @@ import org.hit.hradar.domain.competencyReport.command.domain.aggregate.ReportCon
 
 public interface ReportContentRepository {
 
-  void saveAll(List<ReportContent> reportContents);
+  void saveAllIfNotEmpty(List<ReportContent> reportContents);
 }
