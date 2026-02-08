@@ -12,9 +12,13 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.UUID;
 
 @Slf4j
@@ -24,12 +28,16 @@ import java.util.UUID;
 public class S3FileStorageClient implements FileStorageClient {
 
     private final S3Client s3Client;
+    private final S3Presigner s3Presigner;
 
     @Value("${file.s3.bucket}")
     private String bucket;
 
     @Value("${file.s3.prefix:}")
     private String prefix;
+
+    @Value("${file.s3.presign-minutes:10}")
+    private long presignMinutes;
 
     @Override
     public StoredFile upload(MultipartFile file, FileType type) {
@@ -108,10 +116,23 @@ public class S3FileStorageClient implements FileStorageClient {
 
     @Override
     public String generatePresignedUrl(String storedName) {
-        // Disabled due to dependency resolution issues with s3-presigner
-        // Returning null triggers the generic streaming fallback in FileProxyController
-        log.warn("Presigned URL generation requested but S3Presigner is disabled. Falling back to stream.");
-        return null;
+        if (storedName == null || storedName.isBlank()) {
+            return null;
+        }
+
+        String key = prefix + storedName;
+        GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(presignMinutes))
+                .getObjectRequest(getObjectRequest)
+                .build();
+
+        PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignRequest);
+        return presignedRequest.url().toString();
     }
 
     private String extractExtension(String filename) {
