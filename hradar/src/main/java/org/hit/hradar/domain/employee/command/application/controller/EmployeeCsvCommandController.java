@@ -42,22 +42,23 @@ public class EmployeeCsvCommandController {
     private final EmployeeCsvTemplateService employeeCsvTemplateService;
 
     /**
-     * 사원 일괄 등록용 CSV 템플릿 파일을 다운로드합니다.
+     * 사원 일괄 등록용 엑셀 템플릿 파일을 다운로드합니다.
      *
-     * @return CSV 파일 리소스
+     * @return Excel 파일 리소스
      */
-    @Operation(summary = "사원 일괄 등록 템플릿 다운로드", description = "사원 일괄 등록을 위한 CSV 템플릿 파일을 다운로드합니다.")
+    @Operation(summary = "사원 일괄 등록 템플릿 다운로드", description = "사원 일괄 등록을 위한 엑셀(XLSX) 템플릿 파일을 다운로드합니다.")
     @GetMapping("/template")
     public ResponseEntity<ByteArrayResource> downloadTemplate() {
         byte[] data = employeeCsvTemplateService.getTemplateBytes();
         ByteArrayResource resource = new ByteArrayResource(data);
 
-        String filename = "사원등록_템플릿.csv";
+        String filename = "사원등록_템플릿.xlsx";
         String encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"")
-                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
+                .contentType(
+                        MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .contentLength(data.length)
                 .body(resource);
     }
