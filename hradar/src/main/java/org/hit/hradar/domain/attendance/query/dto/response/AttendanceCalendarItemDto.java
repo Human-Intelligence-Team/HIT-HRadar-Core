@@ -1,6 +1,7 @@
 package org.hit.hradar.domain.attendance.query.dto.response;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -21,5 +22,6 @@ public class AttendanceCalendarItemDto {
   private Integer overtimeMinutes;
   private String location;
 
-
+  private LocalDateTime checkInTime;
+  private LocalDateTime checkOutTime;
 }
