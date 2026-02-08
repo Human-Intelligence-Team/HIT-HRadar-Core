@@ -527,7 +527,7 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
 	아키텍처 구조도 자세히 보려면 [여기](https://app.diagrams.net/#G1LPNRuxvUPA9K1NXrrZWdV01yKCUTH6RZ#%7B%22pageId%22%3A%22qR65Kjy7YShbSICQCzts%22%7D)를 클릭하세요 <br>
 
 	<details> <summary> 시스템 아키텍처 구조도 </summary>
-		<img width="1438" height="1525" alt="HRadar System Architecture drawio" src="https://github.com/user-attachments/assets/b02b3fce-44dd-420e-997c-cbff8b428966" />
+		<img width="1438" height="1525" alt="HRadar System Architecture drawio" src="https://github.com/user-attachments/assets/145b87fe-8a06-4a55-8a75-e9df43bdcbf1" />
   </details>
 
 - ### 📚 CI/CD 계획서
