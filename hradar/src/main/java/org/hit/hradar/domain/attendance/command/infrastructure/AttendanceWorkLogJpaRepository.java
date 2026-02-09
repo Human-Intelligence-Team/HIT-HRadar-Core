@@ -9,6 +9,8 @@ public interface AttendanceWorkLogJpaRepository
 
   boolean existsByAttendanceIdAndEndAtIsNull(Long attendanceId);
 
+  boolean existsByAttendanceId(Long attendanceId);
+
   Optional<AttendanceWorkLog>
   findTopByAttendanceIdAndEndAtIsNullOrderByStartAtDesc(Long attendanceId);
 }
