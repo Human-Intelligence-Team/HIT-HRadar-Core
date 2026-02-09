@@ -30,8 +30,19 @@ public class PositionCommandService {
   public Long createPosition(CreatePositionRequest request, Long companyId) {
     Long comId = requireComId(companyId);
 
+    // 1. Validate Rank > 0
+    if (request.getRank() == null || request.getRank() <= 0) {
+      throw new BusinessException(PositionErrorCode.INVALID_POSITION_RANK);
+    }
+
+    // 2. Validate Duplicate Name (Absolute Prohibited)
     if (positionRepository.existsByNameAndComIdAndIsDeleted(request.getName(), comId, 'N')) {
       throw new BusinessException(PositionErrorCode.DUPLICATE_POSITION_NAME);
+    }
+
+    // 3. Validate Duplicate Rank (Optional extra safety)
+    if (positionRepository.existsByRankAndComIdAndIsDeleted(request.getRank(), comId, 'N')) {
+      throw new BusinessException(PositionErrorCode.DUPLICATE_POSITION_RANK);
     }
 
     Positions position = Positions.builder()
@@ -48,12 +59,25 @@ public class PositionCommandService {
   public void updatePosition(Long positionId, Long companyId, UpdatePositionRequest request) {
     Long comId = requireComId(companyId);
 
+    // 1. Validate Rank > 0
+    if (request.getRank() == null || request.getRank() <= 0) {
+      throw new BusinessException(PositionErrorCode.INVALID_POSITION_RANK);
+    }
+
     Positions position = positionRepository.findByPositionIdAndComIdAndIsDeleted(positionId, comId, 'N')
         .orElseThrow(() -> new BusinessException(PositionErrorCode.POSITION_NOT_FOUND));
 
-    if (!position.getName().equals(request.getName())
-        && positionRepository.existsByNameAndComIdAndIsDeleted(request.getName(), comId, 'N')) {
+    boolean nameChanged = !position.getName().equals(request.getName());
+    boolean rankChanged = !position.getRank().equals(request.getRank());
+
+    // 2. Validate Duplicate Name (if changed)
+    if (nameChanged && positionRepository.existsByNameAndComIdAndIsDeleted(request.getName(), comId, 'N')) {
       throw new BusinessException(PositionErrorCode.DUPLICATE_POSITION_NAME);
+    }
+
+    // 3. Validate Duplicate Rank (if changed)
+    if (rankChanged && positionRepository.existsByRankAndComIdAndIsDeleted(request.getRank(), comId, 'N')) {
+      throw new BusinessException(PositionErrorCode.DUPLICATE_POSITION_RANK);
     }
 
     position.updatePosition(request.getName(), request.getRank());

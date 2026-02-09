@@ -20,5 +20,14 @@ public interface EmployeeQueryMapper {
       @Param("deptId") Long deptId,
       @Param("positionId") Long positionId,
       @Param("employeeName") String employeeName,
+      @Param("keyword") String keyword,
+      @Param("offset") int offset,
+      @Param("size") int size);
+
+  long countList(
+      @Param("comId") Long comId,
+      @Param("deptId") Long deptId,
+      @Param("positionId") Long positionId,
+      @Param("employeeName") String employeeName,
       @Param("keyword") String keyword);
 }

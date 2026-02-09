@@ -8,45 +8,45 @@
     parameterType="Long"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CustomCodeDTO">
 
-    SELECT crc.CUSTOM_CODE_ID
-         , crc.GROUP_CODE
-         , crc.GROUP_NAME
-      FROM competency_report_custom_code crc
-     WHERE crc.COM_ID = #{comId}
-       AND crc.CUSTOM_CODE IS NULL
-     GROUP BY crc.CUSTOM_CODE_ID, crc.GROUP_CODE, crc.GROUP_NAME
+    select crc.custom_code_id
+         , crc.group_code
+         , crc.group_name
+      from competency_report_custom_code crc
+     where crc.com_id = #{comId}
+       and crc.custom_code is null
+     group by crc.custom_code_id, crc.group_code, crc.group_name
   </select>
 
   <select id="findAllCustomCodeByGroupCode"
     parameterType="org.hit.hradar.domain.competencyReport.command.application.dto.request.CustomCodeSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CustomCodeDTO">
-    SELECT crc.CUSTOM_CODE_ID
-         , crc.GROUP_CODE
-         , crc.GROUP_NAME
-         , crc.CUSTOM_CODE
-         , crc.CUSTOM_NAME
-      FROM competency_report_custom_code crc
-     WHERE crc.COM_ID = #{comId}
+    select crc.custom_code_id
+         , crc.group_code
+         , crc.group_name
+         , crc.custom_code
+         , crc.custom_name
+      from competency_report_custom_code crc
+     where crc.com_id = #{comId}
     <if test="groupCode != null">
-       AND crc.GROUP_CODE = #{groupCode}
+       and crc.group_code = #{groupCode}
     </if>
-       AND crc.CUSTOM_CODE IS NOT NULL
-     ORDER BY crc.CUSTOM_CODE_ID
+       and crc.custom_code is not null
+     order by crc.custom_code_id
   </select>
 
   <select id="findAllCustomCodes"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.CustomCodeDTO">
-    SELECT crc.CUSTOM_CODE_ID
-         , crc.GROUP_CODE
-         , crc.GROUP_NAME
-         , crc.CUSTOM_CODE
-         , crc.CUSTOM_NAME
-         , crc.IS_DELETED
-      FROM competency_report_custom_code crc
-     WHERE crc.COM_ID = #{comId}
-       AND crc.GROUP_CODE = #{groupCode}
-       AND crc.CUSTOM_CODE IS NOT NULL
-       AND crc.IS_DELETED = 'N'
-     ORDER BY crc.CUSTOM_CODE_ID
+    select crc.custom_code_id
+         , crc.group_code
+         , crc.group_name
+         , crc.custom_code
+         , crc.custom_name
+         , crc.is_deleted
+      from competency_report_custom_code crc
+     where crc.com_id = #{comId}
+       and crc.group_code = #{groupCode}
+       and crc.custom_code is not null
+       and crc.is_deleted = 'N'
+     order by crc.custom_code_id
   </select>
 </mapper>

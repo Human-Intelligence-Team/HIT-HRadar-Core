@@ -8,96 +8,97 @@
     parameterType="org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO">
     <!-- 학습 컨텐츠 목록 조회 -->
-    SELECT ct.CONTENT_ID        AS contentId
-         , ct.LEARNING_TIME     AS learningTime
-         , ct.LEVEL             AS LEVEL
-         , levelCode.CUSTOM_NAME  AS levelName
-         , ct.RESOURCE_PATH     AS resourcePath
-         , ct.TITLE             AS title
-         , typeCode.CUSTOM_NAME  AS typeName
-         , tg.TAG_ID           AS tagId
-         , tg.TAG_NAME         AS tagName
-         , ct.IS_DELETED        AS isDeleted
-      FROM CONTENT ct
-      JOIN CONTENT_TAG ctt ON ct.CONTENT_ID = ctt.CONTENT_ID
-      JOIN COMPETENCY_REPORT_CUSTOM_CODE typeCode ON ct.TYPE = typeCode.CUSTOM_CODE_ID
-       AND typeCode.IS_DELETED = 'N'
-      JOIN COMPETENCY_REPORT_CUSTOM_CODE levelCode ON ct.LEVEL = levelCode.CUSTOM_CODE_ID
-       AND levelCode.IS_DELETED = 'N'
-      JOIN tag tg ON ctt.tag_id = tg.TAG_ID
-       AND tg.IS_DELETED = 'N'
-     WHERE ct.IS_DELETED = 'N'
-       AND ct.COMPANY_ID = #{comId}
+    select ct.content_id        as contentId
+         , ct.learning_time     as learningTime
+         , ct.level             as level
+         , levelcode.custom_name  as levelName
+         , ct.resource_path     as resourcePath
+         , ct.title             as title
+         , typecode.custom_name  as typeName
+         , tg.tag_id           as tagId
+         , tg.tag_name         as tagName
+         , ct.is_deleted        as isDeleted
+      from content ct
+      join content_tag ctt on ct.content_id = ctt.content_id
+      join competency_report_custom_code typecode on ct.type = typecode.custom_code_id
+       and typecode.is_deleted = 'N'
+      join competency_report_custom_code levelcode on ct.level = levelcode.custom_code_id
+       and levelcode.is_deleted = 'N'
+      join tag tg on ctt.tag_id = tg.tag_id
+       and tg.is_deleted = 'N'
+     where ct.is_deleted = 'N'
+       and ct.company_id = #{comId}
     <if test="level != null">
-       AND ct.LEVEL = #{level}
+       and ct.level = #{level}
     </if>
     <if test="title != null and title != ''">
-       AND ct.TITLE LIKE CONCAT('%', #{title}, '%')
+       and ct.title like concat('%', #{title}, '%')
     </if>
     <if test="type != null">
-       AND ct.TYPE = #{type}
+       and ct.type = #{type}
     </if>
     <if test="learningTime != null">
-      AND ct.LEARNING_TIME &lt;= #{learningTime}
+       and ct.learning_time &lt;= #{learningTime}
     </if>
     <if test="tag != null and tag != ''">
-      AND tg.TAG_NAME LIKE CONCAT('%', #{tag}, '%')
+       and tg.tag_name like concat('%', #{tag}, '%')
     </if>
+     order by ct.created_at desc
 
   </select>
   <select id="findContentByContentId"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentDTO">
     <!-- 학습컨텐츠 상세 조회 -->
-    SELECT ct.CONTENT_ID      AS contentId
-         , ct.TITLE           AS title
-         , ct.TYPE            AS type
-         , typeCode.CUSTOM_CODE AS typeCode
-         , typeCode.CUSTOM_NAME  AS typeName
-         , ct.LEVEL           AS level
-         , levelCode.CUSTOM_CODE AS levelCode
-         , levelCode.CUSTOM_NAME  AS levelName
-         , ct.LEARNING_TIME   AS learningTime
-         , ct.RESOURCE_PATH   AS resourcePath
-         , ct.NOTES		        AS notes
-         , ct.IS_DELETED      AS isDeleted
-         , ct.CREATED_AT 	    AS createdAt
-         , ct.UPDATED_AT 	    AS updatedAt
-      FROM CONTENT ct
-      JOIN COMPETENCY_REPORT_CUSTOM_CODE typeCode
-        ON ct.TYPE = typeCode.CUSTOM_CODE_ID
-       AND typeCode.IS_DELETED = 'N'
-      JOIN COMPETENCY_REPORT_CUSTOM_CODE levelCode
-        ON ct.LEVEL = levelCode.CUSTOM_CODE_ID
-       AND levelCode.IS_DELETED = 'N'
-     WHERE ct.CONTENT_ID = #{contentId}
-       AND ct.COMPANY_ID = #{comId}
+    select ct.content_id      as contentId
+         , ct.title           as title
+         , ct.type            as type
+         , typecode.custom_code as typeCode
+         , typecode.custom_name  as typeName
+         , ct.level           as level
+         , levelcode.custom_code as levelCode
+         , levelcode.custom_name  as levelName
+         , ct.learning_time   as learningTime
+         , ct.resource_path   as resourcePath
+         , ct.notes          as notes
+         , ct.is_deleted      as isDeleted
+         , ct.created_at      as createdAt
+         , ct.updated_at      as updatedAt
+      from content ct
+      join competency_report_custom_code typecode
+        on ct.type = typecode.custom_code_id
+       and typecode.is_deleted = 'N'
+      join competency_report_custom_code levelcode
+        on ct.level = levelcode.custom_code_id
+       and levelcode.is_deleted = 'N'
+     where ct.content_id = #{id}
+       and ct.company_id = #{comId}
 
   </select>
 
   <select id="findContentByCompetencyReportId"
     resultType="org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO">
     <!-- 학습 컨텐츠 목록, 태그 목록 조회 -->
-    SELECT rc.COMPETENCY_REPORT_ID
-         , rc.REASON
-         , ct.CONTENT_ID
-         , ct.TITLE
-         , ct.TYPE            AS type
-         , ct.LEVEL           AS LEVEL
-         , levelCode.CUSTOM_CODE AS levelCode
-         , levelCode.CUSTOM_NAME  AS levelName
-         , ct.LEARNING_TIME
-         , ct.RESOURCE_PATH   AS resourcePath
-         , tg.TAG_ID
-         , tg.TAG_NAME
-      FROM report_content rc
-      JOIN CONTENT ct ON rc.CONTENT_ID = ct.CONTENT_ID
-      JOIN CONTENT_TAG ctt ON rc.CONTENT_ID = ct.CONTENT_ID
-      JOIN TAG tg ON ctt.TAG_ID = tg.TAG_ID
-      JOIN COMPETENCY_REPORT_CUSTOM_CODE levelCode
-        ON ct.LEVEL = levelCode.CUSTOM_CODE_ID
-     WHERE COMPETENCY_REPORT_ID = #{competencyReportId}
-       AND ct.IS_DELETED = "N"
-       AND ct.COMPANY_ID = #{comId}
-     ORDER BY ct.CONTENT_ID asc
+    select rc.competency_report_id
+         , rc.reason
+         , ct.content_id
+         , ct.title
+         , ct.type            as type
+         , ct.level           as level
+         , levelcode.custom_code as levelCode
+         , levelcode.custom_name  as levelName
+         , ct.learning_time
+         , ct.resource_path   as resourcePath
+         , tg.tag_id
+         , tg.tag_name
+      from report_content rc
+      join content ct on rc.content_id = ct.content_id
+      join content_tag ctt on rc.content_id = ctt.content_id
+      join tag tg on ctt.tag_id = tg.tag_id
+      join competency_report_custom_code levelcode
+        on ct.level = levelcode.custom_code_id
+     where rc.competency_report_id = #{competencyReportId}
+       and ct.is_deleted = 'N'
+       and ct.company_id = #{comId}
+     order by ct.content_id asc
   </select>
 </mapper>

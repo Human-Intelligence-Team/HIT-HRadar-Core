@@ -104,8 +104,8 @@ public class Content extends BaseTimeEntity {
 
     // trim
     String normalizedTitle = request.getTitle().trim();
-    String normalizedResourcePath = request.getResourcePath().trim();
-    String normalizedNotes = request.getNotes().trim();
+    String normalizedResourcePath = request.getResourcePath() == null ? null : request.getResourcePath().trim();
+    String normalizedNotes = request.getNotes() == null ? null : request.getNotes().trim();
 
     // update
     this.title = normalizedTitle;

@@ -28,7 +28,6 @@ public class ContentRowDTO {
    this.contentId = contentId;
     this.learningTime = learningTime;
     this.level = level;
-    this.levelCode = levelCode;
     this.levelName = levelName;
     this.resourcePath = resourcePath;
     this.title = title;

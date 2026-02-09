@@ -82,20 +82,31 @@ public class LeaveCommandService {
         .build();
 
     empLeaveJpaRepository.save(leave);
+  }
+
+  // 결재 승인 시 호출되어 실질적인 연차 차감 및 사용 내역 기록
+  public void approveLeave(Long docId) {
+    EmpLeave leave = empLeaveJpaRepository.findByDocId(docId)
+        .orElseThrow(() -> new BusinessException(LeaveErrorCode.LEAVE_NOT_FOUND));
+
+    // 중복 차감 방지 (이미 사용 내역이 있으면 패스)
+    if (leaveUsageJpaRepository.existsByLeaveId(leave.getLeaveId())) {
+        return;
+    }
 
     leaveUsageJpaRepository.save(
         LeaveUsage.create(
             leave.getLeaveId(),
-            request.getLeaveGrantId(),
-            request.getDays(),
-            request.getFromDate()
+            leave.getGrantId(),
+            leave.getLeaveDays(),
+            leave.getStartDate()
         )
     );
 
-// leave_grant remaining_days 차감
+    // leave_grant remaining_days 차감
     leaveUsageMapper.decreaseRemainingDays(
-        request.getLeaveGrantId(),
-        request.getDays()
+        leave.getGrantId(),
+        leave.getLeaveDays()
     );
   }
 }

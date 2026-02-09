@@ -91,6 +91,25 @@
     AND e.is_deleted = 'N'
   </sql>
 
+  <sql id="SearchCondition">
+    <if test="deptId != null">
+      AND e.dept_id = #{deptId}
+    </if>
+    <if test="positionId != null">
+      AND e.position_id = #{positionId}
+    </if>
+    <if test="employeeName != null and employeeName != ''">
+      AND e.name LIKE CONCAT('%', #{employeeName}, '%')
+    </if>
+    <if test="keyword != null and keyword != ''">
+      AND (
+        e.name LIKE CONCAT('%', #{keyword}, '%')
+        OR
+        e.employee_no LIKE CONCAT('%', #{keyword}, '%')
+      )
+    </if>
+  </sql>
+
   <select id="findById" resultMap="EmployeeResponseMap">
     SELECT
     <include refid="SelectColumns"/>
@@ -104,28 +123,16 @@
     <include refid="SelectColumns"/>
     <include refid="BaseFromJoin"/>
     <include refid="BaseWhere"/>
-
-    <if test="deptId != null">
-      AND e.dept_id = #{deptId}
-    </if>
-
-    <if test="positionId != null">
-      AND e.position_id = #{positionId}
-    </if>
-    <if test="employeeName != null and employeeName != ''">
-      AND e.name LIKE CONCAT('%', #{employeeName}, '%')
-    </if>
-
-    <if test="keyword != null and keyword != ''">
-      AND (
-        e.name LIKE CONCAT('%', #{keyword}, '%')
-        OR
-        e.employee_no LIKE CONCAT('%', #{keyword}, '%')
-      )
-    </if>
-
-
+    <include refid="SearchCondition"/>
     ORDER BY e.emp_id DESC
+    LIMIT #{size} OFFSET #{offset}
+  </select>
+
+  <select id="countList" resultType="long">
+    SELECT COUNT(*)
+    <include refid="BaseFromJoin"/>
+    <include refid="BaseWhere"/>
+    <include refid="SearchCondition"/>
   </select>
 
   <select id="findEmployeesForOrgChart"

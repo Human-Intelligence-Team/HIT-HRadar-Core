@@ -16,6 +16,6 @@ public interface TagMapper {
       @Param("comId") Long comId);
 
   List<TagDTO> findAllTagsByContentId(
-      @Param("id") Long id,
+      @Param("contentId") Long contentId,
       @Param("comId") Long comId);
 }
