@@ -72,11 +72,13 @@ public class CompanyCommandService {
 
   // 회사 삭제
   @Transactional
-  public void deleteCompany(Long comId, Long companyId) {
+  public void deleteCompany(Long comId, Long companyId, String role) {
 
-    // 요청자의 회사ID와 삭제 대상 회사ID가 동일해야 함
-    if (companyId == null || !companyId.equals(comId)) {
-      throw new BusinessException(CompanyErrorCode.FORBIDDEN);
+    // 플랫폼 최고 관리자(admin)가 아니면서, 다른 회사를 삭제하려는 경우 차단
+    if (!"admin".equalsIgnoreCase(role)) {
+      if (companyId == null || !companyId.equals(comId)) {
+        throw new BusinessException(CompanyErrorCode.FORBIDDEN);
+      }
     }
 
     Company company = companyRepository.findById(comId)

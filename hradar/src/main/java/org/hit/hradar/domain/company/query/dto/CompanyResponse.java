@@ -32,4 +32,7 @@ public class CompanyResponse {
   // 소프트 삭제 여부(Y/N)
   private Character isDeleted;
 
+  // 생성일
+  private String createdAt;
+
 }
