@@ -15,8 +15,12 @@
             g.goal_type           AS type,
             g.goal_title          AS title,
             g.goal_approve_status AS approveStatus,
-            g.owner_id            AS ownerId
+            g.owner_id            AS ownerId,
+            e.name                AS ownerName
         FROM goal g
+                 LEFT JOIN employee e
+                           ON g.owner_id = e.emp_id
+                               AND e.is_deleted = 'N'
         WHERE g.goal_dept_id = #{departmentId}
           AND g.is_deleted = 'N'
         ORDER BY g.goal_depth, g.goal_id

@@ -12,6 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.hit.hradar.domain.goal.command.application.dto.request.UpdateGoalRequest;
+import org.hit.hradar.domain.goal.command.domain.aggregate.GoalApproveStatus;
+import org.hit.hradar.global.exception.BusinessException;
+import java.time.LocalDate;
+import java.util.Optional;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,6 +61,77 @@ class GoalCommandServiceTest {
         // then
         assertThat(goalId).isEqualTo(100L);
         verify(goalRepository).save(any(Goal.class));
+    }
+
+    @Test
+    @DisplayName("Goal 수정 - DRAFT 상태 성공")
+    void updateGoal_draft_success() {
+        // given
+        Long goalId = 1L;
+        Long actorId = 1L;
+        UpdateGoalRequest request = new UpdateGoalRequest();
+        setField(request, "title", "Updated Title");
+        setField(request, "startDate", LocalDate.now());
+        setField(request, "endDate", LocalDate.now().plusDays(10));
+        setField(request, "scope", GoalScope.TEAM);
+
+        Goal goal = mock(Goal.class);
+        when(goal.getApproveStatus()).thenReturn(GoalApproveStatus.DRAFT);
+        when(goalRepository.findById(goalId)).thenReturn(Optional.of(goal));
+
+        // when
+        service.updateGoal(goalId, request, actorId);
+
+        // then
+        verify(goal).updateDraft(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("Goal 수정 - SUBMITTED 상태 성공")
+    void updateGoal_submitted_success() {
+        // given
+        Long goalId = 1L;
+        Long actorId = 1L;
+        UpdateGoalRequest request = new UpdateGoalRequest();
+        setField(request, "title", "Updated Title");
+        setField(request, "startDate", LocalDate.now());
+        setField(request, "endDate", LocalDate.now().plusDays(10));
+        setField(request, "scope", GoalScope.TEAM);
+
+        Goal goal = mock(Goal.class);
+        when(goal.getApproveStatus()).thenReturn(GoalApproveStatus.SUBMITTED);
+        // validateRequiredFields mock setup if needed, or lenient
+        when(goal.getTitle()).thenReturn("Old Title"); 
+        when(goal.getStartDate()).thenReturn(LocalDate.now());
+        when(goal.getEndDate()).thenReturn(LocalDate.now().plusDays(10));
+        when(goal.getScope()).thenReturn(GoalScope.TEAM);
+        when(goal.getType()).thenReturn(GoalType.KPI);
+        
+        when(goalRepository.findById(goalId)).thenReturn(Optional.of(goal));
+        
+        // when
+        service.updateGoal(goalId, request, actorId);
+
+        // then
+        verify(goal).updateAfterSubmit(any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("Goal 수정 - APPROVED 상태 실패")
+    void updateGoal_approved_fail() {
+        // given
+        Long goalId = 1L;
+        Long actorId = 1L;
+        UpdateGoalRequest request = new UpdateGoalRequest();
+        
+        Goal goal = mock(Goal.class);
+        when(goal.getApproveStatus()).thenReturn(GoalApproveStatus.APPROVED);
+        when(goalRepository.findById(goalId)).thenReturn(Optional.of(goal));
+
+        // when & then
+        org.junit.jupiter.api.Assertions.assertThrows(BusinessException.class, () -> {
+            service.updateGoal(goalId, request, actorId);
+        });
     }
 
     private void setField(Object target, String fieldName, Object value) {
