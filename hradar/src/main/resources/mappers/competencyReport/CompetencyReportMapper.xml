@@ -114,7 +114,7 @@
      where cr.is_deleted = 'N'
        and emp.type = 'working' -- 재직 중
        and dp.dept_id = #{deptId}
-    <if test="year != null">
+    <if test="year != null and year != ''">
        and cc.year = #{year}
     </if>
     <if test="quarter != null">
@@ -145,7 +145,7 @@
       join competency_report cr on cc.cycle_id = cr.cycle_id
      where cc.company_id = #{comId}
        and cr.emp_id = #{empId}
-    <if test="year != null">
+    <if test="year != null and year != ''">
        and cc.year = #{year}
     </if>
      order by cc.year desc, cc.quarter desc, cr.created_at desc
@@ -167,7 +167,7 @@
       join employee emp on cc.emp_id = emp.emp_id
      where cc.is_deleted = 'N'
        and cc.company_id = #{comId}
-    <if test="year != null">
+    <if test="year != null and year != ''">
        and cc.year = #{year}
     </if>
      order by cc.year asc , cc.quarter desc

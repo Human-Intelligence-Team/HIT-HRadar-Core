@@ -2,9 +2,11 @@ package org.hit.hradar.domain.salary.query.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class SalaryApprovalTargetDTO {
 

@@ -41,6 +41,10 @@ public class CompetencyReportQueryController {
 
     Long empId = authUser.employeeId();
     Long comId = authUser.companyId();
+
+    System.out.println("empId" + empId);
+    System.out.println("comId" + comId);
+
     CompetencyReportSearchResponse response = competencyReportQueryService.getMyCompetencyReport(empId, request, comId);
     return ResponseEntity.ok(ApiResponse.success(response));
   }

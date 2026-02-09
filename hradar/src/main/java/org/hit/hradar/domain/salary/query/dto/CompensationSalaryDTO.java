@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 import org.hit.hradar.domain.salary.command.domain.aggregate.CompensationType;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class CompensationSalaryDTO {

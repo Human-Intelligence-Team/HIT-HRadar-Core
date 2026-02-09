@@ -51,11 +51,8 @@ public class ContentQueryService {
    */
   public ContentDetailResponse contentDetail(Long id, Long comId) {
 
-    System.out.println("id" + id);
-    System.out.println("comId" + comId);
     // content detail
     ContentDTO content = contentMapper.findContentByContentId(id, comId);
-    System.out.println("content" + content);
     if (content == null) {
       throw new BusinessException(CompetencyReportErrorCode.CONTENT_NOT_FOUND);
     }
