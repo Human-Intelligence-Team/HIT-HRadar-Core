@@ -16,7 +16,6 @@ public class CycleStatusScheduler {
      */
     @Scheduled(fixedRate = 180000)
     public void updateCycleStatus() {
-        System.out.println("=== Cycle 스케줄러 실행 ===");
         cycleStatusService.autoUpdateCycleStatus();
     }
 }
