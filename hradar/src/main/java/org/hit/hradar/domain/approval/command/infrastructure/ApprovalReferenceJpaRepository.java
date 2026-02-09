@@ -9,4 +9,5 @@ public interface ApprovalReferenceJpaRepository
 
   void deleteByDocId(Long docId);
 
+  java.util.List<org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalReference> findAllByDocId(Long docId);
 }

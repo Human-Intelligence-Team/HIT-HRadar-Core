@@ -15,4 +15,18 @@ public class EmployeeListRequest {
   private String employeeName;
   private String keyword;
 
+  private int page = 1;
+  private int size = 10;
+
+  public int getPage() {
+    return page < 1 ? 1 : page;
+  }
+
+  public int getSize() {
+    return size < 1 ? 10 : size;
+  }
+
+  public int getOffset() {
+    return (getPage() - 1) * getSize();
+  }
 }

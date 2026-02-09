@@ -52,13 +52,12 @@ public class EmployeeCsvCommandController {
         byte[] data = employeeCsvTemplateService.getTemplateBytes();
         ByteArrayResource resource = new ByteArrayResource(data);
 
-        String filename = "사원등록_템플릿.xlsx";
+        String filename = "사원등록_템플릿.csv";
         String encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFilename + "\"")
-                .contentType(
-                        MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .contentType(MediaType.parseMediaType("text/csv; charset=UTF-8"))
                 .contentLength(data.length)
                 .body(resource);
     }

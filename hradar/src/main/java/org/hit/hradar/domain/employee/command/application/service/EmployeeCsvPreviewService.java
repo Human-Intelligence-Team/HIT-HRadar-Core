@@ -84,6 +84,12 @@ public class EmployeeCsvPreviewService {
             try {
                 // 값 추출 (헤더 매핑)
                 String name = getValue(header, rowData, "이름");
+
+                // 예시 행 건너뛰기
+                if (name != null && (name.contains("예시") || name.equals("홍길동"))) {
+                    continue;
+                }
+
                 String email = getValue(header, rowData, "이메일");
                 String phoneNo = getValue(header, rowData, "전화번호");
                 String employeeNo = getValue(header, rowData, "사번");
@@ -174,6 +180,10 @@ public class EmployeeCsvPreviewService {
             errors.add("로그인ID 누락");
         if (isEmpty(password))
             errors.add("비밀번호 누락");
+        if (isEmpty(gender))
+            errors.add("성별 누락");
+        if (isEmpty(birth))
+            errors.add("생년월일 누락");
         // hireDate는 선택값으로 변경됨
 
         // 2. 형식 체크

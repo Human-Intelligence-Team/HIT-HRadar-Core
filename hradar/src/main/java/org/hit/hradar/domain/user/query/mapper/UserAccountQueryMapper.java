@@ -22,4 +22,8 @@ public interface UserAccountQueryMapper {
       @Param("comId") Long comId,
       @Param("accId") Long accId
   );
+
+  Long findAccIdByEmpId(@Param("empId") Long empId);
+
+  Long findEmpIdByAccId(@Param("accId") Long accId);
 }

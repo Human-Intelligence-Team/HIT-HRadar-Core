@@ -148,6 +148,7 @@
             original_name AS originalName
         FROM notice_attachment
         WHERE notice_id = #{noticeId}
+          AND is_used = true
 
     </select>
 

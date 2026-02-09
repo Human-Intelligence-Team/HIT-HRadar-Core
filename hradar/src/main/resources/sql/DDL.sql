@@ -54,7 +54,9 @@ DROP TABLE IF EXISTS hradar.attendance_work_plan;
 DROP TABLE IF EXISTS hradar.attendance_work_log;
 DROP TABLE IF EXISTS hradar.attendance_correction;
 DROP TABLE IF EXISTS hradar.attendance_auth_log;
+DROP TABLE IF EXISTS hradar.attendance_overtime;
 DROP TABLE IF EXISTS hradar.attendance;
+
 DROP TABLE IF EXISTS hradar.approval_reference;
 DROP TABLE IF EXISTS hradar.approval_payload;
 DROP TABLE IF EXISTS hradar.approval_line_step;
@@ -227,6 +229,24 @@ create table hradar.attendance
     created_by    bigint           null,
     updated_by    bigint           null
 );
+
+create table hradar.attendance_overtime
+(
+    overtime_id      bigint auto_increment
+        primary key,
+    emp_id           bigint      not null,
+    doc_id           bigint      not null,
+    overtime_date    date        not null,
+    overtime_minutes int         not null,
+    status           varchar(30) not null,
+    is_deleted       char        default 'N' not null,
+
+    created_at       datetime(6) not null,
+    updated_at       datetime(6) null,
+    created_by       bigint      null,
+    updated_by       bigint      null
+);
+
 
 create table hradar.attendance_auth_log
 (
@@ -949,6 +969,28 @@ create table hradar.leave_usage
     used_days  double not null
 );
 
+create table hradar.emp_leave
+(
+    leave_id        bigint auto_increment
+        primary key,
+    doc_id          bigint           not null,
+    emp_id          bigint           not null,
+    grant_id        bigint           not null,
+    leave_type      varchar(50)      not null,
+    leave_unit_type varchar(50)      not null,
+    reason          varchar(255)     null,
+    start_date      date             not null,
+    end_date        date             not null,
+    leave_days      double           not null,
+    requested_at    datetime(6)      not null,
+    is_deleted      char default 'N' not null,
+    created_at      datetime(6)      not null,
+    updated_at      datetime(6)      null,
+    created_by      bigint           null,
+    updated_by      bigint           null
+);
+
+
 create table hradar.notice_attachment
 (
     attachment_id bigint auto_increment
@@ -1257,4 +1299,3 @@ create table hradar.user_account
 
 create index IDX_ACCOUNT_EMP_ID
     on hradar.user_account (com_id, employee_id);
-

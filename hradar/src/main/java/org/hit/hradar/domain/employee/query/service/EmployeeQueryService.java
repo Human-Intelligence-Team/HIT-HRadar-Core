@@ -25,16 +25,19 @@ public class EmployeeQueryService {
 
   public EmployeeListResponse list(Long comId, EmployeeListRequest request) {
 
-    Long deptId = null;
-    Long positionId = null;
+    Long deptId = request.getDeptId(); // No null check needed if request object exists, simplified
+    Long positionId = request.getPositionId();
+    String name = request.getEmployeeName();
+    String keyword = request.getKeyword();
 
-    if (request != null) {
-      deptId = request.getDeptId();
-      positionId = request.getPositionId();
-    }
+    // 1. Total Count
+    long totalCount = employeeQueryMapper.countList(comId, deptId, positionId, name, keyword);
 
-    List<EmployeeResponse> employees = employeeQueryMapper.findList(comId, deptId, positionId,
-        request.getEmployeeName(), request.getKeyword());
-    return EmployeeListResponse.of(employees);
+    // 2. Data List with Pagination
+    List<EmployeeResponse> employees = employeeQueryMapper.findList(
+        comId, deptId, positionId, name, keyword,
+        request.getOffset(), request.getSize());
+
+    return EmployeeListResponse.of(employees, totalCount, request.getSize());
   }
 }

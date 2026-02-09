@@ -17,9 +17,26 @@ DROP TABLE IF EXISTS company_position;
 DROP TABLE IF EXISTS company;
 DROP TABLE IF EXISTS company_application;
 DROP TABLE IF EXISTS leave_grant;
+DROP TABLE IF EXISTS leave_usage;
 DROP TABLE IF EXISTS emp_leave;
 DROP TABLE IF EXISTS leave_policy;
+DROP TABLE IF EXISTS attendance_work_log;
+DROP TABLE IF EXISTS attendance_work_plan;
+DROP TABLE IF EXISTS attendance;
+DROP TABLE IF EXISTS attendance_overtime;
+DROP TABLE IF EXISTS attendance_correction;
+DROP TABLE IF EXISTS attendance_auth_log;
+DROP TABLE IF EXISTS ip_range_policy;
+DROP TABLE IF EXISTS approval_comment;
+DROP TABLE IF EXISTS approval_history;
+DROP TABLE IF EXISTS approval_line_step;
+DROP TABLE IF EXISTS approval_line;
+DROP TABLE IF EXISTS approval_reference;
+DROP TABLE IF EXISTS approval_payload;
+DROP TABLE IF EXISTS approval_document;
 DROP TABLE IF EXISTS approval_document_type;
+
+
 
 
 -- Legacy table (if exists)
@@ -215,6 +232,16 @@ CREATE TABLE leave_grant (
     updated_by          BIGINT
 ) ENGINE=InnoDB;
 
+CREATE TABLE leave_usage (
+    usage_id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    leave_id        BIGINT NOT NULL,
+    grant_id        BIGINT NOT NULL,
+    use_date        DATE NOT NULL,
+    used_days       DOUBLE NOT NULL,
+    is_deleted      CHAR(1) DEFAULT 'N' NOT NULL
+) ENGINE=InnoDB;
+
+
 -- 12. Emp Leave
 CREATE TABLE emp_leave (
     leave_id            BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -267,12 +294,206 @@ CREATE TABLE approval_document_type (
     updated_by          BIGINT
 ) ENGINE=InnoDB;
 
--- 15. Approval Payload
+CREATE TABLE approval_document (
+    doc_id              BIGINT AUTO_INCREMENT PRIMARY KEY,
+    company_id          BIGINT NOT NULL,
+    dept_id             BIGINT,
+    writer_id           BIGINT NOT NULL,
+    doc_type            VARCHAR(50) NOT NULL,
+    title               VARCHAR(200) NOT NULL,
+    content             VARCHAR(2000),
+    status              VARCHAR(20) NOT NULL,
+    submitted_at        DATETIME(6),
+    approved_at         DATETIME(6),
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_line (
+    line_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doc_id              BIGINT NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_line_step (
+    step_id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+    line_id             BIGINT NOT NULL,
+    step_order          INT NOT NULL,
+    approver_id         BIGINT NOT NULL,
+    proxy_approver_id   BIGINT,
+    status              VARCHAR(20) NOT NULL,
+    acted_at            DATETIME(6),
+    reject_reason       VARCHAR(255),
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_history (
+    history_id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doc_id               BIGINT NOT NULL,
+    actor_id             BIGINT NOT NULL,
+    step_id              BIGINT,
+    approval_action_type VARCHAR(50) NOT NULL,
+    reason               VARCHAR(255),
+    acted_at             DATETIME(6),
+    is_deleted           CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at           DATETIME(6) NOT NULL,
+    updated_at           DATETIME(6),
+    created_by           BIGINT,
+    updated_by           BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_comment (
+    comment_id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    parent_comment_id    BIGINT,
+    approval_document_id BIGINT NOT NULL,
+    writer_id            BIGINT NOT NULL,
+    content              VARCHAR(1000) NOT NULL,
+    is_deleted           CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at           DATETIME(6) NOT NULL,
+    updated_at           DATETIME(6),
+    created_by           BIGINT,
+    updated_by           BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE approval_reference (
+    reference_id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ref_emp_id           BIGINT NOT NULL,
+    doc_id               BIGINT NOT NULL,
+    is_deleted           CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at           DATETIME(6) NOT NULL,
+    updated_at           DATETIME(6),
+    created_by           BIGINT,
+    updated_by           BIGINT
+) ENGINE=InnoDB;
+
 CREATE TABLE approval_payload (
+
     payload_id          BIGINT AUTO_INCREMENT PRIMARY KEY,
     doc_id              BIGINT NOT NULL,
     payload             JSON NOT NULL
 ) ENGINE=InnoDB;
+
+CREATE TABLE attendance_overtime (
+    overtime_id      BIGINT AUTO_INCREMENT PRIMARY KEY,
+    emp_id           BIGINT NOT NULL,
+    doc_id           BIGINT NOT NULL,
+    overtime_date    DATE NOT NULL,
+    overtime_minutes INT NOT NULL,
+    status           VARCHAR(30) NOT NULL,
+    is_deleted       CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at       DATETIME(6) NOT NULL,
+    updated_at       DATETIME(6),
+    created_by       BIGINT,
+    updated_by       BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance_correction (
+    attendance_correction BIGINT AUTO_INCREMENT PRIMARY KEY,
+    attendance_id         BIGINT NOT NULL,
+    work_log_id           BIGINT NOT NULL,
+    doc_id                BIGINT NOT NULL,
+    decider_emp_id        BIGINT,
+    requester_emp_id      BIGINT NOT NULL,
+    type                  VARCHAR(50) NOT NULL,
+    reason                VARCHAR(255) NOT NULL,
+    requested_value       VARCHAR(255) NOT NULL,
+    status                VARCHAR(30) NOT NULL,
+    reject_reason         VARCHAR(255),
+    requested_at          DATETIME(6) NOT NULL,
+    decided_at            DATETIME(6),
+    is_deleted            CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at            DATETIME(6) NOT NULL,
+    updated_at            DATETIME(6),
+    created_by            BIGINT,
+    updated_by            BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance_auth_log (
+    auth_log_id     BIGINT AUTO_INCREMENT PRIMARY KEY,
+    attendance_id   BIGINT NOT NULL,
+    auth_type       VARCHAR(50) NOT NULL,
+    auth_result     VARCHAR(50) NOT NULL,
+    ip_address      VARCHAR(45) NOT NULL,
+    mac_address     VARCHAR(50),
+    acted_at        DATETIME(6) NOT NULL,
+    is_deleted      CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at      DATETIME(6) NOT NULL,
+    updated_at      DATETIME(6),
+    created_by      BIGINT,
+    updated_by      BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE ip_range_policy (
+    ip_id           BIGINT AUTO_INCREMENT PRIMARY KEY,
+    com_id          BIGINT NOT NULL,
+    cidr            VARCHAR(50) NOT NULL,
+    location_name   VARCHAR(100) NOT NULL,
+    ip_policy_type  VARCHAR(50) NOT NULL,
+    is_active       TINYINT(1) DEFAULT 1 NOT NULL,
+    is_deleted      CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at      DATETIME(6) NOT NULL,
+    updated_at      DATETIME(6),
+    created_by      BIGINT,
+    updated_by      BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance (
+    attendance_id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+    emp_id              BIGINT NOT NULL,
+    work_date           DATE NOT NULL,
+    work_type           VARCHAR(50) NOT NULL,
+    status              VARCHAR(20) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance_work_log (
+    work_log_id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    work_log_type       VARCHAR(20) NOT NULL,
+    attendance_id       BIGINT NOT NULL,
+    start_at            DATETIME(6) NOT NULL,
+    end_at              DATETIME(6),
+    worked_minutes      INT,
+    location            VARCHAR(100) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+CREATE TABLE attendance_work_plan (
+    work_plan_id        BIGINT AUTO_INCREMENT PRIMARY KEY,
+    emp_id              BIGINT NOT NULL,
+    work_type           VARCHAR(50) NOT NULL,
+    location            VARCHAR(50) NOT NULL,
+    start_at            DATETIME(6) NOT NULL,
+    end_at              DATETIME(6) NOT NULL,
+    overtime_minutes    INT,
+    doc_id              BIGINT NOT NULL,
+    status              VARCHAR(30) NOT NULL,
+    is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
+    created_at          DATETIME(6) NOT NULL,
+    updated_at          DATETIME(6),
+    created_by          BIGINT,
+    updated_by          BIGINT
+) ENGINE=InnoDB;
+
+
 
 
 /* =========================
@@ -519,17 +740,16 @@ WHERE u.com_id = 1;
 
 COMMIT;
 
--- 13) Leave Grant Initialization (15 days for all employees)
-INSERT INTO leave_grant (emp_id, year, total_days, remaining_days, granted_days, expire_date, is_deleted, created_at, created_by)
-SELECT emp_id, 2023, 15, 15, '2023-01-01', '2023-12-31', 'N', NOW(6), 1
-FROM employee
-WHERE com_id = 1;
+-- 13) Leave Grant Initialization (REMOVED HARDCODED DATA)
+
 
 COMMIT;
 
 -- 14) Approval Document Types Initialization
 INSERT INTO approval_document_type (company_id, doc_type, name, is_active, is_deleted, created_at, created_by) VALUES
 (1, 'GENERAL', '일반 결재', 1, 'N', NOW(6), 1),
-(1, 'LEAVE', '휴가 신청서', 1, 'N', NOW(6), 1);
+(1, 'LEAVE', '휴가 신청서', 1, 'N', NOW(6), 1),
+(1, 'LEAVE_GRANT', '연차 부여', 1, 'N', NOW(6), 1);
+
 
 COMMIT;
