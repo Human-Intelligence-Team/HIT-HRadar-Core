@@ -55,7 +55,6 @@ public class NoticeAttachment extends BaseTimeEntity {
 
     public void markUnused() {
         this.used = false;
-        this.noticeId = null;
     }
 
     public void attachToNotice(Long id) {
