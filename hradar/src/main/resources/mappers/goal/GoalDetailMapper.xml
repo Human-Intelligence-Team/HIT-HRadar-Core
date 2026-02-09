@@ -29,7 +29,7 @@
                 ELSE 0
                 END AS progressRate
 
-        FROM hit.goal g
+        FROM goal g
 
                  /* ================= KPI 진행률 ================= */
                  LEFT JOIN (
