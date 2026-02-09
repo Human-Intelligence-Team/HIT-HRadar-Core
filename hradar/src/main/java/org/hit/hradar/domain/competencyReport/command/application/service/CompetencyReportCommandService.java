@@ -35,12 +35,17 @@ public class CompetencyReportCommandService {
    * @param comId
    */
   public void createReport(Long comId, CompetencyReportCreateRequest request) {
+    System.out.println(" 생성 1");
     // setting
     Long cycleId = request.getCycleId(); // 회차
     LocalDate start = LocalDate.parse(request.getStartDate()); // 시작일
     LocalDate end = LocalDate.parse(request.getEndDate()); // 종료일
+    System.out.println(" 생성 1 cycleId - " + cycleId);
+    System.out.println(" 생성 1 start - " + start);
+    System.out.println(" 생성 1 end - " + end);
     // 시작일 종료일에 맞춰 okr/ kpi의 종료일에 맞춰서 가져오기!
     List<CyclePeriodGoalsRow> rows = goalProviderService.getGoalsForCyclePeriod(start, end);
+    System.out.println(" 생성 2 rows" + rows.size());
     // 사원에 맞춰 가공
     List<PersonalCompetencySourceDTO> sources = rows.stream()
         .collect(Collectors.groupingBy(CyclePeriodGoalsRow::getOwnerId))
@@ -64,24 +69,35 @@ public class CompetencyReportCommandService {
               case OKR -> okrList.add(okrDataDTO(f));
             }
           });
+          System.out.println(" 생성 3");
           return new PersonalCompetencySourceDTO(
               comId, empId, employeeName, departmentId, deptName, positionName, cycleId,
               start, end, kpiList, okrList);
         })
         .toList();
 
+    System.out.println(" 생성 4  sources" + sources.size());
     // llm으로 데이터 정리
     for (PersonalCompetencySourceDTO source : sources) {
-      processSingleReport(source);
+      try {
+        processSingleReport(source);
+      } catch (Exception e) {
+        log.error("Failed to create report for employeeId: {}", source.getOwnerId(), e);
+      }
     }
+    System.out.println(" 생성 5");
 
     // 역량강화 리포트 생성 여부 수정
     cycleProviderService.fetchCompetencyReportGeneratedById(cycleId);
+    System.out.println(" 생성 6");
+
   }
 
   private void processSingleReport(PersonalCompetencySourceDTO source) {
     // AI 분석 호출 (DB 트랜잭션 없이 실행)
     OutputResultDTO aiResult = geminiService.getGeminiData(source);
+
+    System.out.println("CompetencyReportCommandService.processSingleReport aiResult : " + aiResult.getContentRow());
 
     // 부모(리포트) 객체 생성
     CompetencyReport report = new CompetencyReport(
@@ -91,7 +107,7 @@ public class CompetencyReportCommandService {
         source.getEndDate(),
         aiResult.getKpiOkrResultSummary(),
         aiResult.getGoalFailureAnalysis(),
-        null);
+        'N');
 
     // 자식(추천 콘텐츠) 매핑
     List<ReportContent> contents = new ArrayList<>();

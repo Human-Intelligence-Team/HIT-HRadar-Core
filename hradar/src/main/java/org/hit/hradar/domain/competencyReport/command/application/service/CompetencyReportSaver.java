@@ -24,7 +24,12 @@ public class CompetencyReportSaver {
 
       // 2. 자식 ID 매핑 및 저장
       if (contents != null && !contents.isEmpty()) {
+        System.out.println("CompetencyReportSaver.saveReport contents : " + contents.size());
+
         Long reportId = savedReport.getCompetencyReportId();
+
+        System.out.println("CompetencyReportSaver.saveReport reportId : " + reportId);
+
         contents.forEach(content -> content.updateReportId(reportId)); // 이 부분
         reportContentRepository.saveAllIfNotEmpty(contents);
       }

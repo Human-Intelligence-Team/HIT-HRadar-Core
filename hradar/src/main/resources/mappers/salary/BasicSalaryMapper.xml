@@ -23,7 +23,7 @@
      where ad.is_deleted = 'N'
        and ad.company_id = #{comId}
        and ad.doc_type = 'BASIC_SALARY'
-    <if test="year != null">
+    <if test="year != null and year != ''">
        and year(ad.created_at) = #{year}
     </if>
      group by ad.doc_id, ad.title, ad.approved_at, ad.status, ad.writer_id, emp.name, bse.salary_increase_type
@@ -121,7 +121,7 @@
        and emp.emp_id = #{empId}
        and ad.company_id = #{comId}
        and ad.status = 'APPROVED'
-    <if test="year != null">
+    <if test="year != null and year != ''">
        and year(ad.approved_at) = #{year}
     </if>
       order by ad.doc_id desc

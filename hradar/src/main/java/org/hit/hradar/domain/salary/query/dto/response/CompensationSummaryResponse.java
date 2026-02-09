@@ -1,9 +1,11 @@
 package org.hit.hradar.domain.salary.query.dto.response;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.hit.hradar.domain.salary.query.dto.CompensationSalaryDTO;
 
 @Getter
+@Setter
 public class CompensationSummaryResponse {
   
   private String startDate;

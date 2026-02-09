@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.hit.hradar.domain.competencyReport.command.application.dto.PersonalCompetencySourceDTO;
 import org.hit.hradar.domain.competencyReport.gemini.dto.OutputResultDTO;
 import org.hit.hradar.domain.competencyReport.query.dto.ContentRowDTO;
+import org.hit.hradar.domain.competencyReport.query.dto.request.ContentSearchRequest;
 import org.hit.hradar.domain.competencyReport.query.mapper.ContentMapper;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,9 @@ public class GeminiService {
 
   public OutputResultDTO getGeminiData(PersonalCompetencySourceDTO dto) {
     // 1. 콘텐츠 데이터 최적화 (기존 로직 유지하되 간결하게)
-    List<ContentRowDTO> contentAllRows = contentMapper.findAllContents(null);
+
+    ContentSearchRequest contentRequest = new ContentSearchRequest(dto.getComId());
+    List<ContentRowDTO> contentAllRows = contentMapper.findAllContents(contentRequest);
 
     List<Map<String, Object>> optimizedContents = contentAllRows.stream()
         .collect(Collectors.groupingBy(ContentRowDTO::getContentId))

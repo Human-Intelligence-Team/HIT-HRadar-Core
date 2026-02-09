@@ -5,9 +5,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.salary.command.domain.aggregate.SalaryIncreaseType;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class BasicSalaryHistoryDTO {
 

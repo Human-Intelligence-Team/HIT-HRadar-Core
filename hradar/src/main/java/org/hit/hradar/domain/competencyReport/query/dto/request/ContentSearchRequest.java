@@ -19,4 +19,8 @@ public class ContentSearchRequest {
 
   private Long comId;
 
+  public ContentSearchRequest(Long comId){
+    this.comId = comId;
+  }
+
 }
