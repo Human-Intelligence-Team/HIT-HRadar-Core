@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanyCommandService {
 
   private final CompanyRepository companyRepository;
+  private final org.hit.hradar.domain.user.command.domain.repository.AccountRepository accountRepository;
+  private final org.hit.hradar.domain.employee.command.domain.repository.EmployeeRepository employeeRepository;
   private final org.hit.hradar.domain.rolePermission.command.application.service.DefaultRoleCommandService defaultRoleCommandService;
 
   // 회사 승인
@@ -72,11 +74,13 @@ public class CompanyCommandService {
 
   // 회사 삭제
   @Transactional
-  public void deleteCompany(Long comId, Long companyId) {
+  public void deleteCompany(Long comId, Long companyId, String role) {
 
-    // 요청자의 회사ID와 삭제 대상 회사ID가 동일해야 함
-    if (companyId == null || !companyId.equals(comId)) {
-      throw new BusinessException(CompanyErrorCode.FORBIDDEN);
+    // 플랫폼 최고 관리자(admin)가 아니면서, 다른 회사를 삭제하려는 경우 차단
+    if (!"admin".equalsIgnoreCase(role)) {
+      if (companyId == null || !companyId.equals(comId)) {
+        throw new BusinessException(CompanyErrorCode.FORBIDDEN);
+      }
     }
 
     Company company = companyRepository.findById(comId)
@@ -88,5 +92,9 @@ public class CompanyCommandService {
     }
 
     company.isDeleted();
+
+    // 관련 계정 및 직원 비활성화
+    accountRepository.deactivateAccountsByComId(comId);
+    employeeRepository.deactivateEmployeesByComId(comId);
   }
 }

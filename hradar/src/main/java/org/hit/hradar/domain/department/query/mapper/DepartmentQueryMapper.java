@@ -13,5 +13,4 @@ public interface DepartmentQueryMapper {
 
     List<DepartmentResponse> findAllDepartmentsByCompany(Long comId);
 
-
 }

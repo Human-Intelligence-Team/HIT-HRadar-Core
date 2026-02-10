@@ -54,6 +54,7 @@ public class EmployeeCommandService {
         .name(req.getName())
         .email(req.getEmail())
         .employeeNo(null)
+        .employmentType(org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType.WORKING)
         .build();
 
     Employee saved = employeeRepository.save(emp);
@@ -87,6 +88,10 @@ public class EmployeeCommandService {
       if (employeeRepository.existsByEmailAndComIdAndIsDeleted(email, comId, 'N')) {
         throw new BusinessException(EmployeeErrorCode.DUPLICATE_EMPLOYEE_NO_OR_EMAIL);
       }
+    }
+
+    if (req.getGender() == null) {
+      throw new BusinessException(EmployeeErrorCode.GENDER_REQUIRED);
     }
 
     String birth = (req.getBirth() != null && !req.getBirth().isBlank()) ? req.getBirth().replace("-", "") : null;

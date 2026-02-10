@@ -2,12 +2,15 @@ package org.hit.hradar.domain.company.query.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 
 /**
  * 회사 목록 조회 검색 조건 DTO
  * - Spring이 QueryString을 이 DTO 필드에 자동 바인딩한다.
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class CompanySearchCondition {
 

@@ -41,7 +41,7 @@ public class CompanyCommandController {
       @PathVariable Long comId,
       @CurrentUser AuthUser authUser) {
     Long companyId = authUser.companyId();
-    companyCommandService.deleteCompany(comId, companyId);
+    companyCommandService.deleteCompany(comId, companyId, authUser.role());
     return ResponseEntity.ok(ApiResponse.success(null));
   }
 }

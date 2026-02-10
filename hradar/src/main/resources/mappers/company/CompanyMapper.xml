@@ -16,7 +16,8 @@
     c.company_telephone AS comTel,
     c.address           AS address,
     c.status            AS status,
-    c.is_deleted        AS isDeleted
+    c.is_deleted        AS isDeleted,
+    c.created_at        AS createdAt
   </sql>
 
   <!-- =========================
@@ -59,19 +60,40 @@
     FROM company c
     WHERE 1=1
 
-    <if test="includeDeleted == null or includeDeleted == false">
+    <if test="cond.includeDeleted == null or cond.includeDeleted == false">
       AND c.is_deleted = 'N'
     </if>
 
-    <if test="keyword != null and keyword != ''">
+    <if test="cond.keyword != null and cond.keyword != ''">
       AND (
-      c.name LIKE CONCAT('%', #{keyword}, '%')
-      OR c.biz_no LIKE CONCAT('%', #{keyword}, '%')
-      OR c.company_code LIKE CONCAT('%', #{keyword}, '%')
+      c.name LIKE CONCAT('%', #{cond.keyword}, '%')
+      OR c.biz_no LIKE CONCAT('%', #{cond.keyword}, '%')
+      OR c.company_code LIKE CONCAT('%', #{cond.keyword}, '%')
       )
     </if>
 
     ORDER BY c.com_id DESC
+    LIMIT #{size} OFFSET #{offset}
+  </select>
+
+  <!-- 개수 조회 (count) -->
+  <select id="count"
+    resultType="long">
+    SELECT COUNT(*)
+    FROM company c
+    WHERE 1=1
+
+    <if test="cond.includeDeleted == null or cond.includeDeleted == false">
+      AND c.is_deleted = 'N'
+    </if>
+
+    <if test="cond.keyword != null and cond.keyword != ''">
+      AND (
+      c.name LIKE CONCAT('%', #{cond.keyword}, '%')
+      OR c.biz_no LIKE CONCAT('%', #{cond.keyword}, '%')
+      OR c.company_code LIKE CONCAT('%', #{cond.keyword}, '%')
+      )
+    </if>
   </select>
 
 </mapper>
