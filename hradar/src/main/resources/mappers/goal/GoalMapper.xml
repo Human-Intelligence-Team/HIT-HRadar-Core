@@ -184,12 +184,12 @@
        AND kd.is_deleted = 'N'
       LEFT JOIN okr_key_result okr ON gl.goal_id = okr.goal_id
        AND okr.is_deleted = 'N'
-      JOIN EMPLOYEE emp ON gl.OWNER_ID = emp.EMP_ID
+      JOIN employee emp ON gl.OWNER_ID = emp.EMP_ID
        AND emp.IS_DELETED = 'N'
        AND emp.TYPE = 'WORKING'
-      JOIN DEPARTMENT dep ON emp.DEPT_ID = dep.DEPT_ID
+      JOIN department dep ON emp.DEPT_ID = dep.DEPT_ID
        AND dep.IS_DELETED = 'N'
-      JOIN COMPANY_POSITION cp ON emp.POSITION_ID = cp.POSITION_ID
+      JOIN company_position cp ON emp.POSITION_ID = cp.POSITION_ID
        AND cp.IS_DELETED = 'N'
      WHERE gl.is_deleted = 'N'
        AND gl.GOAL_SCOPE = 'PERSONAL'
