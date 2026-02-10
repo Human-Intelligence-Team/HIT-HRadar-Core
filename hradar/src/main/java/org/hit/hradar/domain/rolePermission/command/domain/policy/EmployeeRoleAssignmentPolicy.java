@@ -13,7 +13,7 @@ public class EmployeeRoleAssignmentPolicy {
 
   public List<String> roleKeysToAssign(Scenario scenario) {
     return switch (scenario) {
-      case FIRST_EMPLOYEE -> List.of("ADMIN", "EMPLOYEE");
+      case FIRST_EMPLOYEE -> List.of("ADMIN");
       case NORMAL_EMPLOYEE -> List.of("EMPLOYEE");
     };
   }

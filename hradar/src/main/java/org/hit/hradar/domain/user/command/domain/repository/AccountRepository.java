@@ -22,4 +22,6 @@ public interface AccountRepository {
 
   boolean existsByLoginId(String loginId);
 
+  void deactivateAccountsByComId(Long comId);
+
 }

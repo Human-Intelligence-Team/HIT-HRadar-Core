@@ -29,6 +29,12 @@ class CompanyCommandServiceTest {
     private CompanyRepository companyRepository;
 
     @Mock
+    private org.hit.hradar.domain.user.command.domain.repository.AccountRepository accountRepository;
+
+    @Mock
+    private org.hit.hradar.domain.employee.command.domain.repository.EmployeeRepository employeeRepository;
+
+    @Mock
     private DefaultRoleCommandService defaultRoleCommandService;
 
     @Test
@@ -78,6 +84,7 @@ class CompanyCommandServiceTest {
         // given
         Long comId = 1L;
         Long companyId = 1L;
+        String role = "user";
         Company company = Company.builder()
                 .companyId(comId)
                 .isDeleted('N')
@@ -86,9 +93,11 @@ class CompanyCommandServiceTest {
         given(companyRepository.findById(comId)).willReturn(Optional.of(company));
 
         // when
-        companyCommandService.deleteCompany(comId, companyId);
+        companyCommandService.deleteCompany(comId, companyId, role);
 
         // then
         assertThat(company.getIsDeleted()).isEqualTo('Y');
+        org.mockito.Mockito.verify(accountRepository).deactivateAccountsByComId(comId);
+        org.mockito.Mockito.verify(employeeRepository).deactivateEmployeesByComId(comId);
     }
 }

@@ -60,15 +60,12 @@ public class ComAppApprovalService {
     // 기본 역할 생성
     defaultRoleCommandService.ensureDefaults(comId);
 
-    // 첫 사원 생성
+    // 첫 사원 생성 + 최고관리자 권한 부여
     CreateFirstEmpRequest firstEmpReq =
         new CreateFirstEmpRequest(comId, app.getName(), app.getEmail());
     CreateFirstEmpResponse firstEmpRes =
         employeeCommandService.createFirstEmployee(firstEmpReq);
     Long empId = firstEmpRes.getEmpId();
-
-    // 첫 사원 역할 부여
-    employeeRoleAssignmentApplicationService.assignForFirstEmployee(comId, empId);
 
     // 임시 비밀번호 생성
     String tempPassword = RandomGenerator.generateTempPassword(10);

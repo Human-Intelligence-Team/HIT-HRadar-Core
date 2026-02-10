@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanyCommandService {
 
   private final CompanyRepository companyRepository;
+  private final org.hit.hradar.domain.user.command.domain.repository.AccountRepository accountRepository;
+  private final org.hit.hradar.domain.employee.command.domain.repository.EmployeeRepository employeeRepository;
   private final org.hit.hradar.domain.rolePermission.command.application.service.DefaultRoleCommandService defaultRoleCommandService;
 
   // 회사 승인
@@ -90,5 +92,9 @@ public class CompanyCommandService {
     }
 
     company.isDeleted();
+
+    // 관련 계정 및 직원 비활성화
+    accountRepository.deactivateAccountsByComId(comId);
+    employeeRepository.deactivateEmployeesByComId(comId);
   }
 }
