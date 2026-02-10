@@ -32,6 +32,10 @@ spring:
           auth: true
           starttls:
             enable: true
+  servlet:
+    multipart:
+      max-file-size: ${SPRING_MULTIPART_MAX_FILE_SIZE:20MB}
+      max-request-size: ${SPRING_MULTIPART_MAX_REQUEST_SIZE:20MB}
 auth:
   internal:
     base-url: ${AUTH_INTERNAL_BASE_URL}
