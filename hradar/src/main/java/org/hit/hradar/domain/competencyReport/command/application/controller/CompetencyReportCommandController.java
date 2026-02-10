@@ -31,7 +31,9 @@ public class CompetencyReportCommandController {
       @CurrentUser AuthUser authUser,
       @RequestBody CompetencyReportCreateRequest request) {
 
+    System.out.println("역량 강화 리포트 등록 ");
     Long comId = authUser.companyId();
+
     competencyReportCommandService.createReport(comId, request);
     return ResponseEntity.ok(ApiResponse.success(null));
   }

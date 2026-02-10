@@ -29,7 +29,7 @@
                 ELSE 0
                 END AS progressRate
 
-        FROM hit.goal g
+        FROM goal g
 
                  /* ================= KPI 진행률 ================= */
                  LEFT JOIN (
@@ -57,8 +57,8 @@
                                      )
                                   )
                              END AS kpi_progress
-                     FROM hit.kpi_detail kd
-                              LEFT JOIN hit.kpi_progress_log kpl
+                     FROM kpi_detail kd
+                              LEFT JOIN kpi_progress_log kpl
                                         ON kpl.kpi_id = kd.kpi_id
                                             AND kpl.is_deleted = 'N'
                      WHERE kd.is_deleted = 'N'
@@ -89,17 +89,17 @@
                                          / kr.key_target_value
                                      )
                              END AS kr_progress
-                     FROM hit.okr_key_result kr
+                     FROM okr_key_result kr
                               LEFT JOIN (
                          SELECT
                              opl1.key_result_id,
                              opl1.current_progress
-                         FROM hit.okr_progress_log opl1
+                         FROM okr_progress_log opl1
                                   INNER JOIN (
                              SELECT
                                  key_result_id,
                                  MAX(log_date) AS max_log_date
-                             FROM hit.okr_progress_log
+                             FROM okr_progress_log
                              WHERE is_deleted = 'N'
                              GROUP BY key_result_id
                          ) latest

@@ -47,4 +47,18 @@ public class ApprovalDocumentTypeQueryService {
 
     return responseList;
   }
+
+  public List<ApprovalDocumentTypeResponse> findAllTypesForManagement(Long companyId) {
+    return approvalDocumentTypeJpaRepository.findByCompanyId(companyId)
+        .stream()
+        .map(t -> new ApprovalDocumentTypeResponse(
+            t.getTypeId(),
+            t.getDocType(),
+            t.getName(),
+            t.isActive(),
+            t.getAttendanceCategory(),
+            t.getOvertimeMinutes()
+        ))
+        .toList();
+  }
 }

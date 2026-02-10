@@ -76,6 +76,12 @@ public class AttendanceCommandService {
         AttendanceWorkPlan plan = approvedPlan.orElse(null);
 
         if (openedLog.isEmpty()) {
+
+            // [New Validtion] 이미 금일 출퇴근 기록이 존재하는지 확인 (재출근 방지)
+            if (workLogRepository.existsByAttendanceId(attendance.getAttendanceId())) {
+                throw new IllegalStateException("금일 출퇴근 처리가 이미 완료되었습니다.");
+            }
+
             // ===== 출근 =====
             attendanceStatusType = "CHECK_IN";
 

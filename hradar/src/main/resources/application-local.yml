@@ -13,6 +13,9 @@ spring:
           model: "gemini-2.5-flash-lite"
           temperature: 0.0
         completions-path: "/chat/completions"
+        client:
+          connect-timeout: 10s
+          read-timeout: 60s
   main:
     web-application-type: servlet
   data:
@@ -31,7 +34,7 @@ spring:
       connection-timeout: 30000
   jpa:
     hibernate:
-      ddl-auto: update   # create, create-drop, update, validate, none
+      ddl-auto: update   # create-drop, create-drop, update, validate, none
     properties:
       hibernate:
         format_sql: true

@@ -77,6 +77,7 @@ public class BasicSalaryQueryController {
     // 사원 ID
     Long empId = authUser.employeeId();
     Long comId = authUser.companyId();
+
     BasicSalarySearchResponse response = basicSalaryQueryService.getMyBasicSalaries(empId, comId, request);
     return ResponseEntity.ok(ApiResponse.success(response));
   }

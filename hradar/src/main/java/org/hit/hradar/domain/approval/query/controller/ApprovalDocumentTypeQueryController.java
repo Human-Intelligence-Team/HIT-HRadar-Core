@@ -38,4 +38,13 @@ public class ApprovalDocumentTypeQueryController {
     return ResponseEntity.ok(
         ApiResponse.success(ApprovalAttendanceCategory.values()));
   }
+
+  @Operation(summary = "관리자용 전체 결재 문서 종류 조회", description = "관리자가 문서 종류를 관리하기 위해 모든 문서 종류(비활성 포함)를 조회합니다.")
+  @GetMapping("/manage")
+  public ResponseEntity<ApiResponse<List<ApprovalDocumentTypeResponse>>> getAllForManagement(
+      @CurrentUser AuthUser authUser) {
+    return ResponseEntity.ok(
+        ApiResponse.success(
+            approvalDocumentTypeQueryService.findAllTypesForManagement(authUser.companyId())));
+  }
 }
