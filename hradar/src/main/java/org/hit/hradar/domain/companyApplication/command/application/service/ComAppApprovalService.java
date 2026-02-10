@@ -80,6 +80,7 @@ public class ComAppApprovalService {
             app.getName(),
             app.getEmail(),
             tempPassword
+
         );
 
     return ApproveComAppResponse.builder()
