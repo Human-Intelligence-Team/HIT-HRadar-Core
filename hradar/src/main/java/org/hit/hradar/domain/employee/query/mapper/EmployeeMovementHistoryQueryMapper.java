@@ -7,11 +7,9 @@ import org.hit.hradar.domain.employee.query.dto.EmployeeMovementHistoryResponse;
 
 @Mapper
 public interface EmployeeMovementHistoryQueryMapper {
-  List<EmployeeMovementHistoryResponse> findByCompanyAndEmpId(
-      @Param("comId") Long comId,
-      @Param("empId") Long empId
-  );
+    List<EmployeeMovementHistoryResponse> findByCompanyAndEmpId(
+            @Param("comId") Long comId,
+            @Param("empId") Long empId);
 
-  List<EmployeeMovementHistoryResponse> findAllByCompanyId(@Param("comId") Long comId);
+    List<EmployeeMovementHistoryResponse> findAllByCompanyId(@Param("comId") Long comId);
 }
-

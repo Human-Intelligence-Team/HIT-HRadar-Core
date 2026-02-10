@@ -1,8 +1,10 @@
 package org.hit.hradar.domain.salary.query.dto.response;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class AnnualCompensationSummaryResponse {
 
     private Long basicSalary; // 기본급

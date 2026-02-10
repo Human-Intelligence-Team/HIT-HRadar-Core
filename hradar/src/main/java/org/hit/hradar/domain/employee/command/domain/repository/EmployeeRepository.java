@@ -25,4 +25,6 @@ public interface EmployeeRepository {
   boolean existsByDeptIdAndIsDeleted(Long deptId, Character isDeleted);
 
   boolean existsByPositionIdAndIsDeleted(Long positionId, Character isDeleted);
+
+  void deactivateEmployeesByComId(Long comId);
 }

@@ -3,10 +3,12 @@ package org.hit.hradar.domain.salary.query.dto.response;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.salary.query.dto.BasicSalarySummaryDTO;
 import org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class SalaryApprovalResponse {
 

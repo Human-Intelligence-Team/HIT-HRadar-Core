@@ -17,6 +17,7 @@ public enum EmployeeErrorCode implements ErrorCode {
   INVALID_CSV_FILE("CSV_004", "존재하지 않는 csv 파일 입니다.", HttpStatus.NOT_FOUND),
   CSV_MISSING_REQUIRED_FIELD("CSV_005", "필수 입력 항목이 누락되었습니다.", HttpStatus.BAD_REQUEST),
   CSV_INVALID_FORMAT("CSV_006", "입력 형식이 유효하지 않습니다.", HttpStatus.BAD_REQUEST),
+  GENDER_REQUIRED("EMP_005", "성별 정보는 필수입니다.", HttpStatus.BAD_REQUEST),
   ;
 
   private final String errorCode;

@@ -16,8 +16,7 @@ public class EmployeeMovementHistoryQueryService {
 
   @Transactional(readOnly = true)
   public EmployeeMovementHistoryListResponse getHistory(Long comId, Long empId) {
-    List<EmployeeMovementHistoryResponse> list =
-        mapper.findByCompanyAndEmpId(comId, empId);
+    List<EmployeeMovementHistoryResponse> list = mapper.findByCompanyAndEmpId(comId, empId);
 
     return EmployeeMovementHistoryListResponse.of(list);
   }
@@ -25,8 +24,7 @@ public class EmployeeMovementHistoryQueryService {
   @Transactional(readOnly = true)
   public EmployeeMovementHistoryListResponse getAllHistories(Long companyId) {
     // Mapper의 메서드명과 일치하게 호출
-    List<EmployeeMovementHistoryResponse> histories =
-        mapper.findAllByCompanyId(companyId);
+    List<EmployeeMovementHistoryResponse> histories = mapper.findAllByCompanyId(companyId);
 
     return EmployeeMovementHistoryListResponse.of(histories);
   }

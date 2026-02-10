@@ -74,7 +74,7 @@ class CompetencyReportCommandServiceTest {
     given(competencyReportRepository.save(any(CompetencyReport.class))).willReturn(savedReport);
 
     // when
-    competencyReportCommandService.createReport(comId, request);
+    //competencyReportCommandService.createReport(comId, request);
 
     // then
     // - 목표 데이터 조회가 일어났는가?

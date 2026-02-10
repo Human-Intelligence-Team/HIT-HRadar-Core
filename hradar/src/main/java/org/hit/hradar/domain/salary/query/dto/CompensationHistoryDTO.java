@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.approval.command.domain.aggregate.ApprovalStatus;
 import org.hit.hradar.domain.salary.command.domain.aggregate.CompensationType;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class CompensationHistoryDTO {
 

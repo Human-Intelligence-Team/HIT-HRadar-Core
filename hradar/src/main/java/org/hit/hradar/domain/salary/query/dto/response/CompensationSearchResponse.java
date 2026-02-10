@@ -2,10 +2,12 @@ package org.hit.hradar.domain.salary.query.dto.response;
 
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 import org.hit.hradar.domain.salary.query.dto.CompensationSalaryDTO;
 import org.hit.hradar.domain.salary.query.dto.SalaryApprovalDTO;
 
 @Getter
+@Setter
 public class CompensationSearchResponse {
 
   private List<CompensationSalaryDTO> compensationSalaries;

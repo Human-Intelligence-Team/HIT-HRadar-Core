@@ -5,10 +5,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hit.hradar.domain.employee.command.domain.aggregate.EmploymentType;
 import org.hit.hradar.domain.salary.command.domain.aggregate.SalaryIncreaseType;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class BasicSalaryDTO {
 
@@ -32,19 +34,20 @@ public class BasicSalaryDTO {
   private EmploymentType employmentType; // 재직상태
 
   public BasicSalaryDTO(String year, Long docId, String docType, Long empId, String employeeNo,
-      String name, String deptName, LocalDateTime approvedAt, EmploymentType employmentType,
+      String name, String title, String deptName, LocalDateTime approvedAt, EmploymentType employmentType,
       String positionName, SalaryIncreaseType salaryIncreaseType) {
     this.year = year;
     this.docId = docId;
     this.docType = docType;
+    this.title = title;
     this.empId = empId;
     this.employeeNo = employeeNo;
     this.name = name;
     this.deptName = deptName;
-    this.approvedAt = approvedAt;
-    this.employmentType = employmentType;
     this.positionName = positionName;
+    this.approvedAt = approvedAt;
     this.salaryIncreaseType = salaryIncreaseType;
+    this.employmentType = employmentType;
   }
 
 }

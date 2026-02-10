@@ -9,6 +9,7 @@ import org.hit.hradar.domain.salary.command.domain.aggregate.CompensationType;
 import org.hit.hradar.domain.salary.command.domain.aggregate.SalaryIncreaseType;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class SalaryApprovalDTO {
 

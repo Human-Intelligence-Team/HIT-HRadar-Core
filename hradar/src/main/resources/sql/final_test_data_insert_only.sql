@@ -1,13 +1,13 @@
 /* =========================================================
  * HRadar Schema & Seed (DDL + Data)
- * 
+ *
  * ✅ 단일 파일로 스키마 생성 및 테스트 데이터 초기화 수행
  * ✅ SET FOREIGN_KEY_CHECKS = 0/1 를 통한 안전한 초기화
  * ========================================================= */
 
 SET FOREIGN_KEY_CHECKS = 0;
 
--- 1. Drop tables if they exist
+# -- 1. Drop tables if they exist
 DROP TABLE IF EXISTS role_employee;
 DROP TABLE IF EXISTS role_permission;
 DROP TABLE IF EXISTS role;
@@ -67,7 +67,7 @@ CREATE TABLE company (
     address             VARCHAR(255) NOT NULL,
     company_telephone   VARCHAR(30),
     founded_date        DATE,
-    status              VARCHAR(15) NOT NULL, 
+    status              VARCHAR(15) NOT NULL,
     is_deleted          CHAR(1) DEFAULT 'N' NOT NULL,
     created_at          DATETIME(6) NOT NULL,
     updated_at          DATETIME(6),
@@ -481,7 +481,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 START TRANSACTION;
 
--- 공통 비밀번호(1234) BCrypt 해시 (너가 준 값 그대로)
+-- 공통 비밀번호(1234) BCrypt 해시
 SET @PW := '$2b$10$ocLiue.qK3S7vygj8IlCyuEGW6JQb0l8dAQ63BAbx795DY9N43NP.';
 
 -- =========================================================
@@ -493,23 +493,23 @@ INSERT INTO company_application
  reject_reason, reviewed_at, reviewed_by)
 VALUES
     (1, '서울시 강남구 테헤란로', '123-45-67890', '02-1234-5678', '테스트컴퍼니',
-     'admin@hradar.com', 'hr01', '인사팀장01', 'APPROVED',
+     'hr01@test001.com', 'hr01', '인사팀장01', 'APPROVED',
      NULL, NULL, NULL);
 
 -- =========================================================
--- 1) 회사 (company_code='TEST001'로 앵커, com_id는 AUTO)
+-- 1) 회사 (company_code='COM001'로 앵커, com_id는 AUTO)
 -- =========================================================
 INSERT INTO company
 (application_id, company_code, name, ceo_name, company_email,
  biz_no, address, company_telephone, founded_date,
  status, is_deleted, created_at, updated_at, created_by, updated_by)
 VALUES
-    (1, 'TEST001', '테스트컴퍼니', '김대표', 'contact@test001.com',
+    (1, 'COM001', '테스트컴퍼니', '김대표', 'contact@test001.com',
      '123-45-67890', '서울시 강남구 테헤란로', '02-1234-5678', '2018-01-01',
      'APPROVED', 'N', NOW(6), NOW(6), 1, 1);
 
 -- TEST 회사 com_id 확보 (PLATFORM과 절대 섞이지 않게)
-SET @TEST_COM_ID := (SELECT com_id FROM company WHERE company_code='TEST001' LIMIT 1);
+SET @TEST_COM_ID := (SELECT com_id FROM company WHERE company_code='COM001' LIMIT 1);
 
 -- =========================================================
 -- 2) 직위 (간단 구조 유지: 6개)
@@ -614,7 +614,7 @@ INSERT INTO user_account
 SELECT
     e.emp_id AS account_id,
     e.com_id AS com_id,
-    'TEST001' AS company_code,
+    'COM001' AS company_code,
     e.emp_id AS employee_id,
     CONCAT(
             CASE e.dept_id
@@ -658,7 +658,6 @@ INSERT INTO permission (perm_key, name, route_path, is_deleted, created_at, crea
                                                                                             ('COM_MY', '내 회사', '/company/my', 'N', NOW(6), 1),
                                                                                             ('COM_MANAGE_MY', '회사 관리', '/company/my-manage', 'N', NOW(6), 1),
                                                                                             ('ROLE_MANAGE', '역할 관리', '/company/roles', 'N', NOW(6), 1),
-                                                                                            ('COM_MANAGE_ALL', '회사 전체 관리', '/company/manage', 'N', NOW(6), 1),
                                                                                             ('GOAL_LIST', '목표 목록', '/goal', 'N', NOW(6), 1),
                                                                                             ('GOAL_DASH_HR', 'HR 목표 대시보드', '/hr/goals', 'N', NOW(6), 1),
                                                                                             ('GOAL_TEAM_LIST', '팀 목표 목록', '/to/goals', 'N', NOW(6), 1),
@@ -671,7 +670,6 @@ INSERT INTO permission (perm_key, name, route_path, is_deleted, created_at, crea
                                                                                             ('SALARY_COMP_ALL', '변동급 전체', '/all/salary/compensation', 'N', NOW(6), 1),
                                                                                             ('CONTENT_ALL', '콘텐츠 전체', '/all/contents', 'N', NOW(6), 1),
                                                                                             ('TAG_MANAGE', '태그 관리', '/contents/tag', 'N', NOW(6), 1),
-                                                                                            ('CYCLE_MANAGE', '회차 관리', '/cycles', 'N', NOW(6), 1),
                                                                                             ('CYCLE_MANAGE_HR', 'HR 회차 관리', '/hr/cycles', 'N', NOW(6), 1),
                                                                                             ('GRADE_SETTING', '등급 설정', '/grade/setting', 'N', NOW(6), 1),
                                                                                             ('GRADE_LIST_DEPT', '부서 등급', '/grading/list', 'N', NOW(6), 1),
@@ -707,44 +705,177 @@ INSERT INTO role (role_id, com_id, is_system, role_key, name, is_deleted, create
 VALUES
     (1, @TEST_COM_ID, 'Y', 'ADMIN',       '최고 관리자', 'N', NOW(6), 1),
     (2, @TEST_COM_ID, 'Y', 'EMPLOYEE',    '일반 사원',   'N', NOW(6), 1),
-    (3, @TEST_COM_ID, 'N', 'HR_ADMIN',    '인사 관리자', 'N', NOW(6), 1),
-    (4, @TEST_COM_ID, 'N', 'TEAM_LEADER', '부서장',      'N', NOW(6), 1);
+    (3, @TEST_COM_ID, 'Y', 'HR_ADMIN',    '인사 관리자', 'N', NOW(6), 1),
+    (4, @TEST_COM_ID, 'Y', 'TEAM_LEADER', '부서장',      'N', NOW(6), 1);
 
 -- 6-3) role_permission
 -- ADMIN: 모든 권한
 INSERT INTO role_permission (role_id, perm_id, created_at, created_by)
-SELECT 1, perm_id, NOW(6), 1 FROM permission;
+SELECT 1, perm_id, NOW(6), 1 FROM permission WHERE perm_key IN (
+
+                                                                'POLICY_READ',
+                                                                'NOTICE_READ',
+                                                                'NOTICE_MANAGE',
+                                                                'MY_PROFILE',
+                                                                'MY_DEPT',
+                                                                'ORG_CHART',
+                                                                'DEPT_MANAGE',
+                                                                'EMP_MANAGE',
+                                                                'EMP_HISTORY',
+                                                                'POS_read',
+                                                                'POS_MANAGE',
+                                                                'COM_MANAGE_MY',
+                                                                'ROLE_MANAGE',
+                                                                'GOAL_LIST',
+                                                                'GOAL_CREATE',
+                                                                'GOAL_TEAM_LIST',
+                                                                'GOAL_DASH_HR',
+                                                                'REPORT_ME',
+                                                                'REPORT_DEPT',
+                                                                'REPORT_ALL',
+                                                                'CONTENT_ALL',
+                                                                'TAG_MANAGE',
+                                                                'SALARY_BASIC_ME',
+                                                                'SALARY_BASIC_ALL',
+                                                                'SALARY_COMP_ALL',
+                                                                'SALARY_DASH',
+                                                                'GRADE_MY',
+                                                                'GRADE_LIST_DEPT',
+                                                                'GRADE_LIST_HR',
+                                                                'GRADE_ASSIGN',
+                                                                'GRADE_APPROVE',
+                                                                'CYCLE_MANAGE_HR',
+                                                                'GRADE_SETTING',
+                                                                'GRADE_OBJECTION',
+                                                                'EVAL_EXEC',
+                                                                'EVAL_RESULT_MY',
+                                                                'EVAL_RESULT_HR',
+                                                                'EVAL_TYPE',
+                                                                'EVAL_FORM',
+                                                                'EVAL_ASSIGN',
+                                                                'EVAL_STATUS',
+                                                                'DASH_MY',
+                                                                'DASH_HR',
+                                                                'APPR_CREATE',
+                                                                'APPR_MY',
+                                                                'APPR_ALL',
+                                                                'APPR_ADMIN',
+                                                                'APPR_TYPE',
+                                                                'ATT_COMMUTE',
+                                                                'ATT_DEPT',
+                                                                'ATT_CAL',
+                                                                'ATT_IP',
+                                                                'LEAVE_MY',
+                                                                'LEAVE_DEPT',
+                                                                'LEAVE_POLICY'
+
+    );
 
 -- EMPLOYEE: 기본 권한
 INSERT INTO role_permission (role_id, perm_id, created_at, created_by)
 SELECT 2, perm_id, NOW(6), 1 FROM permission WHERE perm_key IN (
-                                                                'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ',
-                                                                'ATT_COMMUTE', 'LEAVE_MY', 'APPR_MY', 'APPR_CREATE',
-                                                                'DASH_MY', 'SALARY_BASIC_ME', 'EVAL_EXEC', 'EVAL_RESULT_MY',
-                                                                'REPORT_ME', 'CONTENT_ALL', 'GRADE_MY', 'GOAL_LIST'
+                                                                'POLICY_READ',
+                                                                'NOTICE_READ', 'MY_PROFILE', 'MY_DEPT', 'DEPT_LIST', 'ORG_CHART', 'EMP_LIST_READ',
+                                                                'POS_read', 'COM_MY', 'GOAL_LIST', 'REPORT_ME', 'CONTENT_ALL', 'SALARY_BASIC_ME',
+                                                                'GRADE_MY', 'GRADE_OBJECTION', 'EVAL_EXEC', 'EVAL_RESULT_MY', 'DASH_MY',
+                                                                'APPR_CREATE', 'APPR_MY', 'ATT_COMMUTE', 'LEAVE_MY'
     );
 
 -- HR_ADMIN
 INSERT INTO role_permission (role_id, perm_id, created_at, created_by)
 SELECT 3, perm_id, NOW(6), 1 FROM permission WHERE perm_key IN (
-                                                                'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ', 'NOTICE_MANAGE',
-                                                                'DEPT_LIST', 'ORG_CHART', 'DEPT_MANAGE',
-                                                                'EMP_MANAGE', 'EMP_LIST_READ', 'POS_MANAGE', 'POS_read', 'EMP_APPOINT', 'EMP_HISTORY',
-                                                                'ATT_COMMUTE', 'ATT_IP', 'ATT_DEPT', 'ATT_CAL',
-                                                                'LEAVE_MY', 'LEAVE_POLICY', 'LEAVE_DEPT',
-                                                                'GOAL_DASH_HR', 'SALARY_BASIC_ALL', 'SALARY_DASH', 'SALARY_COMP_ALL',
-                                                                'EVAL_TYPE', 'EVAL_FORM', 'EVAL_ASSIGN', 'EVAL_STATUS', 'EVAL_RESULT_HR',
-                                                                'GRADE_SETTING', 'GRADE_LIST_HR', 'GRADE_APPROVE',
-                                                                'DASH_HR'
+                                                                'POLICY_READ',
+                                                                'NOTICE_READ',
+                                                                'NOTICE_MANAGE',
+                                                                'MY_PROFILE',
+                                                                'MY_DEPT',
+                                                                'ORG_CHART',
+                                                                'DEPT_MANAGE',
+                                                                'EMP_MANAGE',
+                                                                'EMP_HISTORY',
+                                                                'POS_read',
+                                                                'POS_MANAGE',
+                                                                'COM_MANAGE_MY',
+                                                                'ROLE_MANAGE',
+                                                                'GOAL_LIST',
+                                                                'GOAL_CREATE',
+                                                                'GOAL_TEAM_LIST',
+                                                                'GOAL_DASH_HR',
+                                                                'REPORT_ME',
+                                                                'REPORT_DEPT',
+                                                                'REPORT_ALL',
+                                                                'CONTENT_ALL',
+                                                                'TAG_MANAGE',
+                                                                'SALARY_BASIC_ME',
+                                                                'SALARY_BASIC_ALL',
+                                                                'SALARY_COMP_ALL',
+                                                                'SALARY_DASH',
+                                                                'GRADE_MY',
+                                                                'GRADE_LIST_DEPT',
+                                                                'GRADE_LIST_HR',
+                                                                'GRADE_ASSIGN',
+                                                                'GRADE_APPROVE',
+                                                                'CYCLE_MANAGE_HR'
+                                                                'GRADE_SETTING',
+                                                                'GRADE_OBJECTION',
+                                                                'EVAL_EXEC',
+                                                                'EVAL_RESULT_MY',
+                                                                'EVAL_RESULT_HR',
+                                                                'EVAL_TYPE',
+                                                                'EVAL_FORM',
+                                                                'EVAL_ASSIGN',
+                                                                'EVAL_STATUS',
+                                                                'DASH_MY',
+                                                                'DASH_HR',
+                                                                'APPR_CREATE',
+                                                                'APPR_MY',
+                                                                'APPR_ALL',
+                                                                'APPR_ADMIN',
+                                                                'APPR_TYPE',
+                                                                'ATT_COMMUTE',
+                                                                'ATT_DEPT',
+                                                                'ATT_CAL',
+                                                                'ATT_IP',
+                                                                'LEAVE_MY',
+                                                                'LEAVE_DEPT',
+                                                                'LEAVE_POLICY'
+
     );
 
 -- TEAM_LEADER
 INSERT INTO role_permission (role_id, perm_id, created_at, created_by)
 SELECT 4, perm_id, NOW(6), 1 FROM permission WHERE perm_key IN (
-                                                                'MY_PROFILE', 'MY_DEPT', 'POLICY_READ', 'NOTICE_READ',
-                                                                'ATT_COMMUTE', 'LEAVE_MY', 'APPR_MY', 'APPR_CREATE',
-                                                                'GOAL_TEAM_LIST', 'GRADE_LIST_DEPT', 'GRADE_ASSIGN', 'GRADE_OBJECTION',
-                                                                'REPORT_DEPT'
+                                                                'POLICY_READ',
+                                                                'NOTICE_READ',
+                                                                'MY_PROFILE',
+                                                                'MY_DEPT',
+                                                                'DEPT_LIST',
+                                                                'ORG_CHART',
+                                                                'EMP_LIST_READ',
+                                                                'POS_read',
+                                                                'COM_MY',
+                                                                'GOAL_LIST',
+                                                                'REPORT_ME',
+                                                                'CONTENT_ALL',
+                                                                'SALARY_BASIC_ME',
+                                                                'GRADE_MY',
+                                                                'GRADE_OBJECTION',
+                                                                'EVAL_EXEC',
+                                                                'EVAL_RESULT_MY',
+                                                                'DASH_MY',
+                                                                'APPR_CREATE',
+                                                                'APPR_MY',
+                                                                'ATT_COMMUTE',
+                                                                'LEAVE_MY',
+                                                                'GOAL_TEAM_LIST',
+                                                                'GOAL_CREATE',
+                                                                'REPORT_DEPT',
+                                                                'GRADE_LIST_DEPT',
+                                                                'GRADE_ASSIGN',
+                                                                'ATT_DEPT',
+                                                                'ATT_CAL',
+                                                                'LEAVE_DEPT'
+
     );
 
 -- =========================================================

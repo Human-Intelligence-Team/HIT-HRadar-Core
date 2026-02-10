@@ -14,7 +14,7 @@ public class CompetencyReportDTO {
   private String cycleName; // 회차명
   private String year; // 년도
   private Quarter quarter;  // 분기
-  private LocalDateTime createdAt;  // 생성일
+  private String createdAt;  // 생성일
 
   private Long competencyReportId;  // 역량 강화 리포트 ID
   private Character isCompReportGenerated;  // 역량 강화 리포트 ID
@@ -31,6 +31,7 @@ public class CompetencyReportDTO {
   private CycleStatus status;
   private String startDate;
 
+
   public void setStartDate(String startDate) {
     this.startDate = startDate;
   }
@@ -42,7 +43,7 @@ public class CompetencyReportDTO {
   private String endDate;
 
   // 사원
-  public CompetencyReportDTO (String cycleName, String year, Quarter quarter,LocalDateTime createdAt,Long competencyReportId ) {
+  public CompetencyReportDTO (String cycleName, String year, Quarter quarter,String createdAt,Long competencyReportId ) {
     this.cycleName = cycleName;
     this.year = year;
     this.quarter = quarter;
@@ -51,7 +52,7 @@ public class CompetencyReportDTO {
   }
 
   // 팀장
-  public CompetencyReportDTO (String cycleName, String year, Quarter quarter,LocalDateTime createdAt,Long competencyReportId
+  public CompetencyReportDTO (String cycleName, String year, Quarter quarter,String createdAt,Long competencyReportId
       , String employeeName, String employeeNo, String deptName, String positionName) {
     this.cycleName = cycleName;
     this.year = year;
@@ -65,7 +66,7 @@ public class CompetencyReportDTO {
 
   }
 
-  public CompetencyReportDTO (String cycleName, String year, Quarter quarter,LocalDateTime createdAt,Long competencyReportId
+  public CompetencyReportDTO (String cycleName, String year, Quarter quarter,String createdAt,Long competencyReportId
       , String employeeName, String employeeNo, String deptName, String positionName, String kpiOkrResultSummary, String goalFailureAnalysis) {
     this.cycleName = cycleName;
     this.year = year;

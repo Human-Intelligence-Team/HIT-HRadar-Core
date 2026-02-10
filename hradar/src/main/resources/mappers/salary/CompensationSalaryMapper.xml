@@ -24,6 +24,9 @@
      where ad.is_deleted = 'N'
        and ad.company_id = #{comId}
        and ad.doc_type = 'COMPENSATION_SALARY'
+    <if test="year != null and year != ''">
+      and year(ad.created_at) = #{year}
+    </if>
      group by ad.doc_id, ad.title, ad.approved_at, ad.status, ad.writer_id, emp.name, cse.compensation_type, cse.remark
      order by ad.doc_id desc
   </select>
@@ -119,7 +122,7 @@
      and ad.doc_type = 'COMPENSATION_SALARY'
      and ad.company_id = #{comId}
      and cse.emp_id = #{empId}
-  <if test="year != null">
+    <if test="year != null and year != ''">
      and year(ad.created_at) = #{year}
   </if>
   <if test="type != null">
@@ -162,6 +165,5 @@
   <if test="empId != null">
     and cse.emp_id = #{empId}
   </if>
-  group by ad.doc_id, ad.title
   </select>
 </mapper>
