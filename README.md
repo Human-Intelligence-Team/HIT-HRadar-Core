@@ -460,7 +460,7 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
   산출물계획을 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1Ka1EDLKefRIke4mxDdVm6wlhyBp4_J1skyuc-2MV8lc/edit?gid=0#gid=0)를 클릭하세요 <br>
 
   <details> <summary> WBS</summary>
-	  <img width="2684" height="1362" alt="wbs" src="https://github.com/user-attachments/assets/573d1764-128a-42cc-b37f-19ad057d338a" />
+	 <img width="1518" height="739" alt="WBS 최신" src="https://github.com/user-attachments/assets/7054278a-dab6-4db9-9ee1-433d2c74c093" />
   </details>
   <details> <summary> 산출물 계획</summary>
 	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/2e0548aa-e8a2-4ec3-b325-962f2c28e0b6" />
@@ -472,14 +472,11 @@ HR 담당자가 수작업·반복 업무에서 벗어나,
   요구사항명세서를 자세히 보려면 [여기](https://docs.google.com/spreadsheets/d/1GQE0Toz1g8RbmHfPRaJDYopqU2pKnyIDpZCUOtF002w/edit?gid=0#gid=0)를 클릭하세요 <br>
 
   <details> <summary> 요구사항 명세서 </summary>
-	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/9cbfeef7-e9e3-4aa9-bbd9-795f2c3ec938" />
-	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/c10134de-994d-4dcc-b84f-16cf2ff5d33c" />
-	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/60800d44-0db1-4ca2-86b9-711178feed5d" />
-	  <img width="2046" height="1446" alt="image" src="https://github.com/user-attachments/assets/87e42c6d-e0f5-4a15-8482-bcde99ded7a8" />
-	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/d8fad6f2-fff7-497b-8e0a-ea92b63677de" />
-	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/c9de9837-dd3e-47a7-9a39-fb3a4847e64f" />
-	<img width="1178" height="832" alt="image" src="https://github.com/user-attachments/assets/fce05e47-af75-4100-9d0a-6d38a31d496b" />
-
+	<img width="860" height="675" alt="WBS 1장" src="https://github.com/user-attachments/assets/88438c57-33a8-4cf7-a413-ad84acb3cfb0" />
+	<img width="860" height="748" alt="WBS 2장" src="https://github.com/user-attachments/assets/3da88780-3704-40ec-8170-64cca81bfeaa" />
+	<img width="860" height="867" alt="WBS 3장" src="https://github.com/user-attachments/assets/f39c8e9a-b7aa-4519-a33e-1483206c4fd4" />
+	<img width="860" height="404" alt="WBS 4장" src="https://github.com/user-attachments/assets/fa1e99eb-31e5-45b2-955f-6f3f12a971b2" />
+	<img width="860" height="487" alt="WBS 5장" src="https://github.com/user-attachments/assets/92cd6002-2c5b-4749-8ae8-2fb8e1461360" />
   </details>
 
 - ###  📚 Api명세서
